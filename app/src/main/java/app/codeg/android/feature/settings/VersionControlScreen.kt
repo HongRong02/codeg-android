@@ -94,7 +94,7 @@ private fun Pill(label: String, loading: Boolean, onClick: () -> Unit, filled: B
         Button(
             onClick = onClick,
             enabled = !loading,
-            shape = RoundedCornerShape(10.dp),
+            shape = RoundedCornerShape(8.dp),
             colors = ButtonDefaults.buttonColors(containerColor = colors.accent, contentColor = colors.onAccent),
         ) {
             if (loading) CircularProgressIndicator(Modifier.size(15.dp), strokeWidth = 2.dp, color = colors.onAccent)
@@ -104,7 +104,7 @@ private fun Pill(label: String, loading: Boolean, onClick: () -> Unit, filled: B
         FilledTonalButton(
             onClick = onClick,
             enabled = !loading,
-            shape = RoundedCornerShape(10.dp),
+            shape = RoundedCornerShape(8.dp),
             colors = ButtonDefaults.filledTonalButtonColors(containerColor = colors.textPrimary.copy(alpha = 0.06f), contentColor = colors.textPrimary),
         ) {
             if (loading) CircularProgressIndicator(Modifier.size(15.dp), strokeWidth = 2.dp, color = colors.accent)

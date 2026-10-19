@@ -83,7 +83,7 @@ fun FolderFilesView(client: CodegClient, rootPath: String) {
                 if (stack.size > 1) {
                     item("up") {
                         Row(
-                            Modifier.fillMaxWidth().clip(RoundedCornerShape(10.dp)).clickable { stack = stack.dropLast(1) }.padding(8.dp),
+                            Modifier.fillMaxWidth().clip(RoundedCornerShape(8.dp)).clickable { stack = stack.dropLast(1) }.padding(8.dp),
                             verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp),
                         ) {
                             Icon(Icons.Rounded.ArrowUpward, null, tint = colors.textSecondary, modifier = Modifier.size(20.dp))
@@ -120,7 +120,7 @@ private fun FileRow(item: DirectoryItem, onClick: () -> Unit) {
         },
         trailingContent = sizeLabel?.let { { Text(it, fontSize = 11.sp, color = colors.textTertiary) } },
         colors = ListItemDefaults.colors(containerColor = Color.Transparent, headlineColor = colors.textPrimary),
-        modifier = Modifier.clip(RoundedCornerShape(10.dp)).clickable { onClick() },
+        modifier = Modifier.clip(RoundedCornerShape(8.dp)).clickable { onClick() },
     )
 }
 
@@ -164,7 +164,7 @@ private fun FileContent(content: String) {
     }
     val gutterWidth = (lines.size.toString().length * 8 + 12).dp
     LazyColumn(
-        Modifier.fillMaxSize().padding(horizontal = 12.dp).clip(RoundedCornerShape(10.dp)).background(colors.codeSurface).border(1.dp, colors.hairline, RoundedCornerShape(10.dp)),
+        Modifier.fillMaxSize().padding(horizontal = 12.dp).clip(RoundedCornerShape(8.dp)).background(colors.codeSurface).border(1.dp, colors.hairline, RoundedCornerShape(8.dp)),
     ) {
         items(lines.size) { i ->
             Row(Modifier.fillMaxWidth().horizontalScroll(rememberScrollState())) {

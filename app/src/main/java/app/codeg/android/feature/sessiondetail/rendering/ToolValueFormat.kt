@@ -326,8 +326,9 @@ fun ToolFieldInline(label: String, value: String) {
 @Composable
 fun ToolFieldBlock(label: String, content: @Composable () -> Unit) {
     val colors = CodegTheme.colors
-    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-        Text(label, fontSize = 11.sp, fontWeight = FontWeight.SemiBold, color = colors.textTertiary)
+    // Web tool sections: `font-medium text-muted-foreground text-xs uppercase tracking-wide`.
+    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        Text(label.uppercase(), fontSize = 12.sp, fontWeight = FontWeight.Medium, letterSpacing = 0.3.sp, color = colors.textSecondary)
         content()
     }
 }

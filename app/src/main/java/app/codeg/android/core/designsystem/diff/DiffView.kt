@@ -55,9 +55,9 @@ private fun DiffFileView(file: DiffFile, collapseAfter: Int) {
     Column(
         Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(10.dp))
+            .clip(RoundedCornerShape(8.dp))
             .background(colors.codeSurface)
-            .border(0.5.dp, colors.hairline, RoundedCornerShape(10.dp)),
+            .border(0.5.dp, colors.hairline, RoundedCornerShape(8.dp)),
     ) {
         // Header: mode badge + path + counts.
         Row(

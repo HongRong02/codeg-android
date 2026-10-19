@@ -77,7 +77,7 @@ private fun PillButton(label: String, loading: Boolean, onClick: () -> Unit) {
     Button(
         onClick = onClick,
         enabled = !loading,
-        shape = RoundedCornerShape(10.dp),
+        shape = RoundedCornerShape(8.dp),
         colors = ButtonDefaults.buttonColors(containerColor = colors.accent, contentColor = colors.onAccent),
     ) {
         if (loading) CircularProgressIndicator(Modifier.size(16.dp), strokeWidth = 2.dp, color = colors.onAccent)

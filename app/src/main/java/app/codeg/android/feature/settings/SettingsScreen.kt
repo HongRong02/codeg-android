@@ -222,7 +222,7 @@ private fun AppearanceSettings(viewModel: SettingsViewModel) {
         Column(Modifier.fillMaxWidth().webSurface(RoundedCornerShape(CodegTheme.dimens.radiusLg)).padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
             Text(stringResource(R.string.settings_preview), fontSize = 13.sp, color = colors.textTertiary)
             Text(stringResource(R.string.settings_accent_preview_caption), fontSize = 14.sp, color = colors.textPrimary)
-            Box(Modifier.clip(RoundedCornerShape(10.dp)).background(colors.accent).padding(horizontal = 16.dp, vertical = 8.dp)) {
+            Box(Modifier.clip(RoundedCornerShape(8.dp)).background(colors.accent).padding(horizontal = 16.dp, vertical = 8.dp)) {
                 Text(stringResource(R.string.settings_accent_button), color = colors.onAccent, fontWeight = FontWeight.SemiBold)
             }
         }

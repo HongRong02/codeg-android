@@ -190,8 +190,8 @@ private fun SyncButton(
     val tint = if (enabled) colors.accent else colors.textTertiary
     Row(
         modifier
-            .clip(RoundedCornerShape(10.dp))
-            .border(1.dp, colors.surfaceStroke, RoundedCornerShape(10.dp))
+            .clip(RoundedCornerShape(8.dp))
+            .border(1.dp, colors.surfaceStroke, RoundedCornerShape(8.dp))
             .background(if (enabled) colors.accent.copy(alpha = 0.08f) else Color.Transparent)
             .clickable(enabled = enabled) { onClick() }
             .padding(vertical = 9.dp),
@@ -231,7 +231,7 @@ private fun CommitRow(entry: GitLogEntry, onClick: () -> Unit) {
             { Icon(if (pushed) Icons.Rounded.Cloud else Icons.Rounded.CloudOff, null, tint = colors.textTertiary, modifier = Modifier.size(14.dp)) }
         },
         colors = ListItemDefaults.colors(containerColor = Color.Transparent, headlineColor = colors.textPrimary),
-        modifier = Modifier.clip(RoundedCornerShape(10.dp)).clickable { onClick() },
+        modifier = Modifier.clip(RoundedCornerShape(8.dp)).clickable { onClick() },
     )
 }
 

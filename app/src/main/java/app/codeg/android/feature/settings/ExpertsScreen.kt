@@ -148,7 +148,7 @@ private fun ExpertIconTile(size: androidx.compose.ui.unit.Dp) {
 private fun ExpertsRefreshBanner(message: String, onRetry: () -> Unit, onDismiss: () -> Unit) {
     val colors = CodegTheme.colors
     Row(
-        Modifier.fillMaxWidth().clip(RoundedCornerShape(12.dp)).background(colors.danger.copy(alpha = 0.12f)).padding(horizontal = 12.dp, vertical = 10.dp),
+        Modifier.fillMaxWidth().clip(RoundedCornerShape(14.dp)).background(colors.danger.copy(alpha = 0.12f)).padding(horizontal = 12.dp, vertical = 10.dp),
         verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         Text(message, fontSize = 12.sp, color = colors.danger, modifier = Modifier.weight(1f), maxLines = 2, overflow = TextOverflow.Ellipsis)
@@ -225,7 +225,7 @@ private fun ExpertDetailDialog(
                     }
                 }
                 detail.error?.let {
-                    Row(Modifier.fillMaxWidth().clip(RoundedCornerShape(10.dp)).background(colors.danger.copy(alpha = 0.12f)).padding(12.dp), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+                    Row(Modifier.fillMaxWidth().clip(RoundedCornerShape(8.dp)).background(colors.danger.copy(alpha = 0.12f)).padding(12.dp), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
                         Text(it, fontSize = 12.sp, color = colors.danger, modifier = Modifier.weight(1f))
                         Text(stringResource(R.string.common_dismiss), fontSize = 12.sp, color = colors.accent, modifier = Modifier.clickable { onDismissError() })
                     }
@@ -245,7 +245,7 @@ private fun AgentLinkRow(agent: AgentType, status: ExpertInstallStatus?, togglin
     val caption = linkCaption(state, status?.copyMode ?: false)
 
     Row(Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 12.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-        Box(Modifier.size(34.dp).clip(RoundedCornerShape(9.dp)).background(colors.textPrimary.copy(alpha = 0.06f)), contentAlignment = Alignment.Center) {
+        Box(Modifier.size(34.dp).clip(RoundedCornerShape(8.dp)).background(colors.textPrimary.copy(alpha = 0.06f)), contentAlignment = Alignment.Center) {
             AgentIcon(agent, size = 20.dp)
         }
         Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(3.dp)) {

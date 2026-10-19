@@ -94,7 +94,7 @@ fun SearchScreen(
                     }
                 },
                 singleLine = true,
-                shape = RoundedCornerShape(28.dp),
+                shape = RoundedCornerShape(26.dp),
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
                 keyboardActions = KeyboardActions(onSearch = { viewModel.submit() }),
                 colors = TextFieldDefaults.colors(

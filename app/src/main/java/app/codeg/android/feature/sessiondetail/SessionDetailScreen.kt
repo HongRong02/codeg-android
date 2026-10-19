@@ -429,9 +429,9 @@ private fun AttachmentStrip(attachments: List<Attachment>, onRemove: (String) ->
             }
             Box(Modifier.size(60.dp)) {
                 if (bitmap != null) {
-                    Image(bitmap, contentDescription = stringResource(R.string.sessiondetail_attachment), contentScale = ContentScale.Crop, modifier = Modifier.size(60.dp).clip(RoundedCornerShape(10.dp)))
+                    Image(bitmap, contentDescription = stringResource(R.string.sessiondetail_attachment), contentScale = ContentScale.Crop, modifier = Modifier.size(60.dp).clip(RoundedCornerShape(8.dp)))
                 } else {
-                    Box(Modifier.size(60.dp).clip(RoundedCornerShape(10.dp)).background(colors.codeSurface))
+                    Box(Modifier.size(60.dp).clip(RoundedCornerShape(8.dp)).background(colors.codeSurface))
                 }
                 Box(
                     Modifier.align(Alignment.TopEnd).padding(2.dp).size(18.dp).clip(RoundedCornerShape(50)).background(colors.bg.copy(alpha = 0.7f)).clickable { onRemove(att.id) },

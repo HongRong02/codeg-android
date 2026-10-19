@@ -178,7 +178,7 @@ private fun PermissionBody(parsed: ParsedPermission) {
 private fun OptionButton(option: PermissionOption, submitting: Boolean, enabled: Boolean, onClick: () -> Unit) {
     val colors = CodegTheme.colors
     val isReject = option.isReject
-    val shape = RoundedCornerShape(10.dp)
+    val shape = RoundedCornerShape(8.dp)
     // Keep the actively-submitting button enabled-looking (spinner) while the
     // others disable; clicking is gated by `enabled` regardless.
     val clickable = enabled

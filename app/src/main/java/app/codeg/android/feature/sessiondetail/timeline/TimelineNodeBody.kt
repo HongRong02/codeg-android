@@ -113,7 +113,7 @@ private fun UserNodeBody(turn: MessageTurn, modifier: Modifier) {
     val colors = CodegTheme.colors
     Column(
         modifier
-            .clip(RoundedCornerShape(10.dp))
+            .clip(RoundedCornerShape(8.dp))
             .background(colors.web.secondary)
             .padding(horizontal = 16.dp, vertical = 12.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -308,9 +308,9 @@ fun InlineTurnError(message: String, modifier: Modifier = Modifier) {
     Row(
         modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(10.dp))
+            .clip(RoundedCornerShape(8.dp))
             .background(colors.danger.copy(alpha = 0.10f))
-            .border(0.5.dp, colors.danger.copy(alpha = 0.4f), RoundedCornerShape(10.dp))
+            .border(0.5.dp, colors.danger.copy(alpha = 0.4f), RoundedCornerShape(8.dp))
             .padding(horizontal = 12.dp, vertical = 8.dp),
         verticalAlignment = Alignment.Top,
         horizontalArrangement = Arrangement.spacedBy(8.dp),

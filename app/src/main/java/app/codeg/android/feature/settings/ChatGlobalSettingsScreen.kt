@@ -145,7 +145,7 @@ fun ChatGlobalSettingsDialog(onDismiss: () -> Unit, viewModel: ChatGlobalSetting
                                     onClick = { viewModel.addWebhook(newWebhook); newWebhook = "" },
                                     enabled = newWebhook.isNotBlank(),
                                     modifier = Modifier.size(48.dp),
-                                    shape = RoundedCornerShape(12.dp),
+                                    shape = RoundedCornerShape(14.dp),
                                     colors = IconButtonDefaults.filledIconButtonColors(containerColor = colors.accent.copy(alpha = 0.16f), contentColor = colors.accent),
                                 ) {
                                     Icon(Icons.Rounded.Add, stringResource(R.string.chatglobal_add_webhook_cd))

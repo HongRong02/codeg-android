@@ -68,9 +68,9 @@ fun CodeBlock(
     Column(
         modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(10.dp))
+            .clip(RoundedCornerShape(8.dp))
             .background(colors.codeSurface)
-            .border(0.5.dp, colors.hairline, RoundedCornerShape(10.dp)),
+            .border(0.5.dp, colors.hairline, RoundedCornerShape(8.dp)),
     ) {
         Row(
             Modifier.fillMaxWidth().padding(start = 10.dp, end = 6.dp, top = 4.dp, bottom = 4.dp),

@@ -133,9 +133,9 @@ private fun MarkdownTable(table: MarkdownBlock.Table, modifier: Modifier = Modif
     Row(modifier.horizontalScroll(rememberScrollState())) {
         Column(
             Modifier
-                .clip(RoundedCornerShape(10.dp))
+                .clip(RoundedCornerShape(8.dp))
                 .background(colors.codeSurface)
-                .border(0.5.dp, colors.hairline, RoundedCornerShape(10.dp)),
+                .border(0.5.dp, colors.hairline, RoundedCornerShape(8.dp)),
         ) {
             TableRow(table.header, isHeader = true)
             Box(Modifier.fillMaxWidth().height(0.5.dp).background(colors.hairline))
