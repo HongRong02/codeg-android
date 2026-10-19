@@ -498,6 +498,9 @@
     <string name="agents_pi_trust_failed">Failed to save workspace trust</string>
     <!-- Detail · Grok -->
     <string name="agents_grok_section">Grok Configuration</string>
+    <string name="agents_server_managed_section">Configuration</string>
+    <string name="agents_server_managed_footer">Enabling or disabling the agent above still works from here.</string>
+    <string name="agents_server_managed_body">This agent is configured from the Codeg web or desktop UI. The app leaves its settings untouched so nothing gets overwritten.</string>
     <string name="agents_grok_footer">The controls below merge into ~/.grok/config.toml, preserving your other keys and comments. Other keys stay editable under Advanced.</string>
     <string name="agents_grok_permission_mode">Permission Mode</string>
     <string name="agents_grok_use_default">Use default</string>

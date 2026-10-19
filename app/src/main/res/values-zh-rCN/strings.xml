@@ -498,6 +498,9 @@
     <string name="agents_pi_trust_failed">保存工作区信任失败</string>
     <!-- Detail · Grok -->
     <string name="agents_grok_section">Grok 配置</string>
+    <string name="agents_server_managed_section">配置</string>
+    <string name="agents_server_managed_footer">上方的启用/停用开关在这里仍然可用。</string>
+    <string name="agents_server_managed_body">该智能体请在 Codeg 网页端或桌面端配置。App 不会改动它的设置，避免覆盖。</string>
     <string name="agents_grok_footer">下面的选项会合并进 ~/.grok/config.toml，并保留你的其他键与注释。其他键可在“高级”中直接编辑。</string>
     <string name="agents_grok_permission_mode">权限模式</string>
     <string name="agents_grok_use_default">使用默认</string>

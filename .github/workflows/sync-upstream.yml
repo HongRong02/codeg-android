@@ -1,0 +1,123 @@
+# Keeps this fork in step with the official project.
+#
+# Branches:
+#   upstream  - exact mirror of the official default branch (never commit here)
+#   main      - our version: official code + our own patches
+#
+# Every run mirrors the official branch into `upstream`, then tries to merge it
+# into `main` on a `sync/upstream` branch:
+#   - clean merge     -> opens (or refreshes) a pull request into main, so the
+#                        Verify build runs before anything lands
+#   - merge conflict  -> opens (or refreshes) an issue listing the conflicting
+#                        files; resolve locally by merging `upstream` into main
+#
+# Requires the SYNC_TOKEN secret: a fine-grained personal access token for this
+# repository with Contents, Workflows, Pull requests and Issues set to
+# read/write. The default GITHUB_TOKEN can't push upstream commits that touch
+# .github/workflows, and its pushes don't trigger the Verify build.
+name: Sync upstream
+
+on:
+  schedule:
+    - cron: "17 2 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: sync-upstream
+  cancel-in-progress: false
+
+env:
+  OFFICIAL_REPO: xintaofei/codeg-android
+  OFFICIAL_BRANCH: main
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check for the sync token
+        env:
+          SYNC_TOKEN: ${{ secrets.SYNC_TOKEN }}
+        run: |
+          if [[ -z "$SYNC_TOKEN" ]]; then
+            echo "SYNC_TOKEN secret is not configured." >&2
+            exit 1
+          fi
+
+      - name: Check out main
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: main
+          fetch-depth: 0
+          token: ${{ secrets.SYNC_TOKEN }}
+
+      - name: Mirror the official branch into upstream
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git remote add official "https://github.com/$OFFICIAL_REPO.git"
+          git fetch --no-tags official "$OFFICIAL_BRANCH"
+          git push --force origin "official/$OFFICIAL_BRANCH:refs/heads/upstream"
+
+      - name: Merge upstream into main
+        id: merge
+        run: |
+          if git merge-base --is-ancestor "official/$OFFICIAL_BRANCH" HEAD; then
+            echo "main already contains every official commit."
+            echo "result=up-to-date" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          git checkout -B sync/upstream
+          if git merge --no-edit -m "Merge official $OFFICIAL_REPO@$(git rev-parse --short "official/$OFFICIAL_BRANCH")" "official/$OFFICIAL_BRANCH"; then
+            git push --force origin sync/upstream
+            echo "result=clean" >> "$GITHUB_OUTPUT"
+          else
+            {
+              echo "files<<EOF"
+              git diff --name-only --diff-filter=U
+              echo "EOF"
+            } >> "$GITHUB_OUTPUT"
+            git merge --abort
+            echo "result=conflict" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Open or refresh the merge pull request
+        if: steps.merge.outputs.result == 'clean'
+        env:
+          GH_TOKEN: ${{ secrets.SYNC_TOKEN }}
+        run: |
+          title="Sync official updates from $OFFICIAL_REPO"
+          body=$(printf 'Merges the latest official `%s` (%s) into main.\n\nNew official commits:\n\n%s\n' \
+            "$OFFICIAL_BRANCH" "$(git rev-parse --short "official/$OFFICIAL_BRANCH")" \
+            "$(git log --oneline --no-merges main.."official/$OFFICIAL_BRANCH" | head -n 50 | sed 's/^/- /')")
+          if pr=$(gh pr list --head sync/upstream --base main --state open --json number --jq '.[0].number') && [[ -n "$pr" ]]; then
+            gh pr edit "$pr" --title "$title" --body "$body"
+          else
+            gh pr create --head sync/upstream --base main --title "$title" --body "$body"
+          fi
+          # A clean merge supersedes any earlier conflict report.
+          for issue in $(gh issue list --state open --search "in:title \"Upstream merge conflict\"" --json number --jq '.[].number'); do
+            gh issue close "$issue" --comment "Superseded: the latest official update merges cleanly."
+          done
+
+      - name: Report merge conflicts
+        if: steps.merge.outputs.result == 'conflict'
+        env:
+          GH_TOKEN: ${{ secrets.SYNC_TOKEN }}
+          FILES: ${{ steps.merge.outputs.files }}
+        run: |
+          title="Upstream merge conflict"
+          body=$(printf 'Merging official `%s` (%s) into main conflicts in:\n\n%s\n\nResolve locally:\n\n```bash\ngit fetch origin\ngit checkout main\ngit merge origin/upstream\n# fix the conflicts, then\ngit commit\ngit push origin main\n```\n' \
+            "$OFFICIAL_BRANCH" "$(git rev-parse --short "official/$OFFICIAL_BRANCH")" \
+            "$(printf '%s\n' "$FILES" | sed 's/^/- `/; s/$/`/')")
+          if issue=$(gh issue list --state open --search "in:title \"$title\"" --json number --jq '.[0].number') && [[ -n "$issue" ]]; then
+            gh issue edit "$issue" --body "$body"
+          else
+            gh issue create --title "$title" --body "$body"
+          fi
+          # Fail the run too, so GitHub's failed-workflow email flags it.
+          echo "::error::Official update conflicts with main; see the \"$title\" issue."
+          exit 1

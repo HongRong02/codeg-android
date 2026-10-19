@@ -33,7 +33,9 @@ android {
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "app.codeg.android"
+        // Personal fork: own id so it installs alongside the upstream build
+        // (a different signing key can't upgrade app.codeg.android in place).
+        applicationId = "app.codeg.android.mine"
         minSdk = 31
         targetSdk = 36
         versionCode = 2

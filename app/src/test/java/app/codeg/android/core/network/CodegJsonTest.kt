@@ -73,6 +73,19 @@ class CodegJsonTest {
     }
 
     @Test
+    fun `agents added in codeg 0_38 decode to their own types`() {
+        val wires = listOf("deepseek", "qoder", "antigravity", "kiro", "zcode", "trae", "command_code")
+        wires.forEach { wire ->
+            val c = CodegJson.response.decodeFromString<ConversationSummary>(
+                """{"id":1,"folder_id":1,"agent_type":"$wire","status":"completed",
+                   "message_count":0,"created_at":"2024-01-02T03:04:05Z","updated_at":"2024-01-02T03:04:05Z"}""",
+            )
+            assertEquals(wire, c.agentType.wire)
+            assertEquals(true, c.agentType.isServerManagedConfig)
+        }
+    }
+
+    @Test
     fun `bare JSON integer decodes (create_conversation)`() {
         assertEquals(42, CodegJson.response.decodeFromString(Int.serializer(), "42"))
     }

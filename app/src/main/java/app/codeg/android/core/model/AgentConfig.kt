@@ -599,6 +599,9 @@ data class AgentDraft(
                 // Kimi & Pi project their own state from `configJson` inside their
                 // self-contained panels.
                 AgentType.KIMI_CODE, AgentType.PI -> Unit
+                // Configured from the Codeg web/desktop UI (see isServerManagedConfig).
+                AgentType.DEEPSEEK, AgentType.QODER, AgentType.ANTIGRAVITY, AgentType.KIRO,
+                AgentType.ZCODE, AgentType.TRAE, AgentType.COMMAND_CODE -> Unit
             }
             return draft
         }
@@ -911,6 +914,8 @@ object AgentConfig {
             // Kimi & Pi are self-contained (saved via acp_update_kimi_code_config /
             // acp_update_pi_config), not the shared draft.
             AgentType.KIMI_CODE, AgentType.PI -> Unit
+            AgentType.DEEPSEEK, AgentType.QODER, AgentType.ANTIGRAVITY, AgentType.KIRO,
+            AgentType.ZCODE, AgentType.TRAE, AgentType.COMMAND_CODE -> Unit
         }
         return Applied(configText, envText, codexConfigTomlText, codexAuthJsonText)
     }

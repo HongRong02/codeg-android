@@ -37,6 +37,13 @@ object AgentVisuals {
         AgentType.PI -> R.drawable.ic_agent_pi
         AgentType.GROK -> R.drawable.ic_agent_grok
         AgentType.CURSOR -> R.drawable.ic_agent_cursor
+        AgentType.DEEPSEEK -> R.drawable.ic_agent_deepseek
+        AgentType.QODER -> R.drawable.ic_agent_qoder
+        AgentType.ANTIGRAVITY -> R.drawable.ic_agent_antigravity
+        AgentType.KIRO -> R.drawable.ic_agent_kiro
+        AgentType.ZCODE -> R.drawable.ic_agent_zcode
+        AgentType.TRAE -> R.drawable.ic_agent_trae
+        AgentType.COMMAND_CODE -> R.drawable.ic_agent_command_code
     }
 
     /**
@@ -47,9 +54,12 @@ object AgentVisuals {
     fun iconIsTemplate(agent: AgentType): Boolean = when (agent) {
         AgentType.OPEN_CODE, AgentType.CLINE, AgentType.HERMES,
         AgentType.CODE_BUDDY, AgentType.GROK, AgentType.CURSOR,
+        AgentType.QODER, AgentType.ANTIGRAVITY,
         -> true
         AgentType.CLAUDE_CODE, AgentType.CODEX, AgentType.GEMINI,
         AgentType.OPEN_CLAW, AgentType.KIMI_CODE, AgentType.PI,
+        AgentType.DEEPSEEK, AgentType.KIRO, AgentType.ZCODE,
+        AgentType.TRAE, AgentType.COMMAND_CODE,
         -> false
     }
 
@@ -70,7 +80,12 @@ object AgentVisuals {
         AgentType.CODE_BUDDY -> Color(0xFF3378F5) // tencent blue
         AgentType.KIMI_CODE -> Color(0xFF1782FF) // moonshot blue
         AgentType.PI -> Color(0xFF383842) // pi slate
-        AgentType.GROK, AgentType.CURSOR ->
+        AgentType.DEEPSEEK -> Color(0xFF4D6BFE) // whale blue
+        AgentType.QODER -> Color(0xFF6C4CF1) // qoder violet
+        AgentType.ANTIGRAVITY -> Color(0xFF1A73E8) // google blue
+        AgentType.KIRO -> Color(0xFF9046FF) // kiro purple
+        AgentType.TRAE -> Color(0xFF32F08C) // trae green
+        AgentType.GROK, AgentType.CURSOR, AgentType.ZCODE, AgentType.COMMAND_CODE ->
             if (isDark) Color(0xFFEBEBEB) else Color(0xFF1F1F1F)
     }
 

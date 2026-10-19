@@ -95,7 +95,7 @@ import app.codeg.android.core.model.SkillSaveBody
 import app.codeg.android.core.model.SkillDeleteBody
 import app.codeg.android.core.model.ExpertListItem
 import app.codeg.android.core.model.ExpertInstallStatus
-import app.codeg.android.core.model.ExpertAgentBody
+import app.codeg.android.core.model.ExpertLinkState
 import app.codeg.android.core.model.ExpertLinkBody
 import app.codeg.android.core.model.ExpertIdBody
 import app.codeg.android.core.model.ChatChannelInfo
@@ -524,8 +524,13 @@ class CodegClient(
         decodeCamel(send("check_app_update", encode(EmptyBody)), AppUpdateCheckResult.serializer())
 
     /** Locally-configured MCP servers. */
-    suspend fun mcpScanLocal(): List<LocalMcpServer> =
-        decode(send("mcp_scan_local", encode(EmptyBody)), ListSerializer(LocalMcpServer.serializer()))
+    suspend fun mcpScanLocal(): List<LocalMcpServer> {
+        // Older servers return a bare array; newer ones wrap it as
+        // `{ servers, warnings }` so one unreadable config can't hide the rest.
+        val root = CodegJson.response.parseToJsonElement(send("mcp_scan_local", encode(EmptyBody)))
+        val servers = (root as? JsonObject)?.get("servers") ?: root
+        return CodegJson.response.decodeFromJsonElement(ListSerializer(LocalMcpServer.serializer()), servers)
+    }
 
     suspend fun mcpUpsertLocalServer(serverId: String, spec: JsonElement, apps: List<String>) {
         val body = buildJsonObject {
@@ -782,14 +787,24 @@ class CodegClient(
         decode(send("experts_list", encode(EmptyBody)), ListSerializer(ExpertListItem.serializer()))
 
     /** Experts linked to one agent — used by the compose "+" Expert Skills menu (M10). */
-    suspend fun expertsListForAgent(agentType: AgentType): List<ExpertListItem> =
-        decode(send("experts_list_for_agent", encode(ExpertAgentBody(agentType))), ListSerializer(ExpertListItem.serializer()))
+    suspend fun expertsListForAgent(agentType: AgentType): List<ExpertListItem> {
+        // The server has no per-agent experts endpoint; derive it like the web
+        // client does: experts whose link for this agent points at Codeg.
+        val linked = expertsListAllInstallStatuses()
+            .filter { it.agentType == agentType && it.state == ExpertLinkState.LINKED_TO_CODEG }
+            .mapTo(HashSet()) { it.expertId }
+        return expertsList().filter { it.id in linked }
+    }
 
     /** An expert's markdown content (`experts_read_content`, bare string). */
     suspend fun expertReadContent(expertId: String): String =
         decode(send("experts_read_content", encode(ExpertIdBody(expertId))), String.serializer())
 
     /** Per-agent link state of an expert (camelCase wire). */
+    /** Every (expert, agent) link state in one round-trip. */
+    suspend fun expertsListAllInstallStatuses(): List<ExpertInstallStatus> =
+        decodeCamel(send("experts_list_all_install_statuses", encode(EmptyBody)), ListSerializer(ExpertInstallStatus.serializer()))
+
     suspend fun expertInstallStatus(expertId: String): List<ExpertInstallStatus> =
         decodeCamel(send("experts_get_install_status", encode(ExpertIdBody(expertId))), ListSerializer(ExpertInstallStatus.serializer()))
 

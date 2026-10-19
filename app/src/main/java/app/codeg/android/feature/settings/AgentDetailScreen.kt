@@ -114,7 +114,8 @@ fun AgentDetailContent(
     // Kimi & Pi drive their own dedicated backends and carry their own save button(s)
     // — like Hermes' raw editor, they hide the host "Save" and the generic
     // native-config editor.
-    val selfContained = agentType == AgentType.KIMI_CODE || agentType == AgentType.PI
+    val selfContained = agentType == AgentType.KIMI_CODE || agentType == AgentType.PI ||
+        agentType.isServerManagedConfig
     Column(Modifier.fillMaxSize().imePadding()) {
         Column(
             Modifier.weight(1f).fillMaxWidth().verticalScroll(rememberScrollState())
@@ -136,6 +137,8 @@ fun AgentDetailContent(
                 AgentType.CURSOR -> CursorSection(detail, viewModel)
                 AgentType.KIMI_CODE -> AgentConfigKimiView(detail.agent, viewModel)
                 AgentType.PI -> AgentConfigPiView(detail.agent, viewModel)
+                AgentType.DEEPSEEK, AgentType.QODER, AgentType.ANTIGRAVITY, AgentType.KIRO,
+                AgentType.ZCODE, AgentType.TRAE, AgentType.COMMAND_CODE -> ServerManagedSection()
             }
 
             if (agentType != AgentType.HERMES && !selfContained) AdvancedSection(detail, viewModel)
@@ -495,6 +498,16 @@ private fun CodeBuddySection(state: AgentDetailState, vm: AgentsViewModel) {
  * env then config in one shot. `""` is the "use default" sentinel for each dropdown.
  * Port of iOS `GrokConfigSection`.
  */
+@Composable
+private fun ServerManagedSection() {
+    FormSection(
+        stringResource(R.string.agents_server_managed_section),
+        footer = stringResource(R.string.agents_server_managed_footer),
+    ) {
+        Text(stringResource(R.string.agents_server_managed_body), fontSize = 13.sp, color = CodegTheme.colors.textSecondary)
+    }
+}
+
 @Composable
 private fun GrokSection(state: AgentDetailState, vm: AgentsViewModel) {
     val colors = CodegTheme.colors

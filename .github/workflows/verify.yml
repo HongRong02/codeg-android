@@ -4,6 +4,7 @@ on:
   pull_request:
   push:
     branches: [main]
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -25,5 +26,47 @@ jobs:
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@0b6dd653ba04f4f93bf581ec31e66cbd7dcb644d # v4
 
+      # Sign with the fixed release key when the secrets are available (pushes
+      # to this repo) so every CI APK upgrades the installed app in place.
+      # Pull requests from forks get no secrets and fall back to unsigned.
+      - name: Restore release signing key
+        if: github.event_name != 'pull_request'
+        shell: bash
+        env:
+          KEYSTORE_BASE64: ${{ secrets.ANDROID_RELEASE_KEYSTORE_BASE64 }}
+          STORE_PASSWORD: ${{ secrets.ANDROID_RELEASE_STORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.ANDROID_RELEASE_KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.ANDROID_RELEASE_KEY_PASSWORD }}
+        run: |
+          if [[ -z "$KEYSTORE_BASE64" ]]; then
+            echo "::warning::Release-signing secrets are not configured; the release APK will be unsigned."
+            exit 0
+          fi
+          keystore="$RUNNER_TEMP/codeg-release.p12"
+          printf '%s' "$KEYSTORE_BASE64" | base64 --decode > "$keystore"
+          chmod 600 "$keystore"
+          {
+            printf 'storeFile=%s\n' "$keystore"
+            printf 'storePassword=%s\n' "$STORE_PASSWORD"
+            printf 'keyAlias=%s\n' "$KEY_ALIAS"
+            printf 'keyPassword=%s\n' "$KEY_PASSWORD"
+          } > keystore.properties
+          chmod 600 keystore.properties
+
       - name: Check, test, and assemble the app
         run: ./gradlew :app:check :app:assembleDebug :app:assembleRelease --no-daemon
+
+      - name: Remove signing material
+        if: always()
+        run: rm -f keystore.properties "$RUNNER_TEMP/codeg-release.p12"
+
+      - name: Upload APKs
+        if: github.event_name != 'pull_request'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: codeg-android-${{ github.sha }}
+          path: |
+            app/build/outputs/apk/release/*.apk
+            app/build/outputs/apk/debug/*.apk
+          if-no-files-found: error
+          retention-days: 14

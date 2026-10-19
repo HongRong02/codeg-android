@@ -31,7 +31,14 @@ enum class AgentType(val wire: String) {
     KIMI_CODE("kimi_code"),
     PI("pi"),
     GROK("grok"),
-    CURSOR("cursor");
+    CURSOR("cursor"),
+    DEEPSEEK("deepseek"),
+    QODER("qoder"),
+    ANTIGRAVITY("antigravity"),
+    KIRO("kiro"),
+    ZCODE("zcode"),
+    TRAE("trae"),
+    COMMAND_CODE("command_code");
 
     val displayName: String
         get() = when (this) {
@@ -47,6 +54,13 @@ enum class AgentType(val wire: String) {
             PI -> "Pi"
             GROK -> "Grok"
             CURSOR -> "Cursor"
+            DEEPSEEK -> "DeepSeek Harness"
+            QODER -> "Qoder"
+            ANTIGRAVITY -> "Google Antigravity"
+            KIRO -> "Kiro CLI"
+            ZCODE -> "ZCode"
+            TRAE -> "TRAE CLI"
+            COMMAND_CODE -> "Command Code"
         }
 
     /** Short label for dense badges. */
@@ -64,9 +78,29 @@ enum class AgentType(val wire: String) {
             PI -> "Pi"
             GROK -> "Grok"
             CURSOR -> "Cursor"
+            DEEPSEEK -> "DeepSeek"
+            QODER -> "Qoder"
+            ANTIGRAVITY -> "Antigravity"
+            KIRO -> "Kiro"
+            ZCODE -> "ZCode"
+            TRAE -> "TRAE"
+            COMMAND_CODE -> "Command"
         }
 
+    /**
+     * Agents added server-side after this client's config panels were written.
+     * Their on-disk config has its own shape, so the app shows them read-only
+     * and leaves configuration to the Codeg web/desktop UI instead of risking a
+     * generic config.json write.
+     */
+    val isServerManagedConfig: Boolean
+        get() = this in SERVER_MANAGED_CONFIG
+
     companion object {
+        private val SERVER_MANAGED_CONFIG = setOf(
+            DEEPSEEK, QODER, ANTIGRAVITY, KIRO, ZCODE, TRAE, COMMAND_CODE,
+        )
+
         /**
          * The agent for [raw], falling back to [CLAUDE_CODE] when unrecognised so a
          * single agent-typed field always decodes (matching iOS). List decoders that
