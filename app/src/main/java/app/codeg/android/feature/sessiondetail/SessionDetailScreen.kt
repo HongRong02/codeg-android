@@ -263,7 +263,6 @@ fun SessionDetailScreen(
                 ) {
                     SendStatusLine(ui.sendStatus ?: "")
                 }
-                if (ui.attachments.isNotEmpty()) AttachmentStrip(ui.attachments, onRemove = viewModel::removeAttachment)
                 ComposeBar(
                     text = draft,
                     onTextChange = { draft = it },
@@ -276,6 +275,9 @@ fun SessionDetailScreen(
                     onPlus = { showInsert = true },
                     onAttach = { pickImages.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)) },
                     canSendOverride = ui.attachments.isNotEmpty(),
+                    attachments = if (ui.attachments.isEmpty()) null else {
+                        { AttachmentStrip(ui.attachments, onRemove = viewModel::removeAttachment) }
+                    },
                 )
             }
         },
@@ -417,7 +419,8 @@ private fun NoticeBanner(message: String, onDismiss: () -> Unit) {
 private fun AttachmentStrip(attachments: List<Attachment>, onRemove: (String) -> Unit) {
     val colors = CodegTheme.colors
     LazyRow(
-        Modifier.fillMaxWidth().background(colors.bgElevated).padding(horizontal = 10.dp, vertical = 6.dp),
+        // Sits inside the composer box, above the editor (web ComposerImageThumbnails).
+        Modifier.fillMaxWidth().padding(start = 12.dp, end = 12.dp, top = 10.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         items(attachments, key = { it.id }) { att ->
