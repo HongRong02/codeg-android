@@ -14,6 +14,8 @@ local.properties
 !debug.keystore
 *.jks
 *.p12
+# Public dev signing key (see keystore/README.md); deliberately committed.
+!/keystore/dev.p12
 *.pfx
 *.pem
 *.key

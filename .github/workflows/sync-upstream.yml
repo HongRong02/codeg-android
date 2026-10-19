@@ -11,10 +11,13 @@
 #   - merge conflict  -> opens (or refreshes) an issue listing the conflicting
 #                        files; resolve locally by merging `upstream` into main
 #
-# Requires the SYNC_TOKEN secret: a fine-grained personal access token for this
-# repository with Contents, Workflows, Pull requests and Issues set to
-# read/write. The default GITHUB_TOKEN can't push upstream commits that touch
-# .github/workflows, and its pushes don't trigger the Verify build.
+# Runs on the built-in GITHUB_TOKEN. Two limits of that token:
+#   - it can't push official commits that change .github/workflows; such a
+#     run fails and opens the conflict issue, and the sync is done by hand
+#   - its pushes don't trigger other workflows, so the run dispatches Verify
+#     on the sync branch itself
+# Needs repository settings: Issues enabled, and Actions > General >
+# "Allow GitHub Actions to create and approve pull requests".
 name: Sync upstream
 
 on:
@@ -23,7 +26,10 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
+  pull-requests: write
+  issues: write
+  actions: write
 
 concurrency:
   group: sync-upstream
@@ -38,21 +44,11 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - name: Check for the sync token
-        env:
-          SYNC_TOKEN: ${{ secrets.SYNC_TOKEN }}
-        run: |
-          if [[ -z "$SYNC_TOKEN" ]]; then
-            echo "SYNC_TOKEN secret is not configured." >&2
-            exit 1
-          fi
-
       - name: Check out main
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           ref: main
           fetch-depth: 0
-          token: ${{ secrets.SYNC_TOKEN }}
 
       - name: Mirror the official branch into upstream
         run: |
@@ -60,7 +56,9 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git remote add official "https://github.com/$OFFICIAL_REPO.git"
           git fetch --no-tags official "$OFFICIAL_BRANCH"
-          git push --force origin "official/$OFFICIAL_BRANCH:refs/heads/upstream"
+          if ! git push --force origin "official/$OFFICIAL_BRANCH:refs/heads/upstream"; then
+            echo "::warning::Could not update the upstream branch (official commits probably change .github/workflows)."
+          fi
 
       - name: Merge upstream into main
         id: merge
@@ -72,8 +70,14 @@ jobs:
           fi
           git checkout -B sync/upstream
           if git merge --no-edit -m "Merge official $OFFICIAL_REPO@$(git rev-parse --short "official/$OFFICIAL_BRANCH")" "official/$OFFICIAL_BRANCH"; then
-            git push --force origin sync/upstream
-            echo "result=clean" >> "$GITHUB_OUTPUT"
+            if git push --force origin sync/upstream; then
+              echo "result=clean" >> "$GITHUB_OUTPUT"
+            else
+              echo "files<<EOF" >> "$GITHUB_OUTPUT"
+              echo "(no conflicts; the merge changes .github/workflows, which the Actions token may not push)" >> "$GITHUB_OUTPUT"
+              echo "EOF" >> "$GITHUB_OUTPUT"
+              echo "result=conflict" >> "$GITHUB_OUTPUT"
+            fi
           else
             {
               echo "files<<EOF"
@@ -87,7 +91,7 @@ jobs:
       - name: Open or refresh the merge pull request
         if: steps.merge.outputs.result == 'clean'
         env:
-          GH_TOKEN: ${{ secrets.SYNC_TOKEN }}
+          GH_TOKEN: ${{ github.token }}
         run: |
           title="Sync official updates from $OFFICIAL_REPO"
           body=$(printf 'Merges the latest official `%s` (%s) into main.\n\nNew official commits:\n\n%s\n' \
@@ -98,6 +102,7 @@ jobs:
           else
             gh pr create --head sync/upstream --base main --title "$title" --body "$body"
           fi
+          gh workflow run verify.yml --ref sync/upstream
           # A clean merge supersedes any earlier conflict report.
           for issue in $(gh issue list --state open --search "in:title \"Upstream merge conflict\"" --json number --jq '.[].number'); do
             gh issue close "$issue" --comment "Superseded: the latest official update merges cleanly."
@@ -106,7 +111,7 @@ jobs:
       - name: Report merge conflicts
         if: steps.merge.outputs.result == 'conflict'
         env:
-          GH_TOKEN: ${{ secrets.SYNC_TOKEN }}
+          GH_TOKEN: ${{ github.token }}
           FILES: ${{ steps.merge.outputs.files }}
         run: |
           title="Upstream merge conflict"

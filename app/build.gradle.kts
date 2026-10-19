@@ -51,14 +51,20 @@ android {
     }
 
     signingConfigs {
-        // Created only when keystore.properties is present (local dev / release
-        // machine). CI or fresh clones without it build unsigned.
-        if (keystorePropsFile.exists()) {
-            create("release") {
+        // A private key from a local, gitignored keystore.properties when present
+        // (release machine / release workflow); otherwise the committed public dev
+        // key, so every CI build carries the same signature and upgrades in place.
+        create("release") {
+            if (keystorePropsFile.exists()) {
                 storeFile = file(keystoreProps.getProperty("storeFile"))
                 storePassword = keystoreProps.getProperty("storePassword")
                 keyAlias = keystoreProps.getProperty("keyAlias")
                 keyPassword = keystoreProps.getProperty("keyPassword")
+            } else {
+                storeFile = rootProject.file("keystore/dev.p12")
+                storePassword = "codeg-dev"
+                keyAlias = "codeg-dev"
+                keyPassword = "codeg-dev"
             }
         }
     }
@@ -76,9 +82,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro",
             )
-            if (keystorePropsFile.exists()) {
-                signingConfig = signingConfigs.getByName("release")
-            }
+            signingConfig = signingConfigs.getByName("release")
         }
     }
 
