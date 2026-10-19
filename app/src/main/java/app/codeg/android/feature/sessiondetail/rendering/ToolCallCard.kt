@@ -66,9 +66,14 @@ import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
 
-private val SuccessGreen = Color(0xFF85D18F)
+// Web tool status colours (Tailwind green-600 / red-600).
+private val SuccessGreen = Color(0xFF16A34A)
+private val ErrorRed = Color(0xFFDC2626)
 
-/** A collapsible card for a single tool call. Port of iOS `ToolCallCard`. */
+/**
+ * A collapsible card for a single tool call, after the web `Tool`: rounded-md,
+ * no fill, a `border/60` stroke, 12dp header padding and a 14sp medium title.
+ */
 @Composable
 fun ToolCallCard(vm: ToolCallVM, modifier: Modifier = Modifier, nested: Boolean = false) {
     val colors = CodegTheme.colors
@@ -81,22 +86,21 @@ fun ToolCallCard(vm: ToolCallVM, modifier: Modifier = Modifier, nested: Boolean 
     Column(
         modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(10.dp))
-            .background(if (nested) Color.Transparent else colors.bgElevated)
-            .border(1.dp, colors.hairline, RoundedCornerShape(10.dp)),
+            .clip(RoundedCornerShape(8.dp))
+            .border(1.dp, colors.surfaceStroke.copy(alpha = if (nested) 0f else 0.6f), RoundedCornerShape(8.dp)),
     ) {
         Row(
             Modifier
                 .fillMaxWidth()
                 .clickable(enabled = hasBody) { expanded = !expanded }
-                .padding(horizontal = 10.dp, vertical = 8.dp),
+                .padding(horizontal = 12.dp, vertical = 8.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             ToolStateIcon(vm)
             Text(
                 text = vm.displayTitle,
-                fontSize = 13.sp,
+                fontSize = 14.sp,
                 fontWeight = FontWeight.Medium,
                 color = colors.textPrimary,
                 maxLines = 1,
@@ -124,8 +128,8 @@ fun ToolCallCard(vm: ToolCallVM, modifier: Modifier = Modifier, nested: Boolean 
             exit = shrinkVertically(tween(180)) + fadeOut(tween(120)),
         ) {
             Column(
-                Modifier.fillMaxWidth().padding(start = 10.dp, end = 10.dp, bottom = 10.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
+                Modifier.fillMaxWidth().padding(start = 12.dp, end = 12.dp, bottom = 12.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp),
             ) {
                 ToolBody(vm)
             }
@@ -253,9 +257,9 @@ private fun ToolStateIcon(vm: ToolCallVM) {
     val colors = CodegTheme.colors
     when (vm.state) {
         ToolCallState.RUNNING, ToolCallState.INPUT_STREAMING ->
-            CircularProgressIndicator(modifier = Modifier.size(14.dp), strokeWidth = 2.dp, color = colors.accent)
-        ToolCallState.DONE -> Icon(bucketIcon(vm.bucket), null, tint = colors.textSecondary, modifier = Modifier.size(15.dp))
-        ToolCallState.ERROR -> Icon(Icons.Rounded.ErrorOutline, null, tint = colors.danger, modifier = Modifier.size(15.dp))
+            CircularProgressIndicator(modifier = Modifier.size(14.dp), strokeWidth = 2.dp, color = colors.textSecondary)
+        ToolCallState.DONE -> Icon(bucketIcon(vm.bucket), null, tint = SuccessGreen, modifier = Modifier.size(16.dp))
+        ToolCallState.ERROR -> Icon(Icons.Rounded.ErrorOutline, null, tint = ErrorRed, modifier = Modifier.size(16.dp))
     }
 }
 
@@ -271,23 +275,22 @@ fun ToolGroupCard(items: List<ToolCallVM>, modifier: Modifier = Modifier, stream
     Column(
         modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(10.dp))
-            .background(colors.bgElevated)
-            .border(1.dp, colors.hairline, RoundedCornerShape(10.dp)),
+            .clip(RoundedCornerShape(8.dp))
+            .border(1.dp, colors.surfaceStroke.copy(alpha = 0.6f), RoundedCornerShape(8.dp)),
     ) {
         Row(
             Modifier
                 .fillMaxWidth()
                 .clickable { expanded = !expanded }
-                .padding(horizontal = 10.dp, vertical = 8.dp),
+                .padding(horizontal = 12.dp, vertical = 8.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            Icon(Icons.Rounded.Layers, null, tint = colors.accent, modifier = Modifier.size(15.dp))
+            Icon(Icons.Rounded.Layers, null, tint = colors.textSecondary, modifier = Modifier.size(16.dp))
             Text(
                 text = groupSummary(LocalContext.current, items),
-                fontSize = 13.sp,
-                fontWeight = FontWeight.SemiBold,
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Medium,
                 color = colors.textPrimary,
                 maxLines = 1,
                 modifier = Modifier.weight(1f),

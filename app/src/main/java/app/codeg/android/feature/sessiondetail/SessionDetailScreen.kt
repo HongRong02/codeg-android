@@ -315,7 +315,7 @@ fun SessionDetailScreen(
                     LazyColumn(
                         state = listState,
                         modifier = Modifier.fillMaxSize(),
-                        contentPadding = PaddingValues(start = 12.dp, end = 16.dp, top = 8.dp, bottom = 12.dp),
+                        contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 12.dp),
                     ) {
                         items(nodes, key = { it.id }, contentType = { it.contentTypeKey }) { node ->
                             TimelineRow(

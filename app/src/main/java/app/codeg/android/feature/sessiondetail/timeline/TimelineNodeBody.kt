@@ -104,22 +104,25 @@ fun NodeBody(node: TimelineNode, modifier: Modifier = Modifier) {
     }
 }
 
-/** The user's prompt — a left-aligned faint-accent card filling the content column. */
+/**
+ * The user's prompt, as the web renders it: a `--secondary` bubble (rounded-lg,
+ * 16/12 padding, 14sp text) sized to its content; the row right-aligns it.
+ */
 @Composable
 private fun UserNodeBody(turn: MessageTurn, modifier: Modifier) {
     val colors = CodegTheme.colors
     Column(
         modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(14.dp))
-            .background(colors.accent.copy(alpha = 0.12f))
-            .border(0.5.dp, colors.accent.copy(alpha = 0.28f), RoundedCornerShape(14.dp))
-            .padding(12.dp),
+            .clip(RoundedCornerShape(10.dp))
+            .background(colors.web.secondary)
+            .padding(horizontal = 16.dp, vertical = 12.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         for (block in turn.blocks) {
             when (block) {
-                is ContentBlock.Text -> if (block.text.isNotBlank()) MarkdownContent(block.text)
+                is ContentBlock.Text -> if (block.text.isNotBlank()) {
+                    Text(block.text.trim(), fontSize = 14.sp, lineHeight = 21.sp, color = colors.web.secondaryForeground)
+                }
                 is ContentBlock.Image -> InlineImage(block.image, null)
                 is ContentBlock.ImageGeneration ->
                     if (block.image != null) InlineImage(block.image, block.revisedPrompt)
