@@ -38,7 +38,7 @@ server.
 The build currently pins Gradle 8.14.3, Android Gradle Plugin 8.11.0, Kotlin
 2.0.21, Compose BOM 2024.12.01, Ktor 3.0.3, and Hilt 2.52.
 
-The application supports Android 12 and later (`minSdk 31`) and targets API 36.
+The application supports Android 11 and later (`minSdk 30`) and targets API 36.
 
 ## Build and test
 

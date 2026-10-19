@@ -36,7 +36,7 @@ android {
         // Personal fork: own id so it installs alongside the upstream build
         // (a different signing key can't upgrade app.codeg.android in place).
         applicationId = "app.codeg.android.mine"
-        minSdk = 31
+        minSdk = 30
         targetSdk = 36
         versionCode = 2
         versionName = "1.0.1"
