@@ -25,6 +25,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import app.codeg.android.core.designsystem.theme.CodegTheme
 import app.codeg.android.core.designsystem.theme.PillShape
+import app.codeg.android.core.designsystem.theme.withOpacity
 
 /**
  * A labelled text field in the web `Input` look: `--input` wash and stroke,
@@ -94,8 +95,8 @@ private fun fieldColors(): TextFieldColors {
     val colors = CodegTheme.colors
     val web = colors.web
     return OutlinedTextFieldDefaults.colors(
-        focusedContainerColor = web.input.copy(alpha = 0.30f),
-        unfocusedContainerColor = web.input.copy(alpha = 0.30f),
+        focusedContainerColor = web.input.withOpacity(0.30f),
+        unfocusedContainerColor = web.input.withOpacity(0.30f),
         focusedBorderColor = web.ring,
         unfocusedBorderColor = web.input,
         focusedLabelColor = colors.textPrimary,

@@ -62,6 +62,7 @@ import app.codeg.android.core.designsystem.diff.DiffView
 import app.codeg.android.core.designsystem.diff.UnifiedDiff
 import app.codeg.android.core.designsystem.markdown.MarkdownContent
 import app.codeg.android.core.designsystem.theme.CodegTheme
+import app.codeg.android.core.designsystem.theme.withOpacity
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
@@ -87,7 +88,7 @@ fun ToolCallCard(vm: ToolCallVM, modifier: Modifier = Modifier, nested: Boolean 
         modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(8.dp))
-            .border(1.dp, colors.surfaceStroke.copy(alpha = if (nested) 0f else 0.6f), RoundedCornerShape(8.dp)),
+            .border(1.dp, colors.surfaceStroke.withOpacity(if (nested) 0f else 0.6f), RoundedCornerShape(8.dp)),
     ) {
         Row(
             Modifier
@@ -276,7 +277,7 @@ fun ToolGroupCard(items: List<ToolCallVM>, modifier: Modifier = Modifier, stream
         modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(8.dp))
-            .border(1.dp, colors.surfaceStroke.copy(alpha = 0.6f), RoundedCornerShape(8.dp)),
+            .border(1.dp, colors.surfaceStroke.withOpacity(0.6f), RoundedCornerShape(8.dp)),
     ) {
         Row(
             Modifier

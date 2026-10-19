@@ -29,6 +29,12 @@ data class CodegColors(
 )
 
 /**
+ * Tailwind's opacity modifier (`bg-input/30`): scales the colour's own alpha,
+ * which matters for dark-mode tokens such as `--input` (white at 15%).
+ */
+fun Color.withOpacity(fraction: Float): Color = copy(alpha = alpha * fraction)
+
+/**
  * Map the web tokens onto the app's semantic slots: page = `--background`,
  * surfaces = `--card`, strokes = `--border`, code/inset = `--muted`, text =
  * `--foreground` / `--muted-foreground`, accent = `--primary`, soft accent

@@ -67,6 +67,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.codeg.android.R
 import app.codeg.android.core.designsystem.component.CodegSegmented
 import app.codeg.android.core.designsystem.component.SettingsIconBadge
+import app.codeg.android.core.designsystem.theme.PillShape
 import app.codeg.android.core.designsystem.theme.WebThemePreset
 import app.codeg.android.core.designsystem.theme.CodegTheme
 import app.codeg.android.core.datastore.ThemeMode
@@ -222,7 +223,7 @@ private fun AppearanceSettings(viewModel: SettingsViewModel) {
         Column(Modifier.fillMaxWidth().webSurface(RoundedCornerShape(CodegTheme.dimens.radiusLg)).padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
             Text(stringResource(R.string.settings_preview), fontSize = 13.sp, color = colors.textTertiary)
             Text(stringResource(R.string.settings_accent_preview_caption), fontSize = 14.sp, color = colors.textPrimary)
-            Box(Modifier.clip(RoundedCornerShape(8.dp)).background(colors.accent).padding(horizontal = 16.dp, vertical = 8.dp)) {
+            Box(Modifier.clip(PillShape).background(colors.accent).padding(horizontal = 16.dp, vertical = 8.dp)) {
                 Text(stringResource(R.string.settings_accent_button), color = colors.onAccent, fontWeight = FontWeight.SemiBold)
             }
         }

@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.codeg.android.core.designsystem.theme.CodegTheme
 import app.codeg.android.core.designsystem.theme.PillShape
+import app.codeg.android.core.designsystem.theme.withOpacity
 
 /**
  * Full-width primary button, matching the web `Button` (default variant):
@@ -110,7 +111,7 @@ fun CodegSegmented(
             val selected = index == selectedIndex
             val fill = when {
                 !selected -> Color.Transparent
-                colors.isDark -> web.input.copy(alpha = 0.30f)
+                colors.isDark -> web.input.withOpacity(0.30f)
                 else -> web.background
             }
             Box(

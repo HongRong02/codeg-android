@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.codeg.android.core.designsystem.component.CodeBlock
 import app.codeg.android.core.designsystem.theme.CodegTheme
+import app.codeg.android.core.designsystem.theme.withOpacity
 
 /**
  * Block-level Markdown for assistant text — the Compose port of iOS
@@ -142,7 +143,7 @@ private fun MarkdownTable(table: MarkdownBlock.Table, modifier: Modifier = Modif
             table.rows.forEachIndexed { idx, cells ->
                 TableRow(cells, isHeader = false)
                 if (idx < table.rows.size - 1) {
-                    Box(Modifier.fillMaxWidth().height(0.5.dp).background(colors.hairline.copy(alpha = 0.5f)))
+                    Box(Modifier.fillMaxWidth().height(0.5.dp).background(colors.hairline.withOpacity(0.5f)))
                 }
             }
         }
