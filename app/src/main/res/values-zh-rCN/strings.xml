@@ -217,10 +217,10 @@
 
     <!-- ===== Settings · About / Appearance ===== -->
     <string name="settings_theme">主题</string>
-    <string name="settings_accent">强调色</string>
+    <string name="settings_accent">主题色</string>
     <string name="settings_preview">预览</string>
-    <string name="settings_accent_preview_caption">强调色会为按钮、链接和实时指示器着色。</string>
-    <string name="settings_accent_button">强调色按钮</string>
+    <string name="settings_accent_preview_caption">与 Codeg 网页端的主题色一致。</string>
+    <string name="settings_accent_button">主按钮</string>
     <string name="settings_version">版本 %1$s</string>
     <string name="settings_server">服务器：%1$s</string>
     <string name="settings_codeg_version">codeg %1$s</string>

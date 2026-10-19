@@ -22,14 +22,14 @@ val LocalCodegColors = staticCompositionLocalOf<CodegColors> {
 val LocalCodegDimens = staticCompositionLocalOf { CodegDimens() }
 
 /**
- * Root theme. Resolves the active appearance (light/dark/system) + accent into a
+ * Root theme. Resolves the active appearance (light/dark/system) + web theme preset into a
  * [CodegColors] set (exposed via `LocalCodegColors` / the [CodegTheme] accessor)
  * and a Material3 [MaterialTheme] so stock M3 components inherit the same palette.
  */
 @Composable
 fun CodegTheme(
     themeMode: ThemeMode = ThemeMode.SYSTEM,
-    accentId: String = AccentPalette.DEFAULT.id,
+    themeId: String = WebThemePreset.DEFAULT.id,
     content: @Composable () -> Unit,
 ) {
     val isDark = when (themeMode) {
@@ -37,8 +37,8 @@ fun CodegTheme(
         ThemeMode.LIGHT -> false
         ThemeMode.SYSTEM -> isSystemInDarkTheme()
     }
-    val palette = AccentPalette.from(accentId)
-    val colors = remember(isDark, palette) { codegColors(isDark, palette) }
+    val preset = WebThemePreset.from(themeId)
+    val colors = remember(isDark, preset) { codegColors(isDark, preset) }
     val material = remember(colors) { colors.toMaterialScheme() }
 
     // Drive the system bar icon contrast from the *resolved* appearance rather than the

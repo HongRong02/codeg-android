@@ -15,9 +15,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import app.codeg.android.core.designsystem.theme.CodegTheme
 
-/**
- * A 0.75dp hairline border (iOS `hairlineBorder`). Defaults to the surface stroke.
- */
+/** A 1dp `--border` stroke (the web's `border`). Defaults to the surface stroke. */
 @Composable
 fun Modifier.hairlineBorder(
     shape: Shape,
@@ -26,10 +24,9 @@ fun Modifier.hairlineBorder(
 ): Modifier = this.border(width, color, shape)
 
 /**
- * The frosted "glass" card surface (iOS `GlassCard`): rounded (20dp), a
- * translucent elevated fill that lets the background glow bleed through, and a
- * hairline stroke. True backdrop blur (Haze) can be layered in later; the
- * translucent fill is the API-safe approximation for now.
+ * A card surface, matching the web `Card`: opaque `--card` fill, 1dp
+ * `--border` stroke, rounded-xl corners. (Kept under its original name so the
+ * screens built on it didn't need touching.)
  */
 @Composable
 fun GlassCard(
@@ -43,7 +40,7 @@ fun GlassCard(
     Column(
         modifier
             .clip(shape)
-            .background(colors.bgElevated.copy(alpha = if (colors.isDark) 0.60f else 0.85f))
+            .background(colors.bgElevated)
             .hairlineBorder(shape, colors.surfaceStroke)
             .padding(padding),
         content = content,
@@ -51,8 +48,8 @@ fun GlassCard(
 }
 
 /**
- * A single glass row (iOS `GlassRow`): 14dp radius, used for list rows. Supports
- * a selected wash (accent tint + accent stroke).
+ * A list row surface: rounded-lg card with a 1dp border. Selected rows use the
+ * web's `--accent` wash, like the active item in the web sidebar.
  */
 @Composable
 fun GlassRow(
@@ -62,9 +59,8 @@ fun GlassRow(
 ) {
     val colors = CodegTheme.colors
     val shape = RoundedCornerShape(CodegTheme.dimens.radiusMd)
-    val fill = if (selected) colors.accent.copy(alpha = 0.22f)
-    else colors.bgElevated.copy(alpha = if (colors.isDark) 0.55f else 0.85f)
-    val stroke = if (selected) colors.accent.copy(alpha = 0.45f) else colors.surfaceStroke
+    val fill = if (selected) colors.web.accent else colors.bgElevated
+    val stroke = colors.surfaceStroke
     Column(
         modifier
             .clip(shape)

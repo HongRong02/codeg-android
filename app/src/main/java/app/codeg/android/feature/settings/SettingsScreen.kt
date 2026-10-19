@@ -8,6 +8,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
@@ -65,7 +67,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.codeg.android.R
 import app.codeg.android.core.designsystem.component.CodegSegmented
 import app.codeg.android.core.designsystem.component.SettingsIconBadge
-import app.codeg.android.core.designsystem.theme.AccentPalette
+import app.codeg.android.core.designsystem.theme.WebThemePreset
 import app.codeg.android.core.designsystem.theme.CodegTheme
 import app.codeg.android.core.datastore.ThemeMode
 import app.codeg.android.core.model.AgentType
@@ -182,6 +184,7 @@ private fun SettingsRoot(onSelect: (SettingsLeaf) -> Unit) {
 }
 
 @Composable
+@OptIn(ExperimentalLayoutApi::class)
 private fun AppearanceSettings(viewModel: SettingsViewModel) {
     val colors = CodegTheme.colors
     val settings by viewModel.settings.collectAsStateWithLifecycle()
@@ -197,13 +200,19 @@ private fun AppearanceSettings(viewModel: SettingsViewModel) {
         }
         Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
             Text(stringResource(R.string.settings_accent), fontSize = 13.sp, fontWeight = FontWeight.SemiBold, color = colors.textSecondary)
-            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                for (palette in AccentPalette.all) {
-                    val selected = settings.accentId == palette.id
+            FlowRow(
+                Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
+                for (preset in WebThemePreset.entries) {
+                    val selected = WebThemePreset.from(settings.accentId) == preset
+                    val swatch = preset.resolve(colors.isDark)
                     Box(
-                        Modifier.size(34.dp).clip(CircleShape).background(palette.resolve(colors.isDark))
-                            .border(if (selected) 3.dp else 0.dp, colors.textPrimary, CircleShape)
-                            .clickable { viewModel.setAccent(palette.id) },
+                        Modifier.size(34.dp).clip(CircleShape).background(swatch.primary)
+                            .border(1.dp, swatch.border, CircleShape)
+                            .then(if (selected) Modifier.border(3.dp, colors.web.ring, CircleShape) else Modifier)
+                            .clickable { viewModel.setAccent(preset.id) },
                     )
                 }
             }

@@ -30,7 +30,7 @@ import app.codeg.android.feature.server.ServerEditorScreen
 fun CodegApp(appViewModel: AppViewModel = hiltViewModel()) {
     val settings by appViewModel.settings.collectAsStateWithLifecycle()
 
-    CodegTheme(themeMode = settings.themeMode, accentId = settings.accentId) {
+    CodegTheme(themeMode = settings.themeMode, themeId = settings.accentId) {
         CodegBackground {
             val servers by appViewModel.servers.collectAsStateWithLifecycle()
             when (val list = servers) {

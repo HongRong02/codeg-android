@@ -20,13 +20,13 @@ enum class ThemeMode(val id: String) {
     }
 }
 
-/** App-wide appearance preferences. [accentId] maps to a design-system palette. */
+/** App-wide appearance preferences. [accentId] is a web theme preset id (`WebThemePreset`). */
 data class AppSettings(
     val themeMode: ThemeMode = ThemeMode.SYSTEM,
     val accentId: String = DEFAULT_ACCENT,
 ) {
     companion object {
-        const val DEFAULT_ACCENT = "orange"
+        const val DEFAULT_ACCENT = "neutral"
     }
 }
 

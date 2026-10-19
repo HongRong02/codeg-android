@@ -5,14 +5,13 @@ import androidx.compose.material3.Shapes
 import androidx.compose.ui.unit.dp
 
 /**
- * Material3 shape scale mapped onto the iOS radii (sm 10 / md 14 / lg 20 / xl 26).
- * iOS uses `.continuous` (squircle) corners; `RoundedCornerShape` is the closest
- * Compose equivalent.
+ * Material3 shape scale mapped onto the web UI's radii: `--radius` is 0.625rem
+ * (10px), with Tailwind's sm/md/lg/xl = radius-4 / radius-2 / radius / radius+4.
  */
 val CodegShapes = Shapes(
-    extraSmall = RoundedCornerShape(10.dp),
-    small = RoundedCornerShape(10.dp),
-    medium = RoundedCornerShape(14.dp),
-    large = RoundedCornerShape(20.dp),
-    extraLarge = RoundedCornerShape(26.dp),
+    extraSmall = RoundedCornerShape(6.dp),
+    small = RoundedCornerShape(8.dp),
+    medium = RoundedCornerShape(10.dp),
+    large = RoundedCornerShape(14.dp),
+    extraLarge = RoundedCornerShape(18.dp),
 )

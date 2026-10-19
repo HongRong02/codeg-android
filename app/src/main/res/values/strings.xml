@@ -217,10 +217,10 @@
 
     <!-- ===== Settings · About / Appearance ===== -->
     <string name="settings_theme">Theme</string>
-    <string name="settings_accent">Accent</string>
+    <string name="settings_accent">Theme color</string>
     <string name="settings_preview">Preview</string>
-    <string name="settings_accent_preview_caption">The accent tints buttons, links, and live indicators.</string>
-    <string name="settings_accent_button">Accent button</string>
+    <string name="settings_accent_preview_caption">Matches the theme colors of the Codeg web UI.</string>
+    <string name="settings_accent_button">Primary button</string>
     <string name="settings_version">Version %1$s</string>
     <string name="settings_server">Server: %1$s</string>
     <string name="settings_codeg_version">codeg %1$s</string>
