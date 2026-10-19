@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.codeg.android.R
 import app.codeg.android.core.designsystem.theme.CodegTheme
+import app.codeg.android.core.designsystem.component.webSurface
 
 private val SuccessGreen = Color(0xFF4CBC75)
 private val WarnAmber = Color(0xFFF0A030)
@@ -48,7 +49,7 @@ internal fun GitStatusStrip(
     val colors = CodegTheme.colors
     when {
         busy -> Row(
-            modifier.fillMaxWidth().clip(RoundedCornerShape(CodegTheme.dimens.radiusMd)).background(colors.bgElevated.copy(alpha = 0.6f)).padding(horizontal = 14.dp, vertical = 11.dp),
+            modifier.fillMaxWidth().webSurface(RoundedCornerShape(CodegTheme.dimens.radiusMd)).padding(horizontal = 14.dp, vertical = 11.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(10.dp),
         ) {

@@ -101,6 +101,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
+import app.codeg.android.core.designsystem.component.webSurface
 
 // region Visuals
 
@@ -197,7 +198,7 @@ fun ChatChannelsContent(viewModel: ChatChannelsViewModel = hiltViewModel()) {
                     Spacer(Modifier.height(8.dp))
                     Text(stringResource(R.string.cc_section_general), fontSize = 11.sp, fontWeight = FontWeight.SemiBold, color = colors.textTertiary, modifier = Modifier.padding(start = 4.dp, bottom = 6.dp))
                     Row(
-                        Modifier.fillMaxWidth().clip(RoundedCornerShape(14.dp)).background(colors.bgElevated.copy(alpha = 0.5f)).clickable { showGlobal = true }.padding(13.dp),
+                        Modifier.fillMaxWidth().webSurface(RoundedCornerShape(CodegTheme.dimens.radiusLg)).clickable { showGlobal = true }.padding(13.dp),
                         verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(13.dp),
                     ) {
                         Box(Modifier.size(40.dp).clip(RoundedCornerShape(11.dp)).background(colors.accent.copy(alpha = 0.16f)), contentAlignment = Alignment.Center) {
@@ -283,7 +284,7 @@ private fun ChannelRow(
     val colors = CodegTheme.colors
     val summary = remember(channel.configJson, channel.channelType) { ChannelConfig.parse(channel.configJson).summary(channel.channelType) }
     Row(
-        Modifier.fillMaxWidth().clip(RoundedCornerShape(14.dp)).background(colors.bgElevated.copy(alpha = 0.5f))
+        Modifier.fillMaxWidth().webSurface(RoundedCornerShape(CodegTheme.dimens.radiusLg))
             .combinedClickable(onClick = onOpen, onLongClick = onDelete).padding(12.dp),
         verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp),
     ) {
@@ -494,7 +495,7 @@ private fun DetailSection(title: String, content: @Composable () -> Unit) {
     val colors = CodegTheme.colors
     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
         Text(title, fontSize = 11.sp, fontWeight = FontWeight.SemiBold, color = colors.textTertiary, modifier = Modifier.padding(start = 4.dp))
-        Column(Modifier.fillMaxWidth().clip(RoundedCornerShape(14.dp)).background(colors.bgElevated.copy(alpha = 0.5f))) { content() }
+        Column(Modifier.fillMaxWidth().webSurface(RoundedCornerShape(CodegTheme.dimens.radiusLg))) { content() }
     }
 }
 

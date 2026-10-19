@@ -79,7 +79,7 @@ fun ComposeBar(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(colors.bgElevated.copy(alpha = 0.92f))
+                .background(colors.bgElevated)
                 .padding(horizontal = 10.dp, vertical = 8.dp),
             verticalAlignment = Alignment.Bottom,
             horizontalArrangement = Arrangement.spacedBy(6.dp),
@@ -111,7 +111,7 @@ fun ComposeBar(
                     .weight(1f)
                     .heightIn(min = 40.dp)
                     .background(colors.codeSurface, RoundedCornerShape(20.dp))
-                    .border(0.5.dp, colors.surfaceStroke, RoundedCornerShape(20.dp))
+                    .border(1.dp, colors.surfaceStroke, RoundedCornerShape(20.dp))
                     .padding(horizontal = 14.dp, vertical = 9.dp),
                 contentAlignment = Alignment.CenterStart,
             ) {

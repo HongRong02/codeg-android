@@ -75,6 +75,7 @@ import app.codeg.android.core.designsystem.theme.CodegTheme
 import app.codeg.android.core.model.AgentSkillItem
 import app.codeg.android.core.model.AgentType
 import kotlinx.coroutines.launch
+import app.codeg.android.core.designsystem.component.webSurface
 
 /** Editor target: a new skill, or an existing one to edit/view. */
 private sealed interface SkillEditTarget {
@@ -243,7 +244,7 @@ private fun SkillRow(skill: AgentSkillItem, onClick: () -> Unit, onDelete: () ->
     val colors = CodegTheme.colors
     val isDir = skill.layout == "skill_directory"
     Column(
-        Modifier.fillMaxWidth().clip(RoundedCornerShape(14.dp)).background(colors.bgElevated.copy(alpha = 0.5f))
+        Modifier.fillMaxWidth().webSurface(RoundedCornerShape(CodegTheme.dimens.radiusLg))
             .combinedClickable(onClick = onClick, onLongClick = { if (!skill.readOnly) onDelete() }).padding(14.dp),
         verticalArrangement = Arrangement.spacedBy(5.dp),
     ) {

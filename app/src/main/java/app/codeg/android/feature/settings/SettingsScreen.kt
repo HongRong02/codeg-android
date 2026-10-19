@@ -71,6 +71,7 @@ import app.codeg.android.core.designsystem.theme.WebThemePreset
 import app.codeg.android.core.designsystem.theme.CodegTheme
 import app.codeg.android.core.datastore.ThemeMode
 import app.codeg.android.core.model.AgentType
+import app.codeg.android.core.designsystem.component.webSurface
 
 private enum class SettingsLeaf(@StringRes val titleRes: Int, val icon: ImageVector, @StringRes val groupRes: Int, val implemented: Boolean) {
     APPEARANCE(R.string.settings_leaf_appearance, Icons.Rounded.Brush, R.string.settings_group_personalization, true),
@@ -153,7 +154,7 @@ private fun SettingsRoot(onSelect: (SettingsLeaf) -> Unit) {
         for (group in SettingsLeaf.entries.map { it.groupRes }.distinct()) {
             Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
                 Text(stringResource(group), style = MaterialTheme.typography.labelLarge, color = colors.textTertiary, modifier = Modifier.padding(start = 12.dp, bottom = 4.dp))
-                Column(Modifier.fillMaxWidth().clip(RoundedCornerShape(14.dp)).background(colors.bgElevated.copy(alpha = 0.5f))) {
+                Column(Modifier.fillMaxWidth().webSurface(RoundedCornerShape(CodegTheme.dimens.radiusLg))) {
                     val leaves = SettingsLeaf.entries.filter { it.groupRes == group }
                     leaves.forEachIndexed { index, l ->
                         ListItem(
@@ -218,7 +219,7 @@ private fun AppearanceSettings(viewModel: SettingsViewModel) {
             }
         }
         // Live preview.
-        Column(Modifier.fillMaxWidth().clip(RoundedCornerShape(14.dp)).background(colors.bgElevated.copy(alpha = 0.6f)).padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        Column(Modifier.fillMaxWidth().webSurface(RoundedCornerShape(CodegTheme.dimens.radiusLg)).padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
             Text(stringResource(R.string.settings_preview), fontSize = 13.sp, color = colors.textTertiary)
             Text(stringResource(R.string.settings_accent_preview_caption), fontSize = 14.sp, color = colors.textPrimary)
             Box(Modifier.clip(RoundedCornerShape(10.dp)).background(colors.accent).padding(horizontal = 16.dp, vertical = 8.dp)) {

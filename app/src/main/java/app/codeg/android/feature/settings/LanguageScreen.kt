@@ -43,6 +43,7 @@ import app.codeg.android.R
 import app.codeg.android.core.common.AppLanguage
 import app.codeg.android.core.common.LocaleManager
 import app.codeg.android.core.designsystem.theme.CodegTheme
+import app.codeg.android.core.designsystem.component.webSurface
 
 /**
  * App display language (System / English / 中文). Purely device-local; persisted
@@ -63,7 +64,7 @@ fun LanguageContent() {
             stringResource(R.string.language_interface_description),
             fontSize = 13.sp, color = colors.textTertiary, modifier = Modifier.padding(bottom = 8.dp, start = 4.dp),
         )
-        Column(Modifier.fillMaxWidth().clip(RoundedCornerShape(14.dp)).background(colors.bgElevated.copy(alpha = 0.5f))) {
+        Column(Modifier.fillMaxWidth().webSurface(RoundedCornerShape(CodegTheme.dimens.radiusLg))) {
             AppLanguage.entries.forEachIndexed { index, lang ->
                 val isSelected = lang == selected
                 ListItem(

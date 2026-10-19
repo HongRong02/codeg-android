@@ -341,7 +341,7 @@ fun PlainTextBlock(text: String) {
             .fillMaxWidth()
             .clip(RoundedCornerShape(8.dp))
             .background(colors.codeSurface)
-            .border(0.5.dp, colors.hairline, RoundedCornerShape(8.dp))
+            .border(1.dp, colors.hairline, RoundedCornerShape(8.dp))
             .horizontalScroll(rememberScrollState())
             .padding(horizontal = 12.dp, vertical = 10.dp),
     ) {
@@ -415,7 +415,7 @@ fun FileBodyView(file: ReadOutputFormat.File, collapsedLineLimit: Int = 60) {
             .fillMaxWidth()
             .clip(RoundedCornerShape(8.dp))
             .background(colors.codeSurface)
-            .border(0.5.dp, colors.hairline, RoundedCornerShape(8.dp)),
+            .border(1.dp, colors.hairline, RoundedCornerShape(8.dp)),
     ) {
         Row(
             Modifier.fillMaxWidth().padding(start = 10.dp, end = 4.dp, top = 2.dp, bottom = 2.dp),

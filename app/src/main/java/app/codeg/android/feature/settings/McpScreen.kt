@@ -63,6 +63,7 @@ import app.codeg.android.core.designsystem.component.LoadingView
 import app.codeg.android.core.designsystem.theme.CodegTheme
 import app.codeg.android.core.model.AgentType
 import app.codeg.android.core.model.LocalMcpServer
+import app.codeg.android.core.designsystem.component.webSurface
 
 private const val SPEC_TEMPLATE = "{\n  \"type\": \"stdio\",\n  \"command\": \"\",\n  \"args\": []\n}"
 
@@ -111,7 +112,7 @@ private fun McpRow(s: LocalMcpServer, onEdit: () -> Unit, onDelete: () -> Unit) 
     var menu by remember { mutableStateOf(false) }
     Box {
         Column(
-            Modifier.fillMaxWidth().clip(RoundedCornerShape(12.dp)).background(colors.bgElevated.copy(alpha = 0.5f))
+            Modifier.fillMaxWidth().webSurface(RoundedCornerShape(CodegTheme.dimens.radiusMd))
                 .combinedClickable(onClick = onEdit, onLongClick = { menu = true }).padding(14.dp),
             verticalArrangement = Arrangement.spacedBy(3.dp),
         ) {

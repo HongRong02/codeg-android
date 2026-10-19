@@ -64,6 +64,7 @@ import app.codeg.android.core.designsystem.component.CodegTextField
 import app.codeg.android.core.designsystem.theme.CodegTheme
 import app.codeg.android.core.model.ChatEventCatalog
 import app.codeg.android.core.model.ChatLanguageCatalog
+import app.codeg.android.core.designsystem.component.webSurface
 
 @OptIn(ExperimentalLayoutApi::class, ExperimentalMaterial3Api::class)
 @Composable
@@ -112,7 +113,7 @@ fun ChatGlobalSettingsDialog(onDismiss: () -> Unit, viewModel: ChatGlobalSetting
 
                     // Event filter.
                     GlobalSection(stringResource(R.string.chatglobal_forwarded_events_title), stringResource(R.string.chatglobal_forwarded_events_subtitle)) {
-                        Column(Modifier.fillMaxWidth().clip(RoundedCornerShape(12.dp)).background(colors.bgElevated.copy(alpha = 0.5f))) {
+                        Column(Modifier.fillMaxWidth().webSurface(RoundedCornerShape(CodegTheme.dimens.radiusMd))) {
                             ChatEventCatalog.all.forEachIndexed { index, item ->
                                 if (index > 0) HorizontalDivider(thickness = Dp.Hairline, color = colors.textPrimary.copy(alpha = 0.06f))
                                 Row(Modifier.fillMaxWidth().padding(horizontal = 14.dp, vertical = 11.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -130,7 +131,7 @@ fun ChatGlobalSettingsDialog(onDismiss: () -> Unit, viewModel: ChatGlobalSetting
                     GlobalSection(stringResource(R.string.chatglobal_webhooks_title), stringResource(R.string.chatglobal_webhooks_subtitle)) {
                         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                             ui.webhooks.forEachIndexed { index, hook ->
-                                Row(Modifier.fillMaxWidth().clip(RoundedCornerShape(12.dp)).background(colors.bgElevated.copy(alpha = 0.5f)).padding(start = 12.dp, top = 4.dp, bottom = 4.dp, end = 4.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                                Row(Modifier.fillMaxWidth().webSurface(RoundedCornerShape(CodegTheme.dimens.radiusMd)).padding(start = 12.dp, top = 4.dp, bottom = 4.dp, end = 4.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                                     Text(hook.url, fontSize = 12.sp, fontFamily = FontFamily.Monospace, color = colors.textPrimary, modifier = Modifier.weight(1f), maxLines = 1, overflow = TextOverflow.Ellipsis)
                                     Switch(checked = hook.enabled, onCheckedChange = { viewModel.setWebhookEnabled(index, it) }, colors = SwitchDefaults.colors(checkedTrackColor = colors.accent, checkedThumbColor = colors.onAccent))
                                     IconButton(onClick = { viewModel.removeWebhook(index) }) {

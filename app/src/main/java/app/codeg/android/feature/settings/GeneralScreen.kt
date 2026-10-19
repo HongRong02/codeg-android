@@ -39,6 +39,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.codeg.android.R
 import app.codeg.android.core.designsystem.theme.CodegTheme
+import app.codeg.android.core.designsystem.component.webSurface
 
 @Composable
 fun GeneralContent(viewModel: GeneralViewModel = hiltViewModel()) {
@@ -75,7 +76,7 @@ private fun Section(title: String, content: @Composable () -> Unit) {
     val colors = CodegTheme.colors
     Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
         Text(title, style = MaterialTheme.typography.labelLarge, color = colors.textTertiary, modifier = Modifier.padding(start = 12.dp, bottom = 4.dp))
-        Column(Modifier.fillMaxWidth().clip(RoundedCornerShape(14.dp)).background(colors.bgElevated.copy(alpha = 0.5f))) { content() }
+        Column(Modifier.fillMaxWidth().webSurface(RoundedCornerShape(CodegTheme.dimens.radiusLg))) { content() }
     }
 }
 

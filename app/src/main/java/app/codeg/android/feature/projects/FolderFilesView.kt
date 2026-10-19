@@ -164,7 +164,7 @@ private fun FileContent(content: String) {
     }
     val gutterWidth = (lines.size.toString().length * 8 + 12).dp
     LazyColumn(
-        Modifier.fillMaxSize().padding(horizontal = 12.dp).clip(RoundedCornerShape(10.dp)).background(colors.codeSurface).border(0.5.dp, colors.hairline, RoundedCornerShape(10.dp)),
+        Modifier.fillMaxSize().padding(horizontal = 12.dp).clip(RoundedCornerShape(10.dp)).background(colors.codeSurface).border(1.dp, colors.hairline, RoundedCornerShape(10.dp)),
     ) {
         items(lines.size) { i ->
             Row(Modifier.fillMaxWidth().horizontalScroll(rememberScrollState())) {

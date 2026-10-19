@@ -61,8 +61,8 @@ fun PermissionRequestCard(
         modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(14.dp))
-            .background(colors.bgElevated.copy(alpha = 0.96f))
-            .border(0.5.dp, colors.surfaceStroke, RoundedCornerShape(14.dp))
+            .background(colors.bgElevated)
+            .border(1.dp, colors.surfaceStroke, RoundedCornerShape(14.dp))
             .padding(14.dp),
         verticalArrangement = Arrangement.spacedBy(10.dp),
     ) {

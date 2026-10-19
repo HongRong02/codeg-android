@@ -82,8 +82,8 @@ fun ToolCallCard(vm: ToolCallVM, modifier: Modifier = Modifier, nested: Boolean 
         modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(10.dp))
-            .background(if (nested) Color.Transparent else colors.bgElevated.copy(alpha = 0.5f))
-            .border(0.5.dp, colors.hairline, RoundedCornerShape(10.dp)),
+            .background(if (nested) Color.Transparent else colors.bgElevated)
+            .border(1.dp, colors.hairline, RoundedCornerShape(10.dp)),
     ) {
         Row(
             Modifier
@@ -272,8 +272,8 @@ fun ToolGroupCard(items: List<ToolCallVM>, modifier: Modifier = Modifier, stream
         modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(10.dp))
-            .background(colors.bgElevated.copy(alpha = 0.5f))
-            .border(0.5.dp, colors.hairline, RoundedCornerShape(10.dp)),
+            .background(colors.bgElevated)
+            .border(1.dp, colors.hairline, RoundedCornerShape(10.dp)),
     ) {
         Row(
             Modifier

@@ -42,6 +42,7 @@ import app.codeg.android.core.designsystem.component.EmptyState
 import app.codeg.android.core.designsystem.component.LoadingView
 import app.codeg.android.core.designsystem.theme.CodegTheme
 import app.codeg.android.core.model.QuickMessage
+import app.codeg.android.core.designsystem.component.webSurface
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -91,7 +92,7 @@ private fun MessageRow(msg: QuickMessage, onEdit: () -> Unit, onDelete: () -> Un
     var menu by remember { mutableStateOf(false) }
     Box {
         Column(
-            Modifier.fillMaxWidth().clip(RoundedCornerShape(12.dp)).background(colors.bgElevated.copy(alpha = 0.5f))
+            Modifier.fillMaxWidth().webSurface(RoundedCornerShape(CodegTheme.dimens.radiusMd))
                 .combinedClickable(onClick = onEdit, onLongClick = { menu = true }).padding(14.dp),
             verticalArrangement = Arrangement.spacedBy(3.dp),
         ) {

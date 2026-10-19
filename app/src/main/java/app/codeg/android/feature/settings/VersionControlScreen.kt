@@ -32,6 +32,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.codeg.android.R
 import app.codeg.android.core.designsystem.component.CodegTextField
 import app.codeg.android.core.designsystem.theme.CodegTheme
+import app.codeg.android.core.designsystem.component.webSurface
 
 private val Ok = androidx.compose.ui.graphics.Color(0xFF85D18F)
 
@@ -43,7 +44,7 @@ fun VersionControlContent(viewModel: VersionControlViewModel = hiltViewModel()) 
     Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(16.dp), verticalArrangement = Arrangement.spacedBy(20.dp)) {
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
             Text("Git", fontSize = 13.sp, fontWeight = FontWeight.SemiBold, color = colors.textSecondary)
-            Column(Modifier.fillMaxWidth().clip(RoundedCornerShape(12.dp)).background(colors.bgElevated.copy(alpha = 0.5f)).padding(14.dp), verticalArrangement = Arrangement.spacedBy(3.dp)) {
+            Column(Modifier.fillMaxWidth().webSurface(RoundedCornerShape(CodegTheme.dimens.radiusMd)).padding(14.dp), verticalArrangement = Arrangement.spacedBy(3.dp)) {
                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     Box(Modifier.size(8.dp).clip(RoundedCornerShape(50)).background(if (ui.detect.installed) Ok else colors.danger))
                     Text(if (ui.detect.installed) stringResource(R.string.vcs_git_installed) else stringResource(R.string.vcs_git_not_found), fontSize = 14.sp, color = colors.textPrimary)
@@ -69,7 +70,7 @@ fun VersionControlContent(viewModel: VersionControlViewModel = hiltViewModel()) 
             if (ui.accounts.isEmpty()) {
                 Text(stringResource(R.string.vcs_no_linked_accounts), fontSize = 13.sp, color = colors.textTertiary)
             } else {
-                Column(Modifier.fillMaxWidth().clip(RoundedCornerShape(12.dp)).background(colors.bgElevated.copy(alpha = 0.5f))) {
+                Column(Modifier.fillMaxWidth().webSurface(RoundedCornerShape(CodegTheme.dimens.radiusMd))) {
                     for (acc in ui.accounts) {
                         Row(Modifier.fillMaxWidth().padding(14.dp), verticalAlignment = Alignment.CenterVertically) {
                             Column(Modifier.weight(1f)) {

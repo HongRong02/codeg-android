@@ -24,7 +24,21 @@ fun Modifier.hairlineBorder(
 ): Modifier = this.border(width, color, shape)
 
 /**
- * A card surface, matching the web `Card`: opaque `--card` fill, rounded-2xl
+ * The web `Card` surface as a modifier: clipped to [shape], opaque `--card`
+ * fill and a 1dp `foreground/10` ring. For grouped settings sections, inline
+ * panels and other blocks that sit directly on the page background.
+ */
+@Composable
+fun Modifier.webSurface(shape: Shape): Modifier {
+    val colors = CodegTheme.colors
+    return this
+        .clip(shape)
+        .background(colors.bgElevated)
+        .border(1.dp, colors.textPrimary.copy(alpha = 0.10f), shape)
+}
+
+/**
+ * A card surface, matching the web `Card`:opaque `--card` fill, rounded-2xl
  * corners and a 1dp `foreground/10` ring. (Kept under its original name so the
  * screens built on it didn't need touching.)
  */

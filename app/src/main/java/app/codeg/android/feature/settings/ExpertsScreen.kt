@@ -64,6 +64,7 @@ import app.codeg.android.core.model.AgentType
 import app.codeg.android.core.model.ExpertInstallStatus
 import app.codeg.android.core.model.ExpertLinkState
 import app.codeg.android.core.model.ExpertListItem
+import app.codeg.android.core.designsystem.component.webSurface
 
 @Composable
 fun ExpertsContent(viewModel: ExpertsViewModel = hiltViewModel()) {
@@ -117,7 +118,7 @@ fun ExpertsContent(viewModel: ExpertsViewModel = hiltViewModel()) {
 private fun ExpertRow(expert: ExpertListItem, onClick: () -> Unit) {
     val colors = CodegTheme.colors
     Row(
-        Modifier.fillMaxWidth().clip(RoundedCornerShape(14.dp)).background(colors.bgElevated.copy(alpha = 0.5f)).clickable { onClick() }.padding(13.dp),
+        Modifier.fillMaxWidth().webSurface(RoundedCornerShape(CodegTheme.dimens.radiusLg)).clickable { onClick() }.padding(13.dp),
         verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(13.dp),
     ) {
         ExpertIconTile(40.dp)
@@ -198,7 +199,7 @@ private fun ExpertDetailDialog(
                 // Per-agent link matrix.
                 Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                     Text(stringResource(R.string.experts_enable_for), fontSize = 11.sp, fontWeight = FontWeight.SemiBold, color = colors.textTertiary)
-                    Column(Modifier.fillMaxWidth().clip(RoundedCornerShape(14.dp)).background(colors.bgElevated.copy(alpha = 0.5f))) {
+                    Column(Modifier.fillMaxWidth().webSurface(RoundedCornerShape(CodegTheme.dimens.radiusLg))) {
                         when {
                             agents.isEmpty() -> Text(stringResource(R.string.experts_no_agents_available), fontSize = 13.sp, color = colors.textTertiary, modifier = Modifier.padding(16.dp))
                             detail.loading -> Row(Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
@@ -218,7 +219,7 @@ private fun ExpertDetailDialog(
                 if (detail.content.isNotBlank()) {
                     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                         Text(stringResource(R.string.experts_preview), fontSize = 11.sp, fontWeight = FontWeight.SemiBold, color = colors.textTertiary)
-                        Box(Modifier.fillMaxWidth().clip(RoundedCornerShape(14.dp)).background(colors.bgElevated.copy(alpha = 0.5f)).padding(14.dp)) {
+                        Box(Modifier.fillMaxWidth().webSurface(RoundedCornerShape(CodegTheme.dimens.radiusLg)).padding(14.dp)) {
                             MarkdownContent(stripFrontmatter(detail.content))
                         }
                     }
