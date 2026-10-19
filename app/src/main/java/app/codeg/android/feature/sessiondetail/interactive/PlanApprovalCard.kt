@@ -40,6 +40,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.codeg.android.R
 import app.codeg.android.core.designsystem.markdown.MarkdownContent
+import app.codeg.android.core.designsystem.theme.CodegSans
 import app.codeg.android.core.designsystem.theme.CodegTheme
 import app.codeg.android.core.model.PlanApprovalDecision
 
@@ -122,7 +123,7 @@ fun PlanApprovalCard(
                     value = feedback,
                     onValueChange = { feedback = it },
                     enabled = !submitting,
-                    textStyle = TextStyle(color = colors.textPrimary, fontSize = 13.sp),
+                    textStyle = TextStyle(color = colors.textPrimary, fontSize = 13.sp, fontFamily = CodegSans),
                     cursorBrush = SolidColor(colors.accent),
                     maxLines = 5,
                     modifier = Modifier.fillMaxWidth(),

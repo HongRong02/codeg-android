@@ -1,29 +1,36 @@
 package app.codeg.android.core.designsystem.component
 
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Visibility
 import androidx.compose.material.icons.rounded.VisibilityOff
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import app.codeg.android.core.designsystem.theme.CodegTheme
+import app.codeg.android.core.designsystem.theme.PillShape
 
-/** A labelled single-line text field themed to the app palette. */
+/**
+ * A labelled text field in the web `Input` look: `--input` wash and stroke,
+ * `--ring` stroke when focused, pill-shaped (rounded-xl when multi-line, like
+ * the web `Textarea`).
+ */
 @Composable
 fun CodegTextField(
     value: String,
@@ -42,9 +49,10 @@ fun CodegTextField(
         label = { Text(label) },
         placeholder = placeholder?.let { { Text(it) } },
         singleLine = singleLine,
-        textStyle = if (mono) TextStyle(fontFamily = FontFamily.Monospace) else TextStyle.Default,
+        textStyle = if (mono) LocalTextStyle.current.copy(fontFamily = FontFamily.Monospace) else LocalTextStyle.current,
         keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
         modifier = modifier.fillMaxWidth(),
+        shape = if (singleLine) PillShape else RoundedCornerShape(CodegTheme.dimens.radiusMd),
         colors = fieldColors(),
     )
 }
@@ -63,7 +71,7 @@ fun SecretField(
         onValueChange = onValueChange,
         label = { Text(label) },
         singleLine = true,
-        textStyle = TextStyle(fontFamily = FontFamily.Monospace),
+        textStyle = LocalTextStyle.current.copy(fontFamily = FontFamily.Monospace),
         visualTransformation = if (visible) VisualTransformation.None else PasswordVisualTransformation(),
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
         trailingIcon = {
@@ -76,17 +84,27 @@ fun SecretField(
             }
         },
         modifier = modifier.fillMaxWidth(),
+        shape = PillShape,
         colors = fieldColors(),
     )
 }
 
 @Composable
-private fun fieldColors() = OutlinedTextFieldDefaults.colors(
-    focusedBorderColor = CodegTheme.colors.accent,
-    unfocusedBorderColor = CodegTheme.colors.surfaceStroke,
-    focusedLabelColor = CodegTheme.colors.accent,
-    unfocusedLabelColor = CodegTheme.colors.textTertiary,
-    cursorColor = CodegTheme.colors.accent,
-    focusedTextColor = CodegTheme.colors.textPrimary,
-    unfocusedTextColor = CodegTheme.colors.textPrimary,
-)
+private fun fieldColors(): TextFieldColors {
+    val colors = CodegTheme.colors
+    val web = colors.web
+    return OutlinedTextFieldDefaults.colors(
+        focusedContainerColor = web.input.copy(alpha = 0.30f),
+        unfocusedContainerColor = web.input.copy(alpha = 0.30f),
+        focusedBorderColor = web.ring,
+        unfocusedBorderColor = web.input,
+        focusedLabelColor = colors.textPrimary,
+        unfocusedLabelColor = colors.textSecondary,
+        focusedPlaceholderColor = colors.textSecondary,
+        unfocusedPlaceholderColor = colors.textSecondary,
+        cursorColor = colors.textPrimary,
+        focusedTextColor = colors.textPrimary,
+        unfocusedTextColor = colors.textPrimary,
+        errorBorderColor = colors.danger,
+    )
+}

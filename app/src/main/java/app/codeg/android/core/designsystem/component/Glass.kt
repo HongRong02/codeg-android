@@ -24,8 +24,8 @@ fun Modifier.hairlineBorder(
 ): Modifier = this.border(width, color, shape)
 
 /**
- * A card surface, matching the web `Card`: opaque `--card` fill, 1dp
- * `--border` stroke, rounded-xl corners. (Kept under its original name so the
+ * A card surface, matching the web `Card`: opaque `--card` fill, rounded-2xl
+ * corners and a 1dp `foreground/10` ring. (Kept under its original name so the
  * screens built on it didn't need touching.)
  */
 @Composable
@@ -41,14 +41,14 @@ fun GlassCard(
         modifier
             .clip(shape)
             .background(colors.bgElevated)
-            .hairlineBorder(shape, colors.surfaceStroke)
+            .hairlineBorder(shape, colors.textPrimary.copy(alpha = 0.10f))
             .padding(padding),
         content = content,
     )
 }
 
 /**
- * A list row surface: rounded-lg card with a 1dp border. Selected rows use the
+ * A list row surface: rounded-xl card with a 1dp border. Selected rows use the
  * web's `--accent` wash, like the active item in the web sidebar.
  */
 @Composable

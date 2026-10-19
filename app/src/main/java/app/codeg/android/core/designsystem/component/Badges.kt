@@ -15,7 +15,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Folder
 import androidx.compose.runtime.Composable
@@ -37,82 +36,83 @@ import app.codeg.android.core.model.ConversationStatus
 
 private val Capsule = RoundedCornerShape(percent = 50)
 
-/** Conversation-status tint (iOS `ConversationStatus.tint`). */
+/** Conversation-status dot colour (web `STATUS_COLORS`: yellow-400 / blue-500 / green-500 / red-500). */
 @Composable
 fun statusColor(status: ConversationStatus): Color = when (status) {
-    ConversationStatus.IN_PROGRESS -> Color(0xFF6BC7F2)
-    ConversationStatus.PENDING_REVIEW -> Color(0xFFF5BD5C)
-    ConversationStatus.COMPLETED -> Color(0xFF85D18F)
-    ConversationStatus.CANCELLED, ConversationStatus.OTHER -> CodegTheme.colors.textTertiary
+    ConversationStatus.IN_PROGRESS -> Color(0xFFFACC15)
+    ConversationStatus.PENDING_REVIEW -> Color(0xFF3B82F6)
+    ConversationStatus.COMPLETED -> Color(0xFF22C55E)
+    ConversationStatus.CANCELLED -> Color(0xFFEF4444)
+    ConversationStatus.OTHER -> CodegTheme.colors.textTertiary
 }
 
-/** Short status label (iOS `ConversationStatus.label`). */
+/** Status label (web `STATUS_LABELS`). */
 fun statusLabel(status: ConversationStatus): String = when (status) {
-    ConversationStatus.IN_PROGRESS -> "Running"
+    ConversationStatus.IN_PROGRESS -> "In Progress"
     ConversationStatus.PENDING_REVIEW -> "Review"
-    ConversationStatus.COMPLETED -> "Done"
+    ConversationStatus.COMPLETED -> "Completed"
     ConversationStatus.CANCELLED -> "Cancelled"
     ConversationStatus.OTHER -> "—"
 }
 
-/** Circular agent avatar (iOS `AgentAvatar`): accent wash + thin accent ring. */
+/** Circular agent avatar: the brand icon on a `--muted` circle with a `--border` ring. */
 @Composable
 fun AgentAvatar(
     agent: AgentType,
     modifier: Modifier = Modifier,
     size: Dp = 36.dp,
 ) {
-    val accent = AgentVisuals.accent(agent)
+    val colors = CodegTheme.colors
     Box(
         modifier
             .size(size)
             .clip(CircleShape)
-            .background(accent.copy(alpha = 0.16f))
-            .border(1.dp, accent.copy(alpha = 0.32f), CircleShape),
+            .background(colors.web.muted)
+            .border(1.dp, colors.surfaceStroke, CircleShape),
         contentAlignment = Alignment.Center,
     ) {
         AgentIcon(agent, size = size * 0.56f)
     }
 }
 
-/** Agent type pill: neutral monogram + short name in the agent accent. */
+/** Agent type pill, the web `Badge` secondary variant: brand icon + short name. */
 @Composable
 fun AgentBadge(agent: AgentType, modifier: Modifier = Modifier) {
-    val accent = AgentVisuals.accent(agent)
+    val web = CodegTheme.colors.web
     Row(
         modifier
             .clip(Capsule)
-            .background(accent.copy(alpha = 0.14f))
-            .padding(horizontal = 8.dp, vertical = 4.dp),
+            .background(web.secondary)
+            .padding(horizontal = 8.dp, vertical = 2.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        AgentIcon(agent, size = 11.dp)
+        AgentIcon(agent, size = 12.dp)
         Text(
             text = "  ${agent.shortName}",
-            color = accent,
-            fontSize = 11.sp,
-            fontWeight = FontWeight.SemiBold,
+            color = web.secondaryForeground,
+            fontSize = 12.sp,
+            fontWeight = FontWeight.Medium,
         )
     }
 }
 
-/** Status pill (iOS `StatusBadge`): coloured dot + label. */
+/** Status pill, the web `Badge` outline variant: status-coloured dot + label. */
 @Composable
 fun StatusBadge(status: ConversationStatus, modifier: Modifier = Modifier) {
-    val tint = statusColor(status)
+    val colors = CodegTheme.colors
     Row(
         modifier
             .clip(Capsule)
-            .background(tint.copy(alpha = 0.14f))
-            .padding(horizontal = 8.dp, vertical = 4.dp),
+            .border(1.dp, colors.surfaceStroke, Capsule)
+            .padding(horizontal = 8.dp, vertical = 2.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Box(Modifier.size(6.dp).clip(CircleShape).background(tint))
+        Box(Modifier.size(6.dp).clip(CircleShape).background(statusColor(status)))
         Text(
             text = "  ${statusLabel(status)}",
-            color = tint,
-            fontSize = 11.sp,
-            fontWeight = FontWeight.SemiBold,
+            color = colors.textPrimary,
+            fontSize = 12.sp,
+            fontWeight = FontWeight.Medium,
         )
     }
 }
@@ -143,26 +143,24 @@ fun SectionBadgeIcon(
 }
 
 /**
- * iOS-Settings-style icon badge (`SettingsIconBadge`): a glyph in [onAccent]
- * centred on an accent-filled rounded square. Used as the leading affordance on
- * grouped Settings rows so they read as a polished, tappable list.
+ * Leading icon tile for Settings rows: a glyph on a `--muted` rounded-md square,
+ * like the icons in the web settings navigation. Pass [tint] to colour it.
  */
 @Composable
 fun SettingsIconBadge(
     icon: ImageVector,
     modifier: Modifier = Modifier,
-    tint: Color = CodegTheme.colors.accent,
+    tint: Color = CodegTheme.colors.textPrimary,
     size: Dp = 28.dp,
 ) {
-    val onTint = CodegTheme.colors.onAccent
     Box(
         modifier
             .size(size)
-            .clip(RoundedCornerShape(7.dp))
-            .background(tint),
+            .clip(RoundedCornerShape(CodegTheme.dimens.radiusSm))
+            .background(CodegTheme.colors.web.muted),
         contentAlignment = Alignment.Center,
     ) {
-        Icon(icon, contentDescription = null, tint = onTint, modifier = Modifier.size(size * 0.58f))
+        Icon(icon, contentDescription = null, tint = tint, modifier = Modifier.size(size * 0.55f))
     }
 }
 
@@ -190,25 +188,26 @@ fun FolderBadge(
     }
 }
 
-/** Small count pill (iOS `CountBadge`). */
+/** Small count pill (web `Badge` secondary variant). */
 @Composable
 fun CountBadge(count: Int, modifier: Modifier = Modifier) {
+    val web = CodegTheme.colors.web
     Text(
         text = count.toString(),
-        color = CodegTheme.colors.textTertiary,
+        color = web.secondaryForeground,
         fontSize = 11.sp,
-        fontWeight = FontWeight.Bold,
+        fontWeight = FontWeight.Medium,
         modifier = modifier
             .clip(Capsule)
-            .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.08f))
+            .background(web.secondary)
             .padding(horizontal = 6.dp, vertical = 1.dp),
     )
 }
 
-/** A pulsing "live" indicator (iOS `LivePulse`): accent dot + expanding ring. */
+/** A pulsing "live" indicator: the web's in-progress (yellow) dot + expanding ring. */
 @Composable
 fun LivePulse(modifier: Modifier = Modifier, dotSize: Dp = 8.dp) {
-    val accent = CodegTheme.colors.accent
+    val accent = statusColor(ConversationStatus.IN_PROGRESS)
     val transition = rememberInfiniteTransition(label = "live-pulse")
     val progress by transition.animateFloat(
         initialValue = 0f,

@@ -44,6 +44,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.codeg.android.R
+import app.codeg.android.core.designsystem.theme.CodegSans
 import app.codeg.android.core.designsystem.theme.CodegTheme
 import app.codeg.android.core.model.QuestionAnswer
 import app.codeg.android.core.model.QuestionAnswerItem
@@ -198,7 +199,7 @@ private fun QuestionBlock(
                 BasicTextField(
                     value = otherText,
                     onValueChange = onOtherText,
-                    textStyle = TextStyle(color = colors.textPrimary, fontSize = 13.sp),
+                    textStyle = TextStyle(color = colors.textPrimary, fontSize = 13.sp, fontFamily = CodegSans),
                     cursorBrush = SolidColor(colors.accent),
                     modifier = Modifier.fillMaxWidth(),
                 )
