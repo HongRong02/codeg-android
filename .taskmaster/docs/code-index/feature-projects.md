@@ -149,13 +149,6 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 179 | `private fun sortItems(items: List<DirectoryItem>): List<DirectoryItem>` |
 | 182 | `private fun formatBytes(bytes: Long): String` |
 
-## feature/projects/git/GitActionsMenu.kt
-
-| Line | Declaration |
-|---|---|
-| 21 | `@Composable fun GitActionsMenu(onSwitchBranch: () -> Unit, enabled: Boolean = true)` |
-| 22 |   `var expanded by remember` |
-
 ## feature/projects/GitChangeVisuals.kt
 
 | Line | Declaration |
@@ -321,3 +314,68 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 125 |   `val error: String?` |
 | 127 |   `val isBusy: Boolean get()` |
 | 128 |   `fun runningCount(folderId: Int): Int` |
+
+## feature/projects/git/ConflictListScreen.kt
+
+| Line | Declaration |
+|---|---|
+| 14 | `@Composable fun ConflictListScreen(vm: MergeOpsViewModel, client: CodegClient, path: String, branch: String)` |
+| 15 |   `val ui by vm.ui.collectAsStateWithLifecycle()` |
+| 16 |   `var pending by remember` |
+| 17 |   `var version by remember` |
+| 65 | `@Composable private fun versionLabel(value: String): String` |
+
+## feature/projects/git/GitActionsMenu.kt
+
+| Line | Declaration |
+|---|---|
+| 26 | `@Composable fun GitActionsMenu(onSwitchBranch: () -> Unit, enabled: Boolean = true)` |
+| 27 |   `val project: ProjectDetailViewModel` |
+| 28 |   `val projectUi by project.ui.collectAsStateWithLifecycle()` |
+| 29 |   `val client` |
+| 30 |   `val path` |
+| 31 |   `val mergeVm: MergeOpsViewModel` |
+| 32 |   `val mergeUi by mergeVm.ui.collectAsStateWithLifecycle()` |
+| 33 |   `var showMerge by remember(path)` |
+| 43 |   `var expanded by remember` |
+
+## feature/projects/git/MergeOpsSheet.kt
+
+| Line | Declaration |
+|---|---|
+| 17 | `@Composable fun MergeOpsSheet(vm: MergeOpsViewModel, client: CodegClient, path: String, branch: String?, onDismiss: () -> Unit)` |
+| 18 |   `val ui by vm.ui.collectAsStateWithLifecycle()` |
+| 19 |   `var action by remember` |
+| 20 |   `var target by remember` |
+| 21 |   `var mode by remember` |
+| 22 |   `var confirm by remember` |
+| 23 |   `var typed by remember` |
+| 75 | `@Composable internal fun operationLabel(value: String): String` |
+
+## feature/projects/git/MergeOpsViewModel.kt
+
+| Line | Declaration |
+|---|---|
+| 14 | `data class MergeOpsUi( val busy: Boolean = false, val ready: Boolean = false, val supported: Boolean = true, val branches: List<String> = emptyList(), val conflicts: List<String> = emptyList(), val active: Boolean = false, val operation: String = "merge", val file: String? = null, val versions: MergeVersions? = null, val error: String? = null, val completed: Boolean = false, )` |
+| 15 |   `val busy: Boolean` |
+| 16 |   `val ready: Boolean` |
+| 17 |   `val supported: Boolean` |
+| 18 |   `val branches: List<String>` |
+| 19 |   `val conflicts: List<String>` |
+| 20 |   `val active: Boolean` |
+| 21 |   `val operation: String` |
+| 22 |   `val file: String?` |
+| 23 |   `val versions: MergeVersions?` |
+| 24 |   `val error: String?` |
+| 25 |   `val completed: Boolean` |
+| 28 | `class MergeOpsViewModel : ViewModel()` |
+| 29 |   `private val state` |
+| 30 |   `val ui` |
+| 31 |   `private suspend fun detect(client: CodegClient, path: String)` |
+| 37 |   `private fun run(block: suspend () -> Unit)` |
+| 48 |   `fun refresh(client: CodegClient, path: String)` |
+| 53 |   `fun operation(value: String)` |
+| 54 |   `fun execute(client: CodegClient, path: String, action: String, target: String, mode: String)` |
+| 65 |   `fun versions(client: CodegClient, path: String, file: String)` |
+| 70 |   `fun resolve(client: CodegClient, path: String, ours: Boolean)` |
+| 77 |   `fun finish(client: CodegClient, path: String, abort: Boolean)` |

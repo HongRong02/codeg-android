@@ -660,6 +660,12 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 112 |   `enum class Priority` |
 | 114 |   `val normalizedPriority: Priority` |
 
+## core/model/MergeOps.kt
+
+| Line | Declaration |
+|---|---|
+| 6 | `fun mergeOperationActive(hasMergeHead: Boolean, conflicts: List<String>, wasActive: Boolean, operation: String): Boolean` |
+
 ## core/model/Message.kt
 
 | Line | Declaration |
@@ -882,31 +888,6 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 300 |   `val defaultModel: String?` |
 | 301 |   `val error: String?` |
 
-## core/model/wire/InstantSerializer.kt
-
-| Line | Declaration |
-|---|---|
-| 21 | `object Rfc3339` |
-| 22 |   `fun parse(raw: String): Instant?` |
-| 38 | `object InstantSerializer : KSerializer<Instant>` |
-| 39 |   `override val descriptor` |
-| 42 |   `override fun serialize(encoder: Encoder, value: Instant)` |
-| 46 |   `override fun deserialize(decoder: Decoder): Instant` |
-
-## core/model/wire/JsonExt.kt
-
-| Line | Declaration |
-|---|---|
-| 23 | `internal fun JsonObject.stringOrNull(key: String): String?` |
-| 24 |   `val p` |
-| 29 | `internal fun JsonObject.nonEmptyString(key: String): String?` |
-| 32 | `internal fun JsonObject.intOrNull(key: String): Int?` |
-| 35 | `internal fun JsonObject.longOrNull(key: String): Long?` |
-| 38 | `internal fun JsonObject.boolOrNull(key: String): Boolean?` |
-| 41 | `internal fun JsonObject.objectOrNull(key: String): JsonObject?` |
-| 44 | `internal fun JsonObject.arrayOrNull(key: String): JsonArray?` |
-| 47 | `internal fun JsonElement.asObjectOrNull(): JsonObject?` |
-
 ## core/model/WireRequests.kt
 
 | Line | Declaration |
@@ -1086,3 +1067,33 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 430 |   `val sandboxMode: String?` |
 | 431 |   `val permissionsAllow: List<String>?` |
 | 432 |   `val permissionsDeny: List<String>?` |
+
+## core/model/wire/InstantSerializer.kt
+
+| Line | Declaration |
+|---|---|
+| 21 | `object Rfc3339` |
+| 22 |   `fun parse(raw: String): Instant?` |
+| 38 | `object InstantSerializer : KSerializer<Instant>` |
+| 39 |   `override val descriptor` |
+| 42 |   `override fun serialize(encoder: Encoder, value: Instant)` |
+| 46 |   `override fun deserialize(decoder: Decoder): Instant` |
+
+## core/model/wire/JsonExt.kt
+
+| Line | Declaration |
+|---|---|
+| 23 | `internal fun JsonObject.stringOrNull(key: String): String?` |
+| 24 |   `val p` |
+| 29 | `internal fun JsonObject.nonEmptyString(key: String): String?` |
+| 32 | `internal fun JsonObject.intOrNull(key: String): Int?` |
+| 35 | `internal fun JsonObject.longOrNull(key: String): Long?` |
+| 38 | `internal fun JsonObject.boolOrNull(key: String): Boolean?` |
+| 41 | `internal fun JsonObject.objectOrNull(key: String): JsonObject?` |
+| 44 | `internal fun JsonObject.arrayOrNull(key: String): JsonArray?` |
+| 47 | `internal fun JsonElement.asObjectOrNull(): JsonObject?` |
+
+## core/model/wire/MergeOpsRequests.kt
+
+| Line | Declaration |
+|---|---|

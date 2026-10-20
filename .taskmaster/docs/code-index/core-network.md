@@ -150,14 +150,23 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 927 |   `suspend fun describeAgentOptions(agentType: AgentType, workingDir: String?): AgentOptionsSnapshot` |
 | 930 |   `suspend fun acpSetMode(connectionId: String, modeId: String)` |
 | 934 |   `suspend fun acpSetConfigOption(connectionId: String, configId: String, valueId: String)` |
-| 948 |   `private suspend fun send(path: String, bodyJson: String): String` |
-| 982 |   `private inline fun <reified T> encode(body: T): String` |
-| 985 |   `private fun <T> decode(text: String, deserializer: DeserializationStrategy<T>): T` |
-| 991 |   `companion object` |
-| 993 |     `fun normalizeBaseUrl(raw: String): String` |
-| 1001 |     `fun decodeConnectionId(text: String): String` |
-| 1017 |     `fun decodeAgentList(text: String): List<AcpAgentInfo>` |
-| 1034 |     `fun isJsonNull(text: String): Boolean` |
+| 943 |   `suspend fun gitMerge(path: String, branch: String)` |
+| 946 |   `suspend fun gitRebase(path: String, branch: String)` |
+| 949 |   `suspend fun gitReset(path: String, commit: String, mode: String)` |
+| 952 |   `suspend fun gitHasMergeHead(path: String): Boolean` |
+| 954 |   `suspend fun gitListConflicts(path: String): List<String>` |
+| 956 |   `suspend fun gitConflictFileVersions(path: String, file: String): app.codeg.android.core.model.MergeVersions` |
+| 958 |   `suspend fun gitResolveConflict(path: String, file: String, content: String)` |
+| 961 |   `suspend fun gitContinueOperation(path: String, operation: String)` |
+| 964 |   `suspend fun gitAbortOperation(path: String, operation: String)` |
+| 975 |   `private suspend fun send(path: String, bodyJson: String): String` |
+| 1009 |   `private inline fun <reified T> encode(body: T): String` |
+| 1012 |   `private fun <T> decode(text: String, deserializer: DeserializationStrategy<T>): T` |
+| 1018 |   `companion object` |
+| 1020 |     `fun normalizeBaseUrl(raw: String): String` |
+| 1028 |     `fun decodeConnectionId(text: String): String` |
+| 1044 |     `fun decodeAgentList(text: String): List<AcpAgentInfo>` |
+| 1061 |     `fun isJsonNull(text: String): Boolean` |
 
 ## core/network/CodegClientFactory.kt
 

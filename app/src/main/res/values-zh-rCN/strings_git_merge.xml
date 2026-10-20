@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="gm_title">合并、变基与重置</string>
+    <string name="gm_current">当前分支：%1$s</string>
+    <string name="gm_done">操作已完成，请检查下方是否仍有冲突。</string>
+    <string name="gm_refresh">刷新冲突</string>
+    <string name="gm_commit">目标提交</string>
+    <string name="gm_merge">合并</string>
+    <string name="gm_rebase">变基</string>
+    <string name="gm_reset">重置</string>
+    <string name="gm_confirm_merge">将 %1$s 合并到当前分支 %2$s？</string>
+    <string name="gm_confirm_rebase">将当前分支 %2$s 变基到 %1$s？</string>
+    <string name="gm_confirm_reset">以 %3$s 模式将分支 %2$s 重置到 %1$s？</string>
+    <string name="gm_hard">此操作会丢弃工作区与暂存区改动。请输入分支名 %1$s 确认。</string>
+    <string name="gm_confirm">确认</string>
+    <string name="gm_cancel">取消</string>
+    <string name="gm_conflicts">冲突</string>
+    <string name="gm_operation_hint">继续或中止前，请核对当前正在进行的操作类型。</string>
+    <string name="gm_resolved">所有冲突已解决，可继续操作。</string>
+    <string name="gm_base">共同祖先</string>
+    <string name="gm_ours">我方（索引阶段 2）</string>
+    <string name="gm_theirs">对方（索引阶段 3）</string>
+    <string name="gm_rebase_sides">变基时，我方为上游版本，对方为正在重放的提交。请查看内容后再选择。</string>
+    <string name="gm_choose_ours">整文件采用我方</string>
+    <string name="gm_choose_theirs">整文件采用对方</string>
+    <string name="gm_continue">继续</string>
+    <string name="gm_abort">中止</string>
+    <string name="gm_resolve_confirm">将 %1$s 整文件替换为 %2$s 版本并暂存？</string>
+    <string name="gm_abort_confirm">中止分支 %2$s 的 %1$s 操作并丢弃冲突解决结果？</string>
+    <string name="gm_continue_confirm">继续分支 %2$s 的 %1$s 操作？</string>
+</resources>

@@ -939,6 +939,33 @@ class CodegClient(
 
     // endregion
 
+    // region git-merge
+    suspend fun gitMerge(path: String, branch: String) {
+        send("git_merge", encode(app.codeg.android.core.model.wire.MergeBranchRequest(path, branch)))
+    }
+    suspend fun gitRebase(path: String, branch: String) {
+        send("git_rebase", encode(app.codeg.android.core.model.wire.MergeBranchRequest(path, branch)))
+    }
+    suspend fun gitReset(path: String, commit: String, mode: String) {
+        send("git_reset", encode(app.codeg.android.core.model.wire.MergeResetRequest(path, commit, mode)))
+    }
+    suspend fun gitHasMergeHead(path: String): Boolean =
+        decode(send("git_has_merge_head", encode(PathBody(path))), Boolean.serializer())
+    suspend fun gitListConflicts(path: String): List<String> =
+        decode(send("git_list_conflicts", encode(PathBody(path))), ListSerializer(String.serializer()))
+    suspend fun gitConflictFileVersions(path: String, file: String): app.codeg.android.core.model.MergeVersions =
+        decode(send("git_conflict_file_versions", encode(app.codeg.android.core.model.wire.MergeFileRequest(path, file))), app.codeg.android.core.model.MergeVersions.serializer())
+    suspend fun gitResolveConflict(path: String, file: String, content: String) {
+        send("git_resolve_conflict", encode(app.codeg.android.core.model.wire.MergeResolveRequest(path, file, content)))
+    }
+    suspend fun gitContinueOperation(path: String, operation: String) {
+        send("git_continue_operation", encode(app.codeg.android.core.model.wire.MergeOperationRequest(path, operation)))
+    }
+    suspend fun gitAbortOperation(path: String, operation: String) {
+        send("git_abort_operation", encode(app.codeg.android.core.model.wire.MergeOperationRequest(path, operation)))
+    }
+    // endregion
+
     // region Transport
 
     /**
