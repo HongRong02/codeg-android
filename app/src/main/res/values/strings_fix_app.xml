@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="update_unsupported_build">This build does not support in-app updates.</string>
+</resources>

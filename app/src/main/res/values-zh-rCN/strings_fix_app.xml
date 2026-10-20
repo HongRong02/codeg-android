@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="update_unsupported_build">此版本不支持应用内更新（调试版或非正式包名）。</string>
+</resources>

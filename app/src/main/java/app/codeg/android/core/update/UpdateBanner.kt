@@ -28,6 +28,7 @@ import java.io.File
 
 @Composable
 fun UpdateBanner(viewModel: UpdateViewModel = hiltViewModel()) {
+    if (!supportsInAppUpdates) return
     val state by viewModel.ui.collectAsStateWithLifecycle()
     val context = LocalContext.current
     var showNotes by remember { mutableStateOf(false) }
@@ -106,7 +107,7 @@ fun UpdateAbout(viewModel: UpdateViewModel = hiltViewModel()) {
     }
     val toaster = LocalCodegToaster.current
     val message = state.message?.let { stringResource(it) }
-    LaunchedEffect(state.message, state.checking) {
+    LaunchedEffect(state.message, state.checking, manual) {
         if (manual && !state.checking && message != null) {
             if (state.message in setOf(R.string.update_check_failed, R.string.update_download_failed, R.string.update_install_failed)) toaster.error(message)
             else toaster.info(message)

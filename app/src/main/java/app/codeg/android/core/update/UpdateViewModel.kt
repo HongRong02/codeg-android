@@ -32,6 +32,9 @@ data class UpdateUi(
     val installer: File? = null,
 )
 
+internal val supportsInAppUpdates: Boolean
+    get() = !BuildConfig.DEBUG && BuildConfig.APPLICATION_ID == "app.codeg.android.mine"
+
 val UpdateUi.showBanner: Boolean
     get() = (update != null && dismissed != update.versionCode) || downloading || message == R.string.update_download_failed
 
@@ -50,6 +53,10 @@ class UpdateRepository @Inject constructor(
     private val lastCheck = longPreferencesKey("apk_update_last_check")
 
     suspend fun check(manual: Boolean) {
+        if (!supportsInAppUpdates) {
+            if (manual) mutable.update { it.copy(message = R.string.update_unsupported_build) }
+            return
+        }
         if (mutable.value.checking) return
         if (!manual && started) return
         started = true
@@ -73,7 +80,7 @@ class UpdateRepository @Inject constructor(
 
     fun clearCheckMessage() {
         checkMessageRevision++
-        mutable.update { if (it.message == R.string.update_latest || it.message == R.string.update_check_failed) it.copy(message = null) else it }
+        mutable.update { if (it.message == R.string.update_latest || it.message == R.string.update_check_failed || it.message == R.string.update_unsupported_build) it.copy(message = null) else it }
     }
 
     fun dismiss() { mutable.update { it.copy(dismissed = it.update?.versionCode) } }
@@ -81,6 +88,7 @@ class UpdateRepository @Inject constructor(
     fun installFailed() { mutable.update { it.copy(message = R.string.update_install_failed) } }
 
     fun download() {
+        if (!supportsInAppUpdates) return
         scope.launch { downloadInBackground() }
     }
 
