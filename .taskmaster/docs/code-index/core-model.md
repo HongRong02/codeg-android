@@ -784,6 +784,40 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 159 |   `val model: String?` |
 | 161 |   `val completedAt: Instant?` |
 
+## core/model/ServerLogs.kt
+
+| Line | Declaration |
+|---|---|
+| 6 | `data class ServerLogRecord( val seq: Long, val timestampMs: Long, val level: String, val target: String, val message: String, val fields: Map<String, String> = emptyMap(), val spans: List<ServerLogSpan> = emptyList(), )` |
+| 7 |   `val seq: Long` |
+| 8 |   `val timestampMs: Long` |
+| 9 |   `val level: String` |
+| 10 |   `val target: String` |
+| 11 |   `val message: String` |
+| 12 |   `val fields: Map<String, String>` |
+| 13 |   `val spans: List<ServerLogSpan>` |
+| 15 |   `fun line(): String` |
+| 23 | `data class ServerLogSpan(val name: String, val fields: Map<String, String> = emptyMap())` |
+| 26 | `data class ServerLogFile(val name: String, val sizeBytes: Long, val modifiedMs: Long)` |
+| 29 | `data class ServerConversationStats( val totalConversations: Long, val totalMessages: Long, val byAgent: List<ServerAgentCount> = emptyList(), )` |
+| 30 |   `val totalConversations: Long` |
+| 31 |   `val totalMessages: Long` |
+| 32 |   `val byAgent: List<ServerAgentCount>` |
+| 36 | `data class ServerAgentCount(val agentType: String, val conversationCount: Long)` |
+| 39 | `data class ServerTokenTotals( val inputTokens: Long, val outputTokens: Long, val cacheCreationTokens: Long, val cacheReadTokens: Long, val totalTokens: Long, val conversationCount: Long, val turnCount: Long, )` |
+| 40 |   `val inputTokens: Long` |
+| 41 |   `val outputTokens: Long` |
+| 42 |   `val cacheCreationTokens: Long` |
+| 43 |   `val cacheReadTokens: Long` |
+| 44 |   `val totalTokens: Long` |
+| 45 |   `val conversationCount: Long` |
+| 46 |   `val turnCount: Long` |
+| 50 | `data class ServerTokenPoint(val bucketKey: String, val totalTokens: Long)` |
+| 53 | `data class ServerTokenReport( val totals: ServerTokenTotals, val series: List<ServerTokenPoint> = emptyList(), val truncated: Boolean = false, )` |
+| 54 |   `val totals: ServerTokenTotals` |
+| 55 |   `val series: List<ServerTokenPoint>` |
+| 56 |   `val truncated: Boolean` |
+
 ## core/model/SessionFork.kt
 
 | Line | Declaration |
@@ -977,85 +1011,6 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 300 |   `val defaultModel: String?` |
 | 301 |   `val error: String?` |
 
-## core/model/wire/AutomationRequests.kt
-
-| Line | Declaration |
-|---|---|
-| 6 | `data class GetAutomationBody( val id: Int, )` |
-| 7 |   `val id: Int` |
-| 11 | `data class ListRunsBody( val automationId: Int, val limit: Long = 100, )` |
-| 12 |   `val automationId: Int` |
-| 13 |   `val limit: Long` |
-| 17 | `data class SetEnabledBody( val id: Int, val enabled: Boolean, )` |
-| 18 |   `val id: Int` |
-| 19 |   `val enabled: Boolean` |
-
-## core/model/wire/BranchManageRequests.kt
-
-| Line | Declaration |
-|---|---|
-| 7 | `data class BranchManageListBody(val path: String)` |
-| 9 | `data class BranchDeleteBody(val path: String, val branchName: String, val force: Boolean)` |
-| 11 | `data class BranchRemoteDeleteBody(val path: String, val remote: String, val branch: String, val credentials: GitCredentials? = null)` |
-| 13 | `data class BranchUpdateBody(val path: String, val branch: String, val isRemote: Boolean, val credentials: GitCredentials? = null)` |
-| 15 | `data class BranchCompareBody(val path: String, val branch: String, val file: String? = null)` |
-
-## core/model/wire/FileViewerRequests.kt
-
-| Line | Declaration |
-|---|---|
-| 6 | `data class ReadFileBase64Request(val path: String, val maxBytes: Long)` |
-| 9 | `data class GitShowFileRequest(val path: String, val file: String, val refName: String, val maxBytes: Long? = null)` |
-
-## core/model/wire/GitMiscRequests.kt
-
-| Line | Declaration |
-|---|---|
-| 7 | `data class GitMiscRemoteRequest(val path: String, val name: String, val url: String? = null, val credentials: GitCredentials? = null)` |
-| 9 | `data class GitMiscWorktreeAddRequest(val path: String, val branchName: String, val worktreePath: String, val base: String? = null)` |
-| 11 | `data class GitMiscWorktreeRemoveRequest(val path: String, val branchName: String, val sourceFolderId: Int, val deleteBranch: Boolean = false, val force: Boolean = false)` |
-
-## core/model/wire/InstantSerializer.kt
-
-| Line | Declaration |
-|---|---|
-| 21 | `object Rfc3339` |
-| 22 |   `fun parse(raw: String): Instant?` |
-| 38 | `object InstantSerializer : KSerializer<Instant>` |
-| 39 |   `override val descriptor` |
-| 42 |   `override fun serialize(encoder: Encoder, value: Instant)` |
-| 46 |   `override fun deserialize(decoder: Decoder): Instant` |
-
-## core/model/wire/JsonExt.kt
-
-| Line | Declaration |
-|---|---|
-| 23 | `internal fun JsonObject.stringOrNull(key: String): String?` |
-| 24 |   `val p` |
-| 29 | `internal fun JsonObject.nonEmptyString(key: String): String?` |
-| 32 | `internal fun JsonObject.intOrNull(key: String): Int?` |
-| 35 | `internal fun JsonObject.longOrNull(key: String): Long?` |
-| 38 | `internal fun JsonObject.boolOrNull(key: String): Boolean?` |
-| 41 | `internal fun JsonObject.objectOrNull(key: String): JsonObject?` |
-| 44 | `internal fun JsonObject.arrayOrNull(key: String): JsonArray?` |
-| 47 | `internal fun JsonElement.asObjectOrNull(): JsonObject?` |
-
-## core/model/wire/MergeOpsRequests.kt
-
-| Line | Declaration |
-|---|---|
-
-## core/model/wire/SessionForkRequests.kt
-
-| Line | Declaration |
-|---|---|
-| 7 | `data class SessionForkRequest( val connectionId: String, val conversationId: Int?, val folderId: Int?, )` |
-| 8 |   `val connectionId: String` |
-| 9 |   `val conversationId: Int?` |
-| 10 |   `val folderId: Int?` |
-| 14 | `data class SessionDisconnectRequest(val connectionId: String)` |
-| 17 | `data class SessionPreflightRequest(val agentType: AgentType, val forceRefresh: Boolean = false)` |
-
 ## core/model/WireRequests.kt
 
 | Line | Declaration |
@@ -1235,3 +1190,95 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 430 |   `val sandboxMode: String?` |
 | 431 |   `val permissionsAllow: List<String>?` |
 | 432 |   `val permissionsDeny: List<String>?` |
+
+## core/model/wire/AutomationRequests.kt
+
+| Line | Declaration |
+|---|---|
+| 6 | `data class GetAutomationBody( val id: Int, )` |
+| 7 |   `val id: Int` |
+| 11 | `data class ListRunsBody( val automationId: Int, val limit: Long = 100, )` |
+| 12 |   `val automationId: Int` |
+| 13 |   `val limit: Long` |
+| 17 | `data class SetEnabledBody( val id: Int, val enabled: Boolean, )` |
+| 18 |   `val id: Int` |
+| 19 |   `val enabled: Boolean` |
+
+## core/model/wire/BranchManageRequests.kt
+
+| Line | Declaration |
+|---|---|
+| 7 | `data class BranchManageListBody(val path: String)` |
+| 9 | `data class BranchDeleteBody(val path: String, val branchName: String, val force: Boolean)` |
+| 11 | `data class BranchRemoteDeleteBody(val path: String, val remote: String, val branch: String, val credentials: GitCredentials? = null)` |
+| 13 | `data class BranchUpdateBody(val path: String, val branch: String, val isRemote: Boolean, val credentials: GitCredentials? = null)` |
+| 15 | `data class BranchCompareBody(val path: String, val branch: String, val file: String? = null)` |
+
+## core/model/wire/FileViewerRequests.kt
+
+| Line | Declaration |
+|---|---|
+| 6 | `data class ReadFileBase64Request(val path: String, val maxBytes: Long)` |
+| 9 | `data class GitShowFileRequest(val path: String, val file: String, val refName: String, val maxBytes: Long? = null)` |
+
+## core/model/wire/GitMiscRequests.kt
+
+| Line | Declaration |
+|---|---|
+| 7 | `data class GitMiscRemoteRequest(val path: String, val name: String, val url: String? = null, val credentials: GitCredentials? = null)` |
+| 9 | `data class GitMiscWorktreeAddRequest(val path: String, val branchName: String, val worktreePath: String, val base: String? = null)` |
+| 11 | `data class GitMiscWorktreeRemoveRequest(val path: String, val branchName: String, val sourceFolderId: Int, val deleteBranch: Boolean = false, val force: Boolean = false)` |
+
+## core/model/wire/InstantSerializer.kt
+
+| Line | Declaration |
+|---|---|
+| 21 | `object Rfc3339` |
+| 22 |   `fun parse(raw: String): Instant?` |
+| 38 | `object InstantSerializer : KSerializer<Instant>` |
+| 39 |   `override val descriptor` |
+| 42 |   `override fun serialize(encoder: Encoder, value: Instant)` |
+| 46 |   `override fun deserialize(decoder: Decoder): Instant` |
+
+## core/model/wire/JsonExt.kt
+
+| Line | Declaration |
+|---|---|
+| 23 | `internal fun JsonObject.stringOrNull(key: String): String?` |
+| 24 |   `val p` |
+| 29 | `internal fun JsonObject.nonEmptyString(key: String): String?` |
+| 32 | `internal fun JsonObject.intOrNull(key: String): Int?` |
+| 35 | `internal fun JsonObject.longOrNull(key: String): Long?` |
+| 38 | `internal fun JsonObject.boolOrNull(key: String): Boolean?` |
+| 41 | `internal fun JsonObject.objectOrNull(key: String): JsonObject?` |
+| 44 | `internal fun JsonObject.arrayOrNull(key: String): JsonArray?` |
+| 47 | `internal fun JsonElement.asObjectOrNull(): JsonObject?` |
+
+## core/model/wire/MergeOpsRequests.kt
+
+| Line | Declaration |
+|---|---|
+
+## core/model/wire/ServerLogsRequests.kt
+
+| Line | Declaration |
+|---|---|
+| 6 | `data class RecentServerLogsBody(val limit: Int = 500, val minLevel: String? = null)` |
+| 9 | `data class ReadServerLogBody(val name: String, val maxBytes: Int = 262144)` |
+| 12 | `data class ServerTokenReportBody(val filter: ServerTokenFilter)` |
+| 15 | `data class ServerTokenFilter( val start: String? = null, val end: String, val bucket: String = "day", val tzOffsetMinutes: Int, )` |
+| 16 |   `val start: String?` |
+| 17 |   `val end: String` |
+| 18 |   `val bucket: String` |
+| 19 |   `val tzOffsetMinutes: Int` |
+
+## core/model/wire/SessionForkRequests.kt
+
+| Line | Declaration |
+|---|---|
+| 7 | `data class SessionForkRequest( val connectionId: String, val conversationId: Int?, val folderId: Int?, )` |
+| 8 |   `val connectionId: String` |
+| 9 |   `val conversationId: Int?` |
+| 10 |   `val folderId: Int?` |
+| 14 | `data class SessionDisconnectRequest(val connectionId: String)` |
+| 17 | `data class SessionPreflightRequest(val agentType: AgentType, val forceRefresh: Boolean = false)` |

@@ -1068,6 +1068,27 @@ class CodegClient(
 
     // endregion
 
+    // region logs-stats
+
+    suspend fun recentServerLogs(minLevel: String? = null): List<app.codeg.android.core.model.ServerLogRecord> =
+        decode(send("get_recent_logs", encode(app.codeg.android.core.model.wire.RecentServerLogsBody(minLevel = minLevel))),
+            ListSerializer(app.codeg.android.core.model.ServerLogRecord.serializer()))
+
+    suspend fun serverLogFiles(): List<app.codeg.android.core.model.ServerLogFile> =
+        decode(send("list_log_files", "{}"), ListSerializer(app.codeg.android.core.model.ServerLogFile.serializer()))
+
+    suspend fun readServerLog(name: String): String =
+        decode(send("read_log_file", encode(app.codeg.android.core.model.wire.ReadServerLogBody(name))), String.serializer())
+
+    suspend fun serverConversationStats(): app.codeg.android.core.model.ServerConversationStats =
+        decode(send("get_stats", "{}"), app.codeg.android.core.model.ServerConversationStats.serializer())
+
+    suspend fun serverTokenReport(filter: app.codeg.android.core.model.wire.ServerTokenFilter): app.codeg.android.core.model.ServerTokenReport =
+        decode(send("token_usage_report", encode(app.codeg.android.core.model.wire.ServerTokenReportBody(filter))),
+            app.codeg.android.core.model.ServerTokenReport.serializer())
+
+    // endregion
+
     // region Transport
 
     /**

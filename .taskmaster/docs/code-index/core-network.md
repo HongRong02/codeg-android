@@ -181,14 +181,19 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 1060 |   `suspend fun automationGet(id: Int): Automation` |
 | 1063 |   `suspend fun automationRuns(automationId: Int, limit: Long = 100): List<AutomationRun>` |
 | 1066 |   `suspend fun automationSetEnabled(id: Int, enabled: Boolean): Automation` |
-| 1077 |   `private suspend fun send(path: String, bodyJson: String): String` |
-| 1111 |   `private inline fun <reified T> encode(body: T): String` |
-| 1114 |   `private fun <T> decode(text: String, deserializer: DeserializationStrategy<T>): T` |
-| 1120 |   `companion object` |
-| 1122 |     `fun normalizeBaseUrl(raw: String): String` |
-| 1130 |     `fun decodeConnectionId(text: String): String` |
-| 1146 |     `fun decodeAgentList(text: String): List<AcpAgentInfo>` |
-| 1163 |     `fun isJsonNull(text: String): Boolean` |
+| 1073 |   `suspend fun recentServerLogs(minLevel: String? = null): List<app.codeg.android.core.model.ServerLogRecord>` |
+| 1077 |   `suspend fun serverLogFiles(): List<app.codeg.android.core.model.ServerLogFile>` |
+| 1080 |   `suspend fun readServerLog(name: String): String` |
+| 1083 |   `suspend fun serverConversationStats(): app.codeg.android.core.model.ServerConversationStats` |
+| 1086 |   `suspend fun serverTokenReport(filter: app.codeg.android.core.model.wire.ServerTokenFilter): app.codeg.android.core.model.ServerTokenReport` |
+| 1098 |   `private suspend fun send(path: String, bodyJson: String): String` |
+| 1132 |   `private inline fun <reified T> encode(body: T): String` |
+| 1135 |   `private fun <T> decode(text: String, deserializer: DeserializationStrategy<T>): T` |
+| 1141 |   `companion object` |
+| 1143 |     `fun normalizeBaseUrl(raw: String): String` |
+| 1151 |     `fun decodeConnectionId(text: String): String` |
+| 1167 |     `fun decodeAgentList(text: String): List<AcpAgentInfo>` |
+| 1184 |     `fun isJsonNull(text: String): Boolean` |
 
 ## core/network/CodegClientFactory.kt
 
