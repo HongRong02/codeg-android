@@ -27,6 +27,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -167,6 +168,15 @@ internal fun CodegModalToaster(content: @Composable () -> Unit) {
 
 @Composable
 private fun ToastLayer(toaster: CodegToaster) {
+    // Read from the elected host window, before entering Popup's independent window.
+    // Union avoids adding the navigation bar twice when the IME already covers it.
+    val density = LocalDensity.current
+    val layoutDirection = androidx.compose.ui.platform.LocalLayoutDirection.current
+    val hostInsets = WindowInsets.safeDrawing.union(WindowInsets.ime)
+    val leftPadding = with(density) { hostInsets.getLeft(density, layoutDirection).toDp() }
+    val rightPadding = with(density) { hostInsets.getRight(density, layoutDirection).toDp() }
+    val topPadding = with(density) { hostInsets.getTop(density).toDp() }
+    val bottomPadding = with(density) { hostInsets.getBottom(density).toDp() }
     val entries by toaster.entries.collectAsState()
     // Retain dismissed cards briefly so their exit animation can finish.
     val initialIds = remember(toaster) { entries.map { it.id }.toSet() }
@@ -187,8 +197,10 @@ private fun ToastLayer(toaster: CodegToaster) {
             properties = PopupProperties(focusable = false, dismissOnBackPress = false, dismissOnClickOutside = false),
         ) {
             Column(
-                Modifier.windowInsetsPadding(WindowInsets.safeDrawing)
-                    .imePadding().padding(16.dp).widthIn(max = 356.dp),
+                Modifier.absolutePadding(
+                    left = leftPadding, top = topPadding,
+                    right = rightPadding, bottom = bottomPadding,
+                ).padding(16.dp).widthIn(max = 356.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 // Oldest above newest: sonner's bottom-right origin.
@@ -275,12 +287,15 @@ internal fun T52Gallery() {
     val description = stringResource(R.string.ds_toasts_description)
     val action = stringResource(R.string.ds_toasts_action)
     val finish = stringResource(R.string.ds_toasts_finish)
+    var draft by remember { mutableStateOf("") }
+    var sheetDraft by remember { mutableStateOf("") }
     var showSheet by remember { mutableStateOf(false) }
     var pending by remember { mutableStateOf<ToastId?>(null) }
     CodegToasterHost(toaster) {
         Column {
             TextButton(onClick = { showSheet = true }) { Text(stringResource(R.string.ds_dialogs_sheet)) }
             TextButton(onClick = { toaster.success(success) }) { Text(success) }
+            TextField(value = draft, onValueChange = { draft = it }, label = { Text(description) })
             TextButton(onClick = { toaster.error(error, description) }) { Text(error) }
             TextButton(onClick = { toaster.info(info, description, ToastAction(action) { toaster.success(success) }) }) { Text(info) }
             TextButton(onClick = { toaster.warning(warning) }) { Text(warning) }
@@ -289,6 +304,7 @@ internal fun T52Gallery() {
         }
         if (showSheet) {
             CodegSheet(stringResource(R.string.ds_dialogs_sheet), onDismiss = { showSheet = false }) {
+                TextField(value = sheetDraft, onValueChange = { sheetDraft = it }, label = { Text(description) })
                 TextButton(onClick = { toaster.error(error, description) }) { Text(error) }
             }
         }
