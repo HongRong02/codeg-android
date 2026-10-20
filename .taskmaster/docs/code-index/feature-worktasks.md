@@ -25,17 +25,16 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 35 | `@Composable fun WorkTaskActions(task: WorkTask, ui: WorkTaskUi, viewModel: WorkTaskViewModel, compact: Boolean = false)` |
 | 36 |   `var pending by remember(task.id)` |
 | 37 |   `var text by remember` |
-| 88 | `@Composable private fun Choice(label: String, value: String, choices: List<Pair<String, () -> Unit>>, enabled: Boolean)` |
-| 89 |   `var expanded by remember` |
-| 102 | `@Composable fun WorkTaskEditor(ui: WorkTaskUi, viewModel: WorkTaskViewModel)` |
-| 103 |   `val task` |
-| 104 |   `var title by remember` |
-| 105 |   `var original by remember` |
-| 106 |   `var description by remember` |
-| 107 |   `var folderId by remember` |
-| 108 |   `var agent by remember` |
-| 109 |   `var templateName by remember` |
-| 110 |   `val inherit` |
+| 87 | `@Composable private fun Choice(label: String, value: String, choices: List<Pair<String, () -> Unit>>, enabled: Boolean, selectedIndex: Int = choices.indexOfFirst { it.first == value })` |
+| 94 | `@Composable fun WorkTaskEditor(ui: WorkTaskUi, viewModel: WorkTaskViewModel)` |
+| 95 |   `val task` |
+| 96 |   `var title by remember` |
+| 97 |   `var original by remember` |
+| 98 |   `var description by remember` |
+| 99 |   `var folderId by remember` |
+| 100 |   `var agent by remember` |
+| 101 |   `var templateName by remember` |
+| 102 |   `val inherit` |
 
 ## feature/worktasks/WorkTaskLabels.kt
 
@@ -49,13 +48,13 @@ Source root: `app/src/main/java/app/codeg/android/`
 
 | Line | Declaration |
 |---|---|
-| 26 | `@Composable fun WorkTaskScreen(onBack: () -> Unit, viewModel: WorkTaskViewModel = hiltViewModel())` |
-| 27 |   `val ui by viewModel.ui.collectAsStateWithLifecycle()` |
-| 28 |   `var column by remember` |
-| 29 |   `var showCanceled by remember` |
-| 30 |   `val visible` |
-| 31 |   `val selected` |
-| 33 |   `val back` |
+| 23 | `@Composable fun WorkTaskScreen(onBack: () -> Unit, viewModel: WorkTaskViewModel = hiltViewModel())` |
+| 24 |   `val ui by viewModel.ui.collectAsStateWithLifecycle()` |
+| 25 |   `var column by remember` |
+| 26 |   `var showCanceled by remember` |
+| 27 |   `val visible` |
+| 28 |   `val selected` |
+| 30 |   `val back` |
 
 ## feature/worktasks/WorkTaskSettingsSheet.kt
 
@@ -65,28 +64,27 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 35 | `private val settingsLabels` |
 | 53 | `private val booleanSettings` |
 | 56 | `@Composable fun WorkTaskSettingsSheet(ui: WorkTaskUi, viewModel: WorkTaskViewModel)` |
-| 57 |   `var projectMenu by remember` |
-| 58 |   `var reset by remember` |
-| 59 |   `val source` |
-| 60 |   `var fields by remember(ui.settingsFolder, source)` |
-| 69 |   `val parsed` |
-| 74 |   `val enabled` |
-| 75 |   `val folder` |
-| 154 | `@Composable private fun SettingsSummary(settings: JsonObject)` |
+| 57 |   `var reset by remember` |
+| 58 |   `val source` |
+| 59 |   `var fields by remember(ui.settingsFolder, source)` |
+| 68 |   `val parsed` |
+| 73 |   `val enabled` |
+| 74 |   `val folder` |
+| 134 | `@Composable private fun SettingsSummary(settings: JsonObject)` |
 
 ## feature/worktasks/WorkTaskTemplates.kt
 
 | Line | Declaration |
 |---|---|
-| 19 | `@Composable fun WorkTaskManagementMenu(ui: WorkTaskUi, viewModel: WorkTaskViewModel)` |
-| 20 |   `var expanded by remember` |
-| 40 | `@Composable fun WorkTaskTemplates(ui: WorkTaskUi, viewModel: WorkTaskViewModel)` |
-| 41 |   `var editing by remember` |
-| 42 |   `var original by remember` |
-| 43 |   `var name by remember` |
-| 44 |   `var title by remember` |
-| 45 |   `var description by remember` |
-| 46 |   `var deleting by remember` |
+| 18 | `@Composable fun WorkTaskManagementMenu(ui: WorkTaskUi, viewModel: WorkTaskViewModel)` |
+| 19 |   `var expanded by remember` |
+| 39 | `@Composable fun WorkTaskTemplates(ui: WorkTaskUi, viewModel: WorkTaskViewModel)` |
+| 40 |   `var editing by remember` |
+| 41 |   `var original by remember` |
+| 42 |   `var name by remember` |
+| 43 |   `var title by remember` |
+| 44 |   `var description by remember` |
+| 45 |   `var deleting by remember` |
 
 ## feature/worktasks/WorkTaskViewModel.kt
 

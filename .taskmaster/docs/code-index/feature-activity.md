@@ -6,11 +6,11 @@ Source root: `app/src/main/java/app/codeg/android/`
 
 | Line | Declaration |
 |---|---|
-| 59 | `@Composable fun ActivityScreen( onOpenConversation: (Int) -> Unit, viewModel: ActivityViewModel = hiltViewModel(), )` |
-| 63 |   `val ui by viewModel.ui.collectAsStateWithLifecycle()` |
-| 64 |   `val sections by viewModel.sections.collectAsStateWithLifecycle()` |
-| 65 |   `var collapsed by rememberSaveable` |
-| 66 |   `val colors` |
+| 57 | `@Composable fun ActivityScreen( onOpenConversation: (Int) -> Unit, viewModel: ActivityViewModel = hiltViewModel(), )` |
+| 61 |   `val ui by viewModel.ui.collectAsStateWithLifecycle()` |
+| 62 |   `val sections by viewModel.sections.collectAsStateWithLifecycle()` |
+| 63 |   `var collapsed by rememberSaveable` |
+| 64 |   `val colors` |
 | 172 | `private data class ActivityStyle(val icon: ImageVector, val tint: Color, val label: String)` |
 | 175 | `@Composable private fun activitySectionStyle(kind: ActivityKind): ActivityStyle` |
 | 176 |   `val colors` |

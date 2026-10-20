@@ -12,24 +12,26 @@ Source root: `app/src/main/java/app/codeg/android/`
 
 | Line | Declaration |
 |---|---|
-| 86 | `@Composable fun SessionListScreen( servers: List<ServerProfile>, selectedId: String?, onSelectServer: (String) -> Unit, onManageServers: () -> Unit, onOpenConversation: (Int) -> Unit, onNewTask: () -> Unit, viewModel: SessionListViewModel = hiltViewModel(), )` |
-| 95 |   `val ui by viewModel.ui.collectAsStateWithLifecycle()` |
-| 96 |   `val sections by viewModel.sections.collectAsStateWithLifecycle()` |
-| 97 |   `var tagSheetOpen by remember(selectedId)` |
-| 98 |   `var tagConversation by remember(selectedId)` |
-| 106 |   `var collapsed by rememberSaveable` |
-| 108 |   `val colors` |
-| 109 |   `val selectedName` |
-| 223 | `@Composable private fun SessionList( tags: List<ConversationTag>, onEditTags: ((ConversationSummary) -> Unit)?, sections: List<SessionSection>, collapsed: Set<String>, onToggleSection: (String) -> Unit, onOpenConversation: (Int) -> Unit, onTogglePin: (ConversationSummary) -> Unit, refreshError: String?, onRetry: () -> Unit, onDismissError: () -> Unit, )` |
-| 292 | `private data class SectionStyle(val icon: ImageVector, val tint: Color, val label: String)` |
-| 295 | `@Composable private fun sectionStyle(kind: SectionKind): SectionStyle` |
-| 296 |   `val colors` |
-| 323 | `@Composable private fun RefreshErrorBanner( message: String, onRetry: () -> Unit, onDismiss: () -> Unit, modifier: Modifier = Modifier, )` |
-| 329 |   `val colors` |
-| 330 |   `val shape` |
-| 372 | `@Composable private fun ServerSwitcher( name: String, servers: List<ServerProfile>, selectedId: String?, onSelect: (String) -> Unit, onManageServers: () -> Unit, )` |
-| 379 |   `var open by remember` |
-| 380 |   `val colors` |
+| 78 | `@Composable fun SessionListScreen( servers: List<ServerProfile>, selectedId: String?, onSelectServer: (String) -> Unit, onManageServers: () -> Unit, onOpenConversation: (Int) -> Unit, onNewTask: () -> Unit, viewModel: SessionListViewModel = hiltViewModel(), )` |
+| 87 |   `val ui by viewModel.ui.collectAsStateWithLifecycle()` |
+| 88 |   `val sections by viewModel.sections.collectAsStateWithLifecycle()` |
+| 89 |   `var tagSheetOpen by remember(selectedId)` |
+| 90 |   `var tagConversation by remember(selectedId)` |
+| 98 |   `var collapsed by rememberSaveable` |
+| 99 |   `val toaster` |
+| 100 |   `val errorTitle` |
+| 107 |   `val colors` |
+| 108 |   `val selectedName` |
+| 221 | `@Composable private fun SessionList( tags: List<ConversationTag>, onEditTags: ((ConversationSummary) -> Unit)?, sections: List<SessionSection>, collapsed: Set<String>, onToggleSection: (String) -> Unit, onOpenConversation: (Int) -> Unit, onTogglePin: (ConversationSummary) -> Unit, refreshError: String?, onRetry: () -> Unit, onDismissError: () -> Unit, )` |
+| 290 | `private data class SectionStyle(val icon: ImageVector, val tint: Color, val label: String)` |
+| 293 | `@Composable private fun sectionStyle(kind: SectionKind): SectionStyle` |
+| 294 |   `val colors` |
+| 321 | `@Composable private fun RefreshErrorBanner( message: String, onRetry: () -> Unit, onDismiss: () -> Unit, modifier: Modifier = Modifier, )` |
+| 327 |   `val colors` |
+| 328 |   `val shape` |
+| 370 | `@Composable private fun ServerSwitcher( name: String, servers: List<ServerProfile>, selectedId: String?, onSelect: (String) -> Unit, onManageServers: () -> Unit, )` |
+| 377 |   `var open by remember` |
+| 378 |   `val colors` |
 
 ## feature/sessions/SessionListViewModel.kt
 
@@ -86,9 +88,9 @@ Source root: `app/src/main/java/app/codeg/android/`
 
 | Line | Declaration |
 |---|---|
-| 44 | `@Composable fun SessionRow( conversation: ConversationSummary, onClick: () -> Unit, modifier: Modifier = Modifier, folderName: String? = null, selected: Boolean = false, onTogglePin: (() -> Unit)? = null, tags: List<ConversationTag> = emptyList(), onEditTags: (() -> Unit)? = null, )` |
-| 54 |   `val colors` |
-| 55 |   `var menuOpen by remember` |
+| 46 | `@Composable fun SessionRow( conversation: ConversationSummary, onClick: () -> Unit, modifier: Modifier = Modifier, folderName: String? = null, selected: Boolean = false, onTogglePin: (() -> Unit)? = null, tags: List<ConversationTag> = emptyList(), onEditTags: (() -> Unit)? = null, )` |
+| 56 |   `val colors` |
+| 57 |   `var menuOpen by remember` |
 
 ## feature/sessions/SessionSections.kt
 
@@ -123,18 +125,18 @@ Source root: `app/src/main/java/app/codeg/android/`
 
 | Line | Declaration |
 |---|---|
-| 37 | `@Composable fun ConversationTagChip(tag: ConversationTag)` |
-| 38 |   `val color` |
-| 48 | `@Composable fun ConversationTagFilter(ui: SessionListUiState, viewModel: SessionListViewModel, onManage: () -> Unit)` |
-| 69 | `@Composable fun ConversationTagSheet( conversation: ConversationSummary?, ui: SessionListUiState, viewModel: SessionListViewModel, onDismiss: () -> Unit, )` |
-| 76 |   `var selected by remember(conversation?.id)` |
-| 77 |   `var editing by remember` |
-| 78 |   `var formOpen by remember` |
-| 79 |   `var deleting by remember` |
-| 81 |   `val folder` |
-| 82 |   `val rootId` |
-| 83 |   `val visible` |
-| 141 | `@Composable private fun TagForm(tag: ConversationTag?, busy: Boolean, onDismiss: () -> Unit, onSave: (String, String) -> Unit)` |
-| 142 |   `var name by remember(tag?.id)` |
-| 143 |   `var color by remember(tag?.id)` |
-| 144 |   `val valid` |
+| 39 | `@Composable fun ConversationTagChip(tag: ConversationTag)` |
+| 40 |   `val color` |
+| 50 | `@Composable fun ConversationTagFilter(ui: SessionListUiState, viewModel: SessionListViewModel, onManage: () -> Unit)` |
+| 71 | `@Composable fun ConversationTagSheet( conversation: ConversationSummary?, ui: SessionListUiState, viewModel: SessionListViewModel, onDismiss: () -> Unit, )` |
+| 78 |   `var selected by remember(conversation?.id)` |
+| 79 |   `var editing by remember` |
+| 80 |   `var formOpen by remember` |
+| 81 |   `var deleting by remember` |
+| 83 |   `val folder` |
+| 84 |   `val rootId` |
+| 85 |   `val visible` |
+| 143 | `@Composable private fun TagForm(tag: ConversationTag?, busy: Boolean, onDismiss: () -> Unit, onSave: (String, String) -> Unit)` |
+| 144 |   `var name by remember(tag?.id)` |
+| 145 |   `var color by remember(tag?.id)` |
+| 146 |   `val valid` |

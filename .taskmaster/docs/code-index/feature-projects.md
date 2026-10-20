@@ -6,8 +6,11 @@ Source root: `app/src/main/java/app/codeg/android/`
 
 | Line | Declaration |
 |---|---|
-| 48 | `@Composable fun BranchPickerSheet(viewModel: ProjectDetailViewModel, onDismiss: () -> Unit)` |
-| 49 |   `val ui by viewModel.ui.collectAsStateWithLifecycle()` |
+| 45 | `@Composable fun BranchPickerSheet(viewModel: ProjectDetailViewModel, onDismiss: () -> Unit)` |
+| 46 |   `val ui by viewModel.ui.collectAsStateWithLifecycle()` |
+| 47 |   `val toaster` |
+| 48 |   `val failureTitle` |
+| 49 |   `val doneTitle` |
 | 50 |   `val colors` |
 | 51 |   `var loading by remember` |
 | 52 |   `var locals by remember` |
@@ -15,16 +18,19 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 54 |   `var newBranch by remember` |
 | 55 |   `var busy by remember` |
 | 56 |   `var error by remember` |
-| 65 |   `fun doCheckout(branch: String)` |
-| 103 | `@Composable private fun SectionLabel(text: String)` |
-| 108 | `@Composable private fun BranchRow(branch: String, current: Boolean, enabled: Boolean, onClick: () -> Unit)` |
-| 109 |   `val colors` |
+| 68 |   `fun doCheckout(branch: String)` |
+| 104 | `@Composable private fun SectionLabel(text: String)` |
+| 109 | `@Composable private fun BranchRow(branch: String, current: Boolean, enabled: Boolean, onClick: () -> Unit)` |
+| 110 |   `val colors` |
 
 ## feature/projects/CloneRepoSheet.kt
 
 | Line | Declaration |
 |---|---|
-| 44 | `@Composable fun CloneRepoSheet( loadHome: suspend () -> String, loadDirs: suspend (String) -> List<DirectoryEntry>, clone: suspend (String, String, GitCredentials?) -> String?, onCloned: () -> Unit, onDismiss: () -> Unit, )` |
+| 41 | `@Composable fun CloneRepoSheet( loadHome: suspend () -> String, loadDirs: suspend (String) -> List<DirectoryEntry>, clone: suspend (String, String, GitCredentials?) -> String?, onCloned: () -> Unit, onDismiss: () -> Unit, )` |
+| 48 |   `val toaster` |
+| 49 |   `val failureTitle` |
+| 50 |   `val doneTitle` |
 | 51 |   `val colors` |
 | 52 |   `val scope` |
 | 53 |   `var url by remember` |
@@ -33,17 +39,20 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 56 |   `var password by remember` |
 | 57 |   `var cloning by remember` |
 | 58 |   `var error by remember` |
-| 59 |   `var showBrowser by remember` |
-| 61 |   `val repoName` |
-| 62 |   `val targetDir` |
-| 63 |   `val canClone` |
+| 62 |   `var showBrowser by remember` |
+| 64 |   `val repoName` |
+| 65 |   `val targetDir` |
+| 66 |   `val canClone` |
 
 ## feature/projects/CommitSheet.kt
 
 | Line | Declaration |
 |---|---|
-| 62 | `@Composable fun CommitSheet( viewModel: ProjectDetailViewModel, client: CodegClient, rootPath: String, onDismiss: () -> Unit, onCommitted: (push: Boolean) -> Unit, )` |
-| 69 |   `val context` |
+| 59 | `@Composable fun CommitSheet( viewModel: ProjectDetailViewModel, client: CodegClient, rootPath: String, onDismiss: () -> Unit, onCommitted: (push: Boolean) -> Unit, )` |
+| 66 |   `val context` |
+| 67 |   `val toaster` |
+| 68 |   `val failureTitle` |
+| 69 |   `val doneTitle` |
 | 70 |   `val colors` |
 | 71 |   `val scope` |
 | 73 |   `var entries by remember` |
@@ -52,99 +61,104 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 76 |   `var loadError by remember` |
 | 77 |   `var committing by remember` |
 | 78 |   `var commitError by remember` |
-| 80 |   `suspend fun load()` |
-| 93 |   `val all` |
-| 94 |   `val trimmedMessage` |
-| 95 |   `val canCommit` |
-| 97 |   `fun runCommit(push: Boolean)` |
-| 195 | `@Composable private fun SelectionHeader( selectedCount: Int, total: Int, allSelected: Boolean, enabled: Boolean, onToggleAll: () -> Unit, )` |
-| 202 |   `val colors` |
-| 223 | `@Composable private fun FileSection( title: String, entries: List<GitStatusEntry>, selected: Set<String>, enabled: Boolean, onToggle: (String) -> Unit, )` |
-| 230 |   `val colors` |
+| 83 |   `suspend fun load()` |
+| 96 |   `val all` |
+| 97 |   `val trimmedMessage` |
+| 98 |   `val canCommit` |
+| 100 |   `fun runCommit(push: Boolean)` |
+| 191 | `@Composable private fun SelectionHeader( selectedCount: Int, total: Int, allSelected: Boolean, enabled: Boolean, onToggleAll: () -> Unit, )` |
+| 198 |   `val colors` |
+| 219 | `@Composable private fun FileSection( title: String, entries: List<GitStatusEntry>, selected: Set<String>, enabled: Boolean, onToggle: (String) -> Unit, )` |
+| 226 |   `val colors` |
 
 ## feature/projects/DirectoryBrowserSheet.kt
 
 | Line | Declaration |
 |---|---|
-| 44 | `@Composable fun DirectoryBrowserSheet( title: String, confirmLabel: String, loadHome: suspend () -> String, loadDirs: suspend (String) -> List<DirectoryEntry>, onSelect: (String) -> Unit, onDismiss: () -> Unit, )` |
-| 52 |   `val colors` |
-| 53 |   `val scope` |
-| 54 |   `var path by remember` |
-| 55 |   `var dirs by remember` |
-| 56 |   `var loading by remember` |
-| 97 | `@Composable private fun BrowserRow(name: String, hasChildren: Boolean, icon: ImageVector, onClick: () -> Unit)` |
-| 98 |   `val colors` |
+| 40 | `@Composable fun DirectoryBrowserSheet( title: String, confirmLabel: String, loadHome: suspend () -> String, loadDirs: suspend (String) -> List<DirectoryEntry>, onSelect: (String) -> Unit, onDismiss: () -> Unit, )` |
+| 48 |   `val colors` |
+| 49 |   `val scope` |
+| 50 |   `var path by remember` |
+| 51 |   `var dirs by remember` |
+| 52 |   `var loading by remember` |
+| 93 | `@Composable private fun BrowserRow(name: String, hasChildren: Boolean, icon: ImageVector, onClick: () -> Unit)` |
+| 94 |   `val colors` |
 
 ## feature/projects/FolderChangesView.kt
 
 | Line | Declaration |
 |---|---|
-| 62 | `@Composable fun FolderChangesView( viewModel: ProjectDetailViewModel, client: CodegClient, rootPath: String, onCommit: () -> Unit, )` |
-| 68 |   `val ui by viewModel.ui.collectAsStateWithLifecycle()` |
-| 69 |   `var diffFile by remember` |
-| 72 |   `val df` |
-| 78 |   `var result by remember(rootPath)` |
-| 82 |   `var actionEntry by remember` |
-| 83 |   `var confirm by remember` |
-| 134 |   `val target` |
-| 166 | `@Composable private fun FileActions( entry: GitStatusEntry, onViewDiff: () -> Unit, onStage: () -> Unit, onDiscard: () -> Unit, onDelete: () -> Unit, )` |
-| 173 |   `val colors` |
-| 190 | `@Composable private fun ActionRow(icon: androidx.compose.ui.graphics.vector.ImageVector, label: String, tint: Color, onClick: () -> Unit)` |
-| 200 | `@Composable private fun ChangeRow(entry: GitStatusEntry, onClick: () -> Unit, onLongClick: () -> Unit)` |
-| 201 |   `val colors` |
-| 202 |   `val sub` |
-| 213 | `@Composable private fun WorkingDiff(client: CodegClient, rootPath: String, file: String)` |
-| 214 |   `var result by remember(file)` |
-| 216 |   `val r` |
-| 229 | `@Composable private fun Centered(content: @Composable () -> Unit)` |
+| 57 | `@Composable fun FolderChangesView( viewModel: ProjectDetailViewModel, client: CodegClient, rootPath: String, onCommit: () -> Unit, )` |
+| 63 |   `val ui by viewModel.ui.collectAsStateWithLifecycle()` |
+| 64 |   `var diffFile by remember` |
+| 67 |   `val df` |
+| 73 |   `var result by remember(rootPath)` |
+| 77 |   `var actionEntry by remember` |
+| 78 |   `var confirm by remember` |
+| 129 |   `val target` |
+| 161 | `@Composable private fun FileActions( entry: GitStatusEntry, onViewDiff: () -> Unit, onStage: () -> Unit, onDiscard: () -> Unit, onDelete: () -> Unit, )` |
+| 168 |   `val colors` |
+| 185 | `@Composable private fun ActionRow(icon: androidx.compose.ui.graphics.vector.ImageVector, label: String, tint: Color, onClick: () -> Unit)` |
+| 195 | `@Composable private fun ChangeRow(entry: GitStatusEntry, onClick: () -> Unit, onLongClick: () -> Unit)` |
+| 196 |   `val colors` |
+| 197 |   `val sub` |
+| 208 | `@Composable private fun WorkingDiff(client: CodegClient, rootPath: String, file: String)` |
+| 209 |   `var result by remember(file)` |
+| 211 |   `val r` |
+| 224 | `@Composable private fun Centered(content: @Composable () -> Unit)` |
 
 ## feature/projects/FolderCommitsView.kt
 
 | Line | Declaration |
 |---|---|
-| 70 | `@Composable fun FolderCommitsView(viewModel: ProjectDetailViewModel, client: CodegClient, rootPath: String)` |
-| 71 |   `val ui by viewModel.ui.collectAsStateWithLifecycle()` |
-| 72 |   `var commit by remember` |
-| 75 |   `val sel` |
-| 81 |   `var result by remember(rootPath)` |
-| 82 |   `var pushInfo by remember(rootPath)` |
-| 88 |   `val r` |
-| 89 |   `val isRepo` |
-| 144 | `@Composable private fun SyncHeader( branch: String?, trackingRemote: String?, hasRemote: Boolean, unpushed: Int, busy: Boolean, onPull: () -> Unit, onPush: () -> Unit, onFetch: () -> Unit, )` |
-| 154 |   `val colors` |
-| 180 | `@Composable private fun SyncButton( icon: ImageVector, label: String, enabled: Boolean, onClick: () -> Unit, modifier: Modifier = Modifier, badge: Int? = null, )` |
-| 197 | `@Composable private fun CommitRow(entry: GitLogEntry, onClick: () -> Unit)` |
-| 198 |   `val colors` |
-| 215 | `@Composable private fun CommitDetail(client: CodegClient, rootPath: String, entry: GitLogEntry)` |
-| 216 |   `var unavailableFiles by remember(entry.fullHash)` |
-| 217 |   `var selectedFile by remember(entry.fullHash)` |
-| 226 |   `val colors` |
-| 227 |   `var result by remember(entry.fullHash)` |
-| 274 | `private fun relativeDate(iso: String): String` |
+| 63 | `@Composable fun FolderCommitsView(viewModel: ProjectDetailViewModel, client: CodegClient, rootPath: String)` |
+| 64 |   `val ui by viewModel.ui.collectAsStateWithLifecycle()` |
+| 65 |   `var commit by remember` |
+| 68 |   `val sel` |
+| 74 |   `var result by remember(rootPath)` |
+| 75 |   `var pushInfo by remember(rootPath)` |
+| 81 |   `val r` |
+| 82 |   `val isRepo` |
+| 137 | `@Composable private fun SyncHeader( branch: String?, trackingRemote: String?, hasRemote: Boolean, unpushed: Int, busy: Boolean, onPull: () -> Unit, onPush: () -> Unit, onFetch: () -> Unit, )` |
+| 147 |   `val colors` |
+| 173 | `@Composable private fun SyncButton( icon: ImageVector, label: String, enabled: Boolean, onClick: () -> Unit, modifier: Modifier = Modifier, badge: Int? = null, )` |
+| 190 | `@Composable private fun CommitRow(entry: GitLogEntry, onClick: () -> Unit)` |
+| 191 |   `val colors` |
+| 208 | `@Composable private fun CommitDetail(client: CodegClient, rootPath: String, entry: GitLogEntry)` |
+| 209 |   `var unavailableFiles by remember(entry.fullHash)` |
+| 210 |   `var selectedFile by remember(entry.fullHash)` |
+| 219 |   `val colors` |
+| 220 |   `var result by remember(entry.fullHash)` |
+| 266 | `private fun relativeDate(iso: String): String` |
 
 ## feature/projects/FolderFilesView.kt
 
 | Line | Declaration |
 |---|---|
-| 47 | `@Composable fun FolderFilesView(client: CodegClient, rootPath: String)` |
-| 48 |   `val colors` |
-| 49 |   `var stack by remember` |
-| 50 |   `var previewPath by remember` |
-| 52 |   `var unavailablePaths by remember(rootPath)` |
-| 58 |   `val preview` |
-| 64 |   `val dir` |
-| 65 |   `var result by remember(dir)` |
-| 68 |   `val r` |
-| 97 | `@Composable private fun FileRow(item: DirectoryItem, onClick: () -> Unit)` |
-| 98 |   `val colors` |
-| 99 |   `val sizeLabel` |
-| 112 | `@Composable internal fun FilePreview(client: CodegClient, rootPath: String, absPath: String, size: Long? = null, commit: String? = null, onUnsupported: () -> Unit = {})` |
-| 113 |   `val colors` |
-| 114 |   `val rel` |
-| 115 |   `var result by remember(rootPath, absPath, commit)` |
-| 116 |   `var attempt by remember(rootPath, absPath, commit)` |
-| 151 | `private fun sortItems(items: List<DirectoryItem>): List<DirectoryItem>` |
-| 154 | `private fun formatBytes(bytes: Long): String` |
+| 55 | `@Composable fun FolderFilesView(client: CodegClient, rootPath: String)` |
+| 56 |   `val colors` |
+| 57 |   `var stack by remember` |
+| 58 |   `var previewPath by remember` |
+| 60 |   `var unavailablePaths by remember(rootPath)` |
+| 66 |   `val preview` |
+| 72 |   `val dir` |
+| 73 |   `var result by remember(dir)` |
+| 76 |   `val r` |
+| 105 | `@Composable private fun FileRow(item: DirectoryItem, onClick: () -> Unit)` |
+| 106 |   `val colors` |
+| 107 |   `val sizeLabel` |
+| 120 | `@Composable internal fun FilePreview(client: CodegClient, rootPath: String, absPath: String, size: Long? = null, commit: String? = null, onUnsupported: () -> Unit = {})` |
+| 121 |   `val colors` |
+| 122 |   `val rel` |
+| 123 |   `var result by remember(rootPath, absPath, commit)` |
+| 124 |   `var attempt by remember(rootPath, absPath, commit)` |
+| 160 | `private fun sortItems(items: List<DirectoryItem>): List<DirectoryItem>` |
+| 163 | `private fun formatBytes(bytes: Long): String` |
+| 171 | `@Composable private fun ProjectImagePreview(content: FileViewerContent.Image)` |
+| 172 |   `var open by remember(content)` |
+| 173 |   `var decoding by remember(content)` |
+| 174 |   `val bitmap by produceState<ImageBitmap?>(null, content)` |
+| 188 |   `val image` |
 
 ## feature/projects/forge/ForgeDetail.kt
 
@@ -163,10 +177,13 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 19 | `@Composable fun ForgeSheet(vm: ForgeViewModel, onDismiss: () -> Unit)` |
 | 20 |   `val ui by vm.ui.collectAsStateWithLifecycle()` |
 | 21 |   `var newIssue by remember` |
-| 79 | `@Composable private fun ForgeNewIssue(ui: ForgeUi, vm: ForgeViewModel, dismiss: () -> Unit)` |
-| 80 |   `var title by remember` |
-| 81 |   `var body by remember` |
-| 82 |   `var labels by remember` |
+| 22 |   `val toaster` |
+| 23 |   `val context` |
+| 24 |   `val failureTitle` |
+| 82 | `@Composable private fun ForgeNewIssue(ui: ForgeUi, vm: ForgeViewModel, dismiss: () -> Unit)` |
+| 83 |   `var title by remember` |
+| 84 |   `var body by remember` |
+| 85 |   `var labels by remember` |
 
 ## feature/projects/forge/ForgeViewModel.kt
 
@@ -210,6 +227,9 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 23 |   `var force by remember` |
 | 24 |   `var deleteReady by remember` |
 | 25 |   `val colors` |
+| 26 |   `val toaster` |
+| 27 |   `val failureTitle` |
+| 28 |   `val doneTitle` |
 
 ## feature/projects/git/BranchManageViewModel.kt
 
@@ -238,32 +258,33 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 16 |   `var pending by remember` |
 | 17 |   `var version by remember` |
 | 20 |   `val operations` |
-| 58 | `@Composable private fun versionLabel(value: String): String` |
+| 23 |   `var query by remember` |
+| 59 | `@Composable private fun versionLabel(value: String): String` |
 
 ## feature/projects/git/GitActionsMenu.kt
 
 | Line | Declaration |
 |---|---|
-| 30 | `@Composable fun GitActionsMenu(onSwitchBranch: () -> Unit, enabled: Boolean = true)` |
-| 31 |   `val project: ProjectDetailViewModel` |
-| 32 |   `val projectUi by project.ui.collectAsStateWithLifecycle()` |
-| 33 |   `val client` |
-| 34 |   `val folder` |
-| 35 |   `val path` |
-| 38 |   `var showStash by remember(client, path)` |
-| 39 |   `val stash: StashViewModel?` |
-| 45 |   `val stashUi` |
-| 52 |   `var showManage by remember(client, path)` |
-| 53 |   `val manager: BranchManageViewModel?` |
-| 59 |   `val manageUi` |
-| 65 |   `val mergeVm: MergeOpsViewModel` |
-| 66 |   `val mergeUi by mergeVm.ui.collectAsStateWithLifecycle()` |
-| 67 |   `var showMerge by remember(path)` |
-| 79 |   `var showMisc by remember` |
-| 85 |   `var showForge by remember(client, folder?.id)` |
-| 86 |   `val forge: app.codeg.android.feature.projects.forge.ForgeViewModel?` |
-| 93 |   `val forgeUi` |
-| 99 |   `var expanded by remember` |
+| 32 | `@Composable fun GitActionsMenu(onSwitchBranch: () -> Unit, enabled: Boolean = true)` |
+| 33 |   `val project: ProjectDetailViewModel` |
+| 34 |   `val projectUi by project.ui.collectAsStateWithLifecycle()` |
+| 35 |   `val client` |
+| 36 |   `val folder` |
+| 37 |   `val path` |
+| 40 |   `var showStash by remember(client, path)` |
+| 41 |   `val stash: StashViewModel?` |
+| 47 |   `val stashUi` |
+| 54 |   `var showManage by remember(client, path)` |
+| 55 |   `val manager: BranchManageViewModel?` |
+| 61 |   `val manageUi` |
+| 67 |   `val mergeVm: MergeOpsViewModel` |
+| 68 |   `val mergeUi by mergeVm.ui.collectAsStateWithLifecycle()` |
+| 69 |   `var showMerge by remember(path)` |
+| 81 |   `var showMisc by remember` |
+| 87 |   `var showForge by remember(client, folder?.id)` |
+| 88 |   `val forge: app.codeg.android.feature.projects.forge.ForgeViewModel?` |
+| 95 |   `val forgeUi` |
+| 101 |   `var expanded by remember` |
 
 ## feature/projects/git/GitMiscSheet.kt
 
@@ -281,6 +302,9 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 27 |   `var password by remember` |
 | 28 |   `var confirmation by remember` |
 | 30 |   `fun mutate(action: String, operation: suspend () -> Unit)` |
+| 35 |   `val toaster` |
+| 36 |   `val failureTitle` |
+| 37 |   `val doneTitle` |
 
 ## feature/projects/git/GitMiscViewModel.kt
 
@@ -315,7 +339,10 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 20 |   `var confirm by remember` |
 | 21 |   `var typed by remember` |
 | 22 |   `var hardVerified by remember` |
-| 71 | `@Composable internal fun operationLabel(value: String): String` |
+| 23 |   `val toaster` |
+| 24 |   `val failureTitle` |
+| 25 |   `val doneTitle` |
+| 76 | `@Composable internal fun operationLabel(value: String): String` |
 
 ## feature/projects/git/MergeOpsViewModel.kt
 
@@ -355,7 +382,10 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 20 |   `var keepIndex by remember` |
 | 21 |   `var confirmation by remember` |
 | 22 |   `val colors` |
-| 71 | `@Composable private fun pathLabel(count: Int): String` |
+| 23 |   `val toaster` |
+| 24 |   `val failureTitle` |
+| 25 |   `val doneTitle` |
+| 78 | `@Composable private fun pathLabel(count: Int): String` |
 
 ## feature/projects/git/StashViewModel.kt
 
@@ -380,30 +410,35 @@ Source root: `app/src/main/java/app/codeg/android/`
 
 | Line | Declaration |
 |---|---|
-| 56 | `@Composable fun GitCredentialSheet( viewModel: ProjectDetailViewModel, prompt: GitCredentialPrompt, )` |
-| 60 |   `val context` |
-| 61 |   `val colors` |
-| 62 |   `val scope` |
-| 63 |   `val uriHandler` |
-| 65 |   `var token by remember` |
-| 66 |   `var username by remember` |
-| 67 |   `var password by remember` |
-| 68 |   `var saveCredentials by remember` |
-| 69 |   `var submitting by remember` |
-| 70 |   `var error by remember` |
-| 72 |   `val hostLabel` |
-| 73 |   `val serverUrl` |
-| 74 |   `val invalidTokenMsg` |
-| 76 |   `val canSubmit` |
-| 82 |   `fun submit()` |
-| 166 | `@Composable private fun Banner(message: String, tint: Color, textColor: Color)` |
+| 57 | `@Composable fun GitCredentialSheet( viewModel: ProjectDetailViewModel, prompt: GitCredentialPrompt, )` |
+| 61 |   `val context` |
+| 62 |   `val toaster` |
+| 63 |   `val failureTitle` |
+| 64 |   `val colors` |
+| 65 |   `val scope` |
+| 66 |   `val uriHandler` |
+| 68 |   `var token by remember` |
+| 69 |   `var username by remember` |
+| 70 |   `var password by remember` |
+| 71 |   `var saveCredentials by remember` |
+| 72 |   `var submitting by remember` |
+| 73 |   `var error by remember` |
+| 78 |   `val hostLabel` |
+| 79 |   `val serverUrl` |
+| 80 |   `val invalidTokenMsg` |
+| 82 |   `val canSubmit` |
+| 88 |   `fun submit()` |
+| 171 | `@Composable private fun Banner(message: String, tint: Color, textColor: Color)` |
 
 ## feature/projects/GitStatusStrip.kt
 
 | Line | Declaration |
 |---|---|
-| 39 | `@Composable internal fun GitStatusStrip( busy: Boolean, busyTitle: String?, banner: GitBanner?, onDismissBanner: () -> Unit, modifier: Modifier = Modifier, )` |
-| 46 |   `val colors` |
+| 26 | `@Composable internal fun GitStatusStrip( busy: Boolean, busyTitle: String?, banner: GitBanner?, onDismissBanner: () -> Unit, modifier: Modifier = Modifier, )` |
+| 33 |   `val toaster` |
+| 34 |   `val working` |
+| 35 |   `var loadingToast by remember` |
+| 63 |   `val colors` |
 
 ## feature/projects/groups/FolderLayout.kt
 
@@ -431,9 +466,11 @@ Source root: `app/src/main/java/app/codeg/android/`
 
 | Line | Declaration |
 |---|---|
-| 16 | `@Composable fun ImportSessionsSheet(ui: ImportSessionsUi, viewModel: ImportSessionsViewModel, onDismiss: () -> Unit, onImported: () -> Unit)` |
-| 17 |   `var confirmAll by remember` |
-| 18 |   `val all` |
+| 15 | `@Composable fun ImportSessionsSheet(ui: ImportSessionsUi, viewModel: ImportSessionsViewModel, onDismiss: () -> Unit, onImported: () -> Unit)` |
+| 16 |   `var confirmAll by remember` |
+| 17 |   `val toaster` |
+| 18 |   `val failureTitle` |
+| 20 |   `val all` |
 
 ## feature/projects/importsessions/ImportSessionsViewModel.kt
 
@@ -460,19 +497,19 @@ Source root: `app/src/main/java/app/codeg/android/`
 
 | Line | Declaration |
 |---|---|
-| 56 | `private enum class ProjectTab(val labelRes: Int)` |
-| 64 | `@Composable fun ProjectDetailScreen( onBack: () -> Unit, viewModel: ProjectDetailViewModel = hiltViewModel(), )` |
-| 68 |   `val ui by viewModel.ui.collectAsStateWithLifecycle()` |
-| 69 |   `val colors` |
-| 70 |   `var tab by remember` |
-| 71 |   `var showBranchPicker by remember` |
-| 72 |   `var showCommit by remember` |
-| 76 |   `val commitClient` |
-| 77 |   `val commitFolder` |
-| 156 | `@Composable private fun Header(name: String, path: String, color: Color, branch: String?, running: Int, sessions: Int, onBranchClick: () -> Unit = {})` |
-| 157 |   `val colors` |
-| 181 | `@Composable private fun ProjectTabs(selected: ProjectTab, onSelect: (ProjectTab) -> Unit)` |
-| 182 |   `val entries` |
+| 54 | `private enum class ProjectTab(val labelRes: Int)` |
+| 62 | `@Composable fun ProjectDetailScreen( onBack: () -> Unit, viewModel: ProjectDetailViewModel = hiltViewModel(), )` |
+| 66 |   `val ui by viewModel.ui.collectAsStateWithLifecycle()` |
+| 67 |   `val colors` |
+| 68 |   `var tab by remember` |
+| 69 |   `var showBranchPicker by remember` |
+| 70 |   `var showCommit by remember` |
+| 74 |   `val commitClient` |
+| 75 |   `val commitFolder` |
+| 154 | `@Composable private fun Header(name: String, path: String, color: Color, branch: String?, running: Int, sessions: Int, onBranchClick: () -> Unit = {})` |
+| 155 |   `val colors` |
+| 179 | `@Composable private fun ProjectTabs(selected: ProjectTab, onSelect: (ProjectTab) -> Unit)` |
+| 180 |   `val entries` |
 
 ## feature/projects/ProjectDetailViewModel.kt
 
@@ -544,26 +581,28 @@ Source root: `app/src/main/java/app/codeg/android/`
 
 | Line | Declaration |
 |---|---|
-| 74 | `@Composable fun ProjectListScreen( onOpenFolder: (Int) -> Unit, viewModel: ProjectsViewModel = hiltViewModel(), )` |
-| 78 |   `val ui by viewModel.ui.collectAsStateWithLifecycle()` |
-| 79 |   `val colors` |
-| 80 |   `val importViewModel: app.codeg.android.feature.projects.importsessions.ImportSessionsViewModel` |
-| 81 |   `val importUi by importViewModel.ui.collectAsStateWithLifecycle()` |
-| 82 |   `var showImport by remember` |
-| 83 |   `var menuOpen by remember` |
-| 84 |   `var showBrowser by remember` |
-| 85 |   `var showClone by remember` |
-| 86 |   `var createGroup by remember` |
-| 87 |   `var editFolder by remember` |
-| 88 |   `var renameGroup by remember` |
-| 89 |   `var deleteGroup by remember` |
-| 90 |   `var collapsed by remember` |
-| 354 | `@Composable private fun FolderRow( folder: FolderDetail, running: Int, modifier: Modifier = Modifier, onLongClick: (() -> Unit)? = null, onClick: () -> Unit, )` |
-| 361 |   `val colors` |
-| 362 |   `val tile` |
-| 384 | `@Composable private fun RunningPill(count: Int, modifier: Modifier = Modifier)` |
-| 390 | `@Composable fun BranchPill(branch: String, modifier: Modifier = Modifier)` |
-| 394 | `internal fun sortedFolders(folders: List<FolderDetail>): List<FolderDetail>` |
+| 62 | `@Composable fun ProjectListScreen( onOpenFolder: (Int) -> Unit, viewModel: ProjectsViewModel = hiltViewModel(), )` |
+| 66 |   `val ui by viewModel.ui.collectAsStateWithLifecycle()` |
+| 67 |   `val toaster` |
+| 68 |   `val refreshFailed` |
+| 72 |   `val colors` |
+| 73 |   `val importViewModel: app.codeg.android.feature.projects.importsessions.ImportSessionsViewModel` |
+| 74 |   `val importUi by importViewModel.ui.collectAsStateWithLifecycle()` |
+| 75 |   `var showImport by remember` |
+| 76 |   `var menuOpen by remember` |
+| 77 |   `var showBrowser by remember` |
+| 78 |   `var showClone by remember` |
+| 79 |   `var createGroup by remember` |
+| 80 |   `var editFolder by remember` |
+| 81 |   `var renameGroup by remember` |
+| 82 |   `var deleteGroup by remember` |
+| 83 |   `var collapsed by remember` |
+| 311 | `@Composable private fun FolderRow( folder: FolderDetail, running: Int, modifier: Modifier = Modifier, onLongClick: (() -> Unit)? = null, onClick: () -> Unit, )` |
+| 318 |   `val colors` |
+| 319 |   `val tile` |
+| 340 | `@Composable private fun RunningPill(count: Int, modifier: Modifier = Modifier)` |
+| 346 | `@Composable fun BranchPill(branch: String, modifier: Modifier = Modifier)` |
+| 350 | `internal fun sortedFolders(folders: List<FolderDetail>): List<FolderDetail>` |
 
 ## feature/projects/ProjectsViewModel.kt
 

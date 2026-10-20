@@ -17,25 +17,25 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 102 |   `var data by remember` |
 | 103 |   `var currentMode by remember` |
 | 104 |   `var currentValues by remember` |
-| 106 |   `var note by remember` |
-| 109 |   `var applying by remember` |
-| 110 |   `val applyFailedNote` |
-| 229 | `@Composable private fun AgentPickerSection(agents: List<AgentType>, selected: AgentType, onSelect: (AgentType) -> Unit)` |
-| 230 |   `val colors` |
-| 271 | `@Composable private fun WorkspaceSection( ui: SessionDetailUiState, onSelectFolder: (FolderDetail) -> Unit, onOpenBranch: () -> Unit, )` |
-| 276 |   `val colors` |
-| 288 | `@Composable private fun FolderMenuRow(ui: SessionDetailUiState, onSelectFolder: (FolderDetail) -> Unit)` |
-| 298 | `@Composable private fun FolderReadOnlyRow(ui: SessionDetailUiState)` |
-| 299 |   `val colors` |
-| 314 | `@Composable private fun BranchRow(current: String?, isBusy: Boolean, onClick: () -> Unit)` |
-| 315 |   `val colors` |
-| 327 | `@Composable private fun PathLine(path: String)` |
-| 336 | `@Composable private fun BranchPickerContent( viewModel: SessionDetailViewModel, onBack: () -> Unit, onOpenSession: (Int) -> Unit, )` |
-| 341 |   `val ui by viewModel.ui.collectAsStateWithLifecycle()` |
-| 342 |   `val colors` |
-| 343 |   `val scope` |
-| 344 |   `var loading by remember` |
-| 345 |   `var list by remember` |
+| 105 |   `val toaster` |
+| 108 |   `var applying by remember` |
+| 109 |   `val applyFailedNote` |
+| 224 | `@Composable private fun AgentPickerSection(agents: List<AgentType>, selected: AgentType, onSelect: (AgentType) -> Unit)` |
+| 225 |   `val colors` |
+| 269 | `@Composable private fun WorkspaceSection( ui: SessionDetailUiState, onSelectFolder: (FolderDetail) -> Unit, onOpenBranch: () -> Unit, )` |
+| 274 |   `val colors` |
+| 286 | `@Composable private fun FolderMenuRow(ui: SessionDetailUiState, onSelectFolder: (FolderDetail) -> Unit)` |
+| 299 | `@Composable private fun FolderReadOnlyRow(ui: SessionDetailUiState)` |
+| 300 |   `val colors` |
+| 315 | `@Composable private fun BranchRow(current: String?, isBusy: Boolean, onClick: () -> Unit)` |
+| 316 |   `val colors` |
+| 328 | `@Composable private fun PathLine(path: String)` |
+| 337 | `@Composable private fun BranchPickerContent( viewModel: SessionDetailViewModel, onBack: () -> Unit, onOpenSession: (Int) -> Unit, )` |
+| 342 |   `val ui by viewModel.ui.collectAsStateWithLifecycle()` |
+| 343 |   `val colors` |
+| 344 |   `val scope` |
+| 345 |   `var loading by remember` |
+| 346 |   `var list by remember` |
 | 347 |   `var query by remember` |
 | 348 |   `var switching by remember` |
 | 349 |   `var showNew by remember` |
@@ -45,22 +45,15 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 353 |   `val current` |
 | 360 |   `fun pick(display: String, target: String, isRemote: Boolean)` |
 | 374 |   `val worktree` |
-| 375 |   `val locals` |
-| 376 |   `val remotes` |
-| 443 | `private fun String.matches(query: String): Boolean` |
-| 444 |   `val q` |
-| 449 | `@Composable private fun NewBranchInline( show: Boolean, name: String, current: String?, creating: Boolean, onShow: () -> Unit, onName: (String) -> Unit, onCancel: () -> Unit, onCreate: () -> Unit, )` |
-| 459 |   `val colors` |
-| 489 | `@Composable private fun BranchRowItem( display: String, target: String, isRemote: Boolean, occupied: Boolean, isCurrent: Boolean, switching: Boolean, enabled: Boolean, onClick: () -> Unit, )` |
-| 499 |   `val colors` |
-| 517 | `@Composable private fun BranchSectionLabel(text: String)` |
-| 526 | `@Composable private fun ConfigOptionSection(option: SessionConfigOption, currentValue: String?, optionApplying: Boolean, locked: Boolean, onSelect: (String) -> Unit)` |
-| 527 |   `val colors` |
-| 528 |   `val flat: List<SessionConfigSelectOption>` |
-| 543 | `@Composable private fun OptionGroup(content: @Composable () -> Unit)` |
-| 548 | `@Composable private fun GroupDivider()` |
-| 553 | `@Composable private fun OptionRow(title: String, description: String?, selected: Boolean, busy: Boolean, enabled: Boolean, onClick: () -> Unit)` |
-| 554 |   `val colors` |
+| 439 | `@Composable private fun NewBranchInline( show: Boolean, name: String, current: String?, creating: Boolean, onShow: () -> Unit, onName: (String) -> Unit, onCancel: () -> Unit, onCreate: () -> Unit, )` |
+| 449 |   `val colors` |
+| 483 | `@Composable private fun ConfigOptionSection(option: SessionConfigOption, currentValue: String?, optionApplying: Boolean, locked: Boolean, onSelect: (String) -> Unit)` |
+| 484 |   `val colors` |
+| 485 |   `val flat: List<SessionConfigSelectOption>` |
+| 500 | `@Composable private fun OptionGroup(content: @Composable () -> Unit)` |
+| 505 | `@Composable private fun GroupDivider()` |
+| 510 | `@Composable private fun OptionRow(title: String, description: String?, selected: Boolean, busy: Boolean, enabled: Boolean, onClick: () -> Unit)` |
+| 511 |   `val colors` |
 
 ## feature/sessiondetail/Attachment.kt
 
@@ -85,58 +78,56 @@ Source root: `app/src/main/java/app/codeg/android/`
 
 | Line | Declaration |
 |---|---|
-| 58 | `@Composable fun ComposeBar( text: String, onTextChange: (String) -> Unit, onSend: () -> Unit, isInFlight: Boolean, onStop: () -> Unit, modifier: Modifier = Modifier, onPlus: (() -> Unit)? = null, onAttach: (() -> Unit)? = null, canSendOverride: Boolean = false, attachments: (@Composable ColumnScope.() -> Unit)? = null, )` |
-| 71 |   `val colors` |
-| 72 |   `val web` |
-| 73 |   `val canSend` |
-| 74 |   `val interaction` |
-| 75 |   `val focused by interaction.collectIsFocusedAsState()` |
-| 76 |   `val box` |
-| 77 |   `val halo` |
-| 146 | `@Composable private fun GhostIconButton(onClick: () -> Unit, content: @Composable () -> Unit)` |
-| 161 | `@Composable private fun SendStopButton(isInFlight: Boolean, enabled: Boolean, onClick: () -> Unit)` |
-| 162 |   `val colors` |
-| 163 |   `val stopWash` |
+| 55 | `@Composable fun ComposeBar( text: String, onTextChange: (String) -> Unit, onSend: () -> Unit, isInFlight: Boolean, onStop: () -> Unit, modifier: Modifier = Modifier, onPlus: (() -> Unit)? = null, onAttach: (() -> Unit)? = null, canSendOverride: Boolean = false, attachments: (@Composable ColumnScope.() -> Unit)? = null, )` |
+| 68 |   `val colors` |
+| 69 |   `val web` |
+| 70 |   `val canSend` |
+| 71 |   `val interaction` |
+| 72 |   `val focused by interaction.collectIsFocusedAsState()` |
+| 73 |   `val box` |
+| 74 |   `val halo` |
+| 143 | `@Composable private fun GhostIconButton(onClick: () -> Unit, content: @Composable () -> Unit)` |
+| 158 | `@Composable private fun SendStopButton(isInFlight: Boolean, enabled: Boolean, onClick: () -> Unit)` |
+| 159 |   `val colors` |
+| 160 |   `val stopWash` |
 
 ## feature/sessiondetail/ComposeInsertSheet.kt
 
 | Line | Declaration |
 |---|---|
-| 36 | `object ComposeInsert` |
-| 37 |   `fun appendMessage(content: String, draft: String): String` |
-| 40 |   `fun appendCommand(name: String, draft: String): String` |
-| 44 |   `fun applyExpert(id: String, draft: String, agent: AgentType, knownIds: Set<String>): String` |
-| 52 | `private enum class InsertSource` |
-| 56 | `@Composable fun ComposeInsertSheet( viewModel: SessionDetailViewModel, onInsert: ((String) -> String) -> Unit, onDismiss: () -> Unit, )` |
-| 61 |   `val colors` |
-| 62 |   `var source by remember` |
-| 63 |   `var loading by remember` |
-| 64 |   `var quick by remember` |
-| 65 |   `var experts by remember` |
-| 66 |   `var commands by remember` |
-| 67 |   `var knownIds by remember` |
-| 129 | `@Composable private fun InsertList(empty: Boolean, emptyText: String, content: androidx.compose.foundation.lazy.LazyListScope.() -> Unit)` |
-| 130 |   `val colors` |
-| 139 | `@Composable private fun InsertRow(title: String, subtitle: String, onClick: () -> Unit)` |
+| 34 | `object ComposeInsert` |
+| 35 |   `fun appendMessage(content: String, draft: String): String` |
+| 38 |   `fun appendCommand(name: String, draft: String): String` |
+| 42 |   `fun applyExpert(id: String, draft: String, agent: AgentType, knownIds: Set<String>): String` |
+| 50 | `private enum class InsertSource` |
+| 54 | `@Composable fun ComposeInsertSheet( viewModel: SessionDetailViewModel, onInsert: ((String) -> String) -> Unit, onDismiss: () -> Unit, )` |
+| 59 |   `val colors` |
+| 60 |   `var source by remember` |
+| 61 |   `var query by remember(source)` |
+| 62 |   `var loading by remember` |
+| 63 |   `var quick by remember` |
+| 64 |   `var experts by remember` |
+| 65 |   `var commands by remember` |
+| 66 |   `var knownIds by remember` |
 
 ## feature/sessiondetail/interactive/AskQuestionCard.kt
 
 | Line | Declaration |
 |---|---|
-| 47 | `private const val OTHER_KEY` |
-| 51 | `@Composable fun AskQuestionCard( questions: List<QuestionSpec>, onSubmit: (QuestionAnswer) -> Unit, onSkip: () -> Unit, modifier: Modifier = Modifier, )` |
-| 57 |   `val colors` |
-| 58 |   `val selections` |
-| 59 |   `val otherText` |
-| 60 |   `var submitting by remember(questions)` |
-| 62 |   `fun answered(q: QuestionSpec): Boolean` |
-| 68 |   `val canSubmit` |
-| 127 | `@Composable private fun QuestionBlock( question: QuestionSpec, showHeader: Boolean, selected: Set<String>, otherText: String, onToggle: (String) -> Unit, onOtherText: (String) -> Unit, )` |
-| 135 |   `val colors` |
-| 173 | `@Composable private fun OptionRow(label: String, description: String, checked: Boolean, multi: Boolean, onClick: () -> Unit)` |
-| 174 |   `val colors` |
-| 187 | `private fun buildAnswer( questions: List<QuestionSpec>, selections: Map<String, Set<String>>, otherText: Map<String, String>, ): QuestionAnswer` |
-| 192 |   `val items` |
+| 44 | `private const val OTHER_KEY` |
+| 48 | `@Composable fun AskQuestionCard( questions: List<QuestionSpec>, onSubmit: (QuestionAnswer) -> Unit, onSkip: () -> Unit, modifier: Modifier = Modifier, )` |
+| 54 |   `val colors` |
+| 55 |   `val selections` |
+| 56 |   `val otherText` |
+| 57 |   `var submitting by remember(questions)` |
+| 59 |   `fun answered(q: QuestionSpec): Boolean` |
+| 65 |   `val canSubmit` |
+| 124 | `@Composable private fun QuestionBlock( question: QuestionSpec, showHeader: Boolean, selected: Set<String>, otherText: String, onToggle: (String) -> Unit, onOtherText: (String) -> Unit, )` |
+| 132 |   `val colors` |
+| 170 | `@Composable private fun OptionRow(label: String, description: String, checked: Boolean, multi: Boolean, onClick: () -> Unit)` |
+| 171 |   `val colors` |
+| 184 | `private fun buildAnswer( questions: List<QuestionSpec>, selections: Map<String, Set<String>>, otherText: Map<String, String>, ): QuestionAnswer` |
+| 189 |   `val items` |
 
 ## feature/sessiondetail/interactive/ParsedPermission.kt
 
@@ -202,29 +193,29 @@ Source root: `app/src/main/java/app/codeg/android/`
 
 | Line | Declaration |
 |---|---|
-| 50 | `@Composable fun PermissionRequestCard( parsed: ParsedPermission, options: List<PermissionOption>, onRespond: (String) -> Unit, modifier: Modifier = Modifier, )` |
-| 56 |   `val colors` |
-| 57 |   `var submitting by remember(parsed.jsonPreview)` |
-| 58 |   `val accent` |
-| 110 | `@Composable private fun PermissionBody(parsed: ParsedPermission)` |
-| 111 |   `val colors` |
-| 164 | `@Composable private fun OptionButton(option: PermissionOption, submitting: Boolean, enabled: Boolean, onClick: () -> Unit)` |
-| 165 |   `val colors` |
-| 166 |   `val isReject` |
-| 169 |   `val clickable` |
+| 47 | `@Composable fun PermissionRequestCard( parsed: ParsedPermission, options: List<PermissionOption>, onRespond: (String) -> Unit, modifier: Modifier = Modifier, )` |
+| 53 |   `val colors` |
+| 54 |   `var submitting by remember(parsed.jsonPreview)` |
+| 55 |   `val accent` |
+| 107 | `@Composable private fun PermissionBody(parsed: ParsedPermission)` |
+| 108 |   `val colors` |
+| 161 | `@Composable private fun OptionButton(option: PermissionOption, submitting: Boolean, enabled: Boolean, onClick: () -> Unit)` |
+| 162 |   `val colors` |
+| 163 |   `val isReject` |
+| 166 |   `val clickable` |
 
 ## feature/sessiondetail/interactive/PlanApprovalCard.kt
 
 | Line | Declaration |
 |---|---|
-| 58 | `@Composable fun PlanApprovalCard( planMarkdown: String, onAnswer: (PlanApprovalDecision, String?) -> Unit, modifier: Modifier = Modifier, )` |
-| 63 |   `val colors` |
-| 64 |   `val plan` |
-| 65 |   `var submitting by remember(planMarkdown)` |
-| 66 |   `var changesOpen by remember(planMarkdown)` |
-| 67 |   `var feedback by remember(planMarkdown)` |
-| 68 |   `val notes` |
-| 70 |   `fun submit(decision: PlanApprovalDecision, text: String?)` |
+| 57 | `@Composable fun PlanApprovalCard( planMarkdown: String, onAnswer: (PlanApprovalDecision, String?) -> Unit, modifier: Modifier = Modifier, )` |
+| 62 |   `val colors` |
+| 63 |   `val plan` |
+| 64 |   `var submitting by remember(planMarkdown)` |
+| 65 |   `var changesOpen by remember(planMarkdown)` |
+| 66 |   `var feedback by remember(planMarkdown)` |
+| 67 |   `val notes` |
+| 69 |   `fun submit(decision: PlanApprovalDecision, text: String?)` |
 
 ## feature/sessiondetail/LiveTurn.kt
 
@@ -292,21 +283,22 @@ Source root: `app/src/main/java/app/codeg/android/`
 
 | Line | Declaration |
 |---|---|
-| 27 | `@Composable fun InlineImage(image: ImageData, caption: String?, modifier: Modifier = Modifier)` |
-| 29 |   `val colors` |
-| 30 |   `val bitmap` |
+| 34 | `@Composable fun InlineImage(image: ImageData, caption: String?, modifier: Modifier = Modifier)` |
+| 35 |   `var preview by remember(image.data)` |
+| 36 |   `val colors` |
+| 37 |   `val bitmap` |
 
 ## feature/sessiondetail/rendering/LivePlanView.kt
 
 | Line | Declaration |
 |---|---|
-| 33 | `private val SuccessGreen: androidx.compose.ui.graphics.Color @Composable @ReadOnlyComposable get()` |
-| 37 | `@Composable fun LivePlanView(entries: List<PlanEntry>, modifier: Modifier = Modifier)` |
-| 39 |   `val colors` |
-| 40 |   `val done` |
-| 60 | `@Composable private fun PlanRow(entry: PlanEntry)` |
-| 61 |   `val colors` |
-| 62 |   `val completed` |
+| 30 | `private val SuccessGreen: androidx.compose.ui.graphics.Color @Composable @ReadOnlyComposable get()` |
+| 34 | `@Composable fun LivePlanView(entries: List<PlanEntry>, modifier: Modifier = Modifier)` |
+| 36 |   `val colors` |
+| 37 |   `val done` |
+| 57 | `@Composable private fun PlanRow(entry: PlanEntry)` |
+| 58 |   `val colors` |
+| 59 |   `val completed` |
 
 ## feature/sessiondetail/rendering/McpResultEnvelope.kt
 
@@ -324,49 +316,48 @@ Source root: `app/src/main/java/app/codeg/android/`
 
 | Line | Declaration |
 |---|---|
-| 44 | `@Composable fun ReasoningBlock(text: String, modifier: Modifier = Modifier, initiallyExpanded: Boolean = false)` |
-| 46 |   `val colors` |
-| 47 |   `var expanded by remember(text)` |
-| 48 |   `val chevron by animateFloatAsState(if (expanded) 90f else 0f, label = "reasoning-chevron")` |
+| 34 | `@Composable fun ReasoningBlock(text: String, modifier: Modifier = Modifier, initiallyExpanded: Boolean = false)` |
+| 35 |   `val colors` |
+| 36 |   `var expanded by remember(text)` |
 
 ## feature/sessiondetail/rendering/ToolCallCard.kt
 
 | Line | Declaration |
 |---|---|
-| 72 | `private val SuccessGreen: Color @Composable @ReadOnlyComposable get()` |
-| 73 | `private val ErrorRed: Color @Composable @ReadOnlyComposable get()` |
-| 80 | `@Composable fun ToolCallCard(vm: ToolCallVM, modifier: Modifier = Modifier, nested: Boolean = false)` |
-| 82 |   `val colors` |
-| 83 |   `val autoExpand` |
-| 86 |   `var expanded by remember(vm.id)` |
-| 87 |   `val hasBody` |
-| 144 | `@Composable private fun ToolBody(vm: ToolCallVM)` |
-| 145 |   `val diff` |
-| 153 |   `val input` |
-| 169 | `@Composable private fun BashInputBody(input: String)` |
-| 170 |   `val parsed` |
-| 171 |   `val args` |
-| 172 |   `val cmd` |
-| 183 | `@Composable private fun TodoInputBody(input: String)` |
-| 184 |   `val colors` |
-| 185 |   `val args` |
-| 186 |   `val todos` |
-| 226 | `@Composable private fun ToolOutputSection(vm: ToolCallVM)` |
-| 230 |   `val out` |
-| 259 | `@Composable private fun ToolStateIcon(vm: ToolCallVM)` |
-| 260 |   `val colors` |
-| 271 | `@Composable fun ToolGroupCard(items: List<ToolCallVM>, modifier: Modifier = Modifier, streaming: Boolean = false)` |
-| 272 |   `val colors` |
-| 275 |   `var expanded by remember(items.firstOrNull()?.id)` |
-| 276 |   `val errorCount` |
-| 329 | `fun bucketIcon(bucket: ToolKindBucket): ImageVector` |
-| 341 | `private fun groupSummary(context: Context, items: List<ToolCallVM>): String` |
-| 342 |   `val counts` |
-| 343 |   `val order` |
-| 347 |   `val res` |
-| 348 |   `val phrases` |
-| 366 | `private fun JsonObject.str(key: String): String?` |
-| 367 |   `val prim` |
+| 47 | `private val SuccessGreen: Color @Composable @ReadOnlyComposable get()` |
+| 48 | `private val ErrorRed: Color @Composable @ReadOnlyComposable get()` |
+| 55 | `@Composable fun ToolCallCard(vm: ToolCallVM, modifier: Modifier = Modifier, nested: Boolean = false)` |
+| 56 |   `val colors` |
+| 57 |   `val autoExpand` |
+| 60 |   `var expanded by remember(vm.id)` |
+| 61 |   `val hasBody` |
+| 105 | `@Composable private fun ToolBody(vm: ToolCallVM)` |
+| 106 |   `val diff` |
+| 114 |   `val input` |
+| 130 | `@Composable private fun BashInputBody(input: String)` |
+| 131 |   `val parsed` |
+| 132 |   `val args` |
+| 133 |   `val cmd` |
+| 144 | `@Composable private fun TodoInputBody(input: String)` |
+| 145 |   `val colors` |
+| 146 |   `val args` |
+| 147 |   `val todos` |
+| 187 | `@Composable private fun ToolOutputSection(vm: ToolCallVM)` |
+| 191 |   `val out` |
+| 220 | `@Composable private fun ToolStateIcon(vm: ToolCallVM)` |
+| 221 |   `val colors` |
+| 232 | `@Composable fun ToolGroupCard(items: List<ToolCallVM>, modifier: Modifier = Modifier, streaming: Boolean = false)` |
+| 233 |   `val colors` |
+| 236 |   `var expanded by remember(items.firstOrNull()?.id)` |
+| 237 |   `val errorCount` |
+| 279 | `fun bucketIcon(bucket: ToolKindBucket): ImageVector` |
+| 291 | `private fun groupSummary(context: Context, items: List<ToolCallVM>): String` |
+| 292 |   `val counts` |
+| 293 |   `val order` |
+| 297 |   `val res` |
+| 298 |   `val phrases` |
+| 316 | `private fun JsonObject.str(key: String): String?` |
+| 317 |   `val prim` |
 
 ## feature/sessiondetail/rendering/ToolCallVM.kt
 
@@ -448,110 +439,114 @@ Source root: `app/src/main/java/app/codeg/android/`
 
 | Line | Declaration |
 |---|---|
-| 57 | `private val lenient` |
-| 58 | `private val prettyJson` |
-| 62 | `private fun parseAny(s: String?): JsonElement?` |
-| 68 | `private fun JsonObject.strField(key: String): String?` |
-| 69 |   `val prim` |
-| 74 | `private fun scalarString(prim: JsonPrimitive): String` |
-| 77 | `private fun prettyPrint(el: JsonElement): String` |
-| 84 | `fun prettyPrintJsonString(s: String): String?` |
-| 85 |   `val any` |
-| 91 | `private val codeFields` |
-| 97 | `private val hiddenFields` |
-| 105 | `object ToolOutputFormat` |
-| 107 |   `enum class Kind` |
-| 112 |   `fun commandOutput(output: String): String?` |
-| 137 |   `private val metaLine` |
-| 141 |   `private val outputSepLine` |
-| 143 |   `private fun isMetaLine(s: String)` |
-| 147 |   `fun parseCliEnvelope(text: String): String` |
-| 178 |   `fun stripMarkdownFence(text: String): String` |
-| 187 |   `fun cleanCommandOutput(source: String): String` |
-| 194 |   `fun classify(output: String): Kind` |
-| 202 |   `fun looksLikeMarkdown(s: String): Boolean` |
-| 225 |   `fun mcpResultText(output: String): String?` |
-| 243 |   `fun errorFields(errorText: String): List<Pair<String, String>>?` |
-| 255 | `object ReadOutputFormat` |
-| 256 |   `data class File(val content: String, val startLine: Int)` |
-| 258 |   `fun parse(output: String): File?` |
-| 274 | `object ToolFieldLabel` |
-| 275 |   `private val map` |
-| 293 |   `fun label(key: String): String` |
-| 296 |   `private fun humanize(key: String): String` |
-| 311 | `@Composable fun ToolFieldInline(label: String, value: String)` |
-| 312 |   `val colors` |
-| 327 | `@Composable fun ToolFieldBlock(label: String, content: @Composable () -> Unit)` |
-| 328 |   `val colors` |
-| 338 | `@Composable fun PlainTextBlock(text: String)` |
-| 339 |   `val colors` |
-| 358 | `@Composable fun StructuredJsonView(json: String, inlineMaxLength: Int = 200)` |
-| 359 |   `val obj` |
-| 377 | `@Composable private fun ToolField(key: String, value: JsonElement, inlineMaxLength: Int)` |
-| 378 |   `val label` |
-| 393 | `private fun codeLanguage(key: String): String?` |
-| 403 | `@Composable fun FileBodyView(file: ReadOutputFormat.File, collapsedLineLimit: Int = 60)` |
-| 404 |   `val colors` |
-| 405 |   `val content` |
-| 406 |   `val lines` |
-| 407 |   `val isLong` |
-| 408 |   `var expanded by remember(file)` |
-| 409 |   `val shown` |
-| 410 |   `val maxNo` |
-| 411 |   `val digits` |
-| 412 |   `val gutterWidth` |
-| 467 | `@Composable fun ToolErrorOutput(output: String)` |
-| 468 |   `val colors` |
-| 469 |   `val fields` |
+| 56 | `private val lenient` |
+| 57 | `private val prettyJson` |
+| 61 | `private fun parseAny(s: String?): JsonElement?` |
+| 67 | `private fun JsonObject.strField(key: String): String?` |
+| 68 |   `val prim` |
+| 73 | `private fun scalarString(prim: JsonPrimitive): String` |
+| 76 | `private fun prettyPrint(el: JsonElement): String` |
+| 83 | `fun prettyPrintJsonString(s: String): String?` |
+| 84 |   `val any` |
+| 90 | `private val codeFields` |
+| 96 | `private val hiddenFields` |
+| 104 | `object ToolOutputFormat` |
+| 106 |   `enum class Kind` |
+| 111 |   `fun commandOutput(output: String): String?` |
+| 136 |   `private val metaLine` |
+| 140 |   `private val outputSepLine` |
+| 142 |   `private fun isMetaLine(s: String)` |
+| 146 |   `fun parseCliEnvelope(text: String): String` |
+| 177 |   `fun stripMarkdownFence(text: String): String` |
+| 186 |   `fun cleanCommandOutput(source: String): String` |
+| 193 |   `fun classify(output: String): Kind` |
+| 201 |   `fun looksLikeMarkdown(s: String): Boolean` |
+| 224 |   `fun mcpResultText(output: String): String?` |
+| 242 |   `fun errorFields(errorText: String): List<Pair<String, String>>?` |
+| 254 | `object ReadOutputFormat` |
+| 255 |   `data class File(val content: String, val startLine: Int)` |
+| 257 |   `fun parse(output: String): File?` |
+| 273 | `object ToolFieldLabel` |
+| 274 |   `private val map` |
+| 292 |   `fun label(key: String): String` |
+| 295 |   `private fun humanize(key: String): String` |
+| 310 | `@Composable fun ToolFieldInline(label: String, value: String)` |
+| 311 |   `val colors` |
+| 326 | `@Composable fun ToolFieldBlock(label: String, content: @Composable () -> Unit)` |
+| 327 |   `val colors` |
+| 337 | `@Composable fun PlainTextBlock(text: String)` |
+| 338 |   `val colors` |
+| 357 | `@Composable fun StructuredJsonView(json: String, inlineMaxLength: Int = 200)` |
+| 358 |   `val obj` |
+| 376 | `@Composable private fun ToolField(key: String, value: JsonElement, inlineMaxLength: Int)` |
+| 377 |   `val label` |
+| 392 | `private fun codeLanguage(key: String): String?` |
+| 402 | `@Composable fun FileBodyView(file: ReadOutputFormat.File, collapsedLineLimit: Int = 60)` |
+| 403 |   `val colors` |
+| 404 |   `val content` |
+| 405 |   `val lines` |
+| 406 |   `val isLong` |
+| 407 |   `var expanded by remember(file)` |
+| 408 |   `val shown` |
+| 409 |   `val maxNo` |
+| 410 |   `val digits` |
+| 411 |   `val gutterWidth` |
+| 466 | `@Composable fun ToolErrorOutput(output: String)` |
+| 467 |   `val colors` |
+| 468 |   `val fields` |
 
 ## feature/sessiondetail/SessionActions.kt
 
 | Line | Declaration |
 |---|---|
-| 58 | `@Composable fun SessionActionsMenu( ui: SessionDetailUiState, viewModel: SessionDetailViewModel, onDeleted: () -> Unit, )` |
-| 63 |   `val colors` |
-| 64 |   `val summary` |
-| 65 |   `val connectionActions by viewModel.sessionActions.collectAsState()` |
-| 66 |   `var menu by remember` |
-| 67 |   `var showRename by remember` |
-| 68 |   `var showStatus by remember` |
-| 69 |   `var showDetails by remember` |
-| 70 |   `var showDelete by remember` |
-| 169 | `@Composable private fun DetailRow(label: String, value: String, valueColor: androidx.compose.ui.graphics.Color? = null)` |
-| 170 |   `val colors` |
+| 57 | `@Composable fun SessionActionsMenu( ui: SessionDetailUiState, viewModel: SessionDetailViewModel, onDeleted: () -> Unit, )` |
+| 62 |   `val colors` |
+| 63 |   `val summary` |
+| 64 |   `val connectionActions by viewModel.sessionActions.collectAsState()` |
+| 65 |   `var menu by remember` |
+| 66 |   `var showRename by remember` |
+| 67 |   `var showStatus by remember` |
+| 68 |   `var showDetails by remember` |
+| 69 |   `var showDelete by remember` |
+| 168 | `@Composable private fun DetailRow(label: String, value: String, valueColor: androidx.compose.ui.graphics.Color? = null)` |
+| 169 |   `val colors` |
 
 ## feature/sessiondetail/SessionDetailScreen.kt
 
 | Line | Declaration |
 |---|---|
-| 100 | `@Composable fun SessionDetailScreen( onBack: () -> Unit, onOpenSession: (Int) -> Unit = {}, onOpenServers: () -> Unit = {}, viewModel: SessionDetailViewModel = hiltViewModel(), )` |
-| 106 |   `val ui by viewModel.ui.collectAsStateWithLifecycle()` |
-| 107 |   `val streamStatus by viewModel.streamStatus.collectAsStateWithLifecycle()` |
-| 113 |   `val colors` |
-| 114 |   `var draft by remember` |
-| 115 |   `var showInsert by remember` |
-| 116 |   `var showOptions by remember` |
-| 117 |   `val listState` |
-| 118 |   `val scope` |
-| 119 |   `val context` |
-| 135 |   `val pickImages` |
-| 151 |   `val hideReattachDup` |
-| 152 |   `val persistedNodes` |
-| 155 |   `val nodes` |
-| 158 |   `val hasContent` |
-| 161 |   `val isAtBottom by remember` |
-| 168 |   `var stick by remember` |
-| 184 |   `val scrollToId: (String) -> Unit` |
-| 194 |   `val title` |
-| 199 |   `val agentOptionsLabel` |
-| 374 | `@Composable private fun JumpToLatestButton(onClick: () -> Unit)` |
-| 375 |   `val colors` |
-| 395 | `@Composable private fun SendStatusLine(status: String)` |
-| 396 |   `val colors` |
-| 409 | `@Composable private fun NoticeBanner( message: String, onDismiss: () -> Unit, actionLabel: String? = null, onAction: () -> Unit = {}, )` |
-| 415 |   `val colors` |
-| 443 | `@Composable private fun AttachmentStrip(attachments: List<Attachment>, onRemove: (String) -> Unit)` |
-| 444 |   `val colors` |
+| 95 | `@Composable fun SessionDetailScreen( onBack: () -> Unit, onOpenSession: (Int) -> Unit = {}, onOpenServers: () -> Unit = {}, viewModel: SessionDetailViewModel = hiltViewModel(), )` |
+| 101 |   `val ui by viewModel.ui.collectAsStateWithLifecycle()` |
+| 102 |   `val streamStatus by viewModel.streamStatus.collectAsStateWithLifecycle()` |
+| 107 |   `val toaster` |
+| 108 |   `val noticeTitle` |
+| 109 |   `val disconnectedNotice` |
+| 110 |   `val droppedNotesNotice` |
+| 121 |   `val colors` |
+| 122 |   `var draft by remember` |
+| 123 |   `var showInsert by remember` |
+| 124 |   `var showOptions by remember` |
+| 125 |   `val listState` |
+| 126 |   `val scope` |
+| 127 |   `val context` |
+| 143 |   `val pickImages` |
+| 159 |   `val hideReattachDup` |
+| 160 |   `val persistedNodes` |
+| 163 |   `val nodes` |
+| 166 |   `val hasContent` |
+| 169 |   `val isAtBottom by remember` |
+| 176 |   `var stick by remember` |
+| 192 |   `val scrollToId: (String) -> Unit` |
+| 202 |   `val title` |
+| 207 |   `val agentOptionsLabel` |
+| 371 | `@Composable private fun JumpToLatestButton(onClick: () -> Unit)` |
+| 372 |   `val colors` |
+| 392 | `@Composable private fun SendStatusLine(status: String)` |
+| 393 |   `val colors` |
+| 406 | `@Composable private fun NoticeBanner( message: String, onDismiss: () -> Unit, actionLabel: String? = null, onAction: () -> Unit = {}, )` |
+| 412 |   `val colors` |
+| 440 | `@Composable private fun AttachmentStrip(attachments: List<Attachment>, onRemove: (String) -> Unit)` |
+| 441 |   `val colors` |
 
 ## feature/sessiondetail/SessionDetailViewModel.kt
 
@@ -758,6 +753,21 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 10 | `internal fun streamRecovery( inFlight: Boolean, authFailed: Boolean, connectionGone: Boolean, attempts: Int, immediate: Boolean, ): StreamRecovery` |
 | 24 | `data class StreamNotice(val message: String, val openServers: Boolean = false)` |
 
+## feature/sessiondetail/T55BranchChoice.kt
+
+| Line | Declaration |
+|---|---|
+| 4 | `internal data class T55BranchChoice( val id: String, val target: String, val current: Boolean, val occupied: Boolean, val enabled: Boolean, )` |
+| 5 |   `val id: String` |
+| 6 |   `val target: String` |
+| 7 |   `val current: Boolean` |
+| 8 |   `val occupied: Boolean` |
+| 9 |   `val enabled: Boolean` |
+| 12 | `internal fun t55BranchChoice( name: String, remote: Boolean, current: String?, worktree: Set<String>, busy: Boolean, ): T55BranchChoice` |
+| 19 |   `val target` |
+| 20 |   `val isCurrent` |
+| 21 |   `val occupied` |
+
 ## feature/sessiondetail/timeline/TimelineNode.kt
 
 | Line | Declaration |
@@ -807,42 +817,42 @@ Source root: `app/src/main/java/app/codeg/android/`
 
 | Line | Declaration |
 |---|---|
-| 66 | `private val SuccessGreen: Color @Composable @ReadOnlyComposable get()` |
-| 69 | `val LocalTimelineScroll` |
-| 77 | `@Composable fun NodeBody(node: TimelineNode, modifier: Modifier = Modifier)` |
-| 114 | `@Composable private fun UserNodeBody(turn: MessageTurn, modifier: Modifier)` |
-| 115 |   `val colors` |
-| 140 | `@Composable private fun SystemNodeBody(turn: MessageTurn, modifier: Modifier)` |
-| 141 |   `val text` |
-| 152 | `@Composable private fun TurnFooter(turn: MessageTurn, questionId: String?, modifier: Modifier)` |
-| 153 |   `val colors` |
-| 156 |   `val copyText` |
-| 161 |   `val meta` |
-| 184 | `@Composable private fun CopyButton(text: String)` |
-| 185 |   `val colors` |
-| 186 |   `val clipboard` |
-| 187 |   `var copied by remember` |
-| 210 | `@Composable private fun JumpToQuestionButton(questionId: String)` |
-| 211 |   `val scroll` |
-| 232 | `@Composable fun ThinkingShimmer(modifier: Modifier = Modifier)` |
-| 233 |   `val colors` |
-| 234 |   `val transition` |
-| 259 | `@Composable private fun BlinkingCaret()` |
-| 260 |   `val transition` |
-| 261 |   `val a by transition.animateFloat( initialValue = 1f, targetValue = 0f, animationSpec = infiniteRepeatable(tween(530), RepeatMode.Reverse), label = "caret-alpha", )` |
-| 281 | `@Composable fun ContextCompactionDivider(before: Int?, after: Int?, running: Boolean, modifier: Modifier = Modifier)` |
-| 282 |   `val colors` |
-| 283 |   `val label` |
-| 304 | `private fun groupDigits(value: Int): String` |
-| 308 | `@Composable fun InlineTurnError(message: String, modifier: Modifier = Modifier)` |
-| 309 |   `val colors` |
-| 325 | `private fun compactTokens(n: Int): String` |
-| 331 | `private fun trimNum(v: Double): String` |
-| 333 | `private fun compactDuration(ms: Int): String` |
-| 334 |   `val seconds` |
-| 336 |   `val whole` |
-| 337 |   `val m` |
-| 338 |   `val s` |
+| 62 | `private val SuccessGreen: Color @Composable @ReadOnlyComposable get()` |
+| 65 | `val LocalTimelineScroll` |
+| 73 | `@Composable fun NodeBody(node: TimelineNode, modifier: Modifier = Modifier)` |
+| 110 | `@Composable private fun UserNodeBody(turn: MessageTurn, modifier: Modifier)` |
+| 111 |   `val colors` |
+| 136 | `@Composable private fun SystemNodeBody(turn: MessageTurn, modifier: Modifier)` |
+| 137 |   `val text` |
+| 148 | `@Composable private fun TurnFooter(turn: MessageTurn, questionId: String?, modifier: Modifier)` |
+| 149 |   `val colors` |
+| 152 |   `val copyText` |
+| 157 |   `val meta` |
+| 180 | `@Composable private fun CopyButton(text: String)` |
+| 181 |   `val colors` |
+| 182 |   `val clipboard` |
+| 183 |   `var copied by remember` |
+| 207 | `@Composable private fun JumpToQuestionButton(questionId: String)` |
+| 208 |   `val scroll` |
+| 229 | `@Composable fun ThinkingShimmer(modifier: Modifier = Modifier)` |
+| 230 |   `val colors` |
+| 231 |   `val transition` |
+| 256 | `@Composable private fun BlinkingCaret()` |
+| 257 |   `val transition` |
+| 258 |   `val a by transition.animateFloat( initialValue = 1f, targetValue = 0f, animationSpec = infiniteRepeatable(tween(530), RepeatMode.Reverse), label = "caret-alpha", )` |
+| 278 | `@Composable fun ContextCompactionDivider(before: Int?, after: Int?, running: Boolean, modifier: Modifier = Modifier)` |
+| 279 |   `val colors` |
+| 280 |   `val label` |
+| 301 | `private fun groupDigits(value: Int): String` |
+| 305 | `@Composable fun InlineTurnError(message: String, modifier: Modifier = Modifier)` |
+| 306 |   `val colors` |
+| 322 | `private fun compactTokens(n: Int): String` |
+| 328 | `private fun trimNum(v: Double): String` |
+| 330 | `private fun compactDuration(ms: Int): String` |
+| 331 |   `val seconds` |
+| 333 |   `val whole` |
+| 334 |   `val m` |
+| 335 |   `val s` |
 
 ## feature/sessiondetail/timeline/TimelineRail.kt
 

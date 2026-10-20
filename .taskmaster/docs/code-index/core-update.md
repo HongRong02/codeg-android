@@ -13,13 +13,17 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 34 |   `var pendingPermission by rememberSaveable` |
 | 35 |   `fun install(file: File)` |
 | 43 |   `val permission` |
-| 65 |   `val colors` |
-| 92 | `@Composable fun UpdateAbout(viewModel: UpdateViewModel = hiltViewModel())` |
-| 93 |   `val state by viewModel.ui.collectAsStateWithLifecycle()` |
-| 94 |   `var showNotes by remember` |
-| 95 |   `var manual by remember` |
-| 109 | `@Composable private fun UpdateNotes(state: UpdateUi, dismiss: () -> Unit, download: () -> Unit)` |
-| 110 |   `val update` |
+| 65 |   `val toaster` |
+| 66 |   `val failureMessage` |
+| 70 |   `val colors` |
+| 96 | `@Composable fun UpdateAbout(viewModel: UpdateViewModel = hiltViewModel())` |
+| 97 |   `val state by viewModel.ui.collectAsStateWithLifecycle()` |
+| 98 |   `var showNotes by remember` |
+| 99 |   `var manual by remember` |
+| 107 |   `val toaster` |
+| 108 |   `val message` |
+| 120 | `@Composable private fun UpdateNotes(state: UpdateUi, dismiss: () -> Unit, download: () -> Unit)` |
+| 121 |   `val update` |
 
 ## core/update/UpdateChecker.kt
 

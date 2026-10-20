@@ -19,33 +19,32 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 51 |   `var timezone by remember` |
 | 52 |   `var scheduled by remember` |
 | 86 | `@Composable private fun <T> Choice(label: String, items: List<Pair<T, String>>, selected: T?, onSelect: (T) -> Unit)` |
-| 87 |   `var expanded by remember` |
 
 ## feature/automations/AutomationScreen.kt
 
 | Line | Declaration |
 |---|---|
-| 67 | `@Composable fun AutomationScreen( onBack: () -> Unit, viewModel: AutomationViewModel = hiltViewModel(), )` |
-| 71 |   `val ui by viewModel.ui.collectAsStateWithLifecycle()` |
-| 72 |   `val colors` |
-| 74 |   `var deleteTarget by remember` |
-| 75 |   `var cancelTarget by remember` |
-| 76 |   `val selected` |
-| 180 | `@Composable private fun AutomationListView( ui: AutomationUiState, onFilterChanged: (AutomationFilter) -> Unit, onSelectAutomation: (Automation) -> Unit, onToggleEnabled: (Automation) -> Unit, )` |
-| 186 |   `val colors` |
-| 250 | `@Composable private fun AutomationListItem( automation: Automation, onClick: () -> Unit, onToggle: () -> Unit, )` |
-| 255 |   `val colors` |
-| 289 | `@Composable private fun AutomationDetailView( automation: Automation, runs: List<AutomationRun>, detailLoading: Boolean, onToggleEnabled: () -> Unit, onRefreshRuns: () -> Unit, actions: @Composable () -> Unit, onCancelRun: (AutomationRun) -> Unit, canCancel: Boolean, )` |
-| 299 |   `val colors` |
-| 437 | `@Composable private fun RunHistoryItem(run: AutomationRun)` |
-| 438 |   `val colors` |
-| 440 |   `val statusLabel` |
-| 495 | `@Composable private fun DetailRow( icon: ImageVector, label: String, value: String, )` |
-| 500 |   `val colors` |
-| 528 | `@Composable private fun formatAutomationSubtitle(automation: Automation): String` |
-| 529 |   `val parts` |
-| 543 | `private val dateTimeFormatter` |
-| 546 | `private fun formatDateTime(instant: Instant): String` |
+| 56 | `@Composable fun AutomationScreen( onBack: () -> Unit, viewModel: AutomationViewModel = hiltViewModel(), )` |
+| 60 |   `val ui by viewModel.ui.collectAsStateWithLifecycle()` |
+| 61 |   `val colors` |
+| 63 |   `var deleteTarget by remember` |
+| 64 |   `var cancelTarget by remember` |
+| 65 |   `val selected` |
+| 165 | `@Composable private fun AutomationListView( ui: AutomationUiState, onFilterChanged: (AutomationFilter) -> Unit, onSelectAutomation: (Automation) -> Unit, onToggleEnabled: (Automation) -> Unit, )` |
+| 171 |   `val colors` |
+| 235 | `@Composable private fun AutomationListItem( automation: Automation, onClick: () -> Unit, onToggle: () -> Unit, )` |
+| 240 |   `val colors` |
+| 274 | `@Composable private fun AutomationDetailView( automation: Automation, runs: List<AutomationRun>, detailLoading: Boolean, onToggleEnabled: () -> Unit, onRefreshRuns: () -> Unit, actions: @Composable () -> Unit, onCancelRun: (AutomationRun) -> Unit, canCancel: Boolean, )` |
+| 284 |   `val colors` |
+| 419 | `@Composable private fun RunHistoryItem(run: AutomationRun)` |
+| 420 |   `val colors` |
+| 422 |   `val statusLabel` |
+| 477 | `@Composable private fun DetailRow( icon: ImageVector, label: String, value: String, )` |
+| 482 |   `val colors` |
+| 510 | `@Composable private fun formatAutomationSubtitle(automation: Automation): String` |
+| 511 |   `val parts` |
+| 525 | `private val dateTimeFormatter` |
+| 528 | `private fun formatDateTime(instant: Instant): String` |
 
 ## feature/automations/AutomationViewModel.kt
 
