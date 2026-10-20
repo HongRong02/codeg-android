@@ -12,7 +12,7 @@ import app.codeg.android.core.datastore.ServerStore
 import app.codeg.android.core.security.SecretStore
 import app.codeg.android.shell.ShellFeature
 import app.codeg.android.shell.ShellHost
-import dagger.EntryPoint
+import dagger.hilt.EntryPoint
 import dagger.hilt.InstallIn
 import dagger.hilt.android.EntryPointAccessors
 import dagger.hilt.components.SingletonComponent
