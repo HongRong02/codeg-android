@@ -44,6 +44,7 @@ class ErrorFeature : ShellFeature {
     private var loading by mutableStateOf(false)
     private var webViewVersion by mutableStateOf<String?>(null)
     private var versionWarningDismissed by mutableStateOf(false)
+    private var failedUrl: String? = null
     private var failedLoad = false
     private var retryJob: Job? = null
     private var networkCallback: ConnectivityManager.NetworkCallback? = null
@@ -67,7 +68,10 @@ class ErrorFeature : ShellFeature {
         trace("started active=${view === host.webView} failed=$failedLoad")
         if (view !== host.webView) return
         // Chromium can start its internal error document after reporting a failure.
-        // Only an explicit retry (or a new WebView) may reset that failure latch.
+        // A different real navigation (including history back) may recover as well.
+        if (failedLoad && url != failedUrl && !url.startsWith("chrome-error://")) {
+            failedLoad = false
+        }
         loading = reason == null
         progress = 0
     }
@@ -84,7 +88,10 @@ class ErrorFeature : ShellFeature {
         loading = false
         progress = 100
         if (url.startsWith("chrome-error://")) {
-            if (reason == null) showError(host, R.string.shell_error_connection)
+            if (reason == null) {
+                failedUrl = url
+                showError(host, R.string.shell_error_connection)
+            }
         } else if (!failedLoad) {
             clearError(host)
         }
@@ -93,6 +100,7 @@ class ErrorFeature : ShellFeature {
     override fun onReceivedError(host: ShellHost, view: WebView, request: WebResourceRequest, error: WebResourceError) {
         trace("error active=${view === host.webView} main=${request.isForMainFrame} code=${error.errorCode}")
         if (view !== host.webView || !request.isForMainFrame) return
+        failedUrl = request.url.toString()
         showError(host, when (error.errorCode) {
             WebViewClient.ERROR_HOST_LOOKUP -> R.string.shell_error_dns
             WebViewClient.ERROR_TIMEOUT -> R.string.shell_error_timeout
@@ -104,6 +112,7 @@ class ErrorFeature : ShellFeature {
     override fun onReceivedHttpError(host: ShellHost, view: WebView, request: WebResourceRequest, response: WebResourceResponse) {
         trace("http active=${view === host.webView} main=${request.isForMainFrame} status=${response.statusCode}")
         if (view !== host.webView || !request.isForMainFrame || response.statusCode !in 500..599) return
+        failedUrl = request.url.toString()
         status = response.statusCode
         showError(host, R.string.shell_error_http)
     }
@@ -176,6 +185,7 @@ class ErrorFeature : ShellFeature {
 
     private fun clearError(host: ShellHost) {
         reason = null
+        failedUrl = null
         stopRecovery(host)
     }
 
