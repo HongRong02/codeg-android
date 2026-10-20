@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ds_menus_actions">Actions</string>
+    <string name="ds_menus_open">Open</string>
+    <string name="ds_menus_delete">Delete</string>
+    <string name="ds_menus_disabled">Unavailable</string>
+    <string name="ds_menus_checked">Show details</string>
+    <string name="ds_menus_unchecked">Show hidden files</string>
+    <string name="ds_menus_more">More actions</string>
+    <string name="ds_menus_context">Long press for actions</string>
+    <string name="ds_menus_popover">Popover details</string>
+    <string name="ds_menus_tooltip">Helpful information</string>
+    <string name="ds_menus_shortcut">Ctrl+O</string>
+</resources>
