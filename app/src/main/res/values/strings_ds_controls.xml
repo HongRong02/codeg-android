@@ -1,0 +1,11 @@
+<resources>
+    <string name="ds_controls_search">Search</string>
+    <string name="ds_controls_empty">No results</string>
+    <string name="ds_controls_show">Show</string>
+    <string name="ds_controls_hide">Hide</string>
+    <string name="ds_controls_example">Example</string>
+    <string name="ds_controls_description">Description</string>
+    <string name="ds_controls_required">Required</string>
+    <string name="ds_controls_first">First</string>
+    <string name="ds_controls_second">Second</string>
+</resources>

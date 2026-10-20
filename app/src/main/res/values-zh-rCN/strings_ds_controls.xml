@@ -1,0 +1,11 @@
+<resources>
+    <string name="ds_controls_search">搜索</string>
+    <string name="ds_controls_empty">无匹配结果</string>
+    <string name="ds_controls_show">显示</string>
+    <string name="ds_controls_hide">隐藏</string>
+    <string name="ds_controls_example">示例</string>
+    <string name="ds_controls_description">说明</string>
+    <string name="ds_controls_required">必填</string>
+    <string name="ds_controls_first">第一项</string>
+    <string name="ds_controls_second">第二项</string>
+</resources>

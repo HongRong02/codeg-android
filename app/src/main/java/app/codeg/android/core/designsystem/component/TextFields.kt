@@ -1,5 +1,14 @@
 package app.codeg.android.core.designsystem.component
 
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.res.stringResource
+import app.codeg.android.R
+import app.codeg.android.core.designsystem.theme.CodegShapes
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -42,6 +51,8 @@ fun CodegTextField(
     keyboardType: KeyboardType = KeyboardType.Text,
     mono: Boolean = false,
     singleLine: Boolean = true,
+    isError: Boolean = false,
+    supportingText: String? = null,
 ) {
     val colors = CodegTheme.colors
     OutlinedTextField(
@@ -50,10 +61,12 @@ fun CodegTextField(
         label = { Text(label) },
         placeholder = placeholder?.let { { Text(it) } },
         singleLine = singleLine,
+        isError = isError,
+        supportingText = supportingText?.let { { Text(it) } },
         textStyle = if (mono) LocalTextStyle.current.copy(fontFamily = FontFamily.Monospace) else LocalTextStyle.current,
         keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
-        modifier = modifier.fillMaxWidth(),
-        shape = if (singleLine) PillShape else RoundedCornerShape(CodegTheme.dimens.radiusMd),
+        modifier = modifier.fillMaxWidth().heightIn(min = if (singleLine) 36.dp else 64.dp),
+        shape = if (singleLine) PillShape else CodegShapes.small,
         colors = fieldColors(),
     )
 }
@@ -79,7 +92,7 @@ fun SecretField(
             IconButton(onClick = { visible = !visible }) {
                 Icon(
                     imageVector = if (visible) Icons.Rounded.VisibilityOff else Icons.Rounded.Visibility,
-                    contentDescription = if (visible) "Hide" else "Show",
+                    contentDescription = stringResource(if (visible) R.string.ds_controls_hide else R.string.ds_controls_show),
                     tint = CodegTheme.colors.textTertiary,
                 )
             }
@@ -108,4 +121,51 @@ private fun fieldColors(): TextFieldColors {
         unfocusedTextColor = colors.textPrimary,
         errorBorderColor = colors.danger,
     )
+}
+
+@Composable
+fun CodegField(
+    label: String,
+    description: String? = null,
+    error: String? = null,
+    modifier: Modifier = Modifier,
+    content: @Composable () -> Unit,
+) {
+    val web = CodegTheme.colors.web
+    Column(modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+        Text(label, color = if (error != null) web.destructive else web.foreground, fontSize = 14.sp, fontWeight = FontWeight.Medium)
+        content()
+        description?.let { Text(it, color = web.mutedForeground, fontSize = 14.sp) }
+        error?.let { Text(it, color = web.destructive, fontSize = 14.sp) }
+    }
+}
+
+@androidx.compose.ui.tooling.preview.Preview(name = "TextField Light", showBackground = true)
+@androidx.compose.ui.tooling.preview.Preview(name = "TextField Dark", showBackground = true, uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES)
+@Composable
+private fun TextFieldPreview() {
+    CodegTheme {
+        val label = androidx.compose.ui.res.stringResource(app.codeg.android.R.string.ds_controls_example)
+        CodegTextField("", {}, label, singleLine = false, isError = true, supportingText = label)
+    }
+}
+
+@androidx.compose.ui.tooling.preview.Preview(name = "Field Light", showBackground = true)
+@androidx.compose.ui.tooling.preview.Preview(name = "Field Dark", showBackground = true, uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES)
+@Composable
+private fun FieldPreview() {
+    CodegTheme {
+        val label = androidx.compose.ui.res.stringResource(app.codeg.android.R.string.ds_controls_example)
+        CodegField(label, label, label) { CodegTextField("", {}, label) }
+    }
+}
+
+@androidx.compose.ui.tooling.preview.Preview(name = "SecretField Light", showBackground = true)
+@androidx.compose.ui.tooling.preview.Preview(name = "SecretField Dark", showBackground = true, uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES)
+@Composable
+private fun SecretFieldPreview() {
+    CodegTheme {
+        val label = androidx.compose.ui.res.stringResource(app.codeg.android.R.string.ds_controls_example)
+        SecretField("", {}, label)
+    }
 }
