@@ -118,43 +118,35 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 217 | `@Composable private fun CommitRow(entry: GitLogEntry, onClick: () -> Unit)` |
 | 218 |   `val colors` |
 | 240 | `@Composable private fun CommitDetail(client: CodegClient, rootPath: String, entry: GitLogEntry)` |
-| 241 |   `val colors` |
-| 242 |   `var result by remember(entry.fullHash)` |
-| 281 | `private fun relativeDate(iso: String): String` |
+| 241 |   `var unavailableFiles by remember(entry.fullHash)` |
+| 242 |   `var selectedFile by remember(entry.fullHash)` |
+| 251 |   `val colors` |
+| 252 |   `var result by remember(entry.fullHash)` |
+| 298 | `private fun relativeDate(iso: String): String` |
 
 ## feature/projects/FolderFilesView.kt
 
 | Line | Declaration |
 |---|---|
-| 56 | `@Composable fun FolderFilesView(client: CodegClient, rootPath: String)` |
-| 57 |   `val colors` |
-| 58 |   `var stack by remember` |
-| 59 |   `var previewPath by remember` |
-| 65 |   `val preview` |
-| 71 |   `val dir` |
-| 72 |   `var result by remember(dir)` |
-| 75 |   `val r` |
-| 109 | `@Composable private fun FileRow(item: DirectoryItem, onClick: () -> Unit)` |
-| 110 |   `val colors` |
-| 111 |   `val sizeLabel` |
-| 129 | `@Composable private fun FilePreview(client: CodegClient, rootPath: String, absPath: String)` |
-| 130 |   `val colors` |
-| 131 |   `val rel` |
-| 132 |   `var result by remember(absPath)` |
-| 159 | `@Composable private fun FileContent(content: String)` |
-| 160 |   `val colors` |
-| 161 |   `val truncationNote` |
-| 162 |   `val lines` |
-| 166 |   `val gutterWidth` |
-| 179 | `private fun sortItems(items: List<DirectoryItem>): List<DirectoryItem>` |
-| 182 | `private fun formatBytes(bytes: Long): String` |
-
-## feature/projects/git/GitActionsMenu.kt
-
-| Line | Declaration |
-|---|---|
-| 21 | `@Composable fun GitActionsMenu(onSwitchBranch: () -> Unit, enabled: Boolean = true)` |
-| 22 |   `var expanded by remember` |
+| 62 | `@Composable fun FolderFilesView(client: CodegClient, rootPath: String)` |
+| 63 |   `val colors` |
+| 64 |   `var stack by remember` |
+| 65 |   `var previewPath by remember` |
+| 67 |   `var unavailablePaths by remember(rootPath)` |
+| 73 |   `val preview` |
+| 79 |   `val dir` |
+| 80 |   `var result by remember(dir)` |
+| 83 |   `val r` |
+| 117 | `@Composable private fun FileRow(item: DirectoryItem, onClick: () -> Unit)` |
+| 118 |   `val colors` |
+| 119 |   `val sizeLabel` |
+| 137 | `@Composable internal fun FilePreview(client: CodegClient, rootPath: String, absPath: String, size: Long? = null, commit: String? = null, onUnsupported: () -> Unit = {})` |
+| 138 |   `val colors` |
+| 139 |   `val rel` |
+| 140 |   `var result by remember(rootPath, absPath, commit)` |
+| 141 |   `var attempt by remember(rootPath, absPath, commit)` |
+| 175 | `private fun sortItems(items: List<DirectoryItem>): List<DirectoryItem>` |
+| 178 | `private fun formatBytes(bytes: Long): String` |
 
 ## feature/projects/GitChangeVisuals.kt
 
@@ -321,3 +313,10 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 125 |   `val error: String?` |
 | 127 |   `val isBusy: Boolean get()` |
 | 128 |   `fun runningCount(folderId: Int): Int` |
+
+## feature/projects/git/GitActionsMenu.kt
+
+| Line | Declaration |
+|---|---|
+| 21 | `@Composable fun GitActionsMenu(onSwitchBranch: () -> Unit, enabled: Boolean = true)` |
+| 22 |   `var expanded by remember` |

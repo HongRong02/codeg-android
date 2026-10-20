@@ -150,14 +150,17 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 927 |   `suspend fun describeAgentOptions(agentType: AgentType, workingDir: String?): AgentOptionsSnapshot` |
 | 930 |   `suspend fun acpSetMode(connectionId: String, modeId: String)` |
 | 934 |   `suspend fun acpSetConfigOption(connectionId: String, configId: String, valueId: String)` |
-| 948 |   `private suspend fun send(path: String, bodyJson: String): String` |
-| 982 |   `private inline fun <reified T> encode(body: T): String` |
-| 985 |   `private fun <T> decode(text: String, deserializer: DeserializationStrategy<T>): T` |
-| 991 |   `companion object` |
-| 993 |     `fun normalizeBaseUrl(raw: String): String` |
-| 1001 |     `fun decodeConnectionId(text: String): String` |
-| 1017 |     `fun decodeAgentList(text: String): List<AcpAgentInfo>` |
-| 1034 |     `fun isJsonNull(text: String): Boolean` |
+| 944 |   `suspend fun readFileBase64(path: String, maxBytes: Long = 10_485_760): String` |
+| 947 |   `suspend fun gitShowFile(path: String, file: String, refName: String): String` |
+| 950 |   `suspend fun gitShowFileBase64(path: String, file: String, refName: String): app.codeg.android.core.model.GitFileImage` |
+| 961 |   `private suspend fun send(path: String, bodyJson: String): String` |
+| 995 |   `private inline fun <reified T> encode(body: T): String` |
+| 998 |   `private fun <T> decode(text: String, deserializer: DeserializationStrategy<T>): T` |
+| 1004 |   `companion object` |
+| 1006 |     `fun normalizeBaseUrl(raw: String): String` |
+| 1014 |     `fun decodeConnectionId(text: String): String` |
+| 1030 |     `fun decodeAgentList(text: String): List<AcpAgentInfo>` |
+| 1047 |     `fun isJsonNull(text: String): Boolean` |
 
 ## core/network/CodegClientFactory.kt
 

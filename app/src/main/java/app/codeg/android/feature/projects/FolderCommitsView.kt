@@ -238,6 +238,16 @@ private fun CommitRow(entry: GitLogEntry, onClick: () -> Unit) {
 
 @Composable
 private fun CommitDetail(client: CodegClient, rootPath: String, entry: GitLogEntry) {
+    var unavailableFiles by remember(entry.fullHash) { mutableStateOf(setOf<String>()) }
+    var selectedFile by remember(entry.fullHash) { mutableStateOf<String?>(null) }
+    BackHandler(enabled = selectedFile != null) { selectedFile = null }
+    selectedFile?.let { path ->
+        Column(Modifier.fillMaxSize()) {
+            androidx.compose.material3.TextButton(onClick = { selectedFile = null }) { Text(stringResource(R.string.file_viewer_back)) }
+            FilePreview(client, rootPath, path, commit = entry.fullHash, onUnsupported = { unavailableFiles = unavailableFiles + path; selectedFile = null })
+        }
+        return
+    }
     val colors = CodegTheme.colors
     var result by remember(entry.fullHash) { mutableStateOf<Result<String>?>(null) }
     LaunchedEffect(entry.fullHash) { result = runCatching { client.gitShowDiff(rootPath, entry.fullHash) } }
@@ -260,6 +270,13 @@ private fun CommitDetail(client: CodegClient, rootPath: String, entry: GitLogEnt
         }
         item("summary") {
             Text(stringResource(R.string.commits_files_changed_summary, entry.files.size, entry.totalAdditions, entry.totalDeletions), fontSize = 12.sp, color = colors.textSecondary)
+        }
+        items(entry.files.filter { it.path !in unavailableFiles }, key = { "file:${it.path}" }) { file ->
+            Text(
+                if (file.status == "D") stringResource(R.string.file_viewer_deleted, file.path) else "${file.status}  ${file.path}", fontFamily = FontFamily.Monospace, fontSize = 12.sp,
+                color = colors.accent,
+                modifier = Modifier.fillMaxWidth().clickable(enabled = file.status != "D") { selectedFile = file.path }.padding(vertical = 12.dp),
+            )
         }
         item("diff") {
             val r = result

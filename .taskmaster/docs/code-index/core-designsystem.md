@@ -75,6 +75,18 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 120 |   `val colors` |
 | 121 |   `var copied by remember` |
 
+## core/designsystem/component/FileViewer.kt
+
+| Line | Declaration |
+|---|---|
+| 31 | `@Composable fun FileViewer(content: FileViewerContent)` |
+| 54 | `@Composable private fun FileImage(content: FileViewerContent.Image)` |
+| 55 |   `var decoding by remember(content.base64)` |
+| 56 |   `val bitmap by produceState<androidx.compose.ui.graphics.ImageBitmap?>(null, content.base64)` |
+| 70 |   `var scale by remember(content)` |
+| 71 |   `var offset by remember(content)` |
+| 72 |   `val transform` |
+
 ## core/designsystem/component/Glass.kt
 
 | Line | Declaration |
