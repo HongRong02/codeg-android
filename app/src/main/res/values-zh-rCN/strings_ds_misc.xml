@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ds_misc_expanded">已展开</string>
+    <string name="ds_misc_collapsed">已折叠</string>
+    <string name="ds_misc_group">设置分组</string>
+    <string name="ds_misc_details">详细信息</string>
+    <string name="ds_misc_instant">即时展开分组</string>
+    <string name="ds_misc_search">搜索…</string>
+    <string name="ds_misc_no_results">未找到结果。</string>
+    <string name="ds_misc_no_images">没有图片</string>
+    <string name="ds_misc_close">关闭</string>
+    <string name="ds_misc_previous">上一张图片</string>
+    <string name="ds_misc_next">下一张图片</string>
+    <string name="ds_misc_image_index">%1$d / %2$d</string>
+    <string name="ds_misc_image">预览图片</string>
+    <string name="ds_misc_clear">清除</string>
+</resources>
