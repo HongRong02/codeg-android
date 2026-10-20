@@ -18,8 +18,8 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 92 |   `val state by viewModel.ui.collectAsStateWithLifecycle()` |
 | 93 |   `var showNotes by remember` |
 | 94 |   `var manual by remember` |
-| 106 | `@Composable private fun UpdateNotes(state: UpdateUi, dismiss: () -> Unit, download: () -> Unit)` |
-| 107 |   `val update` |
+| 107 | `@Composable private fun UpdateNotes(state: UpdateUi, dismiss: () -> Unit, download: () -> Unit)` |
+| 108 |   `val update` |
 
 ## core/update/UpdateChecker.kt
 
@@ -58,25 +58,29 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 30 |   `val progress: Float?` |
 | 31 |   `val message: Int?` |
 | 32 |   `val installer: File?` |
-| 37 | `class UpdateRepository @Inject constructor( private val preferences: DataStore<Preferences>, private val downloader: UpdateDownloader, )` |
-| 38 |   `private val preferences: DataStore<Preferences>` |
-| 39 |   `private val downloader: UpdateDownloader` |
-| 41 |   `private val mutable` |
-| 42 |   `val state` |
-| 43 |   `private val checker` |
-| 44 |   `private val scope` |
-| 45 |   `private var started` |
-| 46 |   `private val lastCheck` |
-| 48 |   `suspend fun check(manual: Boolean)` |
-| 69 |   `fun dismiss()` |
-| 70 |   `fun installerHandled()` |
-| 71 |   `fun installFailed()` |
-| 73 |   `fun download()` |
-| 77 |   `private suspend fun downloadInBackground()` |
-| 95 | `class UpdateViewModel @Inject constructor(private val repository: UpdateRepository) : ViewModel()` |
-| 96 |   `val ui` |
-| 97 |   `fun check(manual: Boolean = false)` |
-| 98 |   `fun download()` |
-| 99 |   `fun dismiss()` |
-| 100 |   `fun installerHandled()` |
-| 101 |   `fun installFailed()` |
+| 35 | `val UpdateUi.showBanner: Boolean` |
+| 40 | `class UpdateRepository @Inject constructor( private val preferences: DataStore<Preferences>, private val downloader: UpdateDownloader, )` |
+| 41 |   `private val preferences: DataStore<Preferences>` |
+| 42 |   `private val downloader: UpdateDownloader` |
+| 44 |   `private val mutable` |
+| 45 |   `val state` |
+| 46 |   `private val checker` |
+| 47 |   `private val scope` |
+| 48 |   `private var started` |
+| 49 |   `private var checkMessageRevision` |
+| 50 |   `private val lastCheck` |
+| 52 |   `suspend fun check(manual: Boolean)` |
+| 74 |   `fun clearCheckMessage()` |
+| 79 |   `fun dismiss()` |
+| 80 |   `fun installerHandled()` |
+| 81 |   `fun installFailed()` |
+| 83 |   `fun download()` |
+| 87 |   `private suspend fun downloadInBackground()` |
+| 105 | `class UpdateViewModel @Inject constructor(private val repository: UpdateRepository) : ViewModel()` |
+| 106 |   `val ui` |
+| 107 |   `fun check(manual: Boolean = false)` |
+| 108 |   `fun clearCheckMessage()` |
+| 109 |   `fun download()` |
+| 110 |   `fun dismiss()` |
+| 111 |   `fun installerHandled()` |
+| 112 |   `fun installFailed()` |

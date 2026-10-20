@@ -179,6 +179,8 @@ private fun SettingsRoot(
 ) {
     val workTasks: app.codeg.android.feature.worktasks.WorkTaskViewModel = hiltViewModel()
     val workTaskUi by workTasks.ui.collectAsStateWithLifecycle()
+    val assistants: AssistantsViewModel = hiltViewModel()
+    val assistantUi by assistants.ui.collectAsStateWithLifecycle()
     val colors = CodegTheme.colors
     Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(horizontal = 12.dp, vertical = 8.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
         for (group in SettingsLeaf.entries.map { it.groupRes }.distinct()) {
@@ -188,7 +190,8 @@ private fun SettingsRoot(
                     val leaves = SettingsLeaf.entries.filter {
                         it.groupRes == group &&
                             (it != SettingsLeaf.WORK_TASKS || workTaskUi.supported) &&
-                            (it != SettingsLeaf.SERVER_LOGS || showServerLogs)
+                            (it != SettingsLeaf.SERVER_LOGS || showServerLogs) &&
+                            (it != SettingsLeaf.ASSISTANTS || (!assistantUi.loading && assistantUi.supported))
                     }
                     leaves.forEachIndexed { index, l ->
                         ListItem(

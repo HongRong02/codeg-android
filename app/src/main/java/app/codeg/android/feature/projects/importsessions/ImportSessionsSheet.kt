@@ -59,7 +59,7 @@ fun ImportSessionsSheet(ui: ImportSessionsUi, viewModel: ImportSessionsViewModel
                                             onCheckedChange = { viewModel.toggle(listOf(session.key)) })
                                         Column {
                                             Text(session.title ?: session.externalId)
-                                            Text(session.startedAt, style = MaterialTheme.typography.bodySmall)
+                                            Text(app.codeg.android.feature.worktasks.formatWorkTaskTime(session.startedAt), style = MaterialTheme.typography.bodySmall)
                                             Text(stringResource(when (session.status) {
                                                 "new" -> R.string.imp_new
                                                 "imported" -> R.string.imp_imported

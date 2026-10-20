@@ -247,29 +247,30 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 1301 |   `suspend fun assistantUpdate(id: Int, patch: app.codeg.android.core.model.wire.AssistantDraft): app.codeg.android.core.model.Assistant` |
 | 1304 |   `suspend fun assistantDelete(id: Int)` |
 | 1308 |   `suspend fun assistantReorder(ids: List<Int>): List<app.codeg.android.core.model.Assistant>` |
-| 1314 |   `suspend fun mcpListMarketplaces(): List<app.codeg.android.core.model.McpMarketProvider>` |
-| 1317 |   `suspend fun mcpSearchMarketplace(body: app.codeg.android.core.model.wire.McpMarketSearchBody): List<app.codeg.android.core.model.McpMarketItem>` |
-| 1320 |   `suspend fun mcpMarketplaceDetail(body: app.codeg.android.core.model.wire.McpMarketDetailBody): app.codeg.android.core.model.McpMarketDetail` |
-| 1323 |   `suspend fun mcpInstallMarketplace(body: app.codeg.android.core.model.wire.McpMarketInstallBody)` |
-| 1332 |   `suspend fun customSkillsList(): List<app.codeg.android.core.model.CustomSkill>` |
-| 1335 |   `suspend fun customSkillsStatuses(): List<ExpertInstallStatus>` |
-| 1338 |   `suspend fun customSkillRead(id: String): String` |
-| 1341 |   `suspend fun customSkillCreate(id: String, content: String): app.codeg.android.core.model.CustomSkill` |
-| 1344 |   `suspend fun customSkillSave(id: String, content: String): app.codeg.android.core.model.CustomSkill` |
-| 1347 |   `suspend fun customSkillDuplicate(sourceId: String, newId: String): app.codeg.android.core.model.CustomSkill` |
-| 1350 |   `suspend fun customSkillsDelete(ids: List<String>): List<app.codeg.android.core.model.CustomSkillResult>` |
-| 1353 |   `suspend fun customSkillsImport(agent: AgentType, ids: List<String>): List<app.codeg.android.core.model.CustomSkillResult>` |
-| 1356 |   `suspend fun customSkillsApplyLinks(ops: List<app.codeg.android.core.model.wire.CustomSkillLinkOp>): List<app.codeg.android.core.model.CustomLinkResult>` |
-| 1363 |   `suspend fun scanImportableSessions(): app.codeg.android.core.model.ImportScanResult` |
-| 1366 |   `suspend fun importSelectedSessions(selections: List<app.codeg.android.core.model.wire.ImportSessionKey>): app.codeg.android.core.model.ImportSessionsResult` |
-| 1377 |   `private suspend fun send(path: String, bodyJson: String): String` |
-| 1411 |   `private inline fun <reified T> encode(body: T): String` |
-| 1414 |   `private fun <T> decode(text: String, deserializer: DeserializationStrategy<T>): T` |
-| 1420 |   `companion object` |
-| 1422 |     `fun normalizeBaseUrl(raw: String): String` |
-| 1430 |     `fun decodeConnectionId(text: String): String` |
-| 1446 |     `fun decodeAgentList(text: String): List<AcpAgentInfo>` |
-| 1463 |     `fun isJsonNull(text: String): Boolean` |
+| 1315 |   `private suspend fun sendMarketRequest(path: String, body: String): String` |
+| 1331 |   `suspend fun mcpListMarketplaces(): List<app.codeg.android.core.model.McpMarketProvider>` |
+| 1334 |   `suspend fun mcpSearchMarketplace(body: app.codeg.android.core.model.wire.McpMarketSearchBody): List<app.codeg.android.core.model.McpMarketItem>` |
+| 1337 |   `suspend fun mcpMarketplaceDetail(body: app.codeg.android.core.model.wire.McpMarketDetailBody): app.codeg.android.core.model.McpMarketDetail` |
+| 1340 |   `suspend fun mcpInstallMarketplace(body: app.codeg.android.core.model.wire.McpMarketInstallBody)` |
+| 1349 |   `suspend fun customSkillsList(): List<app.codeg.android.core.model.CustomSkill>` |
+| 1352 |   `suspend fun customSkillsStatuses(): List<ExpertInstallStatus>` |
+| 1355 |   `suspend fun customSkillRead(id: String): String` |
+| 1358 |   `suspend fun customSkillCreate(id: String, content: String): app.codeg.android.core.model.CustomSkill` |
+| 1361 |   `suspend fun customSkillSave(id: String, content: String): app.codeg.android.core.model.CustomSkill` |
+| 1364 |   `suspend fun customSkillDuplicate(sourceId: String, newId: String): app.codeg.android.core.model.CustomSkill` |
+| 1367 |   `suspend fun customSkillsDelete(ids: List<String>): List<app.codeg.android.core.model.CustomSkillResult>` |
+| 1370 |   `suspend fun customSkillsImport(agent: AgentType, ids: List<String>): List<app.codeg.android.core.model.CustomSkillResult>` |
+| 1373 |   `suspend fun customSkillsApplyLinks(ops: List<app.codeg.android.core.model.wire.CustomSkillLinkOp>): List<app.codeg.android.core.model.CustomLinkResult>` |
+| 1380 |   `suspend fun scanImportableSessions(): app.codeg.android.core.model.ImportScanResult` |
+| 1383 |   `suspend fun importSelectedSessions(selections: List<app.codeg.android.core.model.wire.ImportSessionKey>): app.codeg.android.core.model.ImportSessionsResult` |
+| 1394 |   `private suspend fun send(path: String, bodyJson: String): String` |
+| 1428 |   `private inline fun <reified T> encode(body: T): String` |
+| 1431 |   `private fun <T> decode(text: String, deserializer: DeserializationStrategy<T>): T` |
+| 1437 |   `companion object` |
+| 1439 |     `fun normalizeBaseUrl(raw: String): String` |
+| 1447 |     `fun decodeConnectionId(text: String): String` |
+| 1463 |     `fun decodeAgentList(text: String): List<AcpAgentInfo>` |
+| 1480 |     `fun isJsonNull(text: String): Boolean` |
 
 ## core/network/CodegClientFactory.kt
 
@@ -294,7 +295,7 @@ Source root: `app/src/main/java/app/codeg/android/`
 |---|---|
 | 7 | `fun Throwable.displayMessage(context: Context): String` |
 | 9 | `internal fun Throwable.displayMessage(stringResource: (Int) -> String): String` |
-| 20 | `fun Throwable.displayMessage(): String` |
+| 21 | `fun Throwable.displayMessage(): String` |
 
 ## core/network/EventStream.kt
 

@@ -1311,14 +1311,31 @@ class CodegClient(
     // endregion
 
     // region mcp-market
+    // A separate engine keeps the registry's slow requests from changing ordinary API timeouts.
+    private suspend fun sendMarketRequest(path: String, body: String): String {
+        val marketHttp = io.ktor.client.HttpClient(io.ktor.client.engine.okhttp.OkHttp) {
+            expectSuccess = false
+            engine {
+                config {
+                    connectTimeout(90, java.util.concurrent.TimeUnit.SECONDS)
+                    readTimeout(90, java.util.concurrent.TimeUnit.SECONDS)
+                    writeTimeout(90, java.util.concurrent.TimeUnit.SECONDS)
+                    callTimeout(90, java.util.concurrent.TimeUnit.SECONDS)
+                }
+            }
+        }
+        return try { CodegClient(baseUrl, token, marketHttp).send(path, body) }
+        finally { marketHttp.close() }
+    }
+
     suspend fun mcpListMarketplaces(): List<app.codeg.android.core.model.McpMarketProvider> =
         decode(send("mcp_list_marketplaces", encode(EmptyBody)), ListSerializer(app.codeg.android.core.model.McpMarketProvider.serializer()))
 
     suspend fun mcpSearchMarketplace(body: app.codeg.android.core.model.wire.McpMarketSearchBody): List<app.codeg.android.core.model.McpMarketItem> =
-        decode(send("mcp_search_marketplace", encode(body)), ListSerializer(app.codeg.android.core.model.McpMarketItem.serializer()))
+        decode(sendMarketRequest("mcp_search_marketplace", encode(body)), ListSerializer(app.codeg.android.core.model.McpMarketItem.serializer()))
 
     suspend fun mcpMarketplaceDetail(body: app.codeg.android.core.model.wire.McpMarketDetailBody): app.codeg.android.core.model.McpMarketDetail =
-        decode(send("mcp_get_marketplace_server_detail", encode(body)), app.codeg.android.core.model.McpMarketDetail.serializer())
+        decode(sendMarketRequest("mcp_get_marketplace_server_detail", encode(body)), app.codeg.android.core.model.McpMarketDetail.serializer())
 
     suspend fun mcpInstallMarketplace(body: app.codeg.android.core.model.wire.McpMarketInstallBody) {
         send("mcp_install_from_marketplace", encode(body))

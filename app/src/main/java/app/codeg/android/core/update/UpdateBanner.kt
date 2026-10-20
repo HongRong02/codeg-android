@@ -64,7 +64,7 @@ fun UpdateBanner(viewModel: UpdateViewModel = hiltViewModel()) {
         }
     }
     val colors = CodegTheme.colors
-    Column(Modifier.fillMaxWidth().background(colors.bgElevated)) {
+    if (state.showBanner) Column(Modifier.fillMaxWidth().background(colors.bgElevated).windowInsetsPadding(WindowInsets.statusBars)) {
         val update = state.update
         if (update != null && state.dismissed != update.versionCode) {
             Row(Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 4.dp)
@@ -82,7 +82,7 @@ fun UpdateBanner(viewModel: UpdateViewModel = hiltViewModel()) {
             if (progress == null) LinearProgressIndicator(Modifier.fillMaxWidth())
             else LinearProgressIndicator(progress = { progress }, modifier = Modifier.fillMaxWidth())
         }
-        state.message?.let { Text(stringResource(it), color = colors.textSecondary, modifier = Modifier.padding(horizontal = 16.dp)) }
+        if (state.message == R.string.update_download_failed) Text(stringResource(R.string.update_download_failed), color = colors.textSecondary, modifier = Modifier.padding(horizontal = 16.dp))
     }
     if (showNotes) UpdateNotes(state, { showNotes = false }) { showNotes = false; viewModel.download() }
 }
@@ -92,6 +92,7 @@ fun UpdateAbout(viewModel: UpdateViewModel = hiltViewModel()) {
     val state by viewModel.ui.collectAsStateWithLifecycle()
     var showNotes by remember { mutableStateOf(false) }
     var manual by remember { mutableStateOf(false) }
+    DisposableEffect(viewModel) { onDispose { viewModel.clearCheckMessage() } }
     LaunchedEffect(state.checking, state.update) {
         if (manual && !state.checking && state.update != null) { showNotes = true; manual = false }
     }
