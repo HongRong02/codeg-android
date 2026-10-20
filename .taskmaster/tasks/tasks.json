@@ -423,7 +423,7 @@
         "description": "四列看板 + 新建/编辑 + 开始/取消/重试/合并/交付 PR 等 work task 写操作。",
         "details": "需求文档：.taskmaster/docs/tasks/T31-work-task-board.md（先读 .taskmaster/docs/CONVENTIONS.md，再只读这一份需求文档及其中列出的代码位置；不要通读 PRD 或其它文件）。改动范围、代码定位、验收标准都在需求文档里。",
         "testStrategy": "",
-        "status": "pending",
+        "status": "done",
         "dependencies": [],
         "priority": "high",
         "subtasks": []
@@ -434,7 +434,7 @@
         "description": "项目 Git 菜单进入 Issue/PR 列表、详情、评论、新建、合并，并可从 issue 建任务。",
         "details": "需求文档：.taskmaster/docs/tasks/T32-forge.md（先读 .taskmaster/docs/CONVENTIONS.md，再只读这一份需求文档及其中列出的代码位置；不要通读 PRD 或其它文件）。改动范围、代码定位、验收标准都在需求文档里。",
         "testStrategy": "",
-        "status": "pending",
+        "status": "in-progress",
         "dependencies": [],
         "priority": "high",
         "subtasks": []
@@ -445,7 +445,7 @@
         "description": "自动化新建、编辑、删除、立即运行、取消运行。",
         "details": "需求文档：.taskmaster/docs/tasks/T33-automation-write.md（先读 .taskmaster/docs/CONVENTIONS.md，再只读这一份需求文档及其中列出的代码位置；不要通读 PRD 或其它文件）。改动范围、代码定位、验收标准都在需求文档里。",
         "testStrategy": "",
-        "status": "pending",
+        "status": "done",
         "dependencies": [],
         "priority": "medium",
         "subtasks": []
@@ -456,7 +456,7 @@
         "description": "会话列表显示/筛选标签，长按打标签，标签增删改。",
         "details": "需求文档：.taskmaster/docs/tasks/T34-conversation-tags.md（先读 .taskmaster/docs/CONVENTIONS.md，再只读这一份需求文档及其中列出的代码位置；不要通读 PRD 或其它文件）。改动范围、代码定位、验收标准都在需求文档里。",
         "testStrategy": "",
-        "status": "pending",
+        "status": "done",
         "dependencies": [],
         "priority": "medium",
         "subtasks": []
@@ -467,7 +467,7 @@
         "description": "项目列表按分组显示，支持别名、颜色、分组管理。",
         "details": "需求文档：.taskmaster/docs/tasks/T35-folder-groups.md（先读 .taskmaster/docs/CONVENTIONS.md，再只读这一份需求文档及其中列出的代码位置；不要通读 PRD 或其它文件）。改动范围、代码定位、验收标准都在需求文档里。",
         "testStrategy": "",
-        "status": "pending",
+        "status": "done",
         "dependencies": [],
         "priority": "medium",
         "subtasks": []

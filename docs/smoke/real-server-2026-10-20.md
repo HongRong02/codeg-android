@@ -44,3 +44,11 @@
 - T30：提交页键盘弹出时“提交 / 提交并推送”位于键盘上方，可直接点击。通过。
 - Git 菜单包含 切换分支 / 暂存管理 / 分支管理 / 合并、变基与重置 / Git 管理。
 - 小问题：stash 页面里看完 diff 后按返回只收起 diff，不关闭页面（可接受）。
+
+## Round 2 (T31–T35) on the test server, build 5c6c6e7
+
+- T31 work task board: create → start → failed (no agent: server "no agent configured") → edit agent → retry → preparing (worktree task/1) → cancel (confirm) → clean up worktree → delete. Columns and counts update. Follow-up fixed in the next build: localized statuses, local timestamps, empty-state hint.
+- T33 automations: create (cron `0 * * * *`, next-run preview shown) → run now → run listed → cancel run (confirm) → delete (confirm).
+- T34 conversation tags: create tag → tick it in the session's 标签… sheet → chip on the row and in the filter bar; link stored server-side.
+- T35 folder groups: alias shows as `SandboxAlias [sandbox]`; new group "Mobile"; project moved in; group header with rename/delete.
+- T32 forge: menu item correctly hidden for a project with no remote. Still to test on a project with a GitHub remote and a version-control token (real server).
