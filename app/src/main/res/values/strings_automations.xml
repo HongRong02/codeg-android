@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="automations_title">Automations</string>
+    <string name="automations_empty">No automations found</string>
+    <string name="automations_empty_hint">Automations scheduled or created on the server will appear here.</string>
+    <string name="automations_filter_all">All</string>
+    <string name="automations_filter_enabled">Enabled</string>
+    <string name="automations_filter_disabled">Disabled</string>
+    <string name="automations_section_schedule">Schedule</string>
+    <string name="automations_section_prompt">Prompt</string>
+    <string name="automations_section_runs">Run History</string>
+    <string name="automations_trigger">Trigger</string>
+    <string name="automations_trigger_schedule">Schedule</string>
+    <string name="automations_trigger_manual">Manual</string>
+    <string name="automations_agent">Agent</string>
+    <string name="automations_folder">Folder</string>
+    <string name="automations_isolation">Isolation</string>
+    <string name="automations_isolation_worktree">Worktree per run</string>
+    <string name="automations_isolation_shared">Shared in root</string>
+    <string name="automations_next_run">Next Run</string>
+    <string name="automations_last_run">Last Run</string>
+    <string name="automations_enabled">Enabled</string>
+    <string name="automations_disabled">Disabled</string>
+    <string name="automations_no_runs">No runs yet</string>
+    <string name="automations_status_running">Running</string>
+    <string name="automations_status_succeeded">Succeeded</string>
+    <string name="automations_status_failed">Failed</string>
+    <string name="automations_status_cancelled">Cancelled</string>
+    <string name="automations_status_skipped">Skipped</string>
+    <string name="automations_cron_every_minutes">Every %1$d minutes</string>
+    <string name="automations_cron_hourly">Hourly</string>
+    <string name="automations_cron_daily">Daily at %1$s</string>
+    <string name="automations_cron_weekdays">Weekdays at %1$s</string>
+    <string name="automations_cron_weekly">%1$s at %2$s</string>
+    <string name="automations_cron_monthly">Day %1$d of month at %2$s</string>
+    <string name="automations_dow_0">Sunday</string>
+    <string name="automations_dow_1">Monday</string>
+    <string name="automations_dow_2">Tuesday</string>
+    <string name="automations_dow_3">Wednesday</string>
+    <string name="automations_dow_4">Thursday</string>
+    <string name="automations_dow_5">Friday</string>
+    <string name="automations_dow_6">Saturday</string>
+    <string name="automations_refresh">Refresh</string>
+</resources>

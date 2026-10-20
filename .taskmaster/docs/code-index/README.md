@@ -16,6 +16,7 @@ Paths are relative to `app/src/main/java/app/codeg/android/`.
 | core/security | [core-security.md](core-security.md) | 2 |
 | di | [di.md](di.md) | 3 |
 | feature/activity | [feature-activity.md](feature-activity.md) | 2 |
+| feature/automations | [feature-automations.md](feature-automations.md) | 2 |
 | feature/main | [feature-main.md](feature-main.md) | 1 |
 | feature/onboarding | [feature-onboarding.md](feature-onboarding.md) | 1 |
 | feature/projects | [feature-projects.md](feature-projects.md) | 17 |

@@ -68,6 +68,7 @@ import app.codeg.android.feature.search.SearchScreen
 import app.codeg.android.feature.projects.ProjectListScreen
 import app.codeg.android.feature.server.ServerEditorScreen
 import app.codeg.android.feature.settings.SettingsScreen
+import app.codeg.android.feature.automations.AutomationScreen
 import app.codeg.android.feature.server.ServerListScreen
 import app.codeg.android.feature.sessiondetail.SessionDetailScreen
 import app.codeg.android.feature.sessions.SessionListScreen
@@ -93,6 +94,7 @@ enum class HomeTab(
 private const val ROUTE_SERVERS = "servers"
 private const val ROUTE_EDITOR = "editor"
 private const val ROUTE_NEW_TASK = "conversation_new"
+private const val ROUTE_AUTOMATIONS = "automations"
 
 /**
  * Whether the bottom bar — and, by extension, the New Task FAB — is currently
@@ -280,7 +282,9 @@ fun MainShell(appViewModel: AppViewModel, servers: List<ServerProfile>) {
                 SearchScreen(onOpenConversation = { id -> nav.navigate("conversation/$id") })
             }
             composable(HomeTab.SETTINGS.route) {
-                SettingsScreen()
+                SettingsScreen(
+                    onOpenAutomations = { nav.navigate(ROUTE_AUTOMATIONS) },
+                )
             }
 
             composable(
@@ -314,6 +318,12 @@ fun MainShell(appViewModel: AppViewModel, servers: List<ServerProfile>) {
                 arguments = listOf(navArgument("folderId") { type = NavType.IntType }),
             ) {
                 ProjectDetailScreen(onBack = { nav.popBackStack() })
+            }
+
+            composable(ROUTE_AUTOMATIONS) {
+                AutomationScreen(
+                    onBack = { nav.popBackStack() },
+                )
             }
 
             composable(ROUTE_SERVERS) {

@@ -120,6 +120,11 @@ import app.codeg.android.core.model.AgentOptionsSnapshot
 import app.codeg.android.core.model.DescribeAgentOptionsBody
 import app.codeg.android.core.model.SetModeBody
 import app.codeg.android.core.model.SetConfigOptionBody
+import app.codeg.android.core.model.Automation
+import app.codeg.android.core.model.AutomationRun
+import app.codeg.android.core.model.wire.GetAutomationBody
+import app.codeg.android.core.model.wire.ListRunsBody
+import app.codeg.android.core.model.wire.SetEnabledBody
 import io.ktor.client.HttpClient
 import io.ktor.client.request.header
 import io.ktor.client.request.post
@@ -1044,6 +1049,22 @@ class CodegClient(
 
     suspend fun gitFetchRemote(path: String, name: String, credentials: GitCredentials? = null): String =
         decodeBareString(send("git_fetch_remote", encode(app.codeg.android.core.model.wire.GitMiscRemoteRequest(path, name, credentials = credentials))))
+
+    // endregion
+
+    // region automations
+
+    suspend fun automationList(): List<Automation> =
+        decode(send("automation_list", encode(EmptyBody)), ListSerializer(Automation.serializer()))
+
+    suspend fun automationGet(id: Int): Automation =
+        decode(send("automation_get", encode(GetAutomationBody(id))), Automation.serializer())
+
+    suspend fun automationRuns(automationId: Int, limit: Long = 100): List<AutomationRun> =
+        decode(send("automation_runs", encode(ListRunsBody(automationId, limit))), ListSerializer(AutomationRun.serializer()))
+
+    suspend fun automationSetEnabled(id: Int, enabled: Boolean): Automation =
+        decode(send("automation_set_enabled", encode(SetEnabledBody(id, enabled))), Automation.serializer())
 
     // endregion
 

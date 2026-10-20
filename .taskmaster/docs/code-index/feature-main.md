@@ -6,31 +6,32 @@ Source root: `app/src/main/java/app/codeg/android/`
 
 | Line | Declaration |
 |---|---|
-| 80 | `enum class HomeTab( val route: String, @StringRes val label: Int, val icon: ImageVector, val selectedIcon: ImageVector, )` |
-| 81 |   `val route: String` |
-| 83 |   `val icon: ImageVector` |
-| 84 |   `val selectedIcon: ImageVector` |
-| 93 | `private const val ROUTE_SERVERS` |
-| 94 | `private const val ROUTE_EDITOR` |
-| 95 | `private const val ROUTE_NEW_TASK` |
-| 102 | `val LocalBarsVisible` |
-| 111 | `@Composable fun MainShell(appViewModel: AppViewModel, servers: List<ServerProfile>)` |
-| 112 |   `val nav` |
-| 113 |   `val backStackEntry by nav.currentBackStackEntryAsState()` |
-| 114 |   `val currentRoute` |
-| 115 |   `val showBottomBar` |
-| 116 |   `val tabRoutes` |
-| 117 |   `val selectedProfile by appViewModel.selectedProfile.collectAsStateWithLifecycle()` |
-| 119 |   `val wide` |
-| 126 |   `var barsVisible by remember` |
-| 127 |   `val density` |
-| 131 |   `val barProgress by animateFloatAsState( targetValue = if (barsVisible) 0f else 1f, animationSpec = tween(durationMillis = 280), label = "bottomBarCollapse", )` |
-| 142 |   `val barConnection` |
-| 144 |     `object : NestedScrollConnection` |
-| 167 |   `val onTab: (HomeTab) -> Unit` |
-| 176 |   `val pendingLink by app.codeg.android.core.common.DeepLinkBus.pending.collectAsStateWithLifecycle()` |
-| 179 |     `fun toTab(it: HomeTab)` |
-| 348 | `@Composable private fun CodegNavRail(currentRoute: String?, onSelect: (HomeTab) -> Unit)` |
-| 349 |   `val colors` |
-| 387 | `@Composable private fun CodegBottomBar( currentRoute: String?, onSelect: (HomeTab) -> Unit, modifier: Modifier = Modifier, )` |
-| 392 |   `val colors` |
+| 81 | `enum class HomeTab( val route: String, @StringRes val label: Int, val icon: ImageVector, val selectedIcon: ImageVector, )` |
+| 82 |   `val route: String` |
+| 84 |   `val icon: ImageVector` |
+| 85 |   `val selectedIcon: ImageVector` |
+| 94 | `private const val ROUTE_SERVERS` |
+| 95 | `private const val ROUTE_EDITOR` |
+| 96 | `private const val ROUTE_NEW_TASK` |
+| 97 | `private const val ROUTE_AUTOMATIONS` |
+| 104 | `val LocalBarsVisible` |
+| 113 | `@Composable fun MainShell(appViewModel: AppViewModel, servers: List<ServerProfile>)` |
+| 114 |   `val nav` |
+| 115 |   `val backStackEntry by nav.currentBackStackEntryAsState()` |
+| 116 |   `val currentRoute` |
+| 117 |   `val showBottomBar` |
+| 118 |   `val tabRoutes` |
+| 119 |   `val selectedProfile by appViewModel.selectedProfile.collectAsStateWithLifecycle()` |
+| 121 |   `val wide` |
+| 128 |   `var barsVisible by remember` |
+| 129 |   `val density` |
+| 133 |   `val barProgress by animateFloatAsState( targetValue = if (barsVisible) 0f else 1f, animationSpec = tween(durationMillis = 280), label = "bottomBarCollapse", )` |
+| 144 |   `val barConnection` |
+| 146 |     `object : NestedScrollConnection` |
+| 169 |   `val onTab: (HomeTab) -> Unit` |
+| 178 |   `val pendingLink by app.codeg.android.core.common.DeepLinkBus.pending.collectAsStateWithLifecycle()` |
+| 181 |     `fun toTab(it: HomeTab)` |
+| 358 | `@Composable private fun CodegNavRail(currentRoute: String?, onSelect: (HomeTab) -> Unit)` |
+| 359 |   `val colors` |
+| 397 | `@Composable private fun CodegBottomBar( currentRoute: String?, onSelect: (HomeTab) -> Unit, modifier: Modifier = Modifier, )` |
+| 402 |   `val colors` |
