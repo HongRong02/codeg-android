@@ -109,7 +109,7 @@ fun AutomationScreen(
                     CodegIconButton(onClick = { viewModel.load() }) {
                         Icon(
                             Icons.Rounded.Refresh,
-                            contentDescription = stringResource(R.string.common_refresh),
+                            contentDescription = stringResource(R.string.automations_refresh),
                         )
                     }
                 },
@@ -447,7 +447,7 @@ private fun AutomationDetailView(
                 CodegIconButton(onClick = onRefreshRuns) {
                     Icon(
                         Icons.Rounded.Refresh,
-                        contentDescription = stringResource(R.string.common_refresh),
+                        contentDescription = stringResource(R.string.automations_refresh),
                         modifier = Modifier.size(16.dp),
                         tint = colors.textSecondary,
                     )

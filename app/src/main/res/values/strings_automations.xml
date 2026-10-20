@@ -40,4 +40,5 @@
     <string name="automations_dow_4">Thursday</string>
     <string name="automations_dow_5">Friday</string>
     <string name="automations_dow_6">Saturday</string>
+    <string name="automations_refresh">Refresh</string>
 </resources>

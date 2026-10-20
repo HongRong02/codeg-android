@@ -98,7 +98,7 @@ class AutomationViewModel @Inject constructor(
                     it.copy(
                         loading = false,
                         refreshing = false,
-                        error = e.displayMessage,
+                        error = e.displayMessage(),
                     )
                 }
             }
@@ -168,7 +168,7 @@ class AutomationViewModel @Inject constructor(
                         automations = state.automations.map {
                             if (it.id == automation.id) automation else it
                         },
-                        error = e.displayMessage,
+                        error = e.displayMessage(),
                     )
                 }
             }
