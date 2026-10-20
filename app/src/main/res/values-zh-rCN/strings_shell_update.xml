@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="shell_update_available">发现新版本：%1$s</string>
+    <string name="shell_update_no_notes">暂无更新说明。</string>
+    <string name="shell_update_downloading">正在下载…</string>
+    <string name="shell_update_install">下载并安装</string>
+    <string name="shell_update_later">稍后</string>
+    <string name="shell_update_download_failed">下载或校验失败。点击“下载并安装”重试。</string>
+    <string name="shell_update_install_failed">无法安装。请在设置中允许此应用安装未知应用，然后点击“下载并安装”重试。</string>
+</resources>

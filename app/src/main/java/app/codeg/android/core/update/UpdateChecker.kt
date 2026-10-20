@@ -17,7 +17,8 @@ data class AppUpdate(
 )
 
 /** Dedicated anonymous client; never inherits codeg server credentials. */
-class UpdateChecker(private val client: HttpClient = HttpClient(OkHttp) { expectSuccess = true }) {
+class UpdateChecker(private val client: HttpClient = HttpClient(OkHttp) { expectSuccess = true }) : java.io.Closeable {
+    override fun close() = client.close()
     suspend fun check(currentVersion: Int, manual: Boolean = false): AppUpdate? = try {
         parse(client.get("https://api.github.com/repos/HongRong02/codeg-android/releases?per_page=20").bodyAsText(), currentVersion)
     } catch (e: CancellationException) {
