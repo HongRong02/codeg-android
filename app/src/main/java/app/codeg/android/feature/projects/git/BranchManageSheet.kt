@@ -1,5 +1,6 @@
 package app.codeg.android.feature.projects.git
 
+import androidx.compose.ui.window.DialogProperties
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -26,6 +27,7 @@ fun BranchManageSheet(viewModel: BranchManageViewModel, onDismiss: () -> Unit) {
     var force by remember { mutableStateOf(false) }
     val colors = CodegTheme.colors
     ModalBottomSheet(
+        contentWindowInsets = { WindowInsets.safeDrawing },
         onDismissRequest = { if (!ui.busy) onDismiss() },
         sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
         containerColor = colors.bgElevated,
@@ -89,6 +91,8 @@ fun BranchManageSheet(viewModel: BranchManageViewModel, onDismiss: () -> Unit) {
         var password by remember { mutableStateOf("") }
         AlertDialog(
             onDismissRequest = { viewModel.submitCredentials(null) },
+            modifier = Modifier.imePadding(),
+            properties = DialogProperties(decorFitsSystemWindows = false),
             title = { Text(stringResource(R.string.bm_credentials)) },
             text = {
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {

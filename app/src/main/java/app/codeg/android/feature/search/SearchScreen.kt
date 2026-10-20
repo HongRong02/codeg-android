@@ -1,5 +1,6 @@
 package app.codeg.android.feature.search
 
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -80,6 +81,7 @@ fun SearchScreen(
         Column(
             modifier = Modifier
                 .padding(padding)
+                .imePadding()
                 .fillMaxSize(),
         ) {
             // Search field — a pill-shaped input matching web CommandInput / Input:

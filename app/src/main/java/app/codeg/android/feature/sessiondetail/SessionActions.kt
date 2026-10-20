@@ -1,5 +1,7 @@
 package app.codeg.android.feature.sessiondetail
 
+import androidx.compose.ui.window.DialogProperties
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -102,6 +104,8 @@ fun SessionActionsMenu(
         var name by remember { mutableStateOf(summary.trimmedTitle ?: "") }
         AlertDialog(
             onDismissRequest = { showRename = false },
+            modifier = Modifier.imePadding(),
+            properties = DialogProperties(decorFitsSystemWindows = false),
             containerColor = colors.bgElevated,
             title = { Text(stringResource(R.string.sessionactions_rename_session), color = colors.textPrimary) },
             text = {

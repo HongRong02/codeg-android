@@ -1,5 +1,6 @@
 package app.codeg.android.feature.projects
 
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -76,8 +77,8 @@ fun CloneRepoSheet(
     val targetDir = if (parentDir.isBlank()) "" else "${parentDir.trim().trimEnd('/')}/$repoName"
     val canClone = url.isNotBlank() && parentDir.isNotBlank() && !cloning
 
-    Dialog(onDismissRequest = onDismiss, properties = DialogProperties(usePlatformDefaultWidth = false)) {
-        Column(Modifier.fillMaxSize().background(colors.bg).windowInsetsPadding(WindowInsets.safeDrawing)) {
+    Dialog(onDismissRequest = onDismiss, properties = DialogProperties(usePlatformDefaultWidth = false, decorFitsSystemWindows = false)) {
+        Column(Modifier.fillMaxSize().background(colors.bg).windowInsetsPadding(WindowInsets.safeDrawing).imePadding()) {
             CodegTopBar(
                 title = stringResource(R.string.projects_clone_repo),
                 navigationIcon = {

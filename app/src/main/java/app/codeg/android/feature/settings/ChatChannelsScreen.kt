@@ -1,5 +1,6 @@
 package app.codeg.android.feature.settings
 
+import androidx.compose.foundation.layout.imePadding
 import android.graphics.BitmapFactory
 import android.util.Base64
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -670,8 +671,8 @@ private fun ChatChannelEditorDialog(existing: ChatChannelInfo?, viewModel: ChatC
         }
     }
 
-    Dialog(onDismissRequest = onDismiss, properties = DialogProperties(usePlatformDefaultWidth = false)) {
-        Column(Modifier.fillMaxSize().background(colors.bg).windowInsetsPadding(WindowInsets.safeDrawing)) {
+    Dialog(onDismissRequest = onDismiss, properties = DialogProperties(usePlatformDefaultWidth = false, decorFitsSystemWindows = false)) {
+        Column(Modifier.fillMaxSize().background(colors.bg).windowInsetsPadding(WindowInsets.safeDrawing).imePadding()) {
             CodegTopBar(
                 title = if (isEdit) stringResource(R.string.cc_edit_channel) else stringResource(R.string.cc_add_channel),
                 navigationIcon = {

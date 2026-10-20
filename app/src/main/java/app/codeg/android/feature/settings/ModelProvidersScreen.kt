@@ -1,5 +1,7 @@
 package app.codeg.android.feature.settings
 
+import androidx.compose.ui.window.DialogProperties
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
@@ -142,6 +144,8 @@ private fun ProviderEditor(
 
     AlertDialog(
         onDismissRequest = onDismiss,
+            modifier = Modifier.imePadding(),
+            properties = DialogProperties(decorFitsSystemWindows = false),
         title = { Text(if (existing == null) stringResource(R.string.providers_new_title) else stringResource(R.string.providers_edit_title)) },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {

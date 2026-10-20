@@ -1,5 +1,7 @@
 package app.codeg.android.feature.projects
 
+import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -77,7 +79,7 @@ fun BranchPickerSheet(viewModel: ProjectDetailViewModel, onDismiss: () -> Unit) 
         viewModel.checkout(branch) { err -> busy = false; if (err == null) onDismiss() else error = err }
     }
 
-    ModalBottomSheet(onDismissRequest = onDismiss, sheetState = sheetState, containerColor = colors.bgElevated) {
+    ModalBottomSheet(contentWindowInsets = { WindowInsets.safeDrawing }, onDismissRequest = onDismiss, sheetState = sheetState, containerColor = colors.bgElevated) {
         Column(Modifier.fillMaxWidth().heightIn(max = 520.dp).padding(horizontal = 16.dp).padding(bottom = 28.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
             CodegTopBar(title = stringResource(R.string.branch_switch_branch), showDivider = true)
             error?.let { Text(it, fontSize = 12.sp, color = colors.danger) }

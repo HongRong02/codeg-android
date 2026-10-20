@@ -36,7 +36,7 @@ fun GitMiscSheet(client: CodegClient, path: String, folderId: Int, onDismiss: ()
         model.load(client, path)
         onChanged()
     }
-    ModalBottomSheet(onDismissRequest = { if (!ui.busy) onDismiss() }, sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true), containerColor = CodegTheme.colors.bgElevated) {
+    ModalBottomSheet(contentWindowInsets = { WindowInsets.safeDrawing }, onDismissRequest = { if (!ui.busy) onDismiss() }, sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true), containerColor = CodegTheme.colors.bgElevated) {
         Column(Modifier.fillMaxWidth().verticalScroll(rememberScrollState()).padding(16.dp).padding(bottom = 24.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
             CodegTopBar(title = stringResource(R.string.git_misc_title), showDivider = true)
             Text(path, color = CodegTheme.colors.textSecondary)

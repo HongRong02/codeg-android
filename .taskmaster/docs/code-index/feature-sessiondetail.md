@@ -6,64 +6,64 @@ Source root: `app/src/main/java/app/codeg/android/`
 
 | Line | Declaration |
 |---|---|
-| 78 | `private enum class SheetPage` |
-| 83 | `private const val MODE_APPLY` |
-| 94 | `@Composable fun AgentOptionsSheet( viewModel: SessionDetailViewModel, onOpenSession: (Int) -> Unit, onDismiss: () -> Unit, )` |
-| 99 |   `val ui by viewModel.ui.collectAsStateWithLifecycle()` |
-| 100 |   `val colors` |
-| 101 |   `val sheetState` |
-| 102 |   `val scope` |
-| 103 |   `var page by remember` |
-| 105 |   `var loading by remember` |
-| 106 |   `var data by remember` |
-| 107 |   `var currentMode by remember` |
-| 108 |   `var currentValues by remember` |
-| 109 |   `var note by remember` |
-| 112 |   `var applying by remember` |
-| 113 |   `val applyFailedNote` |
-| 242 | `@Composable private fun AgentPickerSection(agents: List<AgentType>, selected: AgentType, onSelect: (AgentType) -> Unit)` |
-| 243 |   `val colors` |
-| 283 | `@Composable private fun WorkspaceSection( ui: SessionDetailUiState, onSelectFolder: (FolderDetail) -> Unit, onOpenBranch: () -> Unit, )` |
-| 288 |   `val colors` |
-| 300 | `@Composable private fun FolderMenuRow(ui: SessionDetailUiState, onSelectFolder: (FolderDetail) -> Unit)` |
-| 301 |   `val colors` |
-| 302 |   `var expanded by remember` |
-| 333 | `@Composable private fun FolderReadOnlyRow(ui: SessionDetailUiState)` |
-| 334 |   `val colors` |
-| 349 | `@Composable private fun BranchRow(current: String?, isBusy: Boolean, onClick: () -> Unit)` |
-| 350 |   `val colors` |
-| 372 | `@Composable private fun PathLine(path: String)` |
-| 381 | `@Composable private fun BranchPickerContent( viewModel: SessionDetailViewModel, onBack: () -> Unit, onOpenSession: (Int) -> Unit, )` |
-| 386 |   `val ui by viewModel.ui.collectAsStateWithLifecycle()` |
-| 387 |   `val colors` |
-| 388 |   `val scope` |
-| 389 |   `var loading by remember` |
-| 390 |   `var list by remember` |
-| 391 |   `var query by remember` |
-| 392 |   `var switching by remember` |
-| 393 |   `var showNew by remember` |
-| 394 |   `var newName by remember` |
-| 395 |   `var creating by remember` |
-| 396 |   `val isBusy` |
-| 397 |   `val current` |
-| 404 |   `fun pick(display: String, target: String, isRemote: Boolean)` |
-| 418 |   `val worktree` |
-| 419 |   `val locals` |
-| 420 |   `val remotes` |
-| 487 | `private fun String.matches(query: String): Boolean` |
-| 488 |   `val q` |
-| 493 | `@Composable private fun NewBranchInline( show: Boolean, name: String, current: String?, creating: Boolean, onShow: () -> Unit, onName: (String) -> Unit, onCancel: () -> Unit, onCreate: () -> Unit, )` |
-| 503 |   `val colors` |
-| 536 | `@Composable private fun BranchRowItem( display: String, target: String, isRemote: Boolean, occupied: Boolean, isCurrent: Boolean, switching: Boolean, enabled: Boolean, onClick: () -> Unit, )` |
-| 546 |   `val colors` |
-| 569 | `@Composable private fun BranchSectionLabel(text: String)` |
-| 578 | `@Composable private fun ConfigOptionSection(option: SessionConfigOption, currentValue: String?, optionApplying: Boolean, locked: Boolean, onSelect: (String) -> Unit)` |
-| 579 |   `val colors` |
-| 580 |   `val flat: List<SessionConfigSelectOption>` |
-| 595 | `@Composable private fun OptionGroup(content: @Composable () -> Unit)` |
-| 600 | `@Composable private fun GroupDivider()` |
-| 605 | `@Composable private fun OptionRow(title: String, description: String?, selected: Boolean, busy: Boolean, enabled: Boolean, onClick: () -> Unit)` |
-| 606 |   `val colors` |
+| 80 | `private enum class SheetPage` |
+| 85 | `private const val MODE_APPLY` |
+| 96 | `@Composable fun AgentOptionsSheet( viewModel: SessionDetailViewModel, onOpenSession: (Int) -> Unit, onDismiss: () -> Unit, )` |
+| 101 |   `val ui by viewModel.ui.collectAsStateWithLifecycle()` |
+| 102 |   `val colors` |
+| 103 |   `val sheetState` |
+| 104 |   `val scope` |
+| 105 |   `var page by remember` |
+| 107 |   `var loading by remember` |
+| 108 |   `var data by remember` |
+| 109 |   `var currentMode by remember` |
+| 110 |   `var currentValues by remember` |
+| 111 |   `var note by remember` |
+| 114 |   `var applying by remember` |
+| 115 |   `val applyFailedNote` |
+| 245 | `@Composable private fun AgentPickerSection(agents: List<AgentType>, selected: AgentType, onSelect: (AgentType) -> Unit)` |
+| 246 |   `val colors` |
+| 286 | `@Composable private fun WorkspaceSection( ui: SessionDetailUiState, onSelectFolder: (FolderDetail) -> Unit, onOpenBranch: () -> Unit, )` |
+| 291 |   `val colors` |
+| 303 | `@Composable private fun FolderMenuRow(ui: SessionDetailUiState, onSelectFolder: (FolderDetail) -> Unit)` |
+| 304 |   `val colors` |
+| 305 |   `var expanded by remember` |
+| 336 | `@Composable private fun FolderReadOnlyRow(ui: SessionDetailUiState)` |
+| 337 |   `val colors` |
+| 352 | `@Composable private fun BranchRow(current: String?, isBusy: Boolean, onClick: () -> Unit)` |
+| 353 |   `val colors` |
+| 375 | `@Composable private fun PathLine(path: String)` |
+| 384 | `@Composable private fun BranchPickerContent( viewModel: SessionDetailViewModel, onBack: () -> Unit, onOpenSession: (Int) -> Unit, )` |
+| 389 |   `val ui by viewModel.ui.collectAsStateWithLifecycle()` |
+| 390 |   `val colors` |
+| 391 |   `val scope` |
+| 392 |   `var loading by remember` |
+| 393 |   `var list by remember` |
+| 394 |   `var query by remember` |
+| 395 |   `var switching by remember` |
+| 396 |   `var showNew by remember` |
+| 397 |   `var newName by remember` |
+| 398 |   `var creating by remember` |
+| 399 |   `val isBusy` |
+| 400 |   `val current` |
+| 407 |   `fun pick(display: String, target: String, isRemote: Boolean)` |
+| 421 |   `val worktree` |
+| 422 |   `val locals` |
+| 423 |   `val remotes` |
+| 490 | `private fun String.matches(query: String): Boolean` |
+| 491 |   `val q` |
+| 496 | `@Composable private fun NewBranchInline( show: Boolean, name: String, current: String?, creating: Boolean, onShow: () -> Unit, onName: (String) -> Unit, onCancel: () -> Unit, onCreate: () -> Unit, )` |
+| 506 |   `val colors` |
+| 539 | `@Composable private fun BranchRowItem( display: String, target: String, isRemote: Boolean, occupied: Boolean, isCurrent: Boolean, switching: Boolean, enabled: Boolean, onClick: () -> Unit, )` |
+| 549 |   `val colors` |
+| 572 | `@Composable private fun BranchSectionLabel(text: String)` |
+| 581 | `@Composable private fun ConfigOptionSection(option: SessionConfigOption, currentValue: String?, optionApplying: Boolean, locked: Boolean, onSelect: (String) -> Unit)` |
+| 582 |   `val colors` |
+| 583 |   `val flat: List<SessionConfigSelectOption>` |
+| 598 | `@Composable private fun OptionGroup(content: @Composable () -> Unit)` |
+| 603 | `@Composable private fun GroupDivider()` |
+| 608 | `@Composable private fun OptionRow(title: String, description: String?, selected: Boolean, busy: Boolean, enabled: Boolean, onClick: () -> Unit)` |
+| 609 |   `val colors` |
 
 ## feature/sessiondetail/Attachment.kt
 
@@ -124,114 +124,6 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 145 | `@Composable private fun InsertRow(title: String, subtitle: String, mono: Boolean = false, onClick: () -> Unit)` |
 | 146 |   `val colors` |
 
-## feature/sessiondetail/interactive/AskQuestionCard.kt
-
-| Line | Declaration |
-|---|---|
-| 55 | `private const val OTHER_KEY` |
-| 59 | `@Composable fun AskQuestionCard( questions: List<QuestionSpec>, onSubmit: (QuestionAnswer) -> Unit, onSkip: () -> Unit, modifier: Modifier = Modifier, )` |
-| 65 |   `val colors` |
-| 66 |   `val selections` |
-| 67 |   `val otherText` |
-| 68 |   `var submitting by remember(questions)` |
-| 70 |   `fun answered(q: QuestionSpec): Boolean` |
-| 76 |   `val canSubmit` |
-| 145 | `@Composable private fun QuestionBlock( question: QuestionSpec, showHeader: Boolean, selected: Set<String>, otherText: String, onToggle: (String) -> Unit, onOtherText: (String) -> Unit, )` |
-| 153 |   `val colors` |
-| 212 | `@Composable private fun OptionRow(label: String, description: String, checked: Boolean, multi: Boolean, onClick: () -> Unit)` |
-| 213 |   `val colors` |
-| 247 | `private fun buildAnswer( questions: List<QuestionSpec>, selections: Map<String, Set<String>>, otherText: Map<String, String>, ): QuestionAnswer` |
-| 252 |   `val items` |
-
-## feature/sessiondetail/interactive/ParsedPermission.kt
-
-| Line | Declaration |
-|---|---|
-| 12 | `data class PermissionPlanEntry(val text: String, val status: String?)` |
-| 13 | `data class PermissionAllowedPrompt(val prompt: String, val tool: String)` |
-| 20 | `data class ParsedPermission( val title: String, val kind: String, val command: String?, val cwd: String?, val diffFiles: List<DiffFile>, val planMarkdown: String?, val planEntries: List<PermissionPlanEntry>, val allowedPrompts: List<PermissionAllowedPrompt>, val modeTarget: String?, val url: String?, val query: String?, val prompt: String?, val jsonPreview: String, )` |
-| 21 |   `val title: String` |
-| 22 |   `val kind: String` |
-| 23 |   `val command: String?` |
-| 24 |   `val cwd: String?` |
-| 25 |   `val diffFiles: List<DiffFile>` |
-| 26 |   `val planMarkdown: String?` |
-| 27 |   `val planEntries: List<PermissionPlanEntry>` |
-| 28 |   `val allowedPrompts: List<PermissionAllowedPrompt>` |
-| 29 |   `val modeTarget: String?` |
-| 30 |   `val url: String?` |
-| 31 |   `val query: String?` |
-| 32 |   `val prompt: String?` |
-| 33 |   `val jsonPreview: String` |
-| 36 |   `val isPlan: Boolean` |
-| 43 |   `val hasStructuredBody: Boolean` |
-| 48 |   `companion object` |
-| 49 |     `fun parse(toolCall: JsonElement): ParsedPermission` |
-| 85 | `private val PJson` |
-| 86 | `private val PrettyJson` |
-| 88 | `private fun JsonElement?.str(): String?` |
-| 89 | `private fun JsonElement?.nonEmpty(): String?` |
-| 90 | `private fun JsonElement?.isNullElem(): Boolean` |
-| 91 | `private fun parseJsonString(s: String): JsonElement?` |
-| 93 | `private fun asObject(v: JsonElement?): JsonObject?` |
-| 102 | `private fun pickValue(obj: JsonObject?, keys: List<String>): JsonElement?` |
-| 108 | `private fun pickString(obj: JsonObject?, keys: List<String>): String?` |
-| 114 | `private fun fallbackTitle(kind: String): String` |
-| 115 |   `val normalized` |
-| 121 | `private fun extractCommand(value: JsonElement?, depth: Int = 0): String?` |
-| 149 | `private fun extractDiffText(rawInput: JsonElement?, rawInputObj: JsonObject?): String?` |
-| 150 |   `val candidates` |
-| 162 | `private fun buildDiffFromChanges(rawInputObj: JsonObject?, toolCallObj: JsonObject?): String?` |
-| 163 |   `val blocks` |
-| 183 |   `val joined` |
-| 187 | `private fun compactDiff(path: String, oldText: String, newText: String, context: Int = 2): String?` |
-| 188 |   `val oldLines` |
-| 190 |   `val newLines` |
-| 193 |   `var prefix` |
-| 195 |   `var suffix` |
-| 200 |   `val removed` |
-| 201 |   `val added` |
-| 204 |   `val before` |
-| 205 |   `val after` |
-| 207 |   `val oldStart` |
-| 208 |   `val oldCount` |
-| 209 |   `val newCount` |
-| 211 |   `val parts` |
-| 219 | `private fun parsePlanEntries(rawInputObj: JsonObject?): List<PermissionPlanEntry>` |
-| 234 | `private fun parseAllowedPrompts(rawInputObj: JsonObject?): List<PermissionAllowedPrompt>` |
-| 235 |   `val list` |
-| 243 | `private fun unescape(text: String): String` |
-| 246 | `private fun prettyPrint(element: JsonElement): String` |
-
-## feature/sessiondetail/interactive/PermissionRequestCard.kt
-
-| Line | Declaration |
-|---|---|
-| 51 | `@Composable fun PermissionRequestCard( parsed: ParsedPermission, options: List<PermissionOption>, onRespond: (String) -> Unit, modifier: Modifier = Modifier, )` |
-| 57 |   `val colors` |
-| 58 |   `var submitting by remember(parsed.jsonPreview)` |
-| 59 |   `val accent` |
-| 123 | `@Composable private fun PermissionBody(parsed: ParsedPermission)` |
-| 124 |   `val colors` |
-| 177 | `@Composable private fun OptionButton(option: PermissionOption, submitting: Boolean, enabled: Boolean, onClick: () -> Unit)` |
-| 178 |   `val colors` |
-| 179 |   `val isReject` |
-| 180 |   `val shape` |
-| 183 |   `val clickable` |
-
-## feature/sessiondetail/interactive/PlanApprovalCard.kt
-
-| Line | Declaration |
-|---|---|
-| 64 | `@Composable fun PlanApprovalCard( planMarkdown: String, onAnswer: (PlanApprovalDecision, String?) -> Unit, modifier: Modifier = Modifier, )` |
-| 69 |   `val colors` |
-| 70 |   `val plan` |
-| 71 |   `var submitting by remember(planMarkdown)` |
-| 72 |   `var changesOpen by remember(planMarkdown)` |
-| 73 |   `var feedback by remember(planMarkdown)` |
-| 74 |   `val notes` |
-| 76 |   `fun submit(decision: PlanApprovalDecision, text: String?)` |
-
 ## feature/sessiondetail/LiveTurn.kt
 
 | Line | Declaration |
@@ -285,246 +177,21 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 218 |   `fun snapshot(): LiveTurnState` |
 | 245 |   `fun snapshotAsMessageTurn(): MessageTurn` |
 
-## feature/sessiondetail/rendering/ContextCompaction.kt
-
-| Line | Declaration |
-|---|---|
-| 18 | `object ContextCompaction` |
-| 22 |   `fun matches(meta: JsonObject?): Boolean` |
-| 32 |   `fun tokens(meta: JsonObject?): Pair<Int?, Int?>` |
-| 35 |   `private fun count(meta: JsonObject?, key: String): Int?` |
-
-## feature/sessiondetail/rendering/InlineImage.kt
-
-| Line | Declaration |
-|---|---|
-| 27 | `@Composable fun InlineImage(image: ImageData, caption: String?, modifier: Modifier = Modifier)` |
-| 28 |   `val colors` |
-| 29 |   `val bitmap` |
-
-## feature/sessiondetail/rendering/LivePlanView.kt
-
-| Line | Declaration |
-|---|---|
-| 32 | `private val SuccessGreen` |
-| 36 | `@Composable fun LivePlanView(entries: List<PlanEntry>, modifier: Modifier = Modifier)` |
-| 38 |   `val colors` |
-| 39 |   `val done` |
-| 59 | `@Composable private fun PlanRow(entry: PlanEntry)` |
-| 60 |   `val colors` |
-| 61 |   `val completed` |
-
-## feature/sessiondetail/rendering/McpResultEnvelope.kt
-
-| Line | Declaration |
-|---|---|
-| 24 | `object McpResultEnvelope` |
-| 29 |   `private val wrapperKeys` |
-| 32 |   `private const val MAX_DEPTH` |
-| 41 |   `data class Peeled(val obj: JsonObject, val hostError: String?)` |
-| 50 |   `fun peel(obj: JsonObject, isResolvable: (JsonObject) -> Boolean): Peeled` |
-| 71 |   `fun isCallToolResult(value: JsonObject): Boolean` |
-| 80 |   `private fun hostFailureError(obj: JsonObject): String?` |
-
-## feature/sessiondetail/rendering/ReasoningBlock.kt
-
-| Line | Declaration |
-|---|---|
-| 44 | `@Composable fun ReasoningBlock(text: String, modifier: Modifier = Modifier, initiallyExpanded: Boolean = false)` |
-| 45 |   `val colors` |
-| 46 |   `var expanded by remember(text)` |
-| 47 |   `val chevron by animateFloatAsState(if (expanded) 90f else 0f, label = "reasoning-chevron")` |
-
-## feature/sessiondetail/rendering/ToolCallCard.kt
-
-| Line | Declaration |
-|---|---|
-| 71 | `private val SuccessGreen` |
-| 72 | `private val ErrorRed` |
-| 79 | `@Composable fun ToolCallCard(vm: ToolCallVM, modifier: Modifier = Modifier, nested: Boolean = false)` |
-| 80 |   `val colors` |
-| 81 |   `val autoExpand` |
-| 84 |   `var expanded by remember(vm.id)` |
-| 85 |   `val hasBody` |
-| 142 | `@Composable private fun ToolBody(vm: ToolCallVM)` |
-| 143 |   `val diff` |
-| 151 |   `val input` |
-| 167 | `@Composable private fun BashInputBody(input: String)` |
-| 168 |   `val parsed` |
-| 169 |   `val args` |
-| 170 |   `val cmd` |
-| 181 | `@Composable private fun TodoInputBody(input: String)` |
-| 182 |   `val colors` |
-| 183 |   `val args` |
-| 184 |   `val todos` |
-| 224 | `@Composable private fun ToolOutputSection(vm: ToolCallVM)` |
-| 228 |   `val out` |
-| 257 | `@Composable private fun ToolStateIcon(vm: ToolCallVM)` |
-| 258 |   `val colors` |
-| 269 | `@Composable fun ToolGroupCard(items: List<ToolCallVM>, modifier: Modifier = Modifier, streaming: Boolean = false)` |
-| 270 |   `val colors` |
-| 273 |   `var expanded by remember(items.firstOrNull()?.id)` |
-| 274 |   `val errorCount` |
-| 327 | `fun bucketIcon(bucket: ToolKindBucket): ImageVector` |
-| 339 | `private fun groupSummary(context: Context, items: List<ToolCallVM>): String` |
-| 340 |   `val counts` |
-| 341 |   `val order` |
-| 345 |   `val res` |
-| 346 |   `val phrases` |
-| 364 | `private fun JsonObject.str(key: String): String?` |
-| 365 |   `val prim` |
-
-## feature/sessiondetail/rendering/ToolCallVM.kt
-
-| Line | Declaration |
-|---|---|
-| 10 | `enum class ToolCallState` |
-| 18 | `data class ToolCallVM( val id: String, val rawName: String, val kind: String, val state: ToolCallState, val input: String?, val output: String?, val content: String?, val isError: Boolean, val displayTitle: String, val bucket: ToolKindBucket, val diffFiles: List<DiffFile>?, /** The agent's opaque ACP metadata for this call (Grok's `x.ai/tool` identity, * the context-compaction tag, …). Null for most tools and hosts. */ val meta: JsonObject? = null, )` |
-| 19 |   `val id: String` |
-| 20 |   `val rawName: String` |
-| 21 |   `val kind: String` |
-| 22 |   `val state: ToolCallState` |
-| 23 |   `val input: String?` |
-| 24 |   `val output: String?` |
-| 25 |   `val content: String?` |
-| 26 |   `val isError: Boolean` |
-| 27 |   `val displayTitle: String` |
-| 28 |   `val bucket: ToolKindBucket` |
-| 29 |   `val diffFiles: List<DiffFile>?` |
-| 32 |   `val meta: JsonObject?` |
-| 34 |   `val trimmedOutput: String get()` |
-| 35 |   `val hasOutput: Boolean get()` |
-| 36 |   `val isCommand: Boolean get()` |
-| 43 |   `val isPlanMode: Boolean get()` |
-| 45 |   `companion object` |
-| 46 |     `fun of( id: String, rawName: String, kind: String, state: ToolCallState, input: String?, output: String?, content: String?, isError: Boolean, meta: JsonObject? = null, ): ToolCallVM` |
-| 85 | `sealed interface RenderPart` |
-| 86 |   `data class Text(val text: String) : RenderPart` |
-| 87 |   `data class Reasoning(val text: String) : RenderPart` |
-| 88 |   `data class Tool(val vm: ToolCallVM) : RenderPart` |
-| 89 |   `data class ToolGroup(val items: List<ToolCallVM>, val streaming: Boolean) : RenderPart` |
-| 90 |   `data class Image(val image: ImageData, val caption: String?) : RenderPart` |
-| 96 |   `data class Compaction(val before: Int?, val after: Int?, val running: Boolean) : RenderPart` |
-| 97 |   `data class Unknown(val type: String) : RenderPart` |
-| 101 | `object MessageRender` |
-| 103 |   `fun adaptTurn(turn: MessageTurn): List<RenderPart>` |
-| 172 |   `fun groupConsecutiveTools(parts: List<RenderPart>): List<RenderPart>` |
-| 176 |     `fun flush()` |
-| 200 |   `private fun findResult(blocks: List<ContentBlock>, after: Int, toolID: String?, consumed: Set<Int>): Int?` |
-
-## feature/sessiondetail/rendering/ToolDerive.kt
-
-| Line | Declaration |
-|---|---|
-| 14 | `enum class ToolKindBucket` |
-| 21 | `object ToolDerive` |
-| 23 |   `private val lenient` |
-| 27 |   `private val readNames` |
-| 28 |   `private val editNames` |
-| 34 |   `private val searchNames` |
-| 38 |   `private val executeNames` |
-| 42 |   `private val webNames` |
-| 45 |   `private val todoNames` |
-| 46 |   `private val taskNames` |
-| 51 |   `fun parseJson(s: String?): JsonObject?` |
-| 57 |   `fun effectiveArgs(parsed: JsonObject?): JsonObject?` |
-| 65 |   `fun title(name: String, parsed: JsonObject?): String` |
-| 68 |     `fun str(keys: List<String>): String?` |
-| 124 |   `fun bucket(name: String, kind: String): ToolKindBucket` |
-| 143 |   `fun diff( bucket: ToolKindBucket, input: String?, output: String?, content: String?, parsed: JsonObject?, ): List<DiffFile>?` |
-| 178 |   `fun grokPlanModeName(meta: JsonObject?): String?` |
-| 191 |   `fun isPlanModeName(name: String): Boolean` |
-| 194 |   `private val planModeNames` |
-| 196 |   `private fun canonical(name: String): String` |
-| 203 |   `fun display(name: String): String` |
-| 210 |   `private fun editFileCount(args: JsonObject?): Int?` |
-| 224 |   `private fun todoCounts(args: JsonObject?): Pair<Int, Int>?` |
-| 231 |   `private fun firstStringValue(args: JsonObject?): String?` |
-| 241 |   `private val shellPrefix` |
-| 243 |   `private fun simplifyCommand(c: String): String` |
-| 252 |   `private fun host(url: String): String` |
-| 255 |   `private fun truncate(s: String, n: Int): String` |
-| 260 |   `private fun synthesizeDiff(path: String, old: String, new: String): List<DiffFile>` |
-| 273 | `object PathFormat` |
-| 274 |   `fun short(path: String): String` |
-| 281 | `private fun JsonObject?.string(key: String): String?` |
-| 282 |   `val prim` |
-
-## feature/sessiondetail/rendering/ToolValueFormat.kt
-
-| Line | Declaration |
-|---|---|
-| 57 | `private val lenient` |
-| 58 | `private val prettyJson` |
-| 62 | `private fun parseAny(s: String?): JsonElement?` |
-| 68 | `private fun JsonObject.strField(key: String): String?` |
-| 69 |   `val prim` |
-| 74 | `private fun scalarString(prim: JsonPrimitive): String` |
-| 77 | `private fun prettyPrint(el: JsonElement): String` |
-| 84 | `fun prettyPrintJsonString(s: String): String?` |
-| 85 |   `val any` |
-| 91 | `private val codeFields` |
-| 97 | `private val hiddenFields` |
-| 105 | `object ToolOutputFormat` |
-| 107 |   `enum class Kind` |
-| 112 |   `fun commandOutput(output: String): String?` |
-| 137 |   `private val metaLine` |
-| 141 |   `private val outputSepLine` |
-| 143 |   `private fun isMetaLine(s: String)` |
-| 147 |   `fun parseCliEnvelope(text: String): String` |
-| 178 |   `fun stripMarkdownFence(text: String): String` |
-| 187 |   `fun cleanCommandOutput(source: String): String` |
-| 194 |   `fun classify(output: String): Kind` |
-| 202 |   `fun looksLikeMarkdown(s: String): Boolean` |
-| 225 |   `fun mcpResultText(output: String): String?` |
-| 243 |   `fun errorFields(errorText: String): List<Pair<String, String>>?` |
-| 255 | `object ReadOutputFormat` |
-| 256 |   `data class File(val content: String, val startLine: Int)` |
-| 258 |   `fun parse(output: String): File?` |
-| 274 | `object ToolFieldLabel` |
-| 275 |   `private val map` |
-| 293 |   `fun label(key: String): String` |
-| 296 |   `private fun humanize(key: String): String` |
-| 311 | `@Composable fun ToolFieldInline(label: String, value: String)` |
-| 312 |   `val colors` |
-| 327 | `@Composable fun ToolFieldBlock(label: String, content: @Composable () -> Unit)` |
-| 328 |   `val colors` |
-| 338 | `@Composable fun PlainTextBlock(text: String)` |
-| 339 |   `val colors` |
-| 358 | `@Composable fun StructuredJsonView(json: String, inlineMaxLength: Int = 200)` |
-| 359 |   `val obj` |
-| 377 | `@Composable private fun ToolField(key: String, value: JsonElement, inlineMaxLength: Int)` |
-| 378 |   `val label` |
-| 393 | `private fun codeLanguage(key: String): String?` |
-| 403 | `@Composable fun FileBodyView(file: ReadOutputFormat.File, collapsedLineLimit: Int = 60)` |
-| 404 |   `val colors` |
-| 405 |   `val content` |
-| 406 |   `val lines` |
-| 407 |   `val isLong` |
-| 408 |   `var expanded by remember(file)` |
-| 409 |   `val shown` |
-| 410 |   `val maxNo` |
-| 411 |   `val digits` |
-| 412 |   `val gutterWidth` |
-| 467 | `@Composable fun ToolErrorOutput(output: String)` |
-| 468 |   `val colors` |
-| 469 |   `val fields` |
-
 ## feature/sessiondetail/SessionActions.kt
 
 | Line | Declaration |
 |---|---|
-| 63 | `@Composable fun SessionActionsMenu( ui: SessionDetailUiState, viewModel: SessionDetailViewModel, onDeleted: () -> Unit, )` |
-| 68 |   `val colors` |
-| 69 |   `val summary` |
-| 70 |   `val connectionActions by viewModel.sessionActions.collectAsState()` |
-| 71 |   `var menu by remember` |
-| 72 |   `var showRename by remember` |
-| 73 |   `var showStatus by remember` |
-| 74 |   `var showDetails by remember` |
-| 75 |   `var showDelete by remember` |
-| 182 | `@Composable private fun DetailRow(label: String, value: String, valueColor: androidx.compose.ui.graphics.Color? = null)` |
-| 183 |   `val colors` |
+| 65 | `@Composable fun SessionActionsMenu( ui: SessionDetailUiState, viewModel: SessionDetailViewModel, onDeleted: () -> Unit, )` |
+| 70 |   `val colors` |
+| 71 |   `val summary` |
+| 72 |   `val connectionActions by viewModel.sessionActions.collectAsState()` |
+| 73 |   `var menu by remember` |
+| 74 |   `var showRename by remember` |
+| 75 |   `var showStatus by remember` |
+| 76 |   `var showDetails by remember` |
+| 77 |   `var showDelete by remember` |
+| 186 | `@Composable private fun DetailRow(label: String, value: String, valueColor: androidx.compose.ui.graphics.Color? = null)` |
+| 187 |   `val colors` |
 
 ## feature/sessiondetail/SessionDetailScreen.kt
 
@@ -763,6 +430,339 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 8 | `internal enum class StreamRecovery` |
 | 10 | `internal fun streamRecovery( inFlight: Boolean, authFailed: Boolean, connectionGone: Boolean, attempts: Int, immediate: Boolean, ): StreamRecovery` |
 | 24 | `data class StreamNotice(val message: String, val openServers: Boolean = false)` |
+
+## feature/sessiondetail/interactive/AskQuestionCard.kt
+
+| Line | Declaration |
+|---|---|
+| 55 | `private const val OTHER_KEY` |
+| 59 | `@Composable fun AskQuestionCard( questions: List<QuestionSpec>, onSubmit: (QuestionAnswer) -> Unit, onSkip: () -> Unit, modifier: Modifier = Modifier, )` |
+| 65 |   `val colors` |
+| 66 |   `val selections` |
+| 67 |   `val otherText` |
+| 68 |   `var submitting by remember(questions)` |
+| 70 |   `fun answered(q: QuestionSpec): Boolean` |
+| 76 |   `val canSubmit` |
+| 145 | `@Composable private fun QuestionBlock( question: QuestionSpec, showHeader: Boolean, selected: Set<String>, otherText: String, onToggle: (String) -> Unit, onOtherText: (String) -> Unit, )` |
+| 153 |   `val colors` |
+| 212 | `@Composable private fun OptionRow(label: String, description: String, checked: Boolean, multi: Boolean, onClick: () -> Unit)` |
+| 213 |   `val colors` |
+| 247 | `private fun buildAnswer( questions: List<QuestionSpec>, selections: Map<String, Set<String>>, otherText: Map<String, String>, ): QuestionAnswer` |
+| 252 |   `val items` |
+
+## feature/sessiondetail/interactive/ParsedPermission.kt
+
+| Line | Declaration |
+|---|---|
+| 12 | `data class PermissionPlanEntry(val text: String, val status: String?)` |
+| 13 | `data class PermissionAllowedPrompt(val prompt: String, val tool: String)` |
+| 20 | `data class ParsedPermission( val title: String, val kind: String, val command: String?, val cwd: String?, val diffFiles: List<DiffFile>, val planMarkdown: String?, val planEntries: List<PermissionPlanEntry>, val allowedPrompts: List<PermissionAllowedPrompt>, val modeTarget: String?, val url: String?, val query: String?, val prompt: String?, val jsonPreview: String, )` |
+| 21 |   `val title: String` |
+| 22 |   `val kind: String` |
+| 23 |   `val command: String?` |
+| 24 |   `val cwd: String?` |
+| 25 |   `val diffFiles: List<DiffFile>` |
+| 26 |   `val planMarkdown: String?` |
+| 27 |   `val planEntries: List<PermissionPlanEntry>` |
+| 28 |   `val allowedPrompts: List<PermissionAllowedPrompt>` |
+| 29 |   `val modeTarget: String?` |
+| 30 |   `val url: String?` |
+| 31 |   `val query: String?` |
+| 32 |   `val prompt: String?` |
+| 33 |   `val jsonPreview: String` |
+| 36 |   `val isPlan: Boolean` |
+| 43 |   `val hasStructuredBody: Boolean` |
+| 48 |   `companion object` |
+| 49 |     `fun parse(toolCall: JsonElement): ParsedPermission` |
+| 85 | `private val PJson` |
+| 86 | `private val PrettyJson` |
+| 88 | `private fun JsonElement?.str(): String?` |
+| 89 | `private fun JsonElement?.nonEmpty(): String?` |
+| 90 | `private fun JsonElement?.isNullElem(): Boolean` |
+| 91 | `private fun parseJsonString(s: String): JsonElement?` |
+| 93 | `private fun asObject(v: JsonElement?): JsonObject?` |
+| 102 | `private fun pickValue(obj: JsonObject?, keys: List<String>): JsonElement?` |
+| 108 | `private fun pickString(obj: JsonObject?, keys: List<String>): String?` |
+| 114 | `private fun fallbackTitle(kind: String): String` |
+| 115 |   `val normalized` |
+| 121 | `private fun extractCommand(value: JsonElement?, depth: Int = 0): String?` |
+| 149 | `private fun extractDiffText(rawInput: JsonElement?, rawInputObj: JsonObject?): String?` |
+| 150 |   `val candidates` |
+| 162 | `private fun buildDiffFromChanges(rawInputObj: JsonObject?, toolCallObj: JsonObject?): String?` |
+| 163 |   `val blocks` |
+| 183 |   `val joined` |
+| 187 | `private fun compactDiff(path: String, oldText: String, newText: String, context: Int = 2): String?` |
+| 188 |   `val oldLines` |
+| 190 |   `val newLines` |
+| 193 |   `var prefix` |
+| 195 |   `var suffix` |
+| 200 |   `val removed` |
+| 201 |   `val added` |
+| 204 |   `val before` |
+| 205 |   `val after` |
+| 207 |   `val oldStart` |
+| 208 |   `val oldCount` |
+| 209 |   `val newCount` |
+| 211 |   `val parts` |
+| 219 | `private fun parsePlanEntries(rawInputObj: JsonObject?): List<PermissionPlanEntry>` |
+| 234 | `private fun parseAllowedPrompts(rawInputObj: JsonObject?): List<PermissionAllowedPrompt>` |
+| 235 |   `val list` |
+| 243 | `private fun unescape(text: String): String` |
+| 246 | `private fun prettyPrint(element: JsonElement): String` |
+
+## feature/sessiondetail/interactive/PermissionRequestCard.kt
+
+| Line | Declaration |
+|---|---|
+| 51 | `@Composable fun PermissionRequestCard( parsed: ParsedPermission, options: List<PermissionOption>, onRespond: (String) -> Unit, modifier: Modifier = Modifier, )` |
+| 57 |   `val colors` |
+| 58 |   `var submitting by remember(parsed.jsonPreview)` |
+| 59 |   `val accent` |
+| 123 | `@Composable private fun PermissionBody(parsed: ParsedPermission)` |
+| 124 |   `val colors` |
+| 177 | `@Composable private fun OptionButton(option: PermissionOption, submitting: Boolean, enabled: Boolean, onClick: () -> Unit)` |
+| 178 |   `val colors` |
+| 179 |   `val isReject` |
+| 180 |   `val shape` |
+| 183 |   `val clickable` |
+
+## feature/sessiondetail/interactive/PlanApprovalCard.kt
+
+| Line | Declaration |
+|---|---|
+| 64 | `@Composable fun PlanApprovalCard( planMarkdown: String, onAnswer: (PlanApprovalDecision, String?) -> Unit, modifier: Modifier = Modifier, )` |
+| 69 |   `val colors` |
+| 70 |   `val plan` |
+| 71 |   `var submitting by remember(planMarkdown)` |
+| 72 |   `var changesOpen by remember(planMarkdown)` |
+| 73 |   `var feedback by remember(planMarkdown)` |
+| 74 |   `val notes` |
+| 76 |   `fun submit(decision: PlanApprovalDecision, text: String?)` |
+
+## feature/sessiondetail/rendering/ContextCompaction.kt
+
+| Line | Declaration |
+|---|---|
+| 18 | `object ContextCompaction` |
+| 22 |   `fun matches(meta: JsonObject?): Boolean` |
+| 32 |   `fun tokens(meta: JsonObject?): Pair<Int?, Int?>` |
+| 35 |   `private fun count(meta: JsonObject?, key: String): Int?` |
+
+## feature/sessiondetail/rendering/InlineImage.kt
+
+| Line | Declaration |
+|---|---|
+| 27 | `@Composable fun InlineImage(image: ImageData, caption: String?, modifier: Modifier = Modifier)` |
+| 28 |   `val colors` |
+| 29 |   `val bitmap` |
+
+## feature/sessiondetail/rendering/LivePlanView.kt
+
+| Line | Declaration |
+|---|---|
+| 32 | `private val SuccessGreen` |
+| 36 | `@Composable fun LivePlanView(entries: List<PlanEntry>, modifier: Modifier = Modifier)` |
+| 38 |   `val colors` |
+| 39 |   `val done` |
+| 59 | `@Composable private fun PlanRow(entry: PlanEntry)` |
+| 60 |   `val colors` |
+| 61 |   `val completed` |
+
+## feature/sessiondetail/rendering/McpResultEnvelope.kt
+
+| Line | Declaration |
+|---|---|
+| 24 | `object McpResultEnvelope` |
+| 29 |   `private val wrapperKeys` |
+| 32 |   `private const val MAX_DEPTH` |
+| 41 |   `data class Peeled(val obj: JsonObject, val hostError: String?)` |
+| 50 |   `fun peel(obj: JsonObject, isResolvable: (JsonObject) -> Boolean): Peeled` |
+| 71 |   `fun isCallToolResult(value: JsonObject): Boolean` |
+| 80 |   `private fun hostFailureError(obj: JsonObject): String?` |
+
+## feature/sessiondetail/rendering/ReasoningBlock.kt
+
+| Line | Declaration |
+|---|---|
+| 44 | `@Composable fun ReasoningBlock(text: String, modifier: Modifier = Modifier, initiallyExpanded: Boolean = false)` |
+| 45 |   `val colors` |
+| 46 |   `var expanded by remember(text)` |
+| 47 |   `val chevron by animateFloatAsState(if (expanded) 90f else 0f, label = "reasoning-chevron")` |
+
+## feature/sessiondetail/rendering/ToolCallCard.kt
+
+| Line | Declaration |
+|---|---|
+| 71 | `private val SuccessGreen` |
+| 72 | `private val ErrorRed` |
+| 79 | `@Composable fun ToolCallCard(vm: ToolCallVM, modifier: Modifier = Modifier, nested: Boolean = false)` |
+| 80 |   `val colors` |
+| 81 |   `val autoExpand` |
+| 84 |   `var expanded by remember(vm.id)` |
+| 85 |   `val hasBody` |
+| 142 | `@Composable private fun ToolBody(vm: ToolCallVM)` |
+| 143 |   `val diff` |
+| 151 |   `val input` |
+| 167 | `@Composable private fun BashInputBody(input: String)` |
+| 168 |   `val parsed` |
+| 169 |   `val args` |
+| 170 |   `val cmd` |
+| 181 | `@Composable private fun TodoInputBody(input: String)` |
+| 182 |   `val colors` |
+| 183 |   `val args` |
+| 184 |   `val todos` |
+| 224 | `@Composable private fun ToolOutputSection(vm: ToolCallVM)` |
+| 228 |   `val out` |
+| 257 | `@Composable private fun ToolStateIcon(vm: ToolCallVM)` |
+| 258 |   `val colors` |
+| 269 | `@Composable fun ToolGroupCard(items: List<ToolCallVM>, modifier: Modifier = Modifier, streaming: Boolean = false)` |
+| 270 |   `val colors` |
+| 273 |   `var expanded by remember(items.firstOrNull()?.id)` |
+| 274 |   `val errorCount` |
+| 327 | `fun bucketIcon(bucket: ToolKindBucket): ImageVector` |
+| 339 | `private fun groupSummary(context: Context, items: List<ToolCallVM>): String` |
+| 340 |   `val counts` |
+| 341 |   `val order` |
+| 345 |   `val res` |
+| 346 |   `val phrases` |
+| 364 | `private fun JsonObject.str(key: String): String?` |
+| 365 |   `val prim` |
+
+## feature/sessiondetail/rendering/ToolCallVM.kt
+
+| Line | Declaration |
+|---|---|
+| 10 | `enum class ToolCallState` |
+| 18 | `data class ToolCallVM( val id: String, val rawName: String, val kind: String, val state: ToolCallState, val input: String?, val output: String?, val content: String?, val isError: Boolean, val displayTitle: String, val bucket: ToolKindBucket, val diffFiles: List<DiffFile>?, /** The agent's opaque ACP metadata for this call (Grok's `x.ai/tool` identity, * the context-compaction tag, …). Null for most tools and hosts. */ val meta: JsonObject? = null, )` |
+| 19 |   `val id: String` |
+| 20 |   `val rawName: String` |
+| 21 |   `val kind: String` |
+| 22 |   `val state: ToolCallState` |
+| 23 |   `val input: String?` |
+| 24 |   `val output: String?` |
+| 25 |   `val content: String?` |
+| 26 |   `val isError: Boolean` |
+| 27 |   `val displayTitle: String` |
+| 28 |   `val bucket: ToolKindBucket` |
+| 29 |   `val diffFiles: List<DiffFile>?` |
+| 32 |   `val meta: JsonObject?` |
+| 34 |   `val trimmedOutput: String get()` |
+| 35 |   `val hasOutput: Boolean get()` |
+| 36 |   `val isCommand: Boolean get()` |
+| 43 |   `val isPlanMode: Boolean get()` |
+| 45 |   `companion object` |
+| 46 |     `fun of( id: String, rawName: String, kind: String, state: ToolCallState, input: String?, output: String?, content: String?, isError: Boolean, meta: JsonObject? = null, ): ToolCallVM` |
+| 85 | `sealed interface RenderPart` |
+| 86 |   `data class Text(val text: String) : RenderPart` |
+| 87 |   `data class Reasoning(val text: String) : RenderPart` |
+| 88 |   `data class Tool(val vm: ToolCallVM) : RenderPart` |
+| 89 |   `data class ToolGroup(val items: List<ToolCallVM>, val streaming: Boolean) : RenderPart` |
+| 90 |   `data class Image(val image: ImageData, val caption: String?) : RenderPart` |
+| 96 |   `data class Compaction(val before: Int?, val after: Int?, val running: Boolean) : RenderPart` |
+| 97 |   `data class Unknown(val type: String) : RenderPart` |
+| 101 | `object MessageRender` |
+| 103 |   `fun adaptTurn(turn: MessageTurn): List<RenderPart>` |
+| 172 |   `fun groupConsecutiveTools(parts: List<RenderPart>): List<RenderPart>` |
+| 176 |     `fun flush()` |
+| 200 |   `private fun findResult(blocks: List<ContentBlock>, after: Int, toolID: String?, consumed: Set<Int>): Int?` |
+
+## feature/sessiondetail/rendering/ToolDerive.kt
+
+| Line | Declaration |
+|---|---|
+| 14 | `enum class ToolKindBucket` |
+| 21 | `object ToolDerive` |
+| 23 |   `private val lenient` |
+| 27 |   `private val readNames` |
+| 28 |   `private val editNames` |
+| 34 |   `private val searchNames` |
+| 38 |   `private val executeNames` |
+| 42 |   `private val webNames` |
+| 45 |   `private val todoNames` |
+| 46 |   `private val taskNames` |
+| 51 |   `fun parseJson(s: String?): JsonObject?` |
+| 57 |   `fun effectiveArgs(parsed: JsonObject?): JsonObject?` |
+| 65 |   `fun title(name: String, parsed: JsonObject?): String` |
+| 68 |     `fun str(keys: List<String>): String?` |
+| 124 |   `fun bucket(name: String, kind: String): ToolKindBucket` |
+| 143 |   `fun diff( bucket: ToolKindBucket, input: String?, output: String?, content: String?, parsed: JsonObject?, ): List<DiffFile>?` |
+| 178 |   `fun grokPlanModeName(meta: JsonObject?): String?` |
+| 191 |   `fun isPlanModeName(name: String): Boolean` |
+| 194 |   `private val planModeNames` |
+| 196 |   `private fun canonical(name: String): String` |
+| 203 |   `fun display(name: String): String` |
+| 210 |   `private fun editFileCount(args: JsonObject?): Int?` |
+| 224 |   `private fun todoCounts(args: JsonObject?): Pair<Int, Int>?` |
+| 231 |   `private fun firstStringValue(args: JsonObject?): String?` |
+| 241 |   `private val shellPrefix` |
+| 243 |   `private fun simplifyCommand(c: String): String` |
+| 252 |   `private fun host(url: String): String` |
+| 255 |   `private fun truncate(s: String, n: Int): String` |
+| 260 |   `private fun synthesizeDiff(path: String, old: String, new: String): List<DiffFile>` |
+| 273 | `object PathFormat` |
+| 274 |   `fun short(path: String): String` |
+| 281 | `private fun JsonObject?.string(key: String): String?` |
+| 282 |   `val prim` |
+
+## feature/sessiondetail/rendering/ToolValueFormat.kt
+
+| Line | Declaration |
+|---|---|
+| 57 | `private val lenient` |
+| 58 | `private val prettyJson` |
+| 62 | `private fun parseAny(s: String?): JsonElement?` |
+| 68 | `private fun JsonObject.strField(key: String): String?` |
+| 69 |   `val prim` |
+| 74 | `private fun scalarString(prim: JsonPrimitive): String` |
+| 77 | `private fun prettyPrint(el: JsonElement): String` |
+| 84 | `fun prettyPrintJsonString(s: String): String?` |
+| 85 |   `val any` |
+| 91 | `private val codeFields` |
+| 97 | `private val hiddenFields` |
+| 105 | `object ToolOutputFormat` |
+| 107 |   `enum class Kind` |
+| 112 |   `fun commandOutput(output: String): String?` |
+| 137 |   `private val metaLine` |
+| 141 |   `private val outputSepLine` |
+| 143 |   `private fun isMetaLine(s: String)` |
+| 147 |   `fun parseCliEnvelope(text: String): String` |
+| 178 |   `fun stripMarkdownFence(text: String): String` |
+| 187 |   `fun cleanCommandOutput(source: String): String` |
+| 194 |   `fun classify(output: String): Kind` |
+| 202 |   `fun looksLikeMarkdown(s: String): Boolean` |
+| 225 |   `fun mcpResultText(output: String): String?` |
+| 243 |   `fun errorFields(errorText: String): List<Pair<String, String>>?` |
+| 255 | `object ReadOutputFormat` |
+| 256 |   `data class File(val content: String, val startLine: Int)` |
+| 258 |   `fun parse(output: String): File?` |
+| 274 | `object ToolFieldLabel` |
+| 275 |   `private val map` |
+| 293 |   `fun label(key: String): String` |
+| 296 |   `private fun humanize(key: String): String` |
+| 311 | `@Composable fun ToolFieldInline(label: String, value: String)` |
+| 312 |   `val colors` |
+| 327 | `@Composable fun ToolFieldBlock(label: String, content: @Composable () -> Unit)` |
+| 328 |   `val colors` |
+| 338 | `@Composable fun PlainTextBlock(text: String)` |
+| 339 |   `val colors` |
+| 358 | `@Composable fun StructuredJsonView(json: String, inlineMaxLength: Int = 200)` |
+| 359 |   `val obj` |
+| 377 | `@Composable private fun ToolField(key: String, value: JsonElement, inlineMaxLength: Int)` |
+| 378 |   `val label` |
+| 393 | `private fun codeLanguage(key: String): String?` |
+| 403 | `@Composable fun FileBodyView(file: ReadOutputFormat.File, collapsedLineLimit: Int = 60)` |
+| 404 |   `val colors` |
+| 405 |   `val content` |
+| 406 |   `val lines` |
+| 407 |   `val isLong` |
+| 408 |   `var expanded by remember(file)` |
+| 409 |   `val shown` |
+| 410 |   `val maxNo` |
+| 411 |   `val digits` |
+| 412 |   `val gutterWidth` |
+| 467 | `@Composable fun ToolErrorOutput(output: String)` |
+| 468 |   `val colors` |
+| 469 |   `val fields` |
 
 ## feature/sessiondetail/timeline/TimelineNode.kt
 

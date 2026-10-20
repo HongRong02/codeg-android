@@ -1,5 +1,6 @@
 package app.codeg.android.feature.projects
 
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -128,8 +129,8 @@ fun GitCredentialSheet(
         onDispose { viewModel.cancelCredentialsIfShowing(prompt.id) }
     }
 
-    Dialog(onDismissRequest = { viewModel.cancelCredentials() }, properties = DialogProperties(usePlatformDefaultWidth = false)) {
-        Column(Modifier.fillMaxSize().background(colors.bg).windowInsetsPadding(WindowInsets.safeDrawing)) {
+    Dialog(onDismissRequest = { viewModel.cancelCredentials() }, properties = DialogProperties(usePlatformDefaultWidth = false, decorFitsSystemWindows = false)) {
+        Column(Modifier.fillMaxSize().background(colors.bg).windowInsetsPadding(WindowInsets.safeDrawing).imePadding()) {
             CodegTopBar(
                 title = stringResource(if (prompt.github) R.string.cred_title_github else R.string.cred_title_generic),
                 navigationIcon = {
