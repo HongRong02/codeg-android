@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -18,7 +17,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
@@ -39,19 +37,14 @@ import androidx.compose.material.icons.rounded.Tune
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -65,10 +58,13 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.codeg.android.R
+import app.codeg.android.core.designsystem.component.CodegTopBar
+import app.codeg.android.core.designsystem.component.CodegIconButton
 import app.codeg.android.core.designsystem.component.CodegSegmented
 import app.codeg.android.core.designsystem.component.SettingsIconBadge
 import app.codeg.android.core.designsystem.theme.PillShape
 import app.codeg.android.core.designsystem.theme.WebThemePreset
+import app.codeg.android.core.designsystem.theme.CodegShapes
 import app.codeg.android.core.designsystem.theme.CodegTheme
 import app.codeg.android.core.datastore.ThemeMode
 import app.codeg.android.core.model.AgentType
@@ -94,7 +90,6 @@ private enum class SettingsLeaf(@StringRes val titleRes: Int, val icon: ImageVec
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(viewModel: SettingsViewModel = hiltViewModel()) {
-    val colors = CodegTheme.colors
     var leaf by remember { mutableStateOf<SettingsLeaf?>(null) }
     // A second level beneath the Agents leaf: the per-agent config editor.
     var agentDetail by remember { mutableStateOf<AgentType?>(null) }
@@ -105,21 +100,18 @@ fun SettingsScreen(viewModel: SettingsViewModel = hiltViewModel()) {
         containerColor = Color.Transparent,
         contentWindowInsets = WindowInsets(0, 0, 0, 0),
         topBar = {
-            TopAppBar(
-                title = {
-                    val title = when {
-                        inAgentDetail -> agentDetail!!.displayName
-                        leaf != null -> stringResource(leaf!!.titleRes)
-                        else -> stringResource(R.string.tab_settings)
-                    }
-                    Text(title)
+            CodegTopBar(
+                title = when {
+                    inAgentDetail -> agentDetail!!.displayName
+                    leaf != null -> stringResource(leaf!!.titleRes)
+                    else -> stringResource(R.string.tab_settings)
                 },
+                showDivider = true,
                 navigationIcon = {
-                    if (leaf != null) IconButton(onClick = { if (inAgentDetail) agentDetail = null else leaf = null }) {
-                        Icon(Icons.AutoMirrored.Rounded.ArrowBack, contentDescription = stringResource(R.string.common_back), tint = colors.textPrimary)
+                    if (leaf != null) CodegIconButton(onClick = { if (inAgentDetail) agentDetail = null else leaf = null }) {
+                        Icon(Icons.AutoMirrored.Rounded.ArrowBack, contentDescription = stringResource(R.string.common_back))
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent, titleContentColor = colors.textPrimary),
             )
         },
     ) { padding ->
@@ -154,18 +146,18 @@ private fun SettingsRoot(onSelect: (SettingsLeaf) -> Unit) {
     Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(horizontal = 12.dp, vertical = 8.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
         for (group in SettingsLeaf.entries.map { it.groupRes }.distinct()) {
             Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
-                Text(stringResource(group), style = MaterialTheme.typography.labelLarge, color = colors.textTertiary, modifier = Modifier.padding(start = 12.dp, bottom = 4.dp))
-                Column(Modifier.fillMaxWidth().webSurface(RoundedCornerShape(CodegTheme.dimens.radiusLg))) {
+                Text(stringResource(group), fontSize = 12.sp, fontWeight = FontWeight.Medium, color = colors.textSecondary, modifier = Modifier.padding(start = 12.dp, bottom = 4.dp))
+                Column(Modifier.fillMaxWidth().webSurface(CodegShapes.small)) {
                     val leaves = SettingsLeaf.entries.filter { it.groupRes == group }
                     leaves.forEachIndexed { index, l ->
                         ListItem(
-                            headlineContent = { Text(stringResource(l.titleRes)) },
+                            headlineContent = { Text(stringResource(l.titleRes), fontSize = 14.sp) },
                             leadingContent = { SettingsIconBadge(l.icon) },
                             trailingContent = {
                                 Icon(
                                     Icons.AutoMirrored.Rounded.KeyboardArrowRight,
                                     contentDescription = null,
-                                    tint = colors.textTertiary,
+                                    tint = colors.textSecondary,
                                     modifier = Modifier.size(18.dp),
                                 )
                             },
@@ -190,17 +182,23 @@ private fun SettingsRoot(onSelect: (SettingsLeaf) -> Unit) {
 private fun AppearanceSettings(viewModel: SettingsViewModel) {
     val colors = CodegTheme.colors
     val settings by viewModel.settings.collectAsStateWithLifecycle()
-    Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(16.dp), verticalArrangement = Arrangement.spacedBy(20.dp)) {
-        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+    Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
+        Column(Modifier.fillMaxWidth().webSurface(CodegShapes.small).padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
             Text(stringResource(R.string.settings_theme), style = MaterialTheme.typography.titleSmall, color = colors.textSecondary)
             val modes = ThemeMode.entries
             CodegSegmented(
-                options = modes.map { it.name.lowercase().replaceFirstChar { c -> c.uppercase() } },
+                options = modes.map { mode ->
+                    stringResource(when (mode) {
+                        ThemeMode.SYSTEM -> R.string.settings_core_theme_system
+                        ThemeMode.LIGHT -> R.string.settings_core_theme_light
+                        ThemeMode.DARK -> R.string.settings_core_theme_dark
+                    })
+                },
                 selectedIndex = modes.indexOf(settings.themeMode),
                 onSelect = { viewModel.setThemeMode(modes[it]) },
             )
         }
-        Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+        Column(Modifier.fillMaxWidth().webSurface(CodegShapes.small).padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
             Text(stringResource(R.string.settings_accent), fontSize = 13.sp, fontWeight = FontWeight.SemiBold, color = colors.textSecondary)
             FlowRow(
                 Modifier.fillMaxWidth(),
@@ -220,8 +218,8 @@ private fun AppearanceSettings(viewModel: SettingsViewModel) {
             }
         }
         // Live preview.
-        Column(Modifier.fillMaxWidth().webSurface(RoundedCornerShape(CodegTheme.dimens.radiusLg)).padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            Text(stringResource(R.string.settings_preview), fontSize = 13.sp, color = colors.textTertiary)
+        Column(Modifier.fillMaxWidth().webSurface(CodegShapes.small).padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Text(stringResource(R.string.settings_preview), fontSize = 13.sp, color = colors.textSecondary)
             Text(stringResource(R.string.settings_accent_preview_caption), fontSize = 14.sp, color = colors.textPrimary)
             Box(Modifier.clip(PillShape).background(colors.accent).padding(horizontal = 16.dp, vertical = 8.dp)) {
                 Text(stringResource(R.string.settings_accent_button), color = colors.onAccent, fontWeight = FontWeight.SemiBold)
@@ -238,14 +236,14 @@ private fun AboutScreen(viewModel: SettingsViewModel) {
     val appVersion = remember {
         runCatching { context.packageManager.getPackageInfo(context.packageName, 0).versionName }.getOrNull() ?: "—"
     }
-    Column(Modifier.fillMaxSize().padding(24.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(10.dp)) {
+    Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(24.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(10.dp)) {
         Text(stringResource(R.string.app_name), style = MaterialTheme.typography.headlineSmall, color = colors.textPrimary)
         Text(stringResource(R.string.settings_version, appVersion), fontSize = 13.sp, color = colors.textSecondary)
         about.serverName?.let { Text(stringResource(R.string.settings_server, it), fontSize = 13.sp, color = colors.textSecondary) }
-        about.serverVersion?.let { Text(stringResource(R.string.settings_codeg_version, it), fontSize = 13.sp, color = colors.textTertiary) }
+        about.serverVersion?.let { Text(stringResource(R.string.settings_codeg_version, it), fontSize = 13.sp, color = colors.textSecondary) }
         Text(
             stringResource(R.string.settings_about_description),
-            fontSize = 13.sp, color = colors.textTertiary, modifier = Modifier.padding(top = 8.dp),
+            fontSize = 13.sp, color = colors.textSecondary, modifier = Modifier.padding(top = 8.dp),
         )
     }
 }
@@ -255,7 +253,7 @@ private fun ComingSoon(@StringRes title: Int) {
     val colors = CodegTheme.colors
     Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            Icon(Icons.Rounded.Bolt, contentDescription = null, tint = colors.textTertiary, modifier = Modifier.size(36.dp))
+            Icon(Icons.Rounded.Bolt, contentDescription = null, tint = colors.textSecondary, modifier = Modifier.size(36.dp))
             Text(stringResource(title), color = colors.textPrimary, fontWeight = FontWeight.SemiBold)
             Text(stringResource(R.string.settings_coming_soon), fontSize = 13.sp, color = colors.textSecondary)
         }
