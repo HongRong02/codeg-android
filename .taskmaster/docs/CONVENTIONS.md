@@ -15,6 +15,7 @@
 
 ## 改动边界（并行防冲突）
 - 只改任务文档“改动范围”里列出的文件；需要改范围外文件时停下来，在任务里记录原因（`task-master update-subtask` 或回报），不要自行扩大范围。
+- 例外（默认在范围内，无需任务文档单独列出）：按下面规则新建的 `strings_<任务短名>.xml`（中英两份）、`CodegClient.kt` 中自己的 region、`core/model/wire/<任务短名>Requests.kt` 与 `core/model/<任务短名>.kt`、对应的 JVM 单测文件，以及重新生成的 `.taskmaster/docs/code-index/`。界面文字一律走字符串资源，不要硬编码。
 - 新增字符串：放到新文件 `R/values/strings_<任务短名>.xml` 和 `R/values-zh-rCN/strings_<任务短名>.xml`，文件名只能用小写字母、数字、下划线（如 `strings_git_stash.xml`），中英文必须同时加；不要往共享的 `strings.xml` 里加。
 - 新增接口调用：在 `A/core/network/CodegClient.kt` 末尾（`// region Transport` 之前）新建 `// region <任务短名>` … `// endregion`，只在自己的 region 内追加方法；请求体放新文件 `A/core/model/wire/<任务短名>Requests.kt`，响应模型放新文件 `A/core/model/<任务短名>.kt`。
 - 新增页面：新文件放 `A/feature/<目录>/`；导航入口只在 `A/feature/main/MainShell.kt` 追加一个 `composable(...)` 路由，不改其它路由。

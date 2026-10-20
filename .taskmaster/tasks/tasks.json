@@ -7,11 +7,11 @@
         "description": "把散落在各页面的 Material `TopAppBar` 统一成一个按网页端 header 样式实现的共享组件，作为后续逐页打磨的前置。",
         "details": "需求文档：.taskmaster/docs/tasks/T01-topbar.md（先读 .taskmaster/docs/CONVENTIONS.md，再只读这一份需求文档及其中列出的代码位置；不要通读 PRD 或其它文件）。改动范围、代码定位、验收标准都在需求文档里。",
         "testStrategy": "",
-        "status": "in-progress",
+        "status": "done",
         "dependencies": [],
         "priority": "high",
         "subtasks": [],
-        "updatedAt": "2026-10-20T01:41:18.510Z"
+        "updatedAt": "2026-10-20T02:12:01.695Z"
       },
       {
         "id": "2",
@@ -182,11 +182,11 @@
         "description": "会话页事件流在弱网、切后台、token 失效时表现可预期：自动重连有上限和退避，回到前台立即恢复并补齐事件，token 失效时给出明确提示。",
         "details": "需求文档：.taskmaster/docs/tasks/T14-stream-resilience.md（先读 .taskmaster/docs/CONVENTIONS.md，再只读这一份需求文档及其中列出的代码位置；不要通读 PRD 或其它文件）。改动范围、代码定位、验收标准都在需求文档里。",
         "testStrategy": "",
-        "status": "in-progress",
+        "status": "review",
         "dependencies": [],
         "priority": "high",
         "subtasks": [],
-        "updatedAt": "2026-10-20T01:41:21.259Z"
+        "updatedAt": "2026-10-20T02:12:08.226Z"
       },
       {
         "id": "15",
@@ -325,11 +325,11 @@
         "description": "`scripts/api_diff.py` 已能对比服务端路由与 app 调用。把它接入 GitHub Actions：定期拉官方 codeg 最新 release，若出现“app 调用但服务端已删除”的接口或新增接口，自动开 issue。",
         "details": "需求文档：.taskmaster/docs/tasks/T25-api-diff-ci.md（先读 .taskmaster/docs/CONVENTIONS.md，再只读这一份需求文档及其中列出的代码位置；不要通读 PRD 或其它文件）。改动范围、代码定位、验收标准都在需求文档里。",
         "testStrategy": "",
-        "status": "in-progress",
+        "status": "done",
         "dependencies": [],
         "priority": "medium",
         "subtasks": [],
-        "updatedAt": "2026-10-20T01:41:23.500Z"
+        "updatedAt": "2026-10-20T02:12:03.867Z"
       },
       {
         "id": "26",
@@ -337,18 +337,18 @@
         "description": "`WebThemes.kt` 由 `scripts/gen_web_themes.py` 从网页端 `globals.css` 生成。在 CI 中检查官方最新 `globals.css` 生成结果是否与仓库中的一致，不一致时开 issue。",
         "details": "需求文档：.taskmaster/docs/tasks/T26-theme-ci.md（先读 .taskmaster/docs/CONVENTIONS.md，再只读这一份需求文档及其中列出的代码位置；不要通读 PRD 或其它文件）。改动范围、代码定位、验收标准都在需求文档里。",
         "testStrategy": "",
-        "status": "in-progress",
+        "status": "done",
         "dependencies": [],
         "priority": "low",
         "subtasks": [],
-        "updatedAt": "2026-10-20T01:41:25.754Z"
+        "updatedAt": "2026-10-20T02:12:06.062Z"
       }
     ],
     "metadata": {
       "version": "1.0.0",
-      "lastModified": "2026-10-20T01:41:25.757Z",
+      "lastModified": "2026-10-20T02:12:08.227Z",
       "taskCount": 26,
-      "completedCount": 0,
+      "completedCount": 3,
       "tags": [
         "master"
       ]
