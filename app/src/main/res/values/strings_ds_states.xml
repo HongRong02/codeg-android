@@ -1,0 +1,7 @@
+<resources>
+    <string name="ds_states_retry">Retry</string>
+    <string name="ds_states_close">Close</string>
+    <string name="ds_states_loading">Loading…</string>
+    <string name="ds_states_gallery_title">Component states</string>
+    <string name="ds_states_gallery_message">State details and supporting information appear here.</string>
+</resources>
