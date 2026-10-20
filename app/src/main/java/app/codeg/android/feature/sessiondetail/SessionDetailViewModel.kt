@@ -157,6 +157,10 @@ class SessionDetailViewModel @Inject constructor(
     private val _ui = MutableStateFlow(SessionDetailUiState(isNew = conversationIdArg == null))
     val ui: StateFlow<SessionDetailUiState> = _ui.asStateFlow()
 
+    private val _sessionActions = MutableStateFlow(SessionConnectionActions())
+    val sessionActions: StateFlow<SessionConnectionActions> = _sessionActions.asStateFlow()
+    private var preflightSupported = true
+
     init {
         networkCallbackRegistered = runCatching {
             connectivity.registerDefaultNetworkCallback(networkCallback)
@@ -256,7 +260,7 @@ class SessionDetailViewModel @Inject constructor(
     private fun send(text: String, withAttachments: Boolean) {
         val trimmed = text.trim()
         val attachments = if (withAttachments) _ui.value.attachments else emptyList()
-        if ((trimmed.isEmpty() && attachments.isEmpty()) || _ui.value.isInFlight) return
+        if ((trimmed.isEmpty() && attachments.isEmpty()) || _ui.value.isInFlight || _sessionActions.value.busy) return
 
         // Supersede any post-turn reconcile still running for the previous turn so it can't
         // wipe the turn we're about to start (its identity guard is the backstop).
@@ -380,6 +384,7 @@ class SessionDetailViewModel @Inject constructor(
         connectAgent: AgentType = agent,
         connectFolder: FolderDetail? = folder,
     ): String {
+        preflight(c, connectAgent)
         val prefs = runCatching { selectorPrefs.prefs(connectAgent) }.getOrNull() ?: SelectorPrefs()
         return c.connect(
             agentType = connectAgent,
@@ -1129,6 +1134,76 @@ class SessionDetailViewModel @Inject constructor(
 
     // region Conversation actions (rename / pin / status / delete)
 
+    private fun unsupportedSessionCommand(e: Exception): Boolean = e is ApiError.Server &&
+        (e.status == 404 || e.code in setOf("unknown_command", "unknown_method", "not_found") ||
+            e.serverMessage.contains("unknown command", ignoreCase = true))
+
+    private suspend fun preflight(c: CodegClient, target: AgentType) {
+        if (!preflightSupported) return
+        try {
+            val result = c.preflightSession(target)
+            result.issueMessage()?.let { message -> _ui.update { it.copy(notice = message) } }
+            if (!result.passed) throw IllegalStateException(result.issueMessage()
+                ?: appContext.getString(R.string.session_fork_preflight_failed))
+        } catch (e: CancellationException) {
+            throw e
+        } catch (e: Exception) {
+            if (unsupportedSessionCommand(e)) preflightSupported = false else throw e
+        }
+    }
+
+    fun forkSession() = sessionConnectionAction(fork = true)
+    fun disconnectSession() = sessionConnectionAction(fork = false)
+
+    private fun sessionConnectionAction(fork: Boolean) {
+        val c = client ?: return
+        val id = conversationId ?: return
+        if (_ui.value.isInFlight || _sessionActions.value.busy || _ui.value.loading) return
+        if (fork && !_sessionActions.value.forkSupported || !fork && !_sessionActions.value.disconnectSupported) return
+        _sessionActions.update { it.copy(busy = true) }
+        viewModelScope.launch {
+            try {
+                // Resolve historical sessions without attaching or changing the event stream.
+                val conn = if (fork) resolveConnection(c) else connectionId
+                    ?: c.findConnection(id, externalId, agent)?.connectionId
+                if (conn == null) {
+                    _ui.update { it.copy(notice = appContext.getString(R.string.session_fork_disconnected)) }
+                    return@launch
+                }
+                connectionId = conn
+                if (fork) {
+                    val result = c.forkSession(conn, id, folder?.id)
+                    // The current row becomes the fork; the sibling retains the original.
+                    externalId = result.forkedSessionId
+                    reconcileJob?.cancel()
+                    closeStream()
+                    lastSeq = 0
+                    liveBuilder = null
+                    _ui.update { it.copy(live = null, liveFromReattach = false, pendingUserTurns = emptyList(), sessionStats = null) }
+                    load()
+                } else {
+                    c.disconnectSession(conn)
+                    reconcileJob?.cancel()
+                    closeStream()
+                    connectionId = null
+                    lastSeq = 0
+                    liveBuilder = null
+                    _ui.update { it.copy(live = null, liveFromReattach = false, sendStatus = null,
+                        pendingPermission = null, pendingQuestion = null, pendingPlanApproval = null,
+                        notice = appContext.getString(R.string.session_fork_disconnected)) }
+                }
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                if (unsupportedSessionCommand(e)) {
+                    _sessionActions.update { if (fork) it.copy(forkSupported = false) else it.copy(disconnectSupported = false) }
+                } else _ui.update { it.copy(notice = e.displayMessage()) }
+            } finally {
+                _sessionActions.update { it.copy(busy = false) }
+            }
+        }
+    }
+
     /** True once the session is server-linked and its summary has loaded. */
     val canManage: Boolean get() = conversationId != null && _ui.value.summary != null
     val isPinned: Boolean get() = _ui.value.summary?.pinnedAt != null
@@ -1705,4 +1780,11 @@ data class PendingPlanApprovalUi(
     /** The plan, read from Grok's `plan.md`. May be empty — the card then shows an
      *  empty-state notice rather than hiding, since the turn is blocked either way. */
     val planMarkdown: String,
+)
+
+/** Unsupported commands are hidden after the server rejects them. */
+data class SessionConnectionActions(
+    val forkSupported: Boolean = true,
+    val disconnectSupported: Boolean = true,
+    val busy: Boolean = false,
 )

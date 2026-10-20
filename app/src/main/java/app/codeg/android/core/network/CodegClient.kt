@@ -939,6 +939,22 @@ class CodegClient(
 
     // endregion
 
+    // region session-fork
+
+    suspend fun forkSession(connectionId: String, conversationId: Int?, folderId: Int?): app.codeg.android.core.model.SessionForkResult =
+        decode(send("acp_fork", encode(app.codeg.android.core.model.wire.SessionForkRequest(connectionId, conversationId, folderId))),
+            app.codeg.android.core.model.SessionForkResult.serializer())
+
+    suspend fun disconnectSession(connectionId: String) {
+        send("acp_disconnect", encode(app.codeg.android.core.model.wire.SessionDisconnectRequest(connectionId)))
+    }
+
+    suspend fun preflightSession(agentType: AgentType): app.codeg.android.core.model.SessionPreflightResult =
+        decode(send("acp_preflight", encode(app.codeg.android.core.model.wire.SessionPreflightRequest(agentType))),
+            app.codeg.android.core.model.SessionPreflightResult.serializer())
+
+    // endregion
+
     // region Transport
 
     /**

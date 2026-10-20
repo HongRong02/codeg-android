@@ -28,6 +28,7 @@ import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.Composable
@@ -66,6 +67,7 @@ fun SessionActionsMenu(
 ) {
     val colors = CodegTheme.colors
     val summary = ui.summary ?: return
+    val connectionActions by viewModel.sessionActions.collectAsState()
     var menu by remember { mutableStateOf(false) }
     var showRename by remember { mutableStateOf(false) }
     var showStatus by remember { mutableStateOf(false) }
@@ -81,6 +83,16 @@ fun SessionActionsMenu(
             DropdownMenuItem(text = { Text(if (summary.isPinned) stringResource(R.string.sessionactions_unpin) else stringResource(R.string.sessionactions_pin)) }, onClick = { menu = false; viewModel.togglePin() })
             DropdownMenuItem(text = { Text(stringResource(R.string.sessionactions_session_details)) }, onClick = { menu = false; showDetails = true })
             DropdownMenuItem(text = { Text(stringResource(R.string.sessionactions_change_status)) }, onClick = { menu = false; showStatus = true })
+            if (connectionActions.forkSupported) {
+                DropdownMenuItem(text = { Text(stringResource(R.string.session_fork_action)) },
+                    enabled = !ui.isInFlight && !ui.loading && !connectionActions.busy,
+                    onClick = { menu = false; viewModel.forkSession() })
+            }
+            if (connectionActions.disconnectSupported) {
+                DropdownMenuItem(text = { Text(stringResource(R.string.session_fork_disconnect)) },
+                    enabled = !ui.isInFlight && !ui.loading && !connectionActions.busy,
+                    onClick = { menu = false; viewModel.disconnectSession() })
+            }
             HorizontalDivider(color = colors.web.border)
             DropdownMenuItem(text = { Text(stringResource(R.string.common_delete), color = colors.danger) }, onClick = { menu = false; showDelete = true })
         }

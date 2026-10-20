@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="session_fork_action">Fork 会话</string>
+    <string name="session_fork_disconnect">断开连接</string>
+    <string name="session_fork_disconnected">Agent 已断开，发送消息时将重新连接。</string>
+    <string name="session_fork_preflight_failed">Agent 预检未通过。</string>
+</resources>
