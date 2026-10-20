@@ -47,7 +47,7 @@ fun CodegTabs(
             val active = selected == index
             Box(
                 Modifier.weight(1f).fillMaxHeight()
-                    .then(if (active) Modifier.shadow(1.dp, trigger) else Modifier)
+                    .then(if (active && !colors.isDark) Modifier.shadow(1.dp, trigger) else Modifier)
                     .clip(trigger)
                     .background(when {
                         !active -> Color.Transparent

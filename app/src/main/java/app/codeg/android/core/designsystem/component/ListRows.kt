@@ -56,7 +56,7 @@ fun CodegListRow(
     Row(
         modifier.fillMaxWidth().heightIn(min = if (subtitle == null) 48.dp else 56.dp)
             .clip(CodegShapes.extraSmall)
-            .background(if (selected || pressed) web.accent else web.background)
+            .background(if (selected || pressed) web.accent else androidx.compose.ui.graphics.Color.Transparent)
             .semantics { this.selected = selected }
             .combinedClickable(interactionSource = interactions, indication = null,
                 role = Role.Button, onClick = onClick, onLongClick = onLongClick)

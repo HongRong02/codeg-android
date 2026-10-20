@@ -16,7 +16,7 @@ class MenuPositionTest {
     }
 
     @Test fun opensAboveWhenBottomHasInsufficientSpace() {
-        assertEquals(IntOffset(180, 216), menuPopupPosition(
+        assertEquals(IntOffset(172, 216), menuPopupPosition(
             IntRect(240, 300, 290, 340), IntSize(300, 400), IntSize(120, 80), LayoutDirection.Ltr, 4,
         ))
     }
@@ -24,6 +24,24 @@ class MenuPositionTest {
     @Test fun alignsToRightEdgeInRtl() {
         assertEquals(IntOffset(100, 64), menuPopupPosition(
             IntRect(160, 20, 220, 60), IntSize(300, 400), IntSize(120, 80), LayoutDirection.Rtl, 4,
+        ))
+    }
+
+    @Test fun keepsEightPixelMarginAtRightEdge() {
+        assertEquals(IntOffset(172, 64), menuPopupPosition(
+            IntRect(280, 20, 300, 60), IntSize(300, 400), IntSize(120, 80), LayoutDirection.Ltr, 4,
+        ))
+    }
+
+    @Test fun keepsMarginAtLeftEdgeInRtl() {
+        assertEquals(IntOffset(8, 64), menuPopupPosition(
+            IntRect(0, 20, 20, 60), IntSize(300, 400), IntSize(120, 80), LayoutDirection.Rtl, 4,
+        ))
+    }
+
+    @Test fun keepsMarginAtBottomEdge() {
+        assertEquals(IntOffset(20, 8), menuPopupPosition(
+            IntRect(20, 0, 80, 10), IntSize(300, 100), IntSize(120, 84), LayoutDirection.Ltr, 4,
         ))
     }
 
