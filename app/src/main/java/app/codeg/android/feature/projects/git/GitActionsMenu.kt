@@ -36,6 +36,20 @@ fun GitActionsMenu(onSwitchBranch: () -> Unit, enabled: Boolean = true) {
     val folder = projectUi.folder
     val path = folder?.path
 
+    // T17: stash management
+    var showStash by remember(client, path) { mutableStateOf(false) }
+    val stash: StashViewModel? = if (client != null && path != null) {
+        viewModel(key = "git-stash-$path-${System.identityHashCode(client)}", factory = object : ViewModelProvider.Factory {
+            @Suppress("UNCHECKED_CAST")
+            override fun <T : ViewModel> create(modelClass: Class<T>): T = StashViewModel(client, path) as T
+        })
+    } else null
+    val stashUi = stash?.ui?.collectAsStateWithLifecycle()?.value
+    LaunchedEffect(stash, enabled) { if (enabled) stash?.refresh() }
+    if (showStash && stash != null && stashUi?.supported == true) {
+        StashSheet(stash, onDismiss = { showStash = false }, onChanged = project::load)
+    }
+
     // T18: branch management
     var showManage by remember(client, path) { mutableStateOf(false) }
     val manager: BranchManageViewModel? = if (client != null && path != null) {
@@ -83,6 +97,14 @@ fun GitActionsMenu(onSwitchBranch: () -> Unit, enabled: Boolean = true) {
                     onSwitchBranch()
                 },
             )
+            // T17
+            if (stash != null && stashUi?.supported == true) {
+                DropdownMenuItem(
+                    text = { Text(stringResource(R.string.stash_title)) },
+                    onClick = { expanded = false; showStash = true; stash.refresh() },
+                    enabled = !projectUi.gitBusy,
+                )
+            }
             // T18
             if (manager != null && manageUi?.supported == true) {
                 DropdownMenuItem(

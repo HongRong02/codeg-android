@@ -181,14 +181,21 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 1060 |   `suspend fun automationGet(id: Int): Automation` |
 | 1063 |   `suspend fun automationRuns(automationId: Int, limit: Long = 100): List<AutomationRun>` |
 | 1066 |   `suspend fun automationSetEnabled(id: Int, enabled: Boolean): Automation` |
-| 1077 |   `private suspend fun send(path: String, bodyJson: String): String` |
-| 1111 |   `private inline fun <reified T> encode(body: T): String` |
-| 1114 |   `private fun <T> decode(text: String, deserializer: DeserializationStrategy<T>): T` |
-| 1120 |   `companion object` |
-| 1122 |     `fun normalizeBaseUrl(raw: String): String` |
-| 1130 |     `fun decodeConnectionId(text: String): String` |
-| 1146 |     `fun decodeAgentList(text: String): List<AcpAgentInfo>` |
-| 1163 |     `fun isJsonNull(text: String): Boolean` |
+| 1072 |   `suspend fun gitStashList(path: String): List<app.codeg.android.core.model.StashEntry>` |
+| 1075 |   `suspend fun gitStashShow(path: String, ref: String): List<GitStatusEntry>` |
+| 1078 |   `suspend fun gitStashPush(path: String, message: String?, keepIndex: Boolean): String` |
+| 1081 |   `suspend fun gitStashApply(path: String, ref: String): String` |
+| 1084 |   `suspend fun gitStashPop(path: String, ref: String): String` |
+| 1087 |   `suspend fun gitStashDrop(path: String, ref: String): String` |
+| 1090 |   `suspend fun gitStashClear(path: String): String` |
+| 1101 |   `private suspend fun send(path: String, bodyJson: String): String` |
+| 1135 |   `private inline fun <reified T> encode(body: T): String` |
+| 1138 |   `private fun <T> decode(text: String, deserializer: DeserializationStrategy<T>): T` |
+| 1144 |   `companion object` |
+| 1146 |     `fun normalizeBaseUrl(raw: String): String` |
+| 1154 |     `fun decodeConnectionId(text: String): String` |
+| 1170 |     `fun decodeAgentList(text: String): List<AcpAgentInfo>` |
+| 1187 |     `fun isJsonNull(text: String): Boolean` |
 
 ## core/network/CodegClientFactory.kt
 

@@ -1,0 +1,17 @@
+<resources>
+    <string name="stash_title">Stashes</string>
+    <string name="stash_message">Message (optional)</string>
+    <string name="stash_keep_index">Keep staged changes</string>
+    <string name="stash_save">Save</string>
+    <string name="stash_refresh">Refresh</string>
+    <string name="stash_clear">Clear all</string>
+    <string name="stash_empty">No stashes</string>
+    <string name="stash_show">View</string>
+    <string name="stash_apply">Apply</string>
+    <string name="stash_pop">Pop</string>
+    <string name="stash_drop">Delete</string>
+    <string name="stash_no_diff">No text diff</string>
+    <string name="stash_confirm">%1$s: %2$s?</string>
+    <string name="stash_cancel">Cancel</string>
+    <string name="stash_all">All %1$d stashes in this project</string>
+</resources>
