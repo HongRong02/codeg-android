@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="assistants_title">Assistants</string>
+    <string name="assistants_refresh">Refresh</string>
+    <string name="assistants_create">New assistant</string>
+    <string name="assistants_edit">Edit assistant</string>
+    <string name="assistants_delete">Delete assistant</string>
+    <string name="assistants_delete_confirm">Delete assistant “%1$s”?</string>
+    <string name="assistants_cancel">Cancel</string>
+    <string name="assistants_save">Save</string>
+    <string name="assistants_saving">Saving…</string>
+    <string name="assistants_empty">No assistants yet. Create one to get started.</string>
+    <string name="assistants_unsupported">This server does not support assistants.</string>
+    <string name="assistants_up">Move up</string>
+    <string name="assistants_down">Move down</string>
+    <string name="assistants_name">Name</string>
+    <string name="assistants_description">Description</string>
+    <string name="assistants_emoji">Avatar emoji (blank for initial)</string>
+    <string name="assistants_color">Avatar color</string>
+    <string name="assistants_agent">Agent</string>
+    <string name="assistants_mode">Mode</string>
+    <string name="assistants_instructions">Instructions</string>
+    <string name="assistants_enabled">Enabled</string>
+    <string name="assistants_on">On</string>
+    <string name="assistants_off">Off</string>
+    <string name="assistants_retry">Retry</string>
+    <string name="assistants_select">Select…</string>
+    <string name="assistants_preserved">Saved agent options are preserved.</string>
+    <string name="assistants_configure">Configure agent options</string>
+    <string name="assistants_limits">Required: name and all agent options. Limits: name 40, description 200, instructions 20000 characters.</string>
+    <string name="assistants_no_server">Select a server with a valid token first.</string>
+    <string name="assistants_color_slate">Slate</string>
+    <string name="assistants_color_red">Red</string>
+    <string name="assistants_color_orange">Orange</string>
+    <string name="assistants_color_amber">Amber</string>
+    <string name="assistants_color_green">Green</string>
+    <string name="assistants_color_teal">Teal</string>
+    <string name="assistants_color_sky">Sky</string>
+    <string name="assistants_color_blue">Blue</string>
+    <string name="assistants_color_violet">Violet</string>
+    <string name="assistants_color_pink">Pink</string>
+</resources>
