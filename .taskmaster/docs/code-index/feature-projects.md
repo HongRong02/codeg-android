@@ -149,6 +149,13 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 179 | `private fun sortItems(items: List<DirectoryItem>): List<DirectoryItem>` |
 | 182 | `private fun formatBytes(bytes: Long): String` |
 
+## feature/projects/git/GitActionsMenu.kt
+
+| Line | Declaration |
+|---|---|
+| 21 | `@Composable fun GitActionsMenu(onSwitchBranch: () -> Unit, enabled: Boolean = true)` |
+| 22 |   `var expanded by remember` |
+
 ## feature/projects/GitChangeVisuals.kt
 
 | Line | Declaration |
@@ -314,10 +321,3 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 125 |   `val error: String?` |
 | 127 |   `val isBusy: Boolean get()` |
 | 128 |   `fun runningCount(folderId: Int): Int` |
-
-## feature/projects/git/GitActionsMenu.kt
-
-| Line | Declaration |
-|---|---|
-| 21 | `@Composable fun GitActionsMenu(onSwitchBranch: () -> Unit, enabled: Boolean = true)` |
-| 22 |   `var expanded by remember` |
