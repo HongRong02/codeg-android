@@ -32,6 +32,15 @@ data class WorkTaskUi(
     val folders: List<FolderDetail> = emptyList(),
     val agents: List<AcpAgentInfo> = emptyList(),
     val templates: List<WorkTaskTemplate> = emptyList(),
+    val templateRevision: Int = 0,
+    val templatesSupported: Boolean = false,
+    val settingsSupported: Boolean = false,
+    val templatesOpen: Boolean = false,
+    val settingsOpen: Boolean = false,
+    val settingsFolder: Int? = null,
+    val settingsLoading: Boolean = false,
+    val effectiveSettings: kotlinx.serialization.json.JsonObject? = null,
+    val ownSettings: kotlinx.serialization.json.JsonObject? = null,
     val hiddenActions: Set<String> = emptySet(),
 )
 
@@ -45,6 +54,9 @@ class WorkTaskViewModel @Inject constructor(private val repository: ServerReposi
     private var mutationJob: Job? = null
     private var editorJob: Job? = null
 
+    private var managementJob: Job? = null
+    private var settingsJob: Job? = null
+
     init {
         viewModelScope.launch {
             repository.selectedProfile.collectLatest { profile ->
@@ -52,6 +64,8 @@ class WorkTaskViewModel @Inject constructor(private val repository: ServerReposi
                 detailJob?.cancel()
                 mutationJob?.cancel()
                 editorJob?.cancel()
+                managementJob?.cancel()
+                settingsJob?.cancel()
                 client = null
                 _ui.value = WorkTaskUi()
                 if (profile == null) {
@@ -73,11 +87,114 @@ class WorkTaskViewModel @Inject constructor(private val repository: ServerReposi
                 val count = c.workTaskAttentionCount()
                 val tasks = c.workTaskList()
                 _ui.update { it.copy(loading = false, supported = true, attention = count, tasks = tasks) }
+                probeManagement(c)
             } catch (e: Exception) {
                 if (e is CancellationException) throw e
                 _ui.update { it.copy(loading = false, supported = !e.isWorkTasksUnsupported(), error = if (e.isWorkTasksUnsupported()) null else e.displayMessage()) }
             }
         }
+    }
+
+    private suspend fun probeManagement(c: CodegClient) {
+        suspend fun probe(block: suspend () -> Unit) {
+            try { block() } catch (e: Exception) {
+                if (e is CancellationException) throw e
+                if (!e.isWorkTasksUnsupported()) _ui.update { it.copy(error = e.displayMessage()) }
+            }
+        }
+        if ("templates" !in _ui.value.hiddenActions) probe {
+            val templates = c.workTaskTemplates()
+            _ui.update { it.copy(templates = templates, templatesSupported = true) }
+        }
+        if ("settings" !in _ui.value.hiddenActions) probe {
+            val folders = c.listFolders().filter { !it.isChat }
+            _ui.update { it.copy(folders = folders) }
+            val folder = folders.firstOrNull() ?: return@probe
+            c.workTaskSettings(folder.id)
+            c.workTaskSettings(folder.id, own = true)
+            _ui.update { it.copy(settingsSupported = true) }
+        }
+    }
+
+    fun openTemplates() {
+        _ui.update { it.copy(templatesOpen = true, error = null) }
+        manage("templates") { c ->
+            val templates = c.workTaskTemplates()
+            _ui.update { it.copy(templates = templates) }
+        }
+    }
+
+    fun closeManagement() {
+        if (_ui.value.busy) return
+        settingsJob?.cancel()
+        _ui.update { it.copy(templatesOpen = false, settingsOpen = false, settingsLoading = false, error = null) }
+    }
+
+    fun openSettings() {
+        _ui.update { it.copy(settingsOpen = true, error = null) }
+    }
+
+    fun loadSettings(folderId: Int) {
+        if (_ui.value.busy) return
+        settingsJob?.cancel()
+        settingsJob = viewModelScope.launch {
+            val c = client ?: return@launch
+            _ui.update { it.copy(settingsFolder = folderId, settingsLoading = true,
+                effectiveSettings = null, ownSettings = null, error = null) }
+            try {
+                val effective = c.workTaskSettings(folderId)
+                val own = c.workTaskSettings(folderId, own = true)
+                _ui.update { it.copy(effectiveSettings = effective, ownSettings = own) }
+            } catch (e: Exception) {
+                if (e is CancellationException) throw e
+                if (e.isWorkTasksUnsupported()) _ui.update { it.copy(settingsSupported = false, settingsOpen = false) }
+                else _ui.update { it.copy(error = e.displayMessage()) }
+            } finally { _ui.update { it.copy(settingsLoading = false) } }
+        }
+    }
+
+    private fun manage(kind: String, block: suspend (CodegClient) -> Unit) {
+        if (_ui.value.busy) return
+        managementJob = viewModelScope.launch {
+            val c = client ?: return@launch
+            _ui.update { it.copy(busy = true, error = null) }
+            try { block(c) } catch (e: Exception) {
+                if (e is CancellationException) throw e
+                if (e.isWorkTasksUnsupported()) _ui.update { it.copy(
+                    hiddenActions = it.hiddenActions + kind,
+                    templatesSupported = if (kind == "templates") false else it.templatesSupported,
+                    templatesOpen = if (kind == "templates") false else it.templatesOpen,
+                    settingsSupported = if (kind == "settings") false else it.settingsSupported,
+                    settingsOpen = if (kind == "settings") false else it.settingsOpen,
+                ) } else _ui.update { it.copy(error = e.displayMessage()) }
+            } finally { _ui.update { it.copy(busy = false) } }
+        }
+    }
+
+    fun saveTemplate(draft: WorkTaskTemplateDraft) = manage("templates") { c ->
+        c.workTaskTemplateSave(WorkTaskTemplateSaveBody(draft))
+        val templates = c.workTaskTemplates()
+        _ui.update { it.copy(templates = templates, templateRevision = it.templateRevision + 1) }
+    }
+
+    fun deleteTemplate(id: Int) = manage("templates") { c ->
+        c.workTaskTemplateDelete(id)
+        val templates = c.workTaskTemplates()
+        _ui.update { it.copy(templates = templates) }
+    }
+
+    fun saveSettings(folderId: Int, settings: kotlinx.serialization.json.JsonObject) = manage("settings") { c ->
+        c.workTaskSettingsSet(WorkTaskSettingsBody(folderId, settings))
+        val effective = c.workTaskSettings(folderId)
+        val own = c.workTaskSettings(folderId, own = true)
+        _ui.update { it.copy(effectiveSettings = effective, ownSettings = own) }
+    }
+
+    fun resetSettings(folderId: Int) = manage("settings") { c ->
+        c.workTaskSettingsDelete(folderId)
+        val effective = c.workTaskSettings(folderId)
+        val own = c.workTaskSettings(folderId, own = true)
+        _ui.update { it.copy(effectiveSettings = effective, ownSettings = own) }
     }
 
     fun dismissEditor() { if (!_ui.value.busy) _ui.update { it.copy(editorOpen = false) } }

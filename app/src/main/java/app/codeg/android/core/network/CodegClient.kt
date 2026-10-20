@@ -1141,6 +1141,28 @@ class CodegClient(
     suspend fun workTaskTemplates(): List<app.codeg.android.core.model.WorkTaskTemplate> =
         decode(send("work_task_template_list", "{}"), ListSerializer(app.codeg.android.core.model.WorkTaskTemplate.serializer()))
 
+    suspend fun workTaskTemplateSave(body: app.codeg.android.core.model.wire.WorkTaskTemplateSaveBody) {
+        send("work_task_template_save", encode(body))
+    }
+
+    suspend fun workTaskTemplateDelete(id: Int) {
+        send("work_task_template_delete", encode(app.codeg.android.core.model.wire.WorkTaskIdBody(id)))
+    }
+
+    suspend fun workTaskSettings(folderId: Int, own: Boolean = false): kotlinx.serialization.json.JsonObject? {
+        val response = send(if (own) "work_task_settings_get_own" else "work_task_settings_effective",
+            encode(app.codeg.android.core.model.wire.WorkTaskFolderBody(folderId)))
+        return decode(response, kotlinx.serialization.json.JsonElement.serializer()) as? kotlinx.serialization.json.JsonObject
+    }
+
+    suspend fun workTaskSettingsSet(body: app.codeg.android.core.model.wire.WorkTaskSettingsBody) {
+        send("work_task_settings_set", encode(body))
+    }
+
+    suspend fun workTaskSettingsDelete(folderId: Int) {
+        send("work_task_settings_delete", encode(app.codeg.android.core.model.wire.WorkTaskFolderBody(folderId)))
+    }
+
     // endregion
 
     // region logs-stats

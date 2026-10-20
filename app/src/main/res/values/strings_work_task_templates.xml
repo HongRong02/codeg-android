@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="wtt_menu">Task menu</string>
+    <string name="wtt_templates">Templates</string>
+    <string name="wtt_settings">Board settings</string>
+    <string name="wtt_name">Template name</string>
+    <string name="wtt_upsert_hint">Saving an existing name replaces that template.</string>
+    <string name="wtt_cancel">Cancel</string>
+    <string name="wtt_new">New template</string>
+    <string name="wtt_empty">No templates</string>
+    <string name="wtt_delete">Delete template</string>
+    <string name="wtt_delete_confirm">Delete template “%1$s”?</string>
+    <string name="wtt_default_agent_type">Default agent type</string>
+    <string name="wtt_mode_id">Mode ID</string>
+    <string name="wtt_config_values">Configuration values (JSON string map)</string>
+    <string name="wtt_label_snapshot">Label snapshot (JSON)</string>
+    <string name="wtt_auto_process">Automatically process tasks</string>
+    <string name="wtt_max_concurrent">Maximum concurrent tasks (0 = unlimited)</string>
+    <string name="wtt_merge_strategy">Merge strategy</string>
+    <string name="wtt_auto_merge">Automatically merge reviewed tasks</string>
+    <string name="wtt_delete_worktree_default">Delete worktree after merge by default</string>
+    <string name="wtt_worktree_root">Worktree parent directory</string>
+    <string name="wtt_preflight_command_id">Preflight command ID (optional)</string>
+    <string name="wtt_preflight_command">Preflight shell command</string>
+    <string name="wtt_init_command">Initialization command</string>
+    <string name="wtt_auto_compact_percent">Auto compact threshold (0–100; 0 = disabled)</string>
+    <string name="wtt_compact_command">Compact command</string>
+    <string name="wtt_stage_prompts">Stage prompts (JSON string map)</string>
+    <string name="wtt_effective">Effective values</string>
+    <string name="wtt_own">Project values</string>
+    <string name="wtt_inherited">No project override; using inherited defaults.</string>
+    <string name="wtt_edit_settings">Edit project values</string>
+    <string name="wtt_merge">Merge commit</string>
+    <string name="wtt_squash">Squash</string>
+    <string name="wtt_invalid">Enter a valid value. JSON maps must contain string values.</string>
+    <string name="wtt_reset">Restore defaults</string>
+    <string name="wtt_reset_confirm">Remove settings for project “%1$s” and restore inherited defaults?</string>
+    <string name="wtt_unset">Unset</string>
+    <string name="wtt_on">On</string>
+    <string name="wtt_off">Off</string>
+</resources>
