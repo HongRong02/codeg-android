@@ -186,18 +186,18 @@ Source root: `app/src/main/java/app/codeg/android/`
 
 | Line | Declaration |
 |---|---|
-| 39 | `class EventStream( rawBaseUrl: String, token: String, private val http: HttpClient, )` |
-| 42 |   `private val http: HttpClient` |
-| 44 |   `private val url` |
-| 45 |   `private val subprotocols` |
-| 48 |   `private val outbox` |
-| 50 |   `fun attach(subscriptionId: String, connectionId: String, sinceSeq: Long? = null)` |
-| 54 |   `fun detach(subscriptionId: String)` |
-| 58 |   `fun ping()` |
-| 67 |   `fun frames(): Flow<StreamFrame>` |
-| 96 |   `companion object` |
-| 104 |     `fun parseFrame(text: String, json: Json): StreamFrame?` |
-| 135 |     `fun websocketUrl(rawBaseUrl: String): String` |
+| 40 | `class EventStream( rawBaseUrl: String, token: String, private val http: HttpClient, )` |
+| 43 |   `private val http: HttpClient` |
+| 45 |   `private val url` |
+| 46 |   `private val subprotocols` |
+| 49 |   `private val outbox` |
+| 51 |   `fun attach(subscriptionId: String, connectionId: String, sinceSeq: Long? = null)` |
+| 55 |   `fun detach(subscriptionId: String)` |
+| 59 |   `fun ping()` |
+| 68 |   `fun frames(): Flow<StreamFrame>` |
+| 102 |   `companion object` |
+| 112 |     `fun parseFrame(text: String, json: Json): StreamFrame?` |
+| 143 |     `fun websocketUrl(rawBaseUrl: String): String` |
 
 ## core/network/WsFrames.kt
 

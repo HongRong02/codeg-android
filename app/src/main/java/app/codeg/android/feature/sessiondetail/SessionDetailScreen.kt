@@ -67,6 +67,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.codeg.android.R
 import app.codeg.android.core.designsystem.component.AgentAvatar
@@ -98,6 +99,11 @@ fun SessionDetailScreen(
     viewModel: SessionDetailViewModel = hiltViewModel(),
 ) {
     val ui by viewModel.ui.collectAsStateWithLifecycle()
+    val streamStatus by viewModel.streamStatus.collectAsStateWithLifecycle()
+    LifecycleResumeEffect(viewModel) {
+        viewModel.resumeStream()
+        onPauseOrDispose { viewModel.pauseStream() }
+    }
     val colors = CodegTheme.colors
     var draft by remember { mutableStateOf("") }
     var showInsert by remember { mutableStateOf(false) }
@@ -245,6 +251,9 @@ fun SessionDetailScreen(
                         onAnswer = viewModel::answerPlanApproval,
                         modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
                     )
+                }
+                streamStatus?.let { message ->
+                    NoticeBanner(message, onDismiss = viewModel::dismissStreamStatus)
                 }
                 // Keep the last shown message so the exit animation has content to fade.
                 var lastNotice by remember { mutableStateOf("") }

@@ -1,5 +1,7 @@
 package app.codeg.android.feature.sessiondetail
 
+import android.net.ConnectivityManager
+import android.net.Network
 import android.content.Context
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -53,6 +55,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -64,9 +67,6 @@ import javax.inject.Inject
 /** WS `detached` reason meaning the ACP connection itself is gone (terminal — a
  *  socket reopen can't recover it). Any other reason is a transient socket drop. */
 private const val REASON_CONNECTION_GONE = "connection_gone"
-
-/** Max consecutive silent re-attaches before falling back to a transcript reconcile. */
-private const val MAX_STREAM_RECONNECTS = 6
 
 /** The selector key used for the session mode (config options key by their own id). */
 private const val MODE_KEY = "mode"
@@ -114,6 +114,18 @@ class SessionDetailViewModel @Inject constructor(
     /** The working tree's current branch, shown + checkmarked in the branch picker. */
     private var currentBranch: String? = null
 
+    private val _streamStatus = MutableStateFlow<String?>(null)
+    val streamStatus: StateFlow<String?> = _streamStatus.asStateFlow()
+    private var streamDisconnected = false
+    private var streamPaused = false
+    private var streamAuthFailed = false
+    private val connectivity = appContext.getSystemService(ConnectivityManager::class.java)
+    private val networkCallback = object : ConnectivityManager.NetworkCallback() {
+        override fun onAvailable(network: Network) {
+            viewModelScope.launch { recoverStream() }
+        }
+    }
+    private var networkCallbackRegistered = false
     private var stream: EventStream? = null
     private var consumerJob: Job? = null
     private var sendJob: Job? = null
@@ -146,6 +158,10 @@ class SessionDetailViewModel @Inject constructor(
     val ui: StateFlow<SessionDetailUiState> = _ui.asStateFlow()
 
     init {
+        networkCallbackRegistered = runCatching {
+            connectivity.registerDefaultNetworkCallback(networkCallback)
+            true
+        }.getOrDefault(false)
         load()
     }
 
@@ -400,6 +416,7 @@ class SessionDetailViewModel @Inject constructor(
      *  [seedOnAttach] rebuilds an in-flight turn from the attach snapshot (reattach). */
     private suspend fun openStream(conn: String, seedOnAttach: Boolean = false) {
         streamReconnects = 0
+        streamAuthFailed = false
         pendingReattachSeed = seedOnAttach
         reconnectJob?.cancel()
         reconnectJob = null
@@ -419,16 +436,27 @@ class SessionDetailViewModel @Inject constructor(
         consumerJob?.cancel()
         consumerJob = viewModelScope.launch {
             val s = repository.eventStream(p) ?: run {
-                if (!attached.isCompleted) attached.complete(Unit)
+                stopForStreamAuth()
+                if (!attached.isCompleted) attached.completeExceptionally(ApiError.Unauthorized)
                 return@launch
             }
             stream = s
-            s.frames().collect { frame ->
+            val attachWatchdog = launch {
+                delay(12_000)
+                if (!attached.isCompleted) {
+                    if (awaitAttach) attached.completeExceptionally(StreamAttachFailed("attach timeout"))
+                    else handleStreamEnded(gen, "attach timeout")
+                }
+            }
+            s.frames().onCompletion { attachWatchdog.cancel() }.collect { frame ->
                 if (gen != streamGeneration) return@collect
                 when (frame) {
                     StreamFrame.Ready -> s.attach(subscriptionId, conn, lastSeq.takeIf { it > 0 })
                     is StreamFrame.Snapshot -> {
                         streamReconnects = 0
+                        streamDisconnected = false
+                        _streamStatus.value = null
+                        _ui.update { if (it.isInFlight) it.copy(sendStatus = runningStatus()) else it }
                         frame.snapshot.eventSeq?.let { lastSeq = it }
                         if (seedOnAttach && !seedLiveFromSnapshot(frame.snapshot)) {
                             // Idle connection — nothing in flight; abort the reattach.
@@ -444,6 +472,9 @@ class SessionDetailViewModel @Inject constructor(
                     }
                     is StreamFrame.Replay -> {
                         streamReconnects = 0
+                        streamDisconnected = false
+                        _streamStatus.value = null
+                        _ui.update { if (it.isInFlight) it.copy(sendStatus = runningStatus()) else it }
                         pendingReattachSeed = false
                         frame.events.forEach { applyEvent(it.event, it.seq) }
                         if (!attached.isCompleted) attached.complete(Unit)
@@ -462,6 +493,11 @@ class SessionDetailViewModel @Inject constructor(
                     }
                     StreamFrame.Pong -> Unit
                     is StreamFrame.Closed -> {
+                        if (frame.reason == EventStream.AUTH_FAILURE) {
+                            stopForStreamAuth()
+                            if (!attached.isCompleted) attached.completeExceptionally(ApiError.Unauthorized)
+                            return@collect
+                        }
                         if (awaitAttach && !attached.isCompleted) {
                             attached.completeExceptionally(StreamAttachFailed(frame.reason))
                         } else {
@@ -528,6 +564,8 @@ class SessionDetailViewModel @Inject constructor(
             _ui.update { it.copy(isInFlight = true, sendStatus = "Reattaching…", live = builder.snapshot()) }
             try {
                 openStream(found.connectionId, seedOnAttach = true)
+            } catch (e: ApiError.Unauthorized) {
+                stopForStreamAuth()
             } catch (e: StreamAttachFailed) {
                 // The live connection vanished before we could attach — the turn has ended;
                 // clear the placeholder and refetch the final transcript.
@@ -848,29 +886,64 @@ class SessionDetailViewModel @Inject constructor(
         reconnectStream()
     }
 
-    /** Silently re-attach a fresh stream to the same connection after a transient
-     *  drop, resuming from [lastSeq]. Backs off exponentially (0.5s→8s) and, after
-     *  [MAX_STREAM_RECONNECTS] tries, gives up to a one-shot transcript reconcile so
-     *  the final reply is never lost. Mirrors the iOS `reconnectStream`. */
-    private fun reconnectStream() {
-        streamReconnects += 1
-        if (streamReconnects > MAX_STREAM_RECONNECTS) {
-            reconcileAfterTurn()
-            return
+    /** Foreground/network recovery bypasses backoff while preserving the replay cursor. */
+    fun recoverStream() {
+        if (!streamDisconnected || streamAuthFailed) return
+        reconcileJob?.cancel()
+        if (_ui.value.isInFlight) {
+            reconnectStream(immediate = true)
+        } else {
+            streamDisconnected = false
+            reattachIfLive()
+        }
+    }
+
+    fun dismissStreamStatus() {
+        _streamStatus.value = null
+    }
+
+    fun resumeStream() {
+        // A snapshot received in the background must not erase the resume check.
+        if (streamPaused && _ui.value.isInFlight && !streamAuthFailed) streamDisconnected = true
+        streamPaused = false
+        recoverStream()
+    }
+
+    fun pauseStream() {
+        streamPaused = _ui.value.isInFlight
+    }
+
+    private fun stopForStreamAuth() {
+        closeStream()
+        streamAuthFailed = true
+        _streamStatus.value = "Token expired. Update it in server settings. / token 失效，请到服务器设置更新"
+    }
+
+    private fun reconnectStream(immediate: Boolean = false) {
+        when (streamRecovery(_ui.value.isInFlight, streamAuthFailed, false, streamReconnects, immediate)) {
+            StreamRecovery.STOP -> return
+            StreamRecovery.RECONCILE -> {
+                closeStream()
+                streamDisconnected = true
+                _streamStatus.value = "Connection lost. Waiting for network recovery…"
+                reconcileAfterTurn()
+                return
+            }
+            StreamRecovery.RETRY -> Unit
         }
         val conn = connectionId ?: run { reconcileAfterTurn(); return }
-        // Supersede the dying consumer immediately so its trailing frames can't slip
-        // through the reconnect budget during the backoff window.
+        if (immediate) streamReconnects = 0
+        streamReconnects += 1
+        streamDisconnected = true
         streamGeneration += 1
         consumerJob?.cancel()
         consumerJob = null
+        stream = null
         val gen = streamGeneration
         reconnectJob?.cancel()
+        _streamStatus.value = "Reconnecting…"
         reconnectJob = viewModelScope.launch {
-            val backoffMs = (500L shl (streamReconnects - 1)).coerceAtMost(8_000L)
-            _ui.update { if (it.isInFlight) it.copy(sendStatus = "Reconnecting…") else it }
-            delay(backoffMs)
-            // Bail if the turn ended or was superseded (cancel / finalize) while we waited.
+            if (!immediate) delay(streamReconnectDelay(streamReconnects))
             if (gen != streamGeneration || !_ui.value.isInFlight) return@launch
             connectStream(conn, awaitAttach = false, seedOnAttach = pendingReattachSeed)
         }
@@ -1041,9 +1114,12 @@ class SessionDetailViewModel @Inject constructor(
         consumerJob?.cancel()
         consumerJob = null
         stream = null
+        streamDisconnected = false
+        if (!streamAuthFailed) _streamStatus.value = null
     }
 
     override fun onCleared() {
+        if (networkCallbackRegistered) connectivity.unregisterNetworkCallback(networkCallback)
         sendJob?.cancel()
         closeStream()
         super.onCleared()
