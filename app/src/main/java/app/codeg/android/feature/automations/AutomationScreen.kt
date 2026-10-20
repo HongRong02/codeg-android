@@ -191,29 +191,12 @@ private fun AutomationListView(
 
         val items = ui.filteredAutomations
         if (items.isEmpty()) {
-            Box(
-                Modifier
-                    .fillMaxSize()
-                    .padding(32.dp),
-                contentAlignment = Alignment.Center,
-            ) {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
-                ) {
-                    Text(
-                        stringResource(R.string.automations_empty),
-                        fontSize = 15.sp,
-                        fontWeight = FontWeight.Medium,
-                        color = colors.textPrimary,
-                    )
-                    Text(
-                        stringResource(R.string.automations_empty_hint),
-                        fontSize = 13.sp,
-                        color = colors.textSecondary,
-                    )
-                }
-            }
+            EmptyState(
+                icon = Lucide.Zap,
+                title = stringResource(R.string.automations_empty),
+                message = stringResource(R.string.automations_empty_hint),
+                modifier = Modifier.fillMaxSize(),
+            )
         } else {
             LazyColumn(
                 verticalArrangement = Arrangement.spacedBy(8.dp),

@@ -17,11 +17,15 @@
 - 定位：`A/feature/main/MainShell.kt` 约 122–160 行的 `NestedScrollConnection` 底栏收起逻辑。
 - 预期：以下任一情况底栏都恢复显示：切换底栏标签；从子页面返回到标签页；列表滚动到顶部（或内容不足一屏）；在顶部继续向下拉（overscroll）。保留"往下滚收起、往上滚恢复"的现有行为。
 
+- 修复说明：底栏原先只累计列表已消费的位移，顶部下拉的剩余位移被忽略；可见状态也跨导航条目保留。现在按导航条目初始化可见状态及滚动连接，点击底栏标签时主动恢复（包含重复点击当前标签），遇到顶部剩余向下位移立即显示；普通滚动保持 6dp 方向阈值。需复测 P-005、P-006：收起后切换标签、子页返回、重复点击当前标签、滚动至顶及顶部下拉、短列表下拉，以及正常下滚收起/上滚恢复。
+
 ### B10-2 自动化空状态缺图标（原 B13）
 - 来源：P-127，`shots/sw-自动化-dark.png`：自动化列表的空状态没有图标；工作任务（`shots/sw-工作任务-dark.png`）和搜索页（`shots/sw-搜索-dark.png`）的空状态都有图标容器。
 - 归属原任务：T58
 - 定位：`A/feature/automations/` 里调用 `EmptyState` 的地方。
 - 预期：传入与网页端自动化页一致的 lucide 图标（在 `WEB/components/automations/` 里查实际使用的图标），风格与其他空状态一致。
+
+- 修复说明：实际列表空状态为手写文字 Column，未提供图标。替换为共享 EmptyState 并传入网页端 automations-page.tsx onboarding 使用的 Lucide.Zap，复用统一图标容器和排版。需复测 P-127：深浅主题下空列表和筛选无结果均显示图标、标题及说明。
 
 ## 改动范围
 - `A/feature/main/**`、`A/feature/automations/**`。不改 `A/core/designsystem/**`（B15 正在并行修改）。
