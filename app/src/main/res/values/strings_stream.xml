@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="stream_token_expired">Token expired. Update it in server settings.</string>
-    <string name="stream_connection_lost">Connection lost. Waiting for the network…</string>
-    <string name="stream_reconnecting">Reconnecting…</string>
-    <string name="stream_open_servers">Servers</string>
-</resources>

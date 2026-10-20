@@ -42,7 +42,7 @@ jobs:
         env:
           VERSION_CODE: ${{ steps.version.outputs.code }}
           VERSION_NAME: ${{ steps.version.outputs.name }}
-        run: ./gradlew :app:assembleRelease -PcodegVersionCode="$VERSION_CODE" -PcodegVersionName="$VERSION_NAME" --no-daemon
+        run: ./gradlew :app:check :app:assembleRelease -PcodegVersionCode="$VERSION_CODE" -PcodegVersionName="$VERSION_NAME" --no-daemon
       - name: Verify, package, and publish
         env:
           GH_TOKEN: ${{ github.token }}

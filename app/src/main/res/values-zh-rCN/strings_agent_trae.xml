@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="agent_trae_title">TRAE CLI</string>
-    <string name="agent_trae_hint">只读。令牌存在不代表登录已验证。服务端交互登录：traecli login。模型与模式在会话中选择。</string>
-    <string name="agent_trae_host">企业 API 地址</string>
-    <string name="agent_trae_token">个人访问令牌</string>
-</resources>

@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="session_fork_action">Fork session</string>
-    <string name="session_fork_disconnect">Disconnect</string>
-    <string name="session_fork_disconnected">Agent disconnected. Sending a message will reconnect.</string>
-    <string name="session_fork_preflight_failed">Agent preflight failed.</string>
-</resources>

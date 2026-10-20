@@ -1,0 +1,4 @@
+<resources>
+    <string name="shell_nav_press_back_again">再按一次退出</string>
+    <string name="shell_nav_no_handler">没有可打开此链接的应用</string>
+</resources>
