@@ -1,10 +1,13 @@
 package app.codeg.android.feature.onboarding
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
@@ -26,6 +29,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import app.codeg.android.R
 import app.codeg.android.core.designsystem.component.PrimaryButton
+import app.codeg.android.core.designsystem.component.webSurface
 import app.codeg.android.core.designsystem.theme.CodegTheme
 
 /** Shown when no server is configured (iOS `OnboardingView`). */
@@ -35,62 +39,65 @@ fun OnboardingScreen(
     modifier: Modifier = Modifier,
 ) {
     val colors = CodegTheme.colors
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-            .padding(horizontal = 28.dp, vertical = 48.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
-    ) {
-        Icon(
-            Icons.Rounded.Code,
-            contentDescription = null,
-            tint = colors.accent,
-            modifier = Modifier.size(56.dp),
-        )
-        Text(
-            stringResource(R.string.onboarding_title),
-            style = MaterialTheme.typography.titleLarge,
-            color = colors.textPrimary,
-            modifier = Modifier.padding(top = 16.dp),
-        )
-        Text(
-            stringResource(R.string.onboarding_tagline),
-            style = MaterialTheme.typography.bodyMedium,
-            color = colors.textSecondary,
-            textAlign = TextAlign.Center,
-            modifier = Modifier.padding(top = 8.dp).widthIn(max = 320.dp),
-        )
-
+    Box(modifier.fillMaxSize().safeDrawingPadding(), contentAlignment = Alignment.Center) {
         Column(
-            modifier = Modifier.padding(vertical = 28.dp),
-            verticalArrangement = Arrangement.spacedBy(14.dp),
+            modifier = Modifier
+                .widthIn(max = 384.dp)
+                .fillMaxWidth()
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = 16.dp, vertical = 24.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center,
         ) {
-            FeatureRow(Icons.Rounded.Visibility, stringResource(R.string.onboarding_feature_watch))
-            FeatureRow(Icons.Rounded.Bolt, stringResource(R.string.onboarding_feature_steer))
-            FeatureRow(Icons.Rounded.PlayArrow, stringResource(R.string.onboarding_feature_start))
+            Icon(
+                Icons.Rounded.Code,
+                contentDescription = null,
+                tint = colors.accent,
+                modifier = Modifier.size(56.dp),
+            )
+            Text(
+                stringResource(R.string.onboarding_title),
+                style = MaterialTheme.typography.titleLarge,
+                color = colors.textPrimary,
+                modifier = Modifier.padding(top = 16.dp),
+            )
+            Text(
+                stringResource(R.string.onboarding_tagline),
+                style = MaterialTheme.typography.bodyMedium,
+                color = colors.web.mutedForeground,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(top = 8.dp).widthIn(max = 320.dp),
+            )
+
+            Column(
+                modifier = Modifier.padding(vertical = 24.dp).fillMaxWidth().webSurface(MaterialTheme.shapes.medium).padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+            ) {
+                FeatureRow(Icons.Rounded.Visibility, stringResource(R.string.onboarding_feature_watch))
+                FeatureRow(Icons.Rounded.Bolt, stringResource(R.string.onboarding_feature_steer))
+                FeatureRow(Icons.Rounded.PlayArrow, stringResource(R.string.onboarding_feature_start))
+            }
+
+            PrimaryButton(
+                text = stringResource(R.string.onboarding_add_server),
+                onClick = onAddServer,
+                modifier = Modifier.widthIn(max = 360.dp),
+            )
+            Text(
+                stringResource(R.string.onboarding_footnote),
+                style = MaterialTheme.typography.bodySmall,
+                color = colors.web.mutedForeground,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(top = 16.dp).widthIn(max = 320.dp),
+            )
         }
-
-        PrimaryButton(
-            text = stringResource(R.string.onboarding_add_server),
-            onClick = onAddServer,
-            modifier = Modifier.widthIn(max = 360.dp),
-        )
-        Text(
-            stringResource(R.string.onboarding_footnote),
-            style = MaterialTheme.typography.bodySmall,
-            color = colors.textTertiary,
-            textAlign = TextAlign.Center,
-            modifier = Modifier.padding(top = 16.dp).widthIn(max = 320.dp),
-        )
+        }
     }
-}
 
-@Composable
-private fun FeatureRow(icon: ImageVector, label: String) {
-    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-        Icon(icon, contentDescription = null, tint = CodegTheme.colors.accent, modifier = Modifier.size(22.dp))
-        Text(label, style = MaterialTheme.typography.bodyLarge, color = CodegTheme.colors.textPrimary)
+    @Composable
+    private fun FeatureRow(icon: ImageVector, label: String) {
+        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+            Icon(icon, contentDescription = null, tint = CodegTheme.colors.accent, modifier = Modifier.size(22.dp))
+            Text(label, style = MaterialTheme.typography.bodyMedium, color = CodegTheme.colors.textPrimary)
     }
 }
