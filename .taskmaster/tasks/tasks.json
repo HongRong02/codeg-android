@@ -416,6 +416,61 @@
         "priority": "high",
         "subtasks": [],
         "updatedAt": "2026-10-20T04:38:15.290Z"
+      },
+      {
+        "id": "31",
+        "title": "T31 任务看板完整版",
+        "description": "四列看板 + 新建/编辑 + 开始/取消/重试/合并/交付 PR 等 work task 写操作。",
+        "details": "需求文档：.taskmaster/docs/tasks/T31-work-task-board.md（先读 .taskmaster/docs/CONVENTIONS.md，再只读这一份需求文档及其中列出的代码位置；不要通读 PRD 或其它文件）。改动范围、代码定位、验收标准都在需求文档里。",
+        "testStrategy": "",
+        "status": "pending",
+        "dependencies": [],
+        "priority": "high",
+        "subtasks": []
+      },
+      {
+        "id": "32",
+        "title": "T32 Forge：Issue / PR",
+        "description": "项目 Git 菜单进入 Issue/PR 列表、详情、评论、新建、合并，并可从 issue 建任务。",
+        "details": "需求文档：.taskmaster/docs/tasks/T32-forge.md（先读 .taskmaster/docs/CONVENTIONS.md，再只读这一份需求文档及其中列出的代码位置；不要通读 PRD 或其它文件）。改动范围、代码定位、验收标准都在需求文档里。",
+        "testStrategy": "",
+        "status": "pending",
+        "dependencies": [],
+        "priority": "high",
+        "subtasks": []
+      },
+      {
+        "id": "33",
+        "title": "T33 自动化写操作",
+        "description": "自动化新建、编辑、删除、立即运行、取消运行。",
+        "details": "需求文档：.taskmaster/docs/tasks/T33-automation-write.md（先读 .taskmaster/docs/CONVENTIONS.md，再只读这一份需求文档及其中列出的代码位置；不要通读 PRD 或其它文件）。改动范围、代码定位、验收标准都在需求文档里。",
+        "testStrategy": "",
+        "status": "pending",
+        "dependencies": [],
+        "priority": "medium",
+        "subtasks": []
+      },
+      {
+        "id": "34",
+        "title": "T34 会话标签",
+        "description": "会话列表显示/筛选标签，长按打标签，标签增删改。",
+        "details": "需求文档：.taskmaster/docs/tasks/T34-conversation-tags.md（先读 .taskmaster/docs/CONVENTIONS.md，再只读这一份需求文档及其中列出的代码位置；不要通读 PRD 或其它文件）。改动范围、代码定位、验收标准都在需求文档里。",
+        "testStrategy": "",
+        "status": "pending",
+        "dependencies": [],
+        "priority": "medium",
+        "subtasks": []
+      },
+      {
+        "id": "35",
+        "title": "T35 项目分组、别名、颜色",
+        "description": "项目列表按分组显示，支持别名、颜色、分组管理。",
+        "details": "需求文档：.taskmaster/docs/tasks/T35-folder-groups.md（先读 .taskmaster/docs/CONVENTIONS.md，再只读这一份需求文档及其中列出的代码位置；不要通读 PRD 或其它文件）。改动范围、代码定位、验收标准都在需求文档里。",
+        "testStrategy": "",
+        "status": "pending",
+        "dependencies": [],
+        "priority": "medium",
+        "subtasks": []
       }
     ],
     "metadata": {
