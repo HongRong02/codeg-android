@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ds_rows_more">More actions</string>
+    <string name="ds_rows_all">All</string>
+    <string name="ds_rows_recent">Recent</string>
+    <string name="ds_rows_sample">Sample conversation</string>
+    <string name="ds_rows_subtitle">Last updated just now</string>
+    <string name="ds_rows_collapsed">Collapsed</string>
+    <string name="ds_rows_expanded">Expanded</string>
+</resources>

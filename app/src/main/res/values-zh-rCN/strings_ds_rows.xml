@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ds_rows_more">更多操作</string>
+    <string name="ds_rows_all">全部</string>
+    <string name="ds_rows_recent">最近</string>
+    <string name="ds_rows_sample">示例会话</string>
+    <string name="ds_rows_subtitle">刚刚更新</string>
+    <string name="ds_rows_collapsed">已折叠</string>
+    <string name="ds_rows_expanded">已展开</string>
+</resources>
