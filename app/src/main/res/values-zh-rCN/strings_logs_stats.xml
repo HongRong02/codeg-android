@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="logs_stats_title">服务端日志与用量</string>
+    <string name="logs_stats_recent">最近日志</string>
+    <string name="logs_stats_files">日志文件</string>
+    <string name="logs_stats_usage">用量统计</string>
+    <string name="logs_stats_refresh">刷新</string>
+    <string name="logs_stats_unavailable">此服务端不支持日志或用量统计。</string>
+    <string name="logs_stats_min_level">最低日志级别</string>
+    <string name="logs_stats_all">全部</string>
+    <string name="logs_stats_error">错误</string>
+    <string name="logs_stats_warn">警告</string>
+    <string name="logs_stats_info">信息</string>
+    <string name="logs_stats_debug">调试</string>
+    <string name="logs_stats_trace">跟踪</string>
+    <string name="logs_stats_recent_limit">最多显示最近 500 条记录。</string>
+    <string name="logs_stats_search">搜索日志行</string>
+    <string name="logs_stats_file_limit">显示文件末尾最多 256 KiB；复制当前搜索结果。</string>
+    <string name="logs_stats_empty">暂无匹配数据</string>
+    <string name="logs_stats_log">日志</string>
+    <string name="logs_stats_file_meta">%1$d 字节 · %2$s</string>
+    <string name="logs_stats_sessions">工作区会话统计</string>
+    <string name="logs_stats_conversations">会话数</string>
+    <string name="logs_stats_messages">消息数</string>
+    <string name="logs_stats_token_usage">Token 用量</string>
+    <string name="logs_stats_week">最近 7 天</string>
+    <string name="logs_stats_month">最近 30 天</string>
+    <string name="logs_stats_all_time">全部时间</string>
+    <string name="logs_stats_total_tokens">Token 总量</string>
+    <string name="logs_stats_input">输入 Token</string>
+    <string name="logs_stats_output">输出 Token</string>
+    <string name="logs_stats_cache_read">缓存读取 Token</string>
+    <string name="logs_stats_cache_write">缓存写入 Token</string>
+    <string name="logs_stats_turns">轮次</string>
+    <string name="logs_stats_truncated">已达服务端查询上限，当前统计不完整。</string>
+    <string name="logs_stats_daily">每日 Token 总量</string>
+</resources>

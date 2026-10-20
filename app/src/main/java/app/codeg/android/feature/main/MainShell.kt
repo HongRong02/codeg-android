@@ -281,10 +281,14 @@ fun MainShell(appViewModel: AppViewModel, servers: List<ServerProfile>) {
             composable(HomeTab.SEARCH.route) {
                 SearchScreen(onOpenConversation = { id -> nav.navigate("conversation/$id") })
             }
+            composable("server_logs") {
+                app.codeg.android.feature.serverlogs.ServerLogsScreen(onBack = { nav.popBackStack() })
+            }
             composable(HomeTab.SETTINGS.route) {
                 SettingsScreen(
                     onOpenAutomations = { nav.navigate(ROUTE_AUTOMATIONS) },
                     onOpenWorkTasks = { nav.navigate("work-tasks") },
+                    onOpenServerLogs = { nav.navigate("server_logs") },
                 )
             }
 

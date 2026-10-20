@@ -85,6 +85,7 @@ private enum class SettingsLeaf(@StringRes val titleRes: Int, val icon: ImageVec
     MCP(R.string.settings_leaf_mcp, Icons.Rounded.Memory, R.string.settings_group_ai_agents, true),
     VERSION_CONTROL(R.string.settings_leaf_version_control, Icons.Rounded.Difference, R.string.settings_group_integrations, true),
     WORK_TASKS(R.string.work_tasks_title, Icons.Rounded.Schedule, R.string.settings_group_integrations, true),
+    SERVER_LOGS(R.string.logs_stats_title, Icons.Rounded.Info, R.string.settings_group_system, true),
     AUTOMATIONS(R.string.automations_title, Icons.Rounded.Schedule, R.string.settings_group_integrations, true),
     CHAT_CHANNELS(R.string.settings_leaf_chat_channels, Icons.AutoMirrored.Rounded.Chat, R.string.settings_group_integrations, true),
     SYSTEM(R.string.settings_leaf_system, Icons.Rounded.Settings, R.string.settings_group_system, true),
@@ -97,8 +98,11 @@ private enum class SettingsLeaf(@StringRes val titleRes: Int, val icon: ImageVec
 fun SettingsScreen(
     onOpenAutomations: () -> Unit = {},
     onOpenWorkTasks: () -> Unit = {},
+    onOpenServerLogs: () -> Unit = {},
+    logsViewModel: app.codeg.android.feature.serverlogs.ServerLogsViewModel = hiltViewModel(),
     viewModel: SettingsViewModel = hiltViewModel(),
 ) {
+    val logsUi by logsViewModel.ui.collectAsStateWithLifecycle()
     var leaf by remember { mutableStateOf<SettingsLeaf?>(null) }
     // A second level beneath the Agents leaf: the per-agent config editor.
     var agentDetail by remember { mutableStateOf<AgentType?>(null) }
@@ -128,7 +132,9 @@ fun SettingsScreen(
             when (leaf) {
                 null -> SettingsRoot(
                     onSelect = {
-                        if (it == SettingsLeaf.AUTOMATIONS) {
+                        if (it == SettingsLeaf.SERVER_LOGS) {
+                            onOpenServerLogs()
+                        } else if (it == SettingsLeaf.AUTOMATIONS) {
                             onOpenAutomations()
                         } else {
                             leaf = it
@@ -137,6 +143,7 @@ fun SettingsScreen(
                     },
                     onOpenAutomations = onOpenAutomations,
                     onOpenWorkTasks = onOpenWorkTasks,
+                    showServerLogs = logsUi.available,
                 )
                 SettingsLeaf.APPEARANCE -> AppearanceSettings(viewModel)
                 SettingsLeaf.LANGUAGE -> LanguageContent()
@@ -164,6 +171,7 @@ fun SettingsScreen(
 private fun SettingsRoot(onSelect: (SettingsLeaf) -> Unit, onOpenAutomations: () -> Unit, onOpenWorkTasks: () -> Unit) {
     val workTasks: app.codeg.android.feature.worktasks.WorkTaskViewModel = hiltViewModel()
     val workTaskUi by workTasks.ui.collectAsStateWithLifecycle()
+private fun SettingsRoot(onSelect: (SettingsLeaf) -> Unit, onOpenAutomations: () -> Unit, showServerLogs: Boolean) {
     val colors = CodegTheme.colors
     Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(horizontal = 12.dp, vertical = 8.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
         for (group in SettingsLeaf.entries.map { it.groupRes }.distinct()) {
@@ -171,6 +179,7 @@ private fun SettingsRoot(onSelect: (SettingsLeaf) -> Unit, onOpenAutomations: ()
                 Text(stringResource(group), fontSize = 12.sp, fontWeight = FontWeight.Medium, color = colors.textSecondary, modifier = Modifier.padding(start = 12.dp, bottom = 4.dp))
                 Column(Modifier.fillMaxWidth().webSurface(CodegShapes.small)) {
                     val leaves = SettingsLeaf.entries.filter { it.groupRes == group && (it != SettingsLeaf.WORK_TASKS || workTaskUi.supported) }
+                    val leaves = SettingsLeaf.entries.filter { it.groupRes == group && (it != SettingsLeaf.SERVER_LOGS || showServerLogs) }
                     leaves.forEachIndexed { index, l ->
                         ListItem(
                             headlineContent = { Text(stringResource(l.titleRes), fontSize = 14.sp) },
