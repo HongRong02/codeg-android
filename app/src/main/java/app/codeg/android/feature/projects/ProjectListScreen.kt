@@ -454,4 +454,4 @@ fun BranchPill(branch: String, modifier: Modifier = Modifier) {
 }
 
 internal fun sortedFolders(folders: List<FolderDetail>): List<FolderDetail> =
-    folders.sortedWith(compareBy({ it.sortOrder }, { it.id }))
+    folders.sortedWith(compareBy({ it.sortOrder }, { it.name.lowercase() }))
