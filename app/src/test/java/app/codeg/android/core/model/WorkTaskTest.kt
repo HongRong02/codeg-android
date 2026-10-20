@@ -29,8 +29,9 @@ class WorkTaskTest {
         val request = CodegJson.request.encodeToString(
             app.codeg.android.core.model.wire.WorkTaskEventsBody.serializer(),
             app.codeg.android.core.model.wire.WorkTaskEventsBody(7))
-        assertTrue(request.contains("\"taskId\":7"))
-        assertTrue(request.contains("\"limit\":500"))
+        val fields = CodegJson.request.parseToJsonElement(request) as kotlinx.serialization.json.JsonObject
+        assertEquals("7", fields["taskId"].toString())
+        assertEquals("500", fields["limit"].toString())
         assertFalse(request.contains("task_id"))
     }
 
