@@ -1,10 +1,11 @@
 """Regenerate WebThemes.kt from codeg's web palette.
 
-Usage: python scripts/gen_web_themes.py <path-to-codeg>/src/app/globals.css
+Usage: python scripts/gen_web_themes.py <path-to-codeg>/src/app/globals.css [--out <path>]
 
 Converts every [data-theme="..."] preset (light and .dark) from oklch to sRGB
 so the app renders the exact colours of codeg's web UI.
 """
+import argparse
 import math
 import pathlib
 import re
@@ -18,7 +19,8 @@ FIELDS = [
     "sidebar-accent", "sidebar-accent-foreground", "sidebar-border",
 ]
 ORDER = ["neutral", "zinc", "slate", "stone", "gray", "red", "rose", "orange", "green", "blue", "yellow", "violet"]
-OUT = pathlib.Path(__file__).resolve().parent.parent / "app/src/main/java/app/codeg/android/core/designsystem/theme/WebThemes.kt"
+DEFAULT_OUT = pathlib.Path(__file__).resolve().parent.parent / "app/src/main/java/app/codeg/android/core/designsystem/theme/WebThemes.kt"
+OUT = DEFAULT_OUT
 
 
 def oklch_to_argb(value):
@@ -55,7 +57,7 @@ def tokens(values, indent):
     return f"WebTokens(\n{lines}{indent})"
 
 
-def main(css_path):
+def main(css_path, out_path=None):
     css = pathlib.Path(css_path).read_text(encoding="utf8")
     data = {}
     for name, dark, body in re.findall(r'\[data-theme="([a-z]+)"\](\.dark)?\s*\{(.*?)\}', css, re.S):
@@ -97,8 +99,25 @@ def main(css_path):
         "    }",
         "}",
     ]
-    OUT.write_text("\n".join(out) + "\n", encoding="utf8", newline="\n")
+    target = pathlib.Path(out_path) if out_path else DEFAULT_OUT
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_text("\n".join(out) + "\n", encoding="utf8", newline="\n")
+
+
+def parse_args(argv=None):
+    parser = argparse.ArgumentParser(
+        description="Regenerate WebThemes.kt from codeg's web palette."
+    )
+    parser.add_argument("css_path", help="Path to codeg/src/app/globals.css")
+    parser.add_argument(
+        "--out",
+        dest="out_path",
+        default=None,
+        help="Output file path (default: WebThemes.kt in app module)",
+    )
+    return parser.parse_args(argv)
 
 
 if __name__ == "__main__":
-    main(sys.argv[1])
+    args = parse_args()
+    main(args.css_path, args.out_path)
