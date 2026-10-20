@@ -8,8 +8,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -23,8 +21,9 @@ import androidx.core.content.FileProvider
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.codeg.android.R
-import app.codeg.android.core.designsystem.theme.CodegTheme
+import app.codeg.android.core.designsystem.component.*
 import app.codeg.android.core.designsystem.theme.CodegShapes
+import app.codeg.android.core.designsystem.theme.CodegTheme
 import java.io.File
 
 @Composable
@@ -72,16 +71,18 @@ fun UpdateBanner(viewModel: UpdateViewModel = hiltViewModel()) {
                 .border(1.dp, colors.accent, CodegShapes.extraSmall)
                 .padding(horizontal = 14.dp, vertical = 4.dp), verticalAlignment = Alignment.CenterVertically) {
                 Text(stringResource(R.string.update_available, update.versionName), color = colors.textPrimary, modifier = Modifier.weight(1f))
-                TextButton(onClick = { showNotes = true }) { Text(stringResource(R.string.update_action)) }
-                TextButton(onClick = { viewModel.dismiss() }) { Text(stringResource(R.string.update_dismiss)) }
+                CodegButton(variant = CodegButtonVariant.Ghost, size = CodegButtonSize.Sm, onClick = { showNotes = true }) { Text(stringResource(R.string.update_action)) }
+                CodegButton(variant = CodegButtonVariant.Ghost, size = CodegButtonSize.Sm, onClick = { viewModel.dismiss() }) { Text(stringResource(R.string.update_dismiss)) }
             }
         }
         if (state.downloading) {
             Text(stringResource(R.string.update_downloading), color = colors.textPrimary, modifier = Modifier.padding(horizontal = 16.dp))
             val progress = state.progress
+            // CodegProgress has no indeterminate variant; retain loading semantics.
             if (progress == null) LinearProgressIndicator(Modifier.fillMaxWidth())
-            else LinearProgressIndicator(progress = { progress }, modifier = Modifier.fillMaxWidth())
+            else CodegProgress(progress = progress, modifier = Modifier.fillMaxWidth())
         }
+        // TODO(T52): CodegToaster for download failure feedback.
         if (state.message == R.string.update_download_failed) Text(stringResource(R.string.update_download_failed), color = colors.textSecondary, modifier = Modifier.padding(horizontal = 16.dp))
     }
     if (showNotes) UpdateNotes(state, { showNotes = false }) { showNotes = false; viewModel.download() }
@@ -96,9 +97,10 @@ fun UpdateAbout(viewModel: UpdateViewModel = hiltViewModel()) {
     LaunchedEffect(state.checking, state.update) {
         if (manual && !state.checking && state.update != null) { showNotes = true; manual = false }
     }
-    TextButton(enabled = !state.checking && !state.downloading, onClick = { manual = true; viewModel.check(true) }) {
+    CodegButton(variant = CodegButtonVariant.Ghost, size = CodegButtonSize.Sm, enabled = !state.checking && !state.downloading, onClick = { manual = true; viewModel.check(true) }) {
         Text(stringResource(if (state.checking) R.string.update_checking else R.string.update_check))
     }
+    // TODO(T52): CodegToaster for manual update feedback.
     state.message?.let { Text(stringResource(it), color = CodegTheme.colors.textSecondary) }
     if (showNotes) UpdateNotes(state, { showNotes = false }) { showNotes = false; viewModel.download() }
 }
@@ -106,12 +108,14 @@ fun UpdateAbout(viewModel: UpdateViewModel = hiltViewModel()) {
 @Composable
 private fun UpdateNotes(state: UpdateUi, dismiss: () -> Unit, download: () -> Unit) {
     val update = state.update ?: return
-    AlertDialog(onDismissRequest = dismiss,
-        title = { Text(stringResource(R.string.update_available, update.versionName)) },
-        text = { Column(Modifier.heightIn(max = 400.dp).verticalScroll(rememberScrollState())) {
-            Text(update.notes.ifBlank { stringResource(R.string.update_no_notes) })
-            Text(stringResource(R.string.update_size, update.size / (1024.0 * 1024.0)))
-        } },
-        confirmButton = { TextButton(enabled = !state.downloading, onClick = download) { Text(stringResource(R.string.update_action)) } },
-        dismissButton = { TextButton(onClick = dismiss) { Text(stringResource(R.string.update_later)) } })
+    CodegDialog(onDismiss = dismiss,
+        title = stringResource(R.string.update_available, update.versionName),
+        content = { Column(Modifier.fillMaxWidth()) {
+                Text(update.notes.ifBlank { stringResource(R.string.update_no_notes) })
+                Text(stringResource(R.string.update_size, update.size / (1024.0 * 1024.0)))
+            } },
+        footer = {
+            CodegButton(variant = CodegButtonVariant.Ghost, size = CodegButtonSize.Sm, onClick = dismiss) { Text(stringResource(R.string.update_later)) }
+            CodegButton(variant = CodegButtonVariant.Ghost, size = CodegButtonSize.Sm, enabled = !state.downloading, onClick = download) { Text(stringResource(R.string.update_action)) }
+    })
 }

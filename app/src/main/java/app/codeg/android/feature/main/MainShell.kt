@@ -6,26 +6,24 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Bolt
-import androidx.compose.material.icons.outlined.Forum
 import androidx.compose.material.icons.outlined.FolderOpen
+import androidx.compose.material.icons.outlined.Forum
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material.icons.rounded.Bolt
-import androidx.compose.material.icons.rounded.Forum
 import androidx.compose.material.icons.rounded.FolderOpen
+import androidx.compose.material.icons.rounded.Forum
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material.icons.rounded.Settings
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -36,6 +34,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.geometry.Offset
@@ -47,31 +46,37 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.layout
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.selected
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import androidx.navigation.NavGraph.Companion.findStartDestination
-import kotlin.math.roundToInt
 import app.codeg.android.R
 import app.codeg.android.app.AppViewModel
 import app.codeg.android.core.datastore.ServerProfile
+import app.codeg.android.core.designsystem.component.*
 import app.codeg.android.core.designsystem.theme.CodegTheme
 import app.codeg.android.feature.activity.ActivityScreen
-import app.codeg.android.feature.projects.ProjectDetailScreen
-import app.codeg.android.feature.search.SearchScreen
-import app.codeg.android.feature.projects.ProjectListScreen
-import app.codeg.android.feature.server.ServerEditorScreen
-import app.codeg.android.feature.settings.SettingsScreen
 import app.codeg.android.feature.automations.AutomationScreen
+import app.codeg.android.feature.projects.ProjectDetailScreen
+import app.codeg.android.feature.projects.ProjectListScreen
+import app.codeg.android.feature.search.SearchScreen
+import app.codeg.android.feature.server.ServerEditorScreen
 import app.codeg.android.feature.server.ServerListScreen
 import app.codeg.android.feature.sessiondetail.SessionDetailScreen
 import app.codeg.android.feature.sessions.SessionListScreen
+import app.codeg.android.feature.settings.SettingsScreen
+import kotlin.math.roundToInt
 
 /**
  * Bottom-navigation destinations. Each carries an outlined icon (unselected) and
@@ -366,84 +371,36 @@ fun MainShell(appViewModel: AppViewModel, servers: List<ServerProfile>) {
 
 @Composable
 private fun CodegNavRail(currentRoute: String?, onSelect: (HomeTab) -> Unit) {
-    val colors = CodegTheme.colors
-    // The wide-screen analogue of the bottom bar: the same frosted glass material,
-    // delineated from the content by a trailing hairline rather than a top one.
-    androidx.compose.foundation.layout.Row {
-        androidx.compose.material3.NavigationRail(
-            containerColor = Color.Transparent,
-        ) {
+    Row {
+        Column(Modifier.safeDrawingPadding().width(160.dp).padding(8.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
             HomeTab.entries.forEach { tab ->
-                val selected = currentRoute == tab.route
-                androidx.compose.material3.NavigationRailItem(
-                    selected = selected,
-                    onClick = { onSelect(tab) },
-                    icon = {
-                        Icon(
-                            if (selected) tab.selectedIcon else tab.icon,
-                            contentDescription = stringResource(tab.label),
-                        )
-                    },
-                    label = { Text(stringResource(tab.label)) },
-                    alwaysShowLabel = true,
-                    colors = androidx.compose.material3.NavigationRailItemDefaults.colors(
-                        selectedIconColor = colors.accent,
-                        selectedTextColor = colors.accent,
-                        unselectedIconColor = colors.textTertiary,
-                        unselectedTextColor = colors.textTertiary,
-                        indicatorColor = colors.accent.copy(alpha = 0.20f),
-                    ),
-                )
+                CodegListRow(title = stringResource(tab.label), selected = currentRoute == tab.route,
+                    onClick = { onSelect(tab) }, leading = {
+                        Icon(if (currentRoute == tab.route) tab.selectedIcon else tab.icon, contentDescription = null)
+                    })
             }
         }
-        androidx.compose.material3.VerticalDivider(
-            thickness = androidx.compose.ui.unit.Dp.Hairline,
-            color = colors.surfaceStroke,
-        )
+        CodegSeparator(vertical = true, modifier = Modifier.fillMaxHeight())
     }
 }
 
 @Composable
-private fun CodegBottomBar(
-    currentRoute: String?,
-    onSelect: (HomeTab) -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    val colors = CodegTheme.colors
-    androidx.compose.foundation.layout.Column(modifier) {
-        // A hairline that delineates the bar from the content above it, the way
-        // GitHub / Telegram / ChatGPT separate their bottom navigation.
-        HorizontalDivider(thickness = androidx.compose.ui.unit.Dp.Hairline, color = colors.surfaceStroke)
-        NavigationBar(
-            // Fully transparent so the CodegBackground (base + both glows) flows
-            // uninterrupted to the bottom edge. A translucent fill is pointless in
-            // light mode (elevated #FFFFFF and base #F2F4F6 are both near-white, so it
-            // still reads as a white slab); letting the canvas itself show through is
-            // what actually makes the tabs continuous with the content above them.
-            containerColor = Color.Transparent,
-            tonalElevation = 0.dp,
-        ) {
+private fun CodegBottomBar(currentRoute: String?, onSelect: (HomeTab) -> Unit, modifier: Modifier = Modifier) {
+    Column(modifier.background(CodegTheme.colors.web.background)) {
+        CodegSeparator()
+        Row(Modifier.fillMaxWidth().navigationBarsPadding().padding(4.dp), horizontalArrangement = Arrangement.spacedBy(4.dp)) {
             HomeTab.entries.forEach { tab ->
                 val selected = currentRoute == tab.route
-                NavigationBarItem(
-                    selected = selected,
-                    onClick = { onSelect(tab) },
-                    icon = {
-                        Icon(
-                            if (selected) tab.selectedIcon else tab.icon,
-                            contentDescription = stringResource(tab.label),
-                        )
-                    },
-                    label = { Text(stringResource(tab.label)) },
-                    alwaysShowLabel = true,
-                    colors = NavigationBarItemDefaults.colors(
-                        selectedIconColor = colors.accent,
-                        selectedTextColor = colors.accent,
-                        unselectedIconColor = colors.textTertiary,
-                        unselectedTextColor = colors.textTertiary,
-                        indicatorColor = colors.accent.copy(alpha = 0.20f),
-                    ),
-                )
+                CodegButton(onClick = { onSelect(tab) }, modifier = Modifier.weight(1f).semantics {
+                    this.selected = selected
+                    role = Role.Tab
+                }, variant = if (selected) CodegButtonVariant.Secondary else CodegButtonVariant.Ghost,
+                    size = CodegButtonSize.Sm) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Icon(if (selected) tab.selectedIcon else tab.icon, contentDescription = null, modifier = Modifier.size(18.dp))
+                        Text(stringResource(tab.label), fontSize = 10.sp, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                    }
+                }
             }
         }
     }

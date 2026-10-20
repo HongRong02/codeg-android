@@ -1,15 +1,9 @@
 package app.codeg.android.feature.server
 
-import androidx.compose.foundation.border
-import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
@@ -19,17 +13,11 @@ import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material.icons.rounded.Dns
 import androidx.compose.material.icons.rounded.Edit
-import androidx.compose.material.icons.rounded.MoreVert
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -38,15 +26,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import app.codeg.android.R
 import app.codeg.android.core.datastore.ServerProfile
-import app.codeg.android.core.designsystem.component.CodegIconButton
-import app.codeg.android.core.designsystem.component.CodegTopBar
-import app.codeg.android.core.designsystem.component.EmptyState
-import app.codeg.android.core.designsystem.component.webSurface
+import app.codeg.android.core.designsystem.component.*
 import app.codeg.android.core.designsystem.theme.CodegTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -120,20 +103,14 @@ fun ServerListScreen(
 
     val toDelete = pendingDelete
     if (toDelete != null) {
-        AlertDialog(
-            onDismissRequest = { pendingDelete = null },
-            title = { Text(stringResource(R.string.server_delete)) },
-            text = { Text(toDelete.name) },
-            confirmButton = {
-                TextButton(onClick = { onDelete(toDelete.id); pendingDelete = null }) {
-                    Text(stringResource(R.string.server_delete), color = colors.danger)
-                }
-            },
-            dismissButton = {
-                TextButton(onClick = { pendingDelete = null }) {
-                    Text(stringResource(R.string.common_cancel))
-                }
-            },
+        CodegConfirmDialog(
+            title = stringResource(R.string.server_delete),
+            message = stringResource(R.string.server_delete),
+            target = toDelete.name,
+            confirmLabel = stringResource(R.string.server_delete),
+            destructive = true,
+            onConfirm = { onDelete(toDelete.id); pendingDelete = null },
+            onDismiss = { pendingDelete = null },
         )
     }
 }
@@ -149,50 +126,25 @@ private fun ServerRow(
     val colors = CodegTheme.colors
     var menuOpen by remember { mutableStateOf(false) }
 
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .webSurface(MaterialTheme.shapes.medium)
-            .then(
-                if (selected) Modifier.border(1.dp, colors.accent, MaterialTheme.shapes.medium)
-                else Modifier,
-            )
-            .selectable(selected = selected, onClick = onClick)
-            .padding(start = 16.dp, end = 8.dp, top = 12.dp, bottom = 12.dp),
-    ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Column(modifier = Modifier.weight(1f)) {
-                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    if (selected) {
-                        Icon(Icons.Rounded.Check, contentDescription = null, tint = colors.accent, modifier = Modifier.size(18.dp))
-                    }
-                    Text(profile.name, style = MaterialTheme.typography.titleSmall, color = colors.textPrimary, maxLines = 1, overflow = TextOverflow.Ellipsis, modifier = Modifier.weight(1f))
+    CodegListRow(
+        title = profile.name,
+        subtitle = profile.baseUrl,
+        selected = selected,
+        onClick = onClick,
+        leading = { if (selected) Icon(Icons.Rounded.Check, contentDescription = null, tint = colors.accent) },
+        trailing = {
+            Box {
+                CodegRowMoreButton(onClick = { menuOpen = true }, contentDescription = stringResource(R.string.servers_onboarding_actions))
+                CodegDropdownMenu(expanded = menuOpen, onDismissRequest = { menuOpen = false }) {
+                    CodegMenuItem(text = { Text(stringResource(R.string.server_edit)) },
+                        leadingIcon = { Icon(Icons.Rounded.Edit, contentDescription = null) },
+                        onClick = { menuOpen = false; onEdit() })
+                    CodegMenuItem(text = { Text(stringResource(R.string.server_delete)) },
+                        variant = CodegMenuItemVariant.Destructive,
+                        leadingIcon = { Icon(Icons.Rounded.Delete, contentDescription = null) },
+                        onClick = { menuOpen = false; onDelete() })
                 }
-                Text(
-                    profile.baseUrl,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = colors.web.mutedForeground,
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis,
-                    fontFamily = FontFamily.Monospace,
-                    modifier = Modifier.padding(top = 2.dp),
-                )
             }
-            CodegIconButton(onClick = { menuOpen = true }) {
-                Icon(Icons.Rounded.MoreVert, contentDescription = stringResource(R.string.servers_onboarding_actions), tint = colors.web.mutedForeground)
-            }
-            DropdownMenu(expanded = menuOpen, onDismissRequest = { menuOpen = false }) {
-                DropdownMenuItem(
-                    text = { Text(stringResource(R.string.server_edit)) },
-                    leadingIcon = { Icon(Icons.Rounded.Edit, contentDescription = null) },
-                    onClick = { menuOpen = false; onEdit() },
-                )
-                DropdownMenuItem(
-                    text = { Text(stringResource(R.string.server_delete), color = colors.danger) },
-                    leadingIcon = { Icon(Icons.Rounded.Delete, contentDescription = null, tint = colors.danger) },
-                    onClick = { menuOpen = false; onDelete() },
-                )
-            }
-        }
-    }
+        },
+    )
 }

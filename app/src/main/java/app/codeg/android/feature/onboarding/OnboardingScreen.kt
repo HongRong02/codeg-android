@@ -28,8 +28,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import app.codeg.android.R
-import app.codeg.android.core.designsystem.component.PrimaryButton
-import app.codeg.android.core.designsystem.component.webSurface
+import app.codeg.android.core.designsystem.component.*
 import app.codeg.android.core.designsystem.theme.CodegTheme
 
 /** Shown when no server is configured (iOS `OnboardingView`). */
@@ -69,13 +68,14 @@ fun OnboardingScreen(
                 modifier = Modifier.padding(top = 8.dp).widthIn(max = 320.dp),
             )
 
-            Column(
-                modifier = Modifier.padding(vertical = 24.dp).fillMaxWidth().webSurface(MaterialTheme.shapes.medium).padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp),
-            ) {
-                FeatureRow(Icons.Rounded.Visibility, stringResource(R.string.onboarding_feature_watch))
-                FeatureRow(Icons.Rounded.Bolt, stringResource(R.string.onboarding_feature_steer))
-                FeatureRow(Icons.Rounded.PlayArrow, stringResource(R.string.onboarding_feature_start))
+            CodegCard(Modifier.padding(vertical = 24.dp).fillMaxWidth()) {
+                CodegCardContent {
+                    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                        FeatureRow(Icons.Rounded.Visibility, stringResource(R.string.onboarding_feature_watch))
+                        FeatureRow(Icons.Rounded.Bolt, stringResource(R.string.onboarding_feature_steer))
+                        FeatureRow(Icons.Rounded.PlayArrow, stringResource(R.string.onboarding_feature_start))
+                    }
+                }
             }
 
             PrimaryButton(
