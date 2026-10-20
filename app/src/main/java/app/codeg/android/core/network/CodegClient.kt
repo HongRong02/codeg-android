@@ -1358,6 +1358,16 @@ class CodegClient(
 
     // endregion
 
+    // region import-sessions
+
+    suspend fun scanImportableSessions(): app.codeg.android.core.model.ImportScanResult =
+        decode(send("scan_importable_sessions", "{}"), app.codeg.android.core.model.ImportScanResult.serializer())
+
+    suspend fun importSelectedSessions(selections: List<app.codeg.android.core.model.wire.ImportSessionKey>): app.codeg.android.core.model.ImportSessionsResult =
+        decode(send("import_selected_sessions", encode(app.codeg.android.core.model.wire.ImportSelectedSessionsBody(selections))), app.codeg.android.core.model.ImportSessionsResult.serializer())
+
+    // endregion
+
     // region Transport
 
     /**

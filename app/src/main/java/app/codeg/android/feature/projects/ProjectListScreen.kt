@@ -81,6 +81,9 @@ fun ProjectListScreen(
 ) {
     val ui by viewModel.ui.collectAsStateWithLifecycle()
     val colors = CodegTheme.colors
+    val importViewModel: app.codeg.android.feature.projects.importsessions.ImportSessionsViewModel = hiltViewModel()
+    val importUi by importViewModel.ui.collectAsStateWithLifecycle()
+    var showImport by remember { mutableStateOf(false) }
     var menuOpen by remember { mutableStateOf(false) }
     var showBrowser by remember { mutableStateOf(false) }
     var showClone by remember { mutableStateOf(false) }
@@ -113,6 +116,10 @@ fun ProjectListScreen(
                             expanded = menuOpen,
                             onDismissRequest = { menuOpen = false },
                         ) {
+                            if (importUi.supported) {
+                                DropdownMenuItem(text = { Text(stringResource(R.string.imp_title)) },
+                                    onClick = { menuOpen = false; showImport = true })
+                            }
                             if (ui.groupsSupported) {
                                 DropdownMenuItem(text = { Text(stringResource(R.string.fg_create)) },
                                     enabled = !ui.isBusy,
@@ -309,6 +316,11 @@ fun ProjectListScreen(
             onGroup = { id -> viewModel.editGroup { it.setFolderGroup(folder.id, id) } })
     }
 
+    if (showImport && importUi.supported) {
+        app.codeg.android.feature.projects.importsessions.ImportSessionsSheet(
+            ui = importUi, viewModel = importViewModel,
+            onDismiss = { showImport = false }, onImported = viewModel::refresh)
+    }
     if (showBrowser) {
         DirectoryBrowserSheet(
             title = stringResource(R.string.projects_open_folder),

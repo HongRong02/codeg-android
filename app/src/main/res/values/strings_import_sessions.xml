@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="imp_title">Import sessions</string>
+    <string name="imp_close">Close</string>
+    <string name="imp_working">Scanning or importing sessions on the server…</string>
+    <string name="imp_scan">Scan again</string>
+    <string name="imp_select_all">Select all</string>
+    <string name="imp_empty">No local sessions found on the server.</string>
+    <string name="imp_no_folder">%1$d sessions have no project path and cannot be imported.</string>
+    <string name="imp_new">Not imported</string>
+    <string name="imp_imported">Already imported</string>
+    <string name="imp_deleted">Deleted in codeg</string>
+    <string name="imp_unavailable">Unavailable</string>
+    <string name="imp_selected">Import selected (%1$d)</string>
+    <string name="imp_all">Import all</string>
+    <string name="imp_confirm_all">Import all %1$d new sessions shown in the scan?</string>
+    <string name="imp_cancel">Cancel</string>
+    <string name="imp_result">Imported: %1$d · Updated: %2$d · Skipped: %3$d · Failed: %4$d · Missing: %5$d</string>
+</resources>
