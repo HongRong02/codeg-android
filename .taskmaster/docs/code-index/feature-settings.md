@@ -772,10 +772,9 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 279 | `@Composable private fun AboutScreen(viewModel: SettingsViewModel)` |
 | 280 |   `val colors` |
 | 281 |   `val about by viewModel.about.collectAsStateWithLifecycle()` |
-| 282 |   `val context` |
-| 283 |   `val appVersion` |
-| 299 | `@Composable private fun ComingSoon(@StringRes title: Int)` |
-| 300 |   `val colors` |
+| 282 |   `val appVersion` |
+| 297 | `@Composable private fun ComingSoon(@StringRes title: Int)` |
+| 298 |   `val colors` |
 
 ## feature/settings/SettingsViewModel.kt
 

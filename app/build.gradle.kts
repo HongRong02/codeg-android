@@ -38,8 +38,8 @@ android {
         applicationId = "app.codeg.android.mine"
         minSdk = 30
         targetSdk = 36
-        versionCode = 2
-        versionName = "1.0.1"
+        versionCode = providers.gradleProperty("codegVersionCode").orNull?.toInt() ?: 2
+        versionName = providers.gradleProperty("codegVersionName").orNull ?: "1.0.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }

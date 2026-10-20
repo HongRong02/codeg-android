@@ -199,6 +199,7 @@ fun MainShell(appViewModel: AppViewModel, servers: List<ServerProfile>) {
     }
 
     Scaffold(
+        topBar = { app.codeg.android.core.update.UpdateBanner() },
         containerColor = Color.Transparent,
         contentWindowInsets = WindowInsets(0, 0, 0, 0),
         bottomBar = {
