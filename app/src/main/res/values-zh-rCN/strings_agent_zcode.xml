@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="agent_zcode_title">ZCode</string>
-    <string name="agent_zcode_hint">只读。请在服务端安装并登录官方 ZCode 运行时，ACP 桥接复用其配置；配置存在不代表登录已验证。</string>
-    <string name="agent_zcode_config">服务端返回的原生配置</string>
-</resources>

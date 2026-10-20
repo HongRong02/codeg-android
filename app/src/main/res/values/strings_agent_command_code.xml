@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="agent_command_code_title">Command Code</string>
-    <string name="agent_command_code_hint">Read-only. API key presence does not verify login. Interactive sign-in on the server: command-code login. Choose model and mode in the session.</string>
-    <string name="agent_command_code_key">API key</string>
-</resources>

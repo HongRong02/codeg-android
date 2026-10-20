@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="agent_command_code_title">Command Code</string>
-    <string name="agent_command_code_hint">只读。密钥存在不代表登录已验证。服务端交互登录：command-code login。模型与模式在会话中选择。</string>
-    <string name="agent_command_code_key">API 密钥</string>
-</resources>

@@ -1,0 +1,98 @@
+package app.codeg.android.shell
+
+import android.content.Intent
+import android.graphics.Bitmap
+import android.net.Uri
+import android.os.Message
+import android.webkit.PermissionRequest
+import android.webkit.RenderProcessGoneDetail
+import android.webkit.ValueCallback
+import android.webkit.WebChromeClient
+import android.webkit.WebResourceError
+import android.webkit.WebResourceRequest
+import android.webkit.WebResourceResponse
+import android.webkit.WebView
+import androidx.activity.ComponentActivity
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import kotlinx.coroutines.CoroutineScope
+
+/**
+ * What the shell offers to every [ShellFeature]. Implemented once by the activity;
+ * features never reach into each other — they talk through this host.
+ */
+interface ShellHost {
+    val activity: ComponentActivity
+
+    /** Lives as long as the activity. */
+    val scope: CoroutineScope
+
+    /** The WebView once created (null before the first server is chosen or after a renderer crash). */
+    val webView: WebView?
+
+    /** Origin of the server being shown, e.g. `https://example.com:8443`, or null when none is chosen. */
+    val currentServerUrl: String?
+
+    /** Load [url] in the WebView (absolute URL). */
+    fun loadUrl(url: String)
+
+    /** Reload the current page; if nothing loaded yet, load the server root. */
+    fun reload()
+
+    /** Throw away the WebView and build a fresh one (renderer crash recovery). */
+    fun recreateWebView()
+
+    /** Show the native server manager screen (S5). */
+    fun openServerManager()
+}
+
+/**
+ * One self-contained capability of the shell. Every hook has a no-op default; a feature
+ * overrides only what it needs. For hooks returning Boolean, features are asked in
+ * [ShellFeatures.all] order and the first `true` wins (later features are not asked).
+ */
+interface ShellFeature {
+    /** Activity.onCreate, before setContent. Register activity-result launchers here. */
+    fun onCreate(host: ShellHost) {}
+
+    /** Right after a WebView is built and before its first load. May be called again after [ShellHost.recreateWebView]. */
+    fun onWebViewCreated(host: ShellHost, webView: WebView) {}
+
+    fun onResume(host: ShellHost) {}
+    fun onPause(host: ShellHost) {}
+
+    /** Activity.onNewIntent / launch intent. Return true when handled. */
+    fun onIntent(host: ShellHost, intent: Intent): Boolean = false
+
+    /** Back press. Return true when consumed. Asked before the default (finish). */
+    fun onBack(host: ShellHost): Boolean = false
+
+    // ---- WebViewClient ----
+    fun shouldOverrideUrlLoading(host: ShellHost, view: WebView, request: WebResourceRequest): Boolean = false
+    fun onPageStarted(host: ShellHost, view: WebView, url: String, favicon: Bitmap?) {}
+    fun onPageFinished(host: ShellHost, view: WebView, url: String) {}
+    fun doUpdateVisitedHistory(host: ShellHost, view: WebView, url: String, isReload: Boolean) {}
+    fun onReceivedError(host: ShellHost, view: WebView, request: WebResourceRequest, error: WebResourceError) {}
+    fun onReceivedHttpError(host: ShellHost, view: WebView, request: WebResourceRequest, response: WebResourceResponse) {}
+    /** Return true when handled (the shell then must not crash). */
+    fun onRenderProcessGone(host: ShellHost, view: WebView, detail: RenderProcessGoneDetail): Boolean = false
+
+    // ---- WebChromeClient ----
+    fun onProgressChanged(host: ShellHost, view: WebView, progress: Int) {}
+    fun onShowFileChooser(
+        host: ShellHost,
+        view: WebView,
+        callback: ValueCallback<Array<Uri>>,
+        params: WebChromeClient.FileChooserParams,
+    ): Boolean = false
+    fun onPermissionRequest(host: ShellHost, request: PermissionRequest): Boolean = false
+    fun onCreateWindow(host: ShellHost, view: WebView, isDialog: Boolean, isUserGesture: Boolean, resultMsg: Message): Boolean = false
+
+    /** Extra modifier applied to the WebView container (insets, IME…). Chained in feature order. */
+    @Composable
+    fun webViewModifier(host: ShellHost): Modifier = Modifier
+
+    /** Drawn above the WebView, full size (progress bar, error page, dialogs). */
+    @Composable
+    fun Overlay(host: ShellHost) {}
+}

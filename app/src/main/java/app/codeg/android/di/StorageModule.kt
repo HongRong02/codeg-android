@@ -5,8 +5,6 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStoreFile
-import app.codeg.android.core.common.DefaultDispatcherProvider
-import app.codeg.android.core.common.DispatcherProvider
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -26,7 +24,4 @@ object StorageModule {
             context.preferencesDataStoreFile("codeg_prefs")
         }
 
-    @Provides
-    @Singleton
-    fun provideDispatchers(): DispatcherProvider = DefaultDispatcherProvider
 }

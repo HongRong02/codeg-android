@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="agent_deepseek_title">DeepSeek Harness</string>
-    <string name="agent_deepseek_hint">Read-only. An unset endpoint uses the adapter default. Choose model and reasoning in the session.</string>
-    <string name="agent_deepseek_endpoint">API base URL</string>
-    <string name="agent_deepseek_key">API key</string>
-    <string name="agent_deepseek_unset">Not set</string>
-    <string name="agent_deepseek_present">Present (not verified)</string>
-</resources>
