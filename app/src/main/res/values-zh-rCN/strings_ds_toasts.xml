@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ds_toasts_success">成功</string>
+    <string name="ds_toasts_error">错误</string>
+    <string name="ds_toasts_info">提示</string>
+    <string name="ds_toasts_warning">警告</string>
+    <string name="ds_toasts_loading">加载中</string>
+    <string name="ds_toasts_description">操作反馈的详细说明。</string>
+    <string name="ds_toasts_action">重试</string>
+    <string name="ds_toasts_finish">完成加载</string>
+</resources>

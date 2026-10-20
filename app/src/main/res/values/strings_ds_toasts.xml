@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ds_toasts_success">Success</string>
+    <string name="ds_toasts_error">Error</string>
+    <string name="ds_toasts_info">Information</string>
+    <string name="ds_toasts_warning">Warning</string>
+    <string name="ds_toasts_loading">Loading</string>
+    <string name="ds_toasts_description">Operation feedback details.</string>
+    <string name="ds_toasts_action">Retry</string>
+    <string name="ds_toasts_finish">Finish loading</string>
+</resources>
