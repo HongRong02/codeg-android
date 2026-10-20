@@ -218,7 +218,9 @@ Source root: `app/src/main/java/app/codeg/android/`
 
 | Line | Declaration |
 |---|---|
-| 4 | `fun Throwable.displayMessage(): String` |
+| 7 | `fun Throwable.displayMessage(context: Context): String` |
+| 9 | `internal fun Throwable.displayMessage(stringResource: (Int) -> String): String` |
+| 20 | `fun Throwable.displayMessage(): String` |
 
 ## core/network/EventStream.kt
 

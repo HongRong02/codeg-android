@@ -14,26 +14,26 @@ Source root: `app/src/main/java/app/codeg/android/`
 
 | Line | Declaration |
 |---|---|
-| 21 | `class ServerEditorViewModel @Inject constructor( private val repository: ServerRepository, savedStateHandle: SavedStateHandle, ) : ViewModel()` |
-| 22 |   `private val repository: ServerRepository` |
-| 26 |   `private val editingId: String?` |
-| 27 |   `val isEditing: Boolean` |
-| 29 |   `var name by mutableStateOf("")` |
-| 31 |   `var url by mutableStateOf("")` |
-| 33 |   `var token by mutableStateOf("")` |
-| 35 |   `var test by mutableStateOf<TestState>(TestState.Idle)` |
-| 42 |   `fun onNameChange(value: String)` |
-| 43 |   `fun onUrlChange(value: String)` |
-| 44 |   `fun onTokenChange(value: String)` |
-| 46 |   `val canSave: Boolean` |
-| 49 |   `private fun loadExisting(id: String)` |
-| 58 |   `fun testConnection()` |
-| 70 |   `fun save(onDone: () -> Unit)` |
-| 85 | `sealed interface TestState` |
-| 86 |   `data object Idle : TestState` |
-| 87 |   `data object Testing : TestState` |
-| 88 |   `data class Success(val version: String) : TestState` |
-| 89 |   `data class Failure(val message: String) : TestState` |
+| 23 | `class ServerEditorViewModel @Inject constructor( @ApplicationContext private val appContext: Context, private val repository: ServerRepository, savedStateHandle: SavedStateHandle, ) : ViewModel()` |
+| 25 |   `private val repository: ServerRepository` |
+| 29 |   `private val editingId: String?` |
+| 30 |   `val isEditing: Boolean` |
+| 32 |   `var name by mutableStateOf("")` |
+| 34 |   `var url by mutableStateOf("")` |
+| 36 |   `var token by mutableStateOf("")` |
+| 38 |   `var test by mutableStateOf<TestState>(TestState.Idle)` |
+| 45 |   `fun onNameChange(value: String)` |
+| 46 |   `fun onUrlChange(value: String)` |
+| 47 |   `fun onTokenChange(value: String)` |
+| 49 |   `val canSave: Boolean` |
+| 52 |   `private fun loadExisting(id: String)` |
+| 61 |   `fun testConnection()` |
+| 73 |   `fun save(onDone: () -> Unit)` |
+| 88 | `sealed interface TestState` |
+| 89 |   `data object Idle : TestState` |
+| 90 |   `data object Testing : TestState` |
+| 91 |   `data class Success(val version: String) : TestState` |
+| 92 |   `data class Failure(val message: String) : TestState` |
 
 ## feature/server/ServerListScreen.kt
 

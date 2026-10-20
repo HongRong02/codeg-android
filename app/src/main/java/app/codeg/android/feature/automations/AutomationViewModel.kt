@@ -1,5 +1,7 @@
 package app.codeg.android.feature.automations
 
+import android.content.Context
+import dagger.hilt.android.qualifiers.ApplicationContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.codeg.android.core.data.ServerRepository
@@ -45,6 +47,7 @@ data class AutomationUiState(
 
 @HiltViewModel
 class AutomationViewModel @Inject constructor(
+    @ApplicationContext private val appContext: Context,
     private val repository: ServerRepository,
 ) : ViewModel() {
 
@@ -98,7 +101,7 @@ class AutomationViewModel @Inject constructor(
                     it.copy(
                         loading = false,
                         refreshing = false,
-                        error = e.displayMessage(),
+                        error = e.displayMessage(appContext),
                     )
                 }
             }
@@ -168,7 +171,7 @@ class AutomationViewModel @Inject constructor(
                         automations = state.automations.map {
                             if (it.id == automation.id) automation else it
                         },
-                        error = e.displayMessage(),
+                        error = e.displayMessage(appContext),
                     )
                 }
             }

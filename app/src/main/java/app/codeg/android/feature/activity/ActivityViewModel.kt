@@ -1,5 +1,7 @@
 package app.codeg.android.feature.activity
 
+import android.content.Context
+import dagger.hilt.android.qualifiers.ApplicationContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.codeg.android.core.data.ServerRepository
@@ -35,6 +37,7 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class ActivityViewModel @Inject constructor(
+    @ApplicationContext private val appContext: Context,
     private val repository: ServerRepository,
 ) : ViewModel() {
 
@@ -104,7 +107,7 @@ class ActivityViewModel @Inject constructor(
         } catch (e: CancellationException) {
             throw e
         } catch (e: Exception) {
-            _ui.update { it.copy(loading = false, refreshing = false, error = if (it.hasLoaded) it.error else e.displayMessage()) }
+            _ui.update { it.copy(loading = false, refreshing = false, error = if (it.hasLoaded) it.error else e.displayMessage(appContext)) }
         }
     }
 }

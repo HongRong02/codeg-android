@@ -1,5 +1,6 @@
 package app.codeg.android.feature.settings
 
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -74,6 +75,7 @@ private data class PiBanner(val text: String, val isError: Boolean)
  */
 @Composable
 fun AgentConfigPiView(agent: AcpAgentInfo, viewModel: AgentsViewModel) {
+    val context = LocalContext.current
     val colors = CodegTheme.colors
     val scope = rememberCoroutineScope()
 
@@ -195,7 +197,7 @@ fun AgentConfigPiView(agent: AcpAgentInfo, viewModel: AgentsViewModel) {
             } catch (e: CancellationException) {
                 throw e
             } catch (e: Exception) {
-                banner = PiBanner(e.displayMessage(), true)
+                banner = PiBanner(e.displayMessage(context), true)
             }
             savingRuntime = false
         }
@@ -235,7 +237,7 @@ fun AgentConfigPiView(agent: AcpAgentInfo, viewModel: AgentsViewModel) {
             } catch (e: CancellationException) {
                 throw e
             } catch (e: Exception) {
-                banner = PiBanner(e.displayMessage(), true)
+                banner = PiBanner(e.displayMessage(context), true)
             }
             savingCreds = false
         }

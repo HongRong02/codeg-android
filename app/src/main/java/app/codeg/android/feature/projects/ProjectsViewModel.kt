@@ -1,5 +1,7 @@
 package app.codeg.android.feature.projects
 
+import android.content.Context
+import dagger.hilt.android.qualifiers.ApplicationContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.codeg.android.core.data.ServerRepository
@@ -23,6 +25,7 @@ import javax.inject.Inject
 /** Drives the Projects (Folders) tab: folder list + per-folder running counts. */
 @HiltViewModel
 class ProjectsViewModel @Inject constructor(
+    @ApplicationContext private val appContext: Context,
     private val repository: ServerRepository,
 ) : ViewModel() {
 
@@ -77,14 +80,14 @@ class ProjectsViewModel @Inject constructor(
         } catch (e: CancellationException) {
             throw e
         } catch (e: Exception) {
-            _ui.update { it.copy(loading = false, refreshing = false, error = e.displayMessage()) }
+            _ui.update { it.copy(loading = false, refreshing = false, error = e.displayMessage(appContext)) }
         }
     }
 
     fun openFolder(path: String, onResult: (String?) -> Unit) {
         val c = client ?: return onResult("No server selected")
         viewModelScope.launch {
-            val err = runCatching { c.openFolder(path) }.exceptionOrNull()?.displayMessage()
+            val err = runCatching { c.openFolder(path) }.exceptionOrNull()?.displayMessage(appContext)
             if (err == null) fetch(initial = false)
             onResult(err)
         }
@@ -111,7 +114,7 @@ class ProjectsViewModel @Inject constructor(
             fetch(initial = false)
             null
         } catch (e: Exception) {
-            e.displayMessage()
+            e.displayMessage(appContext)
         }
     }
 }

@@ -1,5 +1,7 @@
 package app.codeg.android.feature.search
 
+import android.content.Context
+import dagger.hilt.android.qualifiers.ApplicationContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.codeg.android.core.data.ServerRepository
@@ -25,6 +27,7 @@ import javax.inject.Inject
 @OptIn(FlowPreview::class)
 @HiltViewModel
 class SearchViewModel @Inject constructor(
+    @ApplicationContext private val appContext: Context,
     private val repository: ServerRepository,
     private val recentStore: RecentSearchesStore,
 ) : ViewModel() {
@@ -83,7 +86,7 @@ class SearchViewModel @Inject constructor(
         } catch (e: CancellationException) {
             throw e
         } catch (e: Exception) {
-            _ui.update { it.copy(searching = false, error = e.displayMessage()) }
+            _ui.update { it.copy(searching = false, error = e.displayMessage(appContext)) }
         }
     }
 }

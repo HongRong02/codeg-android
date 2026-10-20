@@ -43,7 +43,7 @@ class McpViewModel @Inject constructor(
                 client = c
                 _ui.update { it.copy(loading = false, servers = c.mcpScanLocal().sortedBy { s -> s.id.lowercase() }, error = null) }
             } catch (e: Exception) {
-                _ui.update { it.copy(loading = false, error = e.displayMessage()) }
+                _ui.update { it.copy(loading = false, error = e.displayMessage(appContext)) }
             }
         }
     }
@@ -60,7 +60,7 @@ class McpViewModel @Inject constructor(
                 load()
                 onResult(null)
             } catch (e: Exception) {
-                onResult(e.displayMessage())
+                onResult(e.displayMessage(appContext))
             }
         }
     }
@@ -70,7 +70,7 @@ class McpViewModel @Inject constructor(
         val previous = _ui.value.servers
         _ui.update { it.copy(servers = it.servers.filterNot { s -> s.id == server.id }) }
         viewModelScope.launch {
-            runCatching { c.mcpRemoveServer(server.id) }.onFailure { e -> _ui.update { it.copy(servers = previous, error = e.displayMessage()) } }
+            runCatching { c.mcpRemoveServer(server.id) }.onFailure { e -> _ui.update { it.copy(servers = previous, error = e.displayMessage(appContext)) } }
         }
     }
 }

@@ -21,35 +21,35 @@ Source root: `app/src/main/java/app/codeg/android/`
 
 | Line | Declaration |
 |---|---|
-| 37 | `class ActivityViewModel @Inject constructor( private val repository: ServerRepository, ) : ViewModel()` |
-| 38 |   `private val repository: ServerRepository` |
-| 41 |   `private val _ui` |
-| 42 |   `val ui: StateFlow<ActivityUiState>` |
-| 50 |   `val sections: StateFlow<List<ActivitySection>>` |
-| 58 |   `private data class ActivityInput( val conversations: List<ConversationSummary>, val folderNames: Map<Int, String>, )` |
-| 63 |   `private var client: CodegClient?` |
-| 64 |   `private var pollJob: Job?` |
-| 72 |   `private suspend fun onProfile(profile: ServerProfile?)` |
-| 89 |   `fun refresh()` |
-| 94 |   `private suspend fun fetch(manual: Boolean = false)` |
-| 112 | `data class ActivityUiState( val conversations: List<ConversationSummary> = emptyList(), val folderNames: Map<Int, String> = emptyMap(), val loading: Boolean = false, val refreshing: Boolean = false, val hasLoaded: Boolean = false, val error: String? = null, val lastRefreshed: Instant? = null, )` |
-| 113 |   `val conversations: List<ConversationSummary>` |
-| 114 |   `val folderNames: Map<Int, String>` |
-| 115 |   `val loading: Boolean` |
-| 116 |   `val refreshing: Boolean` |
-| 117 |   `val hasLoaded: Boolean` |
-| 118 |   `val error: String?` |
-| 119 |   `val lastRefreshed: Instant?` |
-| 126 |   `val isEmptyFeed: Boolean` |
-| 134 | `enum class ActivityKind` |
-| 137 | `data class ActivitySection( val id: String, val kind: ActivityKind, val rows: List<SessionRowItem>, )` |
-| 138 |   `val id: String` |
-| 139 |   `val kind: ActivityKind` |
-| 140 |   `val rows: List<SessionRowItem>` |
-| 142 |   `val count: Int get()` |
-| 151 | `fun buildActivitySections( conversations: List<ConversationSummary>, folderNames: Map<Int, String>, ): List<ActivitySection>` |
-| 155 |   `fun row(c: ConversationSummary)` |
-| 157 |   `val running` |
-| 159 |   `val cutoff` |
-| 160 |   `val recent` |
-| 163 |   `val out` |
+| 39 | `class ActivityViewModel @Inject constructor( @ApplicationContext private val appContext: Context, private val repository: ServerRepository, ) : ViewModel()` |
+| 41 |   `private val repository: ServerRepository` |
+| 44 |   `private val _ui` |
+| 45 |   `val ui: StateFlow<ActivityUiState>` |
+| 53 |   `val sections: StateFlow<List<ActivitySection>>` |
+| 61 |   `private data class ActivityInput( val conversations: List<ConversationSummary>, val folderNames: Map<Int, String>, )` |
+| 66 |   `private var client: CodegClient?` |
+| 67 |   `private var pollJob: Job?` |
+| 75 |   `private suspend fun onProfile(profile: ServerProfile?)` |
+| 92 |   `fun refresh()` |
+| 97 |   `private suspend fun fetch(manual: Boolean = false)` |
+| 115 | `data class ActivityUiState( val conversations: List<ConversationSummary> = emptyList(), val folderNames: Map<Int, String> = emptyMap(), val loading: Boolean = false, val refreshing: Boolean = false, val hasLoaded: Boolean = false, val error: String? = null, val lastRefreshed: Instant? = null, )` |
+| 116 |   `val conversations: List<ConversationSummary>` |
+| 117 |   `val folderNames: Map<Int, String>` |
+| 118 |   `val loading: Boolean` |
+| 119 |   `val refreshing: Boolean` |
+| 120 |   `val hasLoaded: Boolean` |
+| 121 |   `val error: String?` |
+| 122 |   `val lastRefreshed: Instant?` |
+| 129 |   `val isEmptyFeed: Boolean` |
+| 137 | `enum class ActivityKind` |
+| 140 | `data class ActivitySection( val id: String, val kind: ActivityKind, val rows: List<SessionRowItem>, )` |
+| 141 |   `val id: String` |
+| 142 |   `val kind: ActivityKind` |
+| 143 |   `val rows: List<SessionRowItem>` |
+| 145 |   `val count: Int get()` |
+| 154 | `fun buildActivitySections( conversations: List<ConversationSummary>, folderNames: Map<Int, String>, ): List<ActivitySection>` |
+| 158 |   `fun row(c: ConversationSummary)` |
+| 160 |   `val running` |
+| 162 |   `val cutoff` |
+| 163 |   `val recent` |
+| 166 |   `val out` |

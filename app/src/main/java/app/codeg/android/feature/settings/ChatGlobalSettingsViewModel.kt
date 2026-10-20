@@ -1,5 +1,7 @@
 package app.codeg.android.feature.settings
 
+import android.content.Context
+import dagger.hilt.android.qualifiers.ApplicationContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.codeg.android.core.data.ServerRepository
@@ -20,6 +22,7 @@ import javax.inject.Inject
  *  forwarded-event filter, and global outbound webhooks. Mirrors iOS `ChatGlobalSettingsView`. */
 @HiltViewModel
 class ChatGlobalSettingsViewModel @Inject constructor(
+    @ApplicationContext private val appContext: Context,
     private val repository: ServerRepository,
 ) : ViewModel() {
 
@@ -52,7 +55,7 @@ class ChatGlobalSettingsViewModel @Inject constructor(
                     )
                 }
             } catch (e: Exception) {
-                _ui.update { it.copy(loading = false, error = e.displayMessage()) }
+                _ui.update { it.copy(loading = false, error = e.displayMessage(appContext)) }
             }
         }
     }
@@ -61,13 +64,13 @@ class ChatGlobalSettingsViewModel @Inject constructor(
         val c = client ?: return
         val clean = prefix.ifBlank { "/" }
         _ui.update { it.copy(commandPrefix = clean) }
-        viewModelScope.launch { runCatching { c.setChatCommandPrefix(clean) }.onFailure { e -> _ui.update { it.copy(error = e.displayMessage()) } } }
+        viewModelScope.launch { runCatching { c.setChatCommandPrefix(clean) }.onFailure { e -> _ui.update { it.copy(error = e.displayMessage(appContext)) } } }
     }
 
     fun setLanguage(code: String) {
         val c = client ?: return
         _ui.update { it.copy(language = code) }
-        viewModelScope.launch { runCatching { c.setChatMessageLanguage(code) }.onFailure { e -> _ui.update { it.copy(error = e.displayMessage()) } } }
+        viewModelScope.launch { runCatching { c.setChatMessageLanguage(code) }.onFailure { e -> _ui.update { it.copy(error = e.displayMessage(appContext)) } } }
     }
 
     fun toggleEvent(id: String, on: Boolean) {
@@ -76,7 +79,7 @@ class ChatGlobalSettingsViewModel @Inject constructor(
         _ui.update { it.copy(enabledEvents = next) }
         // Persist the explicit list (ordered by the catalog).
         val list = ChatEventCatalog.all.map { it.id }.filter { next.contains(it) }
-        viewModelScope.launch { runCatching { c.setChatEventFilter(list) }.onFailure { e -> _ui.update { it.copy(error = e.displayMessage()) } } }
+        viewModelScope.launch { runCatching { c.setChatEventFilter(list) }.onFailure { e -> _ui.update { it.copy(error = e.displayMessage(appContext)) } } }
     }
 
     fun addWebhook(url: String) {
@@ -104,7 +107,7 @@ class ChatGlobalSettingsViewModel @Inject constructor(
         val previous = _ui.value.webhooks
         _ui.update { it.copy(webhooks = next) }
         viewModelScope.launch {
-            runCatching { c.setChatEventWebhooks(next) }.onFailure { e -> _ui.update { it.copy(webhooks = previous, error = e.displayMessage()) } }
+            runCatching { c.setChatEventWebhooks(next) }.onFailure { e -> _ui.update { it.copy(webhooks = previous, error = e.displayMessage(appContext)) } }
         }
     }
 

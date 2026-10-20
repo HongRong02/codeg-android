@@ -1,5 +1,6 @@
 package app.codeg.android.feature.projects
 
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.heightIn
@@ -77,6 +78,7 @@ fun CommitSheet(
     onDismiss: () -> Unit,
     onCommitted: (push: Boolean) -> Unit,
 ) {
+    val context = LocalContext.current
     val colors = CodegTheme.colors
     val scope = rememberCoroutineScope()
 
@@ -95,7 +97,7 @@ fun CommitSheet(
                 // Tracked changes start selected; untracked start unselected.
                 selected = result.filter { it.change != GitChange.UNTRACKED }.map { it.path }.toSet()
             }
-            .onFailure { loadError = it.displayMessage() }
+            .onFailure { loadError = it.displayMessage(context) }
     }
 
     androidx.compose.runtime.LaunchedEffect(rootPath) { load() }
@@ -117,7 +119,7 @@ fun CommitSheet(
                 throw e
             } catch (e: Exception) {
                 committing = false
-                commitError = e.displayMessage()
+                commitError = e.displayMessage(context)
             }
         }
     }

@@ -1,5 +1,7 @@
 package app.codeg.android.feature.settings
 
+import android.content.Context
+import dagger.hilt.android.qualifiers.ApplicationContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.codeg.android.core.data.ServerRepository
@@ -19,6 +21,7 @@ import javax.inject.Inject
 /** CRUD for reusable Quick Messages (the canonical server-settings list pattern). */
 @HiltViewModel
 class QuickMessagesViewModel @Inject constructor(
+    @ApplicationContext private val appContext: Context,
     private val repository: ServerRepository,
 ) : ViewModel() {
 
@@ -41,7 +44,7 @@ class QuickMessagesViewModel @Inject constructor(
             } catch (e: CancellationException) {
                 throw e
             } catch (e: Exception) {
-                _ui.update { it.copy(loading = false, error = e.displayMessage()) }
+                _ui.update { it.copy(loading = false, error = e.displayMessage(appContext)) }
             }
         }
     }
@@ -53,7 +56,7 @@ class QuickMessagesViewModel @Inject constructor(
                 if (existing == null) c.quickMessageCreate(title.trim(), content) else c.quickMessageUpdate(existing.id, title.trim(), content)
                 load()
             } catch (e: Exception) {
-                _ui.update { it.copy(error = e.displayMessage()) }
+                _ui.update { it.copy(error = e.displayMessage(appContext)) }
             }
         }
     }
@@ -66,7 +69,7 @@ class QuickMessagesViewModel @Inject constructor(
             try {
                 c.quickMessageDelete(message.id)
             } catch (e: Exception) {
-                _ui.update { it.copy(messages = previous, error = e.displayMessage()) }
+                _ui.update { it.copy(messages = previous, error = e.displayMessage(appContext)) }
             }
         }
     }

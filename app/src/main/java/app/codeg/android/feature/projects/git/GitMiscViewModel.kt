@@ -1,6 +1,7 @@
 package app.codeg.android.feature.projects.git
 
-import androidx.lifecycle.ViewModel
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import app.codeg.android.core.model.GitMiscWorktree
 import app.codeg.android.core.model.GitRemote
@@ -15,7 +16,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class GitMiscViewModel : ViewModel() {
+class GitMiscViewModel(application: Application) : AndroidViewModel(application) {
+    private val appContext = application.applicationContext
     private val state = MutableStateFlow(GitMiscUi())
     val ui = state.asStateFlow()
 
@@ -32,7 +34,7 @@ class GitMiscViewModel : ViewModel() {
                 if (e is ApiError.Server && (e.status == 404 || e.code in setOf("unknown_command", "unknown_method", "not_found"))) {
                     state.update { it.copy(hidden = it.hidden + action) }
                 } else {
-                    state.update { it.copy(error = e.displayMessage()) }
+                    state.update { it.copy(error = e.displayMessage(appContext)) }
                 }
             } finally {
                 state.update { it.copy(busy = false) }

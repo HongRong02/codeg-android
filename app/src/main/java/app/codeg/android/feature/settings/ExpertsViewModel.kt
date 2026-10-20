@@ -1,5 +1,7 @@
 package app.codeg.android.feature.settings
 
+import android.content.Context
+import dagger.hilt.android.qualifiers.ApplicationContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.codeg.android.core.data.ServerRepository
@@ -26,6 +28,7 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class ExpertsViewModel @Inject constructor(
+    @ApplicationContext private val appContext: Context,
     private val repository: ServerRepository,
 ) : ViewModel() {
 
@@ -50,8 +53,8 @@ class ExpertsViewModel @Inject constructor(
                 }.getOrDefault(emptyList())
                 _ui.update { it.copy(phase = ExpertsPhase.LOADED, experts = experts, agents = agents, refreshError = null) }
             } catch (e: Exception) {
-                if (_ui.value.experts.isEmpty()) _ui.update { it.copy(phase = ExpertsPhase.FAILED, error = e.displayMessage()) }
-                else _ui.update { it.copy(refreshError = e.displayMessage()) }
+                if (_ui.value.experts.isEmpty()) _ui.update { it.copy(phase = ExpertsPhase.FAILED, error = e.displayMessage(appContext)) }
+                else _ui.update { it.copy(refreshError = e.displayMessage(appContext)) }
             }
         }
     }
@@ -76,7 +79,7 @@ class ExpertsViewModel @Inject constructor(
                 _ui.update { st ->
                     val d = st.detail
                     if (d == null || d.expert.id != expert.id) st
-                    else st.copy(detail = d.copy(loading = false, error = e.displayMessage()))
+                    else st.copy(detail = d.copy(loading = false, error = e.displayMessage(appContext)))
                 }
             }
         }
@@ -114,7 +117,7 @@ class ExpertsViewModel @Inject constructor(
                     }
                 }
             } catch (e: Exception) {
-                updateDetail { it.copy(error = e.displayMessage()) }
+                updateDetail { it.copy(error = e.displayMessage(appContext)) }
                 openDetail(detail.expert) // re-sync real state after a failed toggle
             } finally {
                 updateDetail { it.copy(toggling = it.toggling - agent) }
