@@ -9,8 +9,9 @@ fun Throwable.displayMessage(context: Context): String = displayMessage { contex
 internal fun Throwable.displayMessage(stringResource: (Int) -> String): String = when (this) {
     is ApiError.Unauthorized -> stringResource(R.string.error_unauthorized)
     is ApiError.TurnInProgress -> stringResource(R.string.error_turn_in_progress)
-    is ApiError.Transport -> detail
-    is ApiError.Server -> serverMessage
+    is java.net.SocketTimeoutException -> stringResource(R.string.error_timeout)
+    is ApiError.Transport -> if (detail.contains("timeout", true) || detail.contains("timed out", true)) stringResource(R.string.error_timeout) else detail
+    is ApiError.Server -> if (code == "network_error") stringResource(R.string.error_network) else serverMessage
     is ApiError.Decoding -> stringResource(R.string.error_decoding)
     else -> message ?: stringResource(R.string.error_unknown)
 }

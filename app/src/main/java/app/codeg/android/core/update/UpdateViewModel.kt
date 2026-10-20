@@ -32,6 +32,9 @@ data class UpdateUi(
     val installer: File? = null,
 )
 
+val UpdateUi.showBanner: Boolean
+    get() = (update != null && dismissed != update.versionCode) || downloading || message == R.string.update_download_failed
+
 /** Process-wide state shared by the banner and About screen, including dismissals. */
 @Singleton
 class UpdateRepository @Inject constructor(
@@ -43,12 +46,14 @@ class UpdateRepository @Inject constructor(
     private val checker = UpdateChecker()
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
     private var started = false
+    private var checkMessageRevision = 0
     private val lastCheck = longPreferencesKey("apk_update_last_check")
 
     suspend fun check(manual: Boolean) {
         if (mutable.value.checking) return
         if (!manual && started) return
         started = true
+        val messageRevision = checkMessageRevision
         mutable.update { it.copy(checking = true, message = null) }
         try {
             val now = System.currentTimeMillis()
@@ -56,14 +61,19 @@ class UpdateRepository @Inject constructor(
             if (!manual && now >= previous && now - previous < 6 * 60 * 60 * 1000L) return
             preferences.edit { it[lastCheck] = now }
             val update = checker.check(BuildConfig.VERSION_CODE, manual)
-            mutable.update { it.copy(update = update, message = if (manual && update == null) R.string.update_latest else null) }
+            mutable.update { it.copy(update = update, message = if (manual && messageRevision == checkMessageRevision && update == null) R.string.update_latest else null) }
         } catch (e: CancellationException) {
             throw e
         } catch (_: Exception) {
-            if (manual) mutable.update { it.copy(message = R.string.update_check_failed) }
+            if (manual && messageRevision == checkMessageRevision) mutable.update { it.copy(message = R.string.update_check_failed) }
         } finally {
             mutable.update { it.copy(checking = false) }
         }
+    }
+
+    fun clearCheckMessage() {
+        checkMessageRevision++
+        mutable.update { if (it.message == R.string.update_latest || it.message == R.string.update_check_failed) it.copy(message = null) else it }
     }
 
     fun dismiss() { mutable.update { it.copy(dismissed = it.update?.versionCode) } }
@@ -95,6 +105,7 @@ class UpdateRepository @Inject constructor(
 class UpdateViewModel @Inject constructor(private val repository: UpdateRepository) : ViewModel() {
     val ui = repository.state
     fun check(manual: Boolean = false) { viewModelScope.launch { repository.check(manual) } }
+    fun clearCheckMessage() = repository.clearCheckMessage()
     fun download() = repository.download()
     fun dismiss() = repository.dismiss()
     fun installerHandled() = repository.installerHandled()

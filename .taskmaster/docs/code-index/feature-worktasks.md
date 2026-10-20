@@ -34,7 +34,8 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 104 |   `var description by remember` |
 | 105 |   `var folderId by remember` |
 | 106 |   `var agent by remember` |
-| 107 |   `val inherit` |
+| 107 |   `var templateName by remember` |
+| 108 |   `val inherit` |
 
 ## feature/worktasks/WorkTaskLabels.kt
 

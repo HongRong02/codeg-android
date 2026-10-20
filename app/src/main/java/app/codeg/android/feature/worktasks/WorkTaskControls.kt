@@ -104,6 +104,7 @@ fun WorkTaskEditor(ui: WorkTaskUi, viewModel: WorkTaskViewModel) {
     var description by remember { mutableStateOf((original["display_text"] as? JsonPrimitive)?.contentOrNull.orEmpty()) }
     var folderId by remember { mutableStateOf(task?.folderId) }
     var agent by remember { mutableStateOf((original["agent_type"] as? JsonPrimitive)?.contentOrNull) }
+    var templateName by remember { mutableStateOf<String?>(null) }
     val inherit = stringResource(R.string.wtb_inherit)
     AlertDialog(onDismissRequest = viewModel::dismissEditor,
         title = { Text(stringResource(if (task == null) R.string.wtb_create else R.string.wtb_edit)) },
@@ -111,8 +112,9 @@ fun WorkTaskEditor(ui: WorkTaskUi, viewModel: WorkTaskViewModel) {
             Column(Modifier.verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 ui.error?.let { Text(it, color = CodegTheme.colors.danger) }
                 if (task == null && ui.templates.isNotEmpty()) {
-                    Choice(stringResource(R.string.wtb_template), stringResource(R.string.wtb_choose), ui.templates.map { template ->
+                    Choice(stringResource(R.string.wtb_template), templateName ?: stringResource(R.string.wtb_choose), ui.templates.map { template ->
                         template.name to {
+                            templateName = template.name
                             title = template.title; original = template.config
                             description = (original["display_text"] as? JsonPrimitive)?.contentOrNull.orEmpty()
                             agent = (original["agent_type"] as? JsonPrimitive)?.contentOrNull

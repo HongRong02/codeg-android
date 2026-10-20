@@ -58,12 +58,6 @@ fun WorkTaskTemplates(ui: WorkTaskUi, viewModel: WorkTaskViewModel) {
                     if (original == null) Text(stringResource(R.string.wtt_upsert_hint))
                     OutlinedTextField(title, { title = it }, label = { Text(stringResource(R.string.wtb_title)) }, enabled = !ui.busy)
                     OutlinedTextField(description, { description = it }, label = { Text(stringResource(R.string.wtb_description)) }, minLines = 3, enabled = !ui.busy)
-                    TextButton(enabled = !ui.busy && name.isNotBlank() && title.isNotBlank() && description.isNotBlank(), onClick = {
-                        val config = original?.config ?: JsonObject(emptyMap())
-                        val agent = (config["agent_type"] as? JsonPrimitive)?.contentOrNull
-                        viewModel.saveTemplate(WorkTaskTemplateDraft(name.trim(), title.trim(), taskConfig(config, description.trim(), agent)))
-                    }) { Text(stringResource(R.string.wtb_save)) }
-                    TextButton(enabled = !ui.busy, onClick = { editing = false }) { Text(stringResource(R.string.wtt_cancel)) }
                 } else {
                     TextButton(enabled = !ui.busy, onClick = {
                         original = null; name = ""; title = ""; description = ""; editing = true
@@ -77,14 +71,25 @@ fun WorkTaskTemplates(ui: WorkTaskUi, viewModel: WorkTaskViewModel) {
                                 original = template; name = template.name; title = template.title
                                 description = (template.config["display_text"] as? JsonPrimitive)?.contentOrNull.orEmpty()
                                 editing = true
-                            }) { Text(stringResource(R.string.wtb_edit)) }
+                            }) { Text(stringResource(R.string.wtt_edit)) }
                             TextButton(enabled = !ui.busy, onClick = { deleting = template }) { Text(stringResource(R.string.wtt_delete)) }
                         }
                     }
                 }
             }
         },
-        confirmButton = { TextButton(enabled = !ui.busy, onClick = viewModel::closeManagement) { Text(stringResource(R.string.wtb_close)) } })
+        confirmButton = {
+            if (editing) {
+                TextButton(enabled = !ui.busy && name.isNotBlank() && title.isNotBlank() && description.isNotBlank(), onClick = {
+                    val config = original?.config ?: JsonObject(emptyMap())
+                    val agent = (config["agent_type"] as? JsonPrimitive)?.contentOrNull
+                    viewModel.saveTemplate(WorkTaskTemplateDraft(name.trim(), title.trim(), taskConfig(config, description.trim(), agent)))
+                }) { Text(stringResource(R.string.wtb_save)) }
+            } else TextButton(enabled = !ui.busy, onClick = viewModel::closeManagement) { Text(stringResource(R.string.wtb_close)) }
+        },
+        dismissButton = {
+            if (editing) TextButton(enabled = !ui.busy, onClick = { editing = false }) { Text(stringResource(R.string.wtt_cancel)) }
+        })
     deleting?.let { target ->
         AlertDialog(onDismissRequest = { deleting = null },
             title = { Text(stringResource(R.string.wtt_delete)) },

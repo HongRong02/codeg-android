@@ -38,4 +38,5 @@
     <string name="wtt_unset">未设置</string>
     <string name="wtt_on">开启</string>
     <string name="wtt_off">关闭</string>
+    <string name="wtt_edit">编辑模板</string>
 </resources>
