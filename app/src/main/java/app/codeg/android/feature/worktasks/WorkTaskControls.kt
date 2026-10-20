@@ -63,39 +63,31 @@ fun WorkTaskActions(task: WorkTask, ui: WorkTaskUi, viewModel: WorkTaskViewModel
             "schedule" -> text.isBlank() || runCatching { OffsetDateTime.parse(text) }.isSuccess
             else -> true
         }
-        CodegDialog(onDismiss = { pending = null },
+        CodegConfirmDialog(
+            onDismiss = { pending = null },
             title = stringResource(actionLabel(action)),
+            message = stringResource(R.string.wtb_confirm_target, task.title, task.id),
+            target = "${task.title} (#${task.id})",
+            confirmLabel = stringResource(R.string.wtb_confirm),
+            destructive = action in setOf("delete", "cancel", "cleanup"),
+            busy = ui.busy, confirmEnabled = valid,
+            onConfirm = { viewModel.action(task, action, text.trim()); pending = null },
             content = {
-                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                    Text(stringResource(R.string.wtb_confirm_target, task.title, task.id))
-                    if (action in setOf("return", "schedule")) {
-                        CodegTextField(value = text, onValueChange = { text = it },
-                            label = stringResource(if (action == "return") R.string.wtb_feedback else R.string.wtb_schedule_hint),
-                            isError = !valid, modifier = Modifier.fillMaxWidth())
-                    }
+                if (action in setOf("return", "schedule")) {
+                    CodegTextField(value = text, onValueChange = { text = it },
+                        label = stringResource(if (action == "return") R.string.wtb_feedback else R.string.wtb_schedule_hint),
+                        isError = !valid, enabled = !ui.busy, modifier = Modifier.fillMaxWidth())
                 }
             },
-            footer = {
-                CodegButton(variant = CodegButtonVariant.Ghost, size = CodegButtonSize.Sm, onClick = { pending = null }) { Text(stringResource(R.string.wtb_close)) }
-                CodegButton(variant = CodegButtonVariant.Ghost, size = CodegButtonSize.Sm, enabled = valid && !ui.busy, onClick = {
-                        viewModel.action(task, action, text.trim()); pending = null
-                }) { Text(stringResource(R.string.wtb_confirm)) }
-        })
+        )
     }
 }
 
 @Composable
-private fun Choice(label: String, value: String, choices: List<Pair<String, () -> Unit>>, enabled: Boolean) {
-    var expanded by remember { mutableStateOf(false) }
-    Box {
-        CodegButton(enabled = enabled, variant = CodegButtonVariant.Outline, size = CodegButtonSize.Sm,
-            onClick = { expanded = true }) { Text("$label: $value") }
-        CodegDropdownMenu(expanded, { expanded = false }) {
-            choices.forEach { (name, select) ->
-                CodegMenuItem(text = { Text(name) }, onClick = { select(); expanded = false })
-            }
-        }
-    }
+private fun Choice(label: String, value: String, choices: List<Pair<String, () -> Unit>>, enabled: Boolean, selectedIndex: Int = choices.indexOfFirst { it.first == value }) {
+    CodegSelect(label = label, selected = choices.getOrNull(selectedIndex),
+        options = choices, optionLabel = { it.first }, onSelect = { it.second() }, enabled = enabled)
+
 }
 
 @Composable
@@ -123,13 +115,15 @@ fun WorkTaskEditor(ui: WorkTaskUi, viewModel: WorkTaskViewModel) {
                             }
                         }, !ui.busy)
                 }
-                // Shared CodegTextField lacks enabled; preserve busy-state input locking.
-                OutlinedTextField(title, { title = it }, label = { Text(stringResource(R.string.wtb_title)) }, enabled = !ui.busy)
-                OutlinedTextField(description, { description = it }, label = { Text(stringResource(R.string.wtb_description)) }, minLines = 3, enabled = !ui.busy)
+
+                CodegTextField(title, { title = it }, label = stringResource(R.string.wtb_title), enabled = !ui.busy)
+                CodegTextField(description, { description = it }, label = stringResource(R.string.wtb_description), singleLine = false, minLines = 3, enabled = !ui.busy)
                 Choice(stringResource(R.string.wtb_project), ui.folders.find { it.id == folderId }?.name ?: stringResource(R.string.wtb_choose),
-                    ui.folders.map { it.name to { folderId = it.id } }, !ui.busy)
+                    ui.folders.map { it.name to { folderId = it.id } }, !ui.busy,
+                    selectedIndex = ui.folders.indexOfFirst { it.id == folderId })
                 Choice(stringResource(R.string.wtb_agent), agent ?: inherit,
-                    listOf(inherit to { agent = null }) + ui.agents.map { it.name.ifBlank { it.agentType.wire } to { agent = it.agentType.wire } }, !ui.busy)
+                    listOf(inherit to { agent = null }) + ui.agents.map { it.name.ifBlank { it.agentType.wire } to { agent = it.agentType.wire } }, !ui.busy,
+                    selectedIndex = (listOf<String?>(null) + ui.agents.map { it.agentType.wire }).indexOf(agent))
             }
         },
         footer = {

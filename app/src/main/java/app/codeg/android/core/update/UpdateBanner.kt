@@ -62,6 +62,11 @@ fun UpdateBanner(viewModel: UpdateViewModel = hiltViewModel()) {
             }
         }
     }
+    val toaster = LocalCodegToaster.current
+    val failureMessage = state.message?.let { stringResource(it) }
+    LaunchedEffect(state.message) {
+        if (state.message in setOf(R.string.update_download_failed, R.string.update_install_failed) && failureMessage != null) toaster.error(failureMessage)
+    }
     val colors = CodegTheme.colors
     if (state.showBanner) Column(Modifier.fillMaxWidth().background(colors.bgElevated).windowInsetsPadding(WindowInsets.statusBars)) {
         val update = state.update
@@ -78,12 +83,11 @@ fun UpdateBanner(viewModel: UpdateViewModel = hiltViewModel()) {
         if (state.downloading) {
             Text(stringResource(R.string.update_downloading), color = colors.textPrimary, modifier = Modifier.padding(horizontal = 16.dp))
             val progress = state.progress
-            // CodegProgress has no indeterminate variant; retain loading semantics.
-            if (progress == null) LinearProgressIndicator(Modifier.fillMaxWidth())
+
+            if (progress == null) CodegProgress(Modifier.fillMaxWidth())
             else CodegProgress(progress = progress, modifier = Modifier.fillMaxWidth())
         }
-        // TODO(T52): CodegToaster for download failure feedback.
-        if (state.message == R.string.update_download_failed) Text(stringResource(R.string.update_download_failed), color = colors.textSecondary, modifier = Modifier.padding(horizontal = 16.dp))
+
     }
     if (showNotes) UpdateNotes(state, { showNotes = false }) { showNotes = false; viewModel.download() }
 }
@@ -100,8 +104,15 @@ fun UpdateAbout(viewModel: UpdateViewModel = hiltViewModel()) {
     CodegButton(variant = CodegButtonVariant.Ghost, size = CodegButtonSize.Sm, enabled = !state.checking && !state.downloading, onClick = { manual = true; viewModel.check(true) }) {
         Text(stringResource(if (state.checking) R.string.update_checking else R.string.update_check))
     }
-    // TODO(T52): CodegToaster for manual update feedback.
-    state.message?.let { Text(stringResource(it), color = CodegTheme.colors.textSecondary) }
+    val toaster = LocalCodegToaster.current
+    val message = state.message?.let { stringResource(it) }
+    LaunchedEffect(state.message, state.checking) {
+        if (manual && !state.checking && message != null) {
+            if (state.message in setOf(R.string.update_check_failed, R.string.update_download_failed, R.string.update_install_failed)) toaster.error(message)
+            else toaster.info(message)
+            manual = false
+        }
+    }
     if (showNotes) UpdateNotes(state, { showNotes = false }) { showNotes = false; viewModel.download() }
 }
 

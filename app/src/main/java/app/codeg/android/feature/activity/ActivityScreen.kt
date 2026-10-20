@@ -1,5 +1,6 @@
 package app.codeg.android.feature.activity
 
+import app.codeg.android.core.designsystem.icon.*
 import android.text.format.DateUtils
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -12,13 +13,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Bedtime
-import androidx.compose.material.icons.rounded.GraphicEq
-import androidx.compose.material.icons.rounded.History
-import androidx.compose.material.icons.rounded.Refresh
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -38,6 +33,9 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.codeg.android.R
+import app.codeg.android.core.designsystem.component.CodegInstantCollapsible
+import androidx.compose.runtime.key
+import androidx.compose.foundation.layout.Column
 import app.codeg.android.core.designsystem.component.CodegIconButton
 import app.codeg.android.core.designsystem.component.CodegSectionHeader
 import app.codeg.android.core.designsystem.component.CodegTopBar
@@ -77,8 +75,8 @@ fun ActivityScreen(
                         onClick = viewModel::refresh,
                         visualSize = 32.dp,
                     ) {
-                        Icon(
-                            Icons.Rounded.Refresh,
+                        CodegIcon(
+                            Lucide.RefreshCw,
                             contentDescription = stringResource(R.string.activity_refresh),
                             tint = colors.textSecondary,
                         )
@@ -97,7 +95,7 @@ fun ActivityScreen(
                 !ui.hasLoaded && ui.error != null ->
                     Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                         InlineError(
-                            icon = Icons.Rounded.GraphicEq,
+                            icon = Lucide.AudioLines,
                             title = stringResource(R.string.activity_load_failed),
                             message = ui.error!!,
                             onRetry = viewModel::refresh,
@@ -118,7 +116,7 @@ fun ActivityScreen(
                             contentAlignment = Alignment.Center,
                         ) {
                             EmptyState(
-                                icon = Icons.Rounded.Bedtime,
+                                icon = Lucide.Moon,
                                 title = stringResource(R.string.activity_empty_title),
                                 message = stringResource(R.string.activity_empty_message),
                             )
@@ -136,25 +134,27 @@ fun ActivityScreen(
                     LazyColumn(Modifier.fillMaxSize(), contentPadding = PaddingValues(horizontal = 8.dp, vertical = 8.dp)) {
                         sections.forEach { section ->
                             val isCollapsed = section.id in collapsed
-                            item(key = "h-${section.id}", contentType = "header") {
+                            item(key = "section-${section.id}", contentType = "section") {
                                 val style = activitySectionStyle(section.kind)
-                                // TODO(T53): CodegCollapsible for section body visibility.
-                                Row(verticalAlignment = Alignment.CenterVertically) {
-                                    Icon(style.icon, contentDescription = null, tint = style.tint)
-                                    CodegSectionHeader(title = style.label, count = section.count,
-                                        collapsed = isCollapsed,
-                                        onToggle = if (section.count > 0) ({ toggle(section.id) }) else null,
-                                        modifier = Modifier.weight(1f).animateItem())
-                                }
-                            }
-                            if (!isCollapsed) {
-                                items(section.rows, key = { "row-${it.conversation.id}" }, contentType = { "row" }) { row ->
-                                    SessionRow(
-                                        row.conversation,
-                                        onClick = { onOpenConversation(row.conversation.id) },
-                                        modifier = Modifier.animateItem(),
-                                        folderName = row.folderName,
-                                    )
+                                CodegInstantCollapsible(expanded = !isCollapsed,
+                                    onExpandedChange = { if (section.count > 0) toggle(section.id) },
+                                    modifier = Modifier.animateItem(),
+                                    header = {
+                                        Row(verticalAlignment = Alignment.CenterVertically) {
+                                            CodegIcon(style.icon, contentDescription = null, tint = style.tint)
+                                            CodegSectionHeader(title = style.label, count = section.count,
+                                                modifier = Modifier.weight(1f))
+                                        }
+                                    }) {
+                                    Column {
+                                        section.rows.forEach { row ->
+                                            key(row.conversation.id) {
+                                                SessionRow(row.conversation,
+                                                    onClick = { onOpenConversation(row.conversation.id) },
+                                                    folderName = row.folderName)
+                                            }
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -176,12 +176,12 @@ private fun activitySectionStyle(kind: ActivityKind): ActivityStyle {
     val colors = CodegTheme.colors
     return when (kind) {
         ActivityKind.RUNNING -> ActivityStyle(
-            icon = Icons.Rounded.GraphicEq,
+            icon = Lucide.AudioLines,
             tint = colors.accent,
             label = stringResource(R.string.activity_running),
         )
         ActivityKind.RECENT -> ActivityStyle(
-            icon = Icons.Rounded.History,
+            icon = Lucide.History,
             tint = colors.textSecondary,
             label = stringResource(R.string.activity_recent),
         )

@@ -1,5 +1,6 @@
 package app.codeg.android.feature.automations
 
+import app.codeg.android.core.designsystem.icon.*
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -16,19 +17,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.ArrowBack
-import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowRight
-import androidx.compose.material.icons.rounded.CalendarToday
-import androidx.compose.material.icons.rounded.Folder
-import androidx.compose.material.icons.rounded.History
-import androidx.compose.material.icons.rounded.Layers
-import androidx.compose.material.icons.rounded.PlayArrow
-import androidx.compose.material.icons.rounded.Refresh
-import androidx.compose.material.icons.rounded.Schedule
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -76,22 +65,18 @@ fun AutomationScreen(
     val selected = ui.selectedAutomation
     if (ui.editorOpen) AutomationEditorSheet(ui, viewModel)
     deleteTarget?.let { target ->
-        CodegDialog(onDismiss = { deleteTarget = null },
-            title = stringResource(R.string.aw_delete),
-            content = { Text(stringResource(R.string.aw_delete_confirm, target.name)) },
-            footer = {
-                CodegButton(variant = CodegButtonVariant.Ghost, size = CodegButtonSize.Sm, onClick = { deleteTarget = null }) { Text(stringResource(R.string.aw_cancel)) }
-                CodegButton(variant = CodegButtonVariant.Destructive, size = CodegButtonSize.Sm, enabled = !ui.busy, onClick = { viewModel.delete(target); deleteTarget = null }) { Text(stringResource(R.string.aw_confirm)) }
-        })
+        CodegConfirmDialog(onDismiss = { deleteTarget = null },
+            title = stringResource(R.string.aw_delete), message = stringResource(R.string.aw_delete_confirm, target.name),
+            target = target.name, confirmLabel = stringResource(R.string.aw_confirm),
+            destructive = true, busy = ui.busy,
+            onConfirm = { viewModel.delete(target); deleteTarget = null })
     }
     cancelTarget?.let { target ->
-        CodegDialog(onDismiss = { cancelTarget = null },
-            title = stringResource(R.string.aw_cancel_run),
-            content = { Text(stringResource(R.string.aw_cancel_confirm, target.id, selected?.name.orEmpty())) },
-            footer = {
-                CodegButton(variant = CodegButtonVariant.Ghost, size = CodegButtonSize.Sm, onClick = { cancelTarget = null }) { Text(stringResource(R.string.aw_cancel)) }
-                CodegButton(variant = CodegButtonVariant.Destructive, size = CodegButtonSize.Sm, enabled = !ui.busy, onClick = { viewModel.cancelRun(target.id); cancelTarget = null }) { Text(stringResource(R.string.aw_confirm)) }
-        })
+        CodegConfirmDialog(onDismiss = { cancelTarget = null },
+            title = stringResource(R.string.aw_cancel_run), message = stringResource(R.string.aw_cancel_confirm, target.id, selected?.name.orEmpty()),
+            target = target.id.toString(), confirmLabel = stringResource(R.string.aw_confirm),
+            destructive = true, busy = ui.busy,
+            onConfirm = { viewModel.cancelRun(target.id); cancelTarget = null })
     }
     BackHandler(enabled = selected != null) {
         viewModel.selectAutomation(null)
@@ -111,8 +96,8 @@ fun AutomationScreen(
                             onBack()
                         }
                     }) {
-                        Icon(
-                            Icons.AutoMirrored.Rounded.ArrowBack,
+                        CodegIcon(
+                            Lucide.ArrowLeft,
                             contentDescription = stringResource(R.string.common_back),
                         )
                     }
@@ -122,8 +107,8 @@ fun AutomationScreen(
                         CodegButton(variant = CodegButtonVariant.Default, size = CodegButtonSize.Sm, enabled = !ui.busy && !ui.loading, onClick = { viewModel.openEditor(null) }) { Text(stringResource(R.string.aw_create)) }
                     }
                     CodegIconButton(onClick = { viewModel.load() }) {
-                        Icon(
-                            Icons.Rounded.Refresh,
+                        CodegIcon(
+                            Lucide.RefreshCw,
                             contentDescription = stringResource(R.string.automations_refresh),
                         )
                     }
@@ -139,7 +124,7 @@ fun AutomationScreen(
             when {
                 ui.loading -> {
                     Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                        CircularProgressIndicator(color = colors.accent)
+                        CodegSpinner(size = 24.dp)
                     }
                 }
                 selected != null -> {
@@ -279,8 +264,8 @@ private fun AutomationListItem(
         trailing = {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 CodegSwitch(checked = automation.enabled, onCheckedChange = { onToggle() })
-                Icon(Icons.AutoMirrored.Rounded.KeyboardArrowRight, contentDescription = null,
-                    tint = colors.textSecondary, modifier = Modifier.size(18.dp))
+                CodegIcon(Lucide.ChevronRight, contentDescription = null,
+                    tint = colors.textSecondary, modifier = Modifier.size(16.dp))
             }
         })
 }
@@ -319,7 +304,7 @@ private fun AutomationDetailView(
                     CodegSectionHeader(title = stringResource(R.string.automations_section_schedule))
 
                     DetailRow(
-                        icon = Icons.Rounded.Schedule,
+                        icon = Lucide.Clock,
                         label = stringResource(R.string.automations_trigger),
                         value = if (automation.triggerKind == TriggerKind.SCHEDULE && automation.cron != null) {
                             stringResource(R.string.automations_trigger_schedule) + " (" + automation.cron + ")"
@@ -329,20 +314,20 @@ private fun AutomationDetailView(
                     )
 
                     DetailRow(
-                        icon = Icons.Rounded.PlayArrow,
+                        icon = Lucide.Play,
                         label = stringResource(R.string.automations_agent),
                         value = automation.agentType.displayName,
                     )
 
                     if (automation.isolation == IsolationMode.WORKTREE_PER_RUN) {
                         DetailRow(
-                            icon = Icons.Rounded.Layers,
+                            icon = Lucide.Layers,
                             label = stringResource(R.string.automations_isolation),
                             value = stringResource(R.string.automations_isolation_worktree),
                         )
                     } else {
                         DetailRow(
-                            icon = Icons.Rounded.Folder,
+                            icon = Lucide.Folder,
                             label = stringResource(R.string.automations_isolation),
                             value = stringResource(R.string.automations_isolation_shared) + (if (automation.branch != null) " (" + automation.branch + ")" else ""),
                         )
@@ -350,7 +335,7 @@ private fun AutomationDetailView(
 
                     if (automation.nextRunAt != null) {
                         DetailRow(
-                            icon = Icons.Rounded.CalendarToday,
+                            icon = Lucide.Calendar,
                             label = stringResource(R.string.automations_next_run),
                             value = formatDateTime(automation.nextRunAt),
                         )
@@ -358,7 +343,7 @@ private fun AutomationDetailView(
 
                     if (automation.lastRunAt != null) {
                         DetailRow(
-                            icon = Icons.Rounded.History,
+                            icon = Lucide.History,
                             label = stringResource(R.string.automations_last_run),
                             value = RelativeTime.compact(automation.lastRunAt),
                         )
@@ -391,7 +376,7 @@ private fun AutomationDetailView(
                 Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                     CodegSectionHeader(title = stringResource(R.string.automations_section_runs), action = {
                         CodegIconButton(onClick = onRefreshRuns) {
-                            Icon(Icons.Rounded.Refresh, contentDescription = stringResource(R.string.automations_refresh),
+                            CodegIcon(Lucide.RefreshCw, contentDescription = stringResource(R.string.automations_refresh),
                                 modifier = Modifier.size(16.dp), tint = colors.textSecondary)
                         }
                     })
@@ -403,10 +388,7 @@ private fun AutomationDetailView(
                                 .padding(16.dp),
                             contentAlignment = Alignment.Center,
                         ) {
-                            CircularProgressIndicator(
-                                modifier = Modifier.size(24.dp),
-                                color = colors.accent,
-                            )
+                            CodegSpinner(size = 24.dp)
                         }
                     } else if (runs.isEmpty()) {
                         Text(
@@ -503,7 +485,7 @@ private fun DetailRow(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        Icon(
+        CodegIcon(
             icon,
             contentDescription = null,
             modifier = Modifier.size(16.dp),

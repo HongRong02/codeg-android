@@ -1,5 +1,6 @@
 package app.codeg.android.feature.onboarding
 
+import app.codeg.android.core.designsystem.icon.*
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,12 +13,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Bolt
-import androidx.compose.material.icons.rounded.Code
-import androidx.compose.material.icons.rounded.PlayArrow
-import androidx.compose.material.icons.rounded.Visibility
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -48,8 +43,8 @@ fun OnboardingScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
         ) {
-            Icon(
-                Icons.Rounded.Code,
+            CodegIcon(
+                Lucide.Code,
                 contentDescription = null,
                 tint = colors.accent,
                 modifier = Modifier.size(56.dp),
@@ -71,9 +66,9 @@ fun OnboardingScreen(
             CodegCard(Modifier.padding(vertical = 24.dp).fillMaxWidth()) {
                 CodegCardContent {
                     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                        FeatureRow(Icons.Rounded.Visibility, stringResource(R.string.onboarding_feature_watch))
-                        FeatureRow(Icons.Rounded.Bolt, stringResource(R.string.onboarding_feature_steer))
-                        FeatureRow(Icons.Rounded.PlayArrow, stringResource(R.string.onboarding_feature_start))
+                        FeatureRow(Lucide.Eye, stringResource(R.string.onboarding_feature_watch))
+                        FeatureRow(Lucide.Zap, stringResource(R.string.onboarding_feature_steer))
+                        FeatureRow(Lucide.Play, stringResource(R.string.onboarding_feature_start))
                     }
                 }
             }
@@ -97,7 +92,7 @@ fun OnboardingScreen(
 @Composable
 private fun FeatureRow(icon: ImageVector, label: String) {
     Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-        Icon(icon, contentDescription = null, tint = CodegTheme.colors.accent, modifier = Modifier.size(22.dp))
+        CodegIcon(icon, contentDescription = null, tint = CodegTheme.colors.accent, modifier = Modifier.size(16.dp))
         Text(label, style = MaterialTheme.typography.bodyMedium, color = CodegTheme.colors.textPrimary)
     }
 }

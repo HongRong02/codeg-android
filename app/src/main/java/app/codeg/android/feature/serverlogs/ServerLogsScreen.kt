@@ -1,12 +1,10 @@
 package app.codeg.android.feature.serverlogs
 
+import app.codeg.android.core.designsystem.icon.*
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.ArrowBack
-import androidx.compose.material.icons.rounded.Refresh
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -40,12 +38,12 @@ fun ServerLogsScreen(onBack: () -> Unit, viewModel: ServerLogsViewModel = hiltVi
                 title = stringResource(R.string.logs_stats_title), showDivider = true,
                 navigationIcon = {
                     CodegIconButton(onClick = { if (ui.selectedFile != null) viewModel.selectFile(null) else onBack() }) {
-                        Icon(Icons.AutoMirrored.Rounded.ArrowBack, stringResource(R.string.common_back))
+                        CodegIcon(Lucide.ArrowLeft, stringResource(R.string.common_back))
                     }
                 },
                 actions = {
                     CodegIconButton(onClick = viewModel::load) {
-                        Icon(Icons.Rounded.Refresh, stringResource(R.string.logs_stats_refresh))
+                        CodegIcon(Lucide.RefreshCw, stringResource(R.string.logs_stats_refresh))
                     }
                 },
             )
@@ -59,8 +57,8 @@ fun ServerLogsScreen(onBack: () -> Unit, viewModel: ServerLogsViewModel = hiltVi
                 CodegTabs(selected = tabs.indexOfFirst { it.first == tab }.coerceAtLeast(0),
                     tabs = tabs.map { stringResource(it.second) },
                     onSelect = { tab = tabs[it].first; viewModel.selectFile(null) }, modifier = Modifier.fillMaxWidth())
-                // CodegProgress has no indeterminate variant; retain loading semantics.
-                if (ui.loading || ui.fileLoading) LinearProgressIndicator(Modifier.fillMaxWidth(), color = colors.accent)
+
+                if (ui.loading || ui.fileLoading) CodegProgress(Modifier.fillMaxWidth())
                 if (!ui.available) Text(stringResource(R.string.logs_stats_unavailable), color = colors.textSecondary)
             }
             val sections = when (tab) {

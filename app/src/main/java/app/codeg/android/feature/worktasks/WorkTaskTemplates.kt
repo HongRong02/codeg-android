@@ -1,8 +1,7 @@
 package app.codeg.android.feature.worktasks
 
+import app.codeg.android.core.designsystem.icon.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.MoreVert
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -23,7 +22,7 @@ fun WorkTaskManagementMenu(ui: WorkTaskUi, viewModel: WorkTaskViewModel) {
     if (ui.selected != null || !ui.supported || (!ui.templatesSupported && !ui.settingsSupported)) return
     Box {
         CodegIconButton(onClick = { expanded = true }, enabled = !ui.busy) {
-            Icon(Icons.Rounded.MoreVert, stringResource(R.string.wtt_menu))
+            CodegIcon(Lucide.EllipsisVertical, stringResource(R.string.wtt_menu))
         }
         CodegDropdownMenu(expanded, { expanded = false }) {
             if (ui.templatesSupported) CodegMenuItem(text = { Text(stringResource(R.string.wtt_templates)) }, onClick = {
@@ -50,13 +49,13 @@ fun WorkTaskTemplates(ui: WorkTaskUi, viewModel: WorkTaskViewModel) {
         content = {
             Column(Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 ui.error?.let { Text(it, color = CodegTheme.colors.danger) }
-                // CodegProgress has no indeterminate variant; retain loading semantics.
-                if (ui.busy) LinearProgressIndicator(Modifier.fillMaxWidth())
+
+                if (ui.busy) CodegProgress(Modifier.fillMaxWidth())
                 if (editing) {
-                    OutlinedTextField(name, { name = it }, label = { Text(stringResource(R.string.wtt_name)) }, enabled = !ui.busy && original == null)
+                    CodegTextField(name, { name = it }, label = stringResource(R.string.wtt_name), enabled = !ui.busy, readOnly = original != null)
                     if (original == null) Text(stringResource(R.string.wtt_upsert_hint))
-                    OutlinedTextField(title, { title = it }, label = { Text(stringResource(R.string.wtb_title)) }, enabled = !ui.busy)
-                    OutlinedTextField(description, { description = it }, label = { Text(stringResource(R.string.wtb_description)) }, minLines = 3, enabled = !ui.busy)
+                    CodegTextField(title, { title = it }, label = stringResource(R.string.wtb_title), enabled = !ui.busy)
+                    CodegTextField(description, { description = it }, label = stringResource(R.string.wtb_description), singleLine = false, minLines = 3, enabled = !ui.busy)
                 } else {
                     CodegButton(variant = CodegButtonVariant.Ghost, size = CodegButtonSize.Sm, enabled = !ui.busy, onClick = {
                             original = null; name = ""; title = ""; description = ""; editing = true
@@ -88,12 +87,10 @@ fun WorkTaskTemplates(ui: WorkTaskUi, viewModel: WorkTaskViewModel) {
             } else CodegButton(variant = CodegButtonVariant.Ghost, size = CodegButtonSize.Sm, enabled = !ui.busy, onClick = viewModel::closeManagement) { Text(stringResource(R.string.wtb_close)) }
     })
     deleting?.let { target ->
-        CodegDialog(onDismiss = { deleting = null },
-            title = stringResource(R.string.wtt_delete),
-            content = { Text(stringResource(R.string.wtt_delete_confirm, target.name)) },
-            footer = {
-                CodegButton(variant = CodegButtonVariant.Ghost, size = CodegButtonSize.Sm, onClick = { deleting = null }) { Text(stringResource(R.string.wtt_cancel)) }
-                CodegButton(variant = CodegButtonVariant.Destructive, size = CodegButtonSize.Sm, enabled = !ui.busy, onClick = { deleting = null; viewModel.deleteTemplate(target.id) }) { Text(stringResource(R.string.wtt_delete)) }
-        })
+        CodegConfirmDialog(onDismiss = { deleting = null },
+            title = stringResource(R.string.wtt_delete), message = stringResource(R.string.wtt_delete_confirm, target.name),
+            target = target.name, confirmLabel = stringResource(R.string.wtt_delete),
+            destructive = true, busy = ui.busy,
+            onConfirm = { deleting = null; viewModel.deleteTemplate(target.id) })
     }
 }

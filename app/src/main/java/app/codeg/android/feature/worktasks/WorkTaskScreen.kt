@@ -1,13 +1,10 @@
 package app.codeg.android.feature.worktasks
 
+import app.codeg.android.core.designsystem.icon.*
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.ArrowBack
-import androidx.compose.material.icons.rounded.Refresh
-import androidx.compose.material.icons.rounded.Schedule
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -39,21 +36,21 @@ fun WorkTaskScreen(onBack: () -> Unit, viewModel: WorkTaskViewModel = hiltViewMo
                 title = selected?.title ?: stringResource(R.string.work_tasks_title),
                 navigationIcon = {
                     CodegIconButton(onClick = back) {
-                        Icon(Icons.AutoMirrored.Rounded.ArrowBack, stringResource(R.string.common_back))
+                        CodegIcon(Lucide.ArrowLeft, stringResource(R.string.common_back))
                     }
                 },
                 actions = {
                     WorkTaskManagementMenu(ui, viewModel)
                     CodegIconButton(onClick = { if (selected != null) viewModel.select(selected) else viewModel.load() }) {
-                        Icon(Icons.Rounded.Refresh, stringResource(R.string.work_tasks_refresh))
+                        CodegIcon(Lucide.RefreshCw, stringResource(R.string.work_tasks_refresh))
                     }
                 },
             )
         },
     ) { padding ->
         LazyColumn(Modifier.fillMaxSize().padding(padding).padding(horizontal = 16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-            // CodegProgress has no indeterminate variant; retain loading semantics.
-            if (ui.busy) item { LinearProgressIndicator(Modifier.fillMaxWidth()) }
+
+            if (ui.busy) item { CodegProgress(Modifier.fillMaxWidth()) }
             if (ui.error != null && selected != null) item { Text(ui.error!!, color = CodegTheme.colors.danger) }
             if (selected == null) {
                 if (ui.supported) {
@@ -75,12 +72,12 @@ fun WorkTaskScreen(onBack: () -> Unit, viewModel: WorkTaskViewModel = hiltViewMo
                 when {
                     ui.loading -> item { LoadingView(stringResource(R.string.work_tasks_loading)) }
                     ui.error != null -> item {
-                        InlineError(Icons.Rounded.Schedule, stringResource(R.string.work_tasks_error), ui.error!!,
+                        InlineError(Lucide.Clock, stringResource(R.string.work_tasks_error), ui.error!!,
                             onRetry = { viewModel.load() }, retryLabel = stringResource(R.string.work_tasks_retry))
                     }
                     !ui.supported -> item { Text(stringResource(R.string.work_tasks_unavailable)) }
                     ui.tasks.isEmpty() -> item {
-                        EmptyState(Icons.Rounded.Schedule, stringResource(R.string.work_tasks_empty), stringResource(R.string.work_tasks_empty_hint))
+                        EmptyState(Lucide.Clock, stringResource(R.string.work_tasks_empty), stringResource(R.string.work_tasks_empty_hint))
                     }
                     else -> {
                         val tasks = visible.filter { it.boardColumn() == column }

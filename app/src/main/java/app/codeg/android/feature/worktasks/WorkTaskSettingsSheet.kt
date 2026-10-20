@@ -54,7 +54,6 @@ private val booleanSettings = setOf("auto_process", "auto_merge", "delete_worktr
 
 @Composable
 fun WorkTaskSettingsSheet(ui: WorkTaskUi, viewModel: WorkTaskViewModel) {
-    var projectMenu by remember { mutableStateOf(false) }
     var reset by remember { mutableStateOf(false) }
     val source = ui.ownSettings ?: ui.effectiveSettings
     var fields by remember(ui.settingsFolder, source) {
@@ -78,20 +77,10 @@ fun WorkTaskSettingsSheet(ui: WorkTaskUi, viewModel: WorkTaskViewModel) {
         content = {
             Column(Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 ui.error?.let { Text(it, color = CodegTheme.colors.danger) }
-                Box {
-                    CodegButton(variant = CodegButtonVariant.Ghost, size = CodegButtonSize.Sm, enabled = enabled, onClick = { projectMenu = true }) {
-                        Text(folder?.name ?: stringResource(R.string.wtb_project))
-                    }
-                    CodegDropdownMenu(projectMenu, { projectMenu = false }) {
-                        ui.folders.forEach { project ->
-                            CodegMenuItem(text = { Text(project.name) }, onClick = {
-                                    projectMenu = false; viewModel.loadSettings(project.id)
-                            })
-                        }
-                    }
-                }
-                // CodegProgress has no indeterminate variant; retain loading semantics.
-                if (ui.settingsLoading || ui.busy) LinearProgressIndicator(Modifier.fillMaxWidth())
+                CodegSelect(label = stringResource(R.string.wtb_project), selected = folder,
+                    options = ui.folders, optionLabel = { it.name }, key = { it.id },
+                    onSelect = { viewModel.loadSettings(it.id) }, enabled = enabled)
+                if (ui.settingsLoading || ui.busy) CodegProgress(Modifier.fillMaxWidth())
                 ui.effectiveSettings?.let { effective ->
                     CodegSectionHeader(title = stringResource(R.string.wtt_effective))
                     SettingsSummary(effective)
@@ -108,24 +97,17 @@ fun WorkTaskSettingsSheet(ui: WorkTaskUi, viewModel: WorkTaskViewModel) {
                                     CodegSwitch(value == "true", { checked -> fields = fields + (key to checked.toString()) }, enabled = enabled)
                                 }
                                 key == "merge_strategy" -> {
-                                    var expanded by remember { mutableStateOf(false) }
-                                    Box {
-                                        CodegButton(variant = CodegButtonVariant.Ghost, size = CodegButtonSize.Sm, enabled = enabled, onClick = { expanded = true }) {
-                                            Text(stringResource(label) + ": " + stringResource(if (value == "merge") R.string.wtt_merge else R.string.wtt_squash))
-                                        }
-                                        CodegDropdownMenu(expanded, { expanded = false }) {
-                                            listOf("squash" to R.string.wtt_squash, "merge" to R.string.wtt_merge).forEach { (choice, name) ->
-                                                CodegMenuItem(text = { Text(stringResource(name)) }, onClick = {
-                                                        fields = fields + (key to choice); expanded = false
-                                                })
-                                            }
-                                        }
-                                    }
+                                    val options = listOf("squash" to stringResource(R.string.wtt_squash),
+                                        "merge" to stringResource(R.string.wtt_merge))
+                                    CodegSelect(label = stringResource(label),
+                                        selected = options.firstOrNull { it.first == value }, options = options,
+                                        optionLabel = { it.second }, key = { it.first }, enabled = enabled,
+                                        onSelect = { fields = fields + (key to it.first) })
                                 }
-                                else -> OutlinedTextField(value, { fields = fields + (key to it) },
-                                    label = { Text(stringResource(label)) }, enabled = enabled,
+                                else -> CodegTextField(value, { fields = fields + (key to it) },
+                                    label = stringResource(label), enabled = enabled,
                                     isError = parsed[key] == null,
-                                    supportingText = { if (parsed[key] == null) Text(stringResource(R.string.wtt_invalid)) })
+                                    supportingText = if (parsed[key] == null) stringResource(R.string.wtt_invalid) else null)
                             }
                         }
                     }
@@ -141,13 +123,11 @@ fun WorkTaskSettingsSheet(ui: WorkTaskUi, viewModel: WorkTaskViewModel) {
                     viewModel.saveSettings(folder!!.id, JsonObject(parsed.mapValues { it.value!! }))
             }) { Text(stringResource(R.string.wtb_save)) }
     })
-    if (reset && folder != null) CodegDialog(onDismiss = { reset = false },
-        title = stringResource(R.string.wtt_reset),
-        content = { Text(stringResource(R.string.wtt_reset_confirm, folder.name)) },
-        footer = {
-            CodegButton(variant = CodegButtonVariant.Ghost, size = CodegButtonSize.Sm, onClick = { reset = false }) { Text(stringResource(R.string.wtt_cancel)) }
-            CodegButton(variant = CodegButtonVariant.Destructive, size = CodegButtonSize.Sm, enabled = enabled, onClick = { reset = false; viewModel.resetSettings(folder.id) }) { Text(stringResource(R.string.wtt_reset)) }
-    })
+    if (reset && folder != null) CodegConfirmDialog(onDismiss = { reset = false },
+            title = stringResource(R.string.wtt_reset), message = stringResource(R.string.wtt_reset_confirm, folder.name),
+            target = folder.name, confirmLabel = stringResource(R.string.wtt_reset),
+            destructive = true, busy = !enabled,
+            onConfirm = { reset = false; viewModel.resetSettings(folder.id) })
 }
 
 @Composable
