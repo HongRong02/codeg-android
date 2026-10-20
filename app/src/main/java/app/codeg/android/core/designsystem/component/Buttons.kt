@@ -14,10 +14,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FilterChip
-import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -92,7 +88,7 @@ fun CodegButton(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
             ) {
-                if (loading) CircularProgressIndicator(Modifier.size(16.dp), color = foreground, strokeWidth = 2.dp)
+                if (loading) CodegSpinner()
                 else leadingIcon?.invoke()
                 content()
             }
@@ -166,49 +162,6 @@ fun CodegSegmented(
             }
         }
     }
-}
-
-/**
- * Material 3 [FilterChip] in the web's toggle look: outlined with `--border`
- * when off, `--secondary` fill when on, pill-shaped. [icon] renders as the
- * leading icon (pass `Icons.Rounded.Check` when selected for multi-select).
- */
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun CodegFilterChip(
-    label: String,
-    selected: Boolean,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-    icon: ImageVector? = null,
-    enabled: Boolean = true,
-) {
-    val colors = CodegTheme.colors
-    val web = colors.web
-    FilterChip(
-        selected = selected,
-        onClick = onClick,
-        enabled = enabled,
-        modifier = modifier,
-        shape = PillShape,
-        label = { Text(label) },
-        leadingIcon = icon?.let {
-            { Icon(it, contentDescription = null, modifier = Modifier.size(FilterChipDefaults.IconSize)) }
-        },
-        colors = FilterChipDefaults.filterChipColors(
-            labelColor = colors.textSecondary,
-            iconColor = colors.textSecondary,
-            selectedContainerColor = web.secondary,
-            selectedLabelColor = web.secondaryForeground,
-            selectedLeadingIconColor = web.secondaryForeground,
-        ),
-        border = FilterChipDefaults.filterChipBorder(
-            enabled = enabled,
-            selected = selected,
-            borderColor = colors.surfaceStroke,
-            selectedBorderColor = colors.surfaceStroke,
-        ),
-    )
 }
 
 @androidx.compose.ui.tooling.preview.Preview(name = "Button Light", showBackground = true)

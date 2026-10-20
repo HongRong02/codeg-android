@@ -1,5 +1,7 @@
 package app.codeg.android.core.designsystem.component
 
+import app.codeg.android.core.designsystem.icon.*
+
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -7,9 +9,6 @@ import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.ChevronRight
-import androidx.compose.material.icons.rounded.MoreHoriz
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.Text
@@ -47,6 +46,8 @@ fun CodegListRow(
     trailing: (@Composable () -> Unit)? = null,
     onLongClick: (() -> Unit)? = null,
     onMoreClick: (() -> Unit)? = null,
+    titleMaxLines: Int = 1,
+    subtitleMaxLines: Int = 1,
 ) {
     val web = CodegTheme.colors.web
     val interactions = remember { MutableInteractionSource() }
@@ -66,11 +67,11 @@ fun CodegListRow(
         CompositionLocalProvider(LocalContentColor provides foreground) {
             leading?.invoke()
             Column(Modifier.weight(1f)) {
-                Text(title, color = foreground, fontSize = 14.sp, maxLines = 1,
+                Text(title, color = foreground, fontSize = 14.sp, maxLines = titleMaxLines,
                     overflow = TextOverflow.Ellipsis)
                 subtitle?.let {
                     Text(it, color = if (selected) web.accentForeground else web.mutedForeground,
-                        fontSize = 12.sp, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                        fontSize = 12.sp, maxLines = subtitleMaxLines, overflow = TextOverflow.Ellipsis)
                 }
             }
             trailing?.invoke()
@@ -93,7 +94,7 @@ fun CodegRowMoreButton(
         .background(if (pressed) web.accent else androidx.compose.ui.graphics.Color.Transparent)
         .clickable(interactionSource = interactions, indication = null, role = Role.Button, onClick = onClick),
         contentAlignment = Alignment.Center) {
-        Icon(Icons.Rounded.MoreHoriz, contentDescription, Modifier.size(14.dp), tint = web.mutedForeground)
+        Icon(Lucide.Ellipsis, contentDescription, Modifier.size(14.dp), tint = web.mutedForeground)
     }
 }
 
@@ -124,7 +125,7 @@ fun CodegSectionHeader(
                 maxLines = 1, overflow = TextOverflow.Ellipsis)
             count?.let { CodegBadge(it.toString(), CodegBadgeVariant.Secondary) }
             if (onToggle != null) {
-                Icon(Icons.Rounded.ChevronRight, null,
+                Icon(Lucide.ChevronRight, null,
                     Modifier.size(14.dp).rotate(if (collapsed) 0f else 90f), tint = web.mutedForeground)
             }
         }
@@ -143,9 +144,10 @@ internal fun T46RowsGallery() {
         if (!collapsed) {
             CodegListRow(title, { selected = !selected }, selected = selected, onLongClick = {}, onMoreClick = {})
             CodegListRow(title, {}, subtitle = stringResource(R.string.ds_rows_subtitle), selected = true,
-                leading = { Icon(Icons.Rounded.ChevronRight, null) },
+                leading = { Icon(Lucide.ChevronRight, null) },
                 trailing = { CodegBadge("2", CodegBadgeVariant.Secondary) }, onMoreClick = {})
         }
+        CodegListRow(List(8) { title }.joinToString(" "), {}, subtitle = List(8) { title }.joinToString(" "), titleMaxLines = 3, subtitleMaxLines = 2)
         CodegSectionHeader(title)
         CodegSectionHeader(title, count = 0, collapsed = true, onToggle = {})
     }

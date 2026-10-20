@@ -1,5 +1,7 @@
 package app.codeg.android.core.designsystem.component
 
+import app.codeg.android.core.designsystem.icon.*
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -11,9 +13,6 @@ import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Check
-import androidx.compose.material.icons.rounded.KeyboardArrowDown
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -33,17 +32,38 @@ import app.codeg.android.core.designsystem.theme.withOpacity
 @Composable
 fun CodegSelect(label: String, value: String, options: List<String>, onSelect: (String) -> Unit,
     modifier: Modifier = Modifier, enabled: Boolean = true,
-) = ChoiceControl(label, value, options, onSelect, modifier, enabled, searchable = false)
+) = CodegSelect(label, value, options, { it }, onSelect, modifier, enabled)
 
 @Composable
 fun CodegCombobox(label: String, value: String, options: List<String>, onSelect: (String) -> Unit,
     modifier: Modifier = Modifier, enabled: Boolean = true,
-) = ChoiceControl(label, value, options, onSelect, modifier, enabled, searchable = true)
+) = CodegCombobox(label, value, options, { it }, onSelect, modifier, enabled)
+
+@Composable
+fun <T> CodegSelect(label: String, selected: T?, options: List<T>, optionLabel: (T) -> String,
+    onSelect: (T) -> Unit, modifier: Modifier = Modifier, enabled: Boolean = true,
+    optionDescription: ((T) -> String?)? = null, key: ((T) -> Any)? = null,
+) = ChoiceControl(label, selected, options, optionLabel, onSelect, modifier, enabled, false, optionDescription, key)
+
+@Composable
+fun <T> CodegCombobox(label: String, selected: T?, options: List<T>, optionLabel: (T) -> String,
+    onSelect: (T) -> Unit, modifier: Modifier = Modifier, enabled: Boolean = true,
+    optionDescription: ((T) -> String?)? = null, key: ((T) -> Any)? = null,
+) = ChoiceControl(label, selected, options, optionLabel, onSelect, modifier, enabled, true, optionDescription, key)
+
+internal fun <T> choiceMatches(option: T, query: String, label: (T) -> String,
+    description: ((T) -> String?)? = null,
+): Boolean = label(option).contains(query, ignoreCase = true) ||
+    description?.invoke(option)?.contains(query, ignoreCase = true) == true
+
+internal fun <T> choiceSelected(option: T, selected: T?, key: ((T) -> Any)? = null): Boolean =
+    selected != null && if (key != null) key(option) == key(selected) else option == selected
 
 /** Self-contained popup: deliberately independent of the T43 menu components. */
 @Composable
-private fun ChoiceControl(label: String, value: String, options: List<String>, onSelect: (String) -> Unit,
+private fun <T> ChoiceControl(label: String, value: T?, options: List<T>, optionLabel: (T) -> String, onSelect: (T) -> Unit,
     modifier: Modifier, enabled: Boolean, searchable: Boolean,
+    optionDescription: ((T) -> String?)?, optionKey: ((T) -> Any)?,
 ) {
     var expanded by remember { mutableStateOf(false) }
     var query by remember { mutableStateOf("") }
@@ -54,8 +74,8 @@ private fun ChoiceControl(label: String, value: String, options: List<String>, o
                 .clip(PillShape).background(web.input.withOpacity(.30f)).border(1.dp, web.input, PillShape)
                 .clickable(enabled = enabled, role = Role.DropdownList) { query = ""; expanded = true }
                 .padding(horizontal = 12.dp, vertical = 8.dp), verticalAlignment = Alignment.CenterVertically) {
-                Text(value.ifEmpty { label }, Modifier.weight(1f), color = web.foreground, fontSize = 14.sp)
-                Icon(Icons.Rounded.KeyboardArrowDown, null, Modifier.size(16.dp), tint = web.mutedForeground)
+                Text(value?.let(optionLabel)?.ifEmpty { label } ?: label, Modifier.weight(1f), color = web.foreground, fontSize = 14.sp)
+                Icon(Lucide.ChevronDown, null, Modifier.size(16.dp), tint = web.mutedForeground)
             }
             DropdownMenu(expanded = expanded && enabled, onDismissRequest = { expanded = false },
                 shape = CodegShapes.medium, containerColor = web.popover,
@@ -63,15 +83,21 @@ private fun ChoiceControl(label: String, value: String, options: List<String>, o
                 modifier = Modifier.widthIn(min = 200.dp, max = 360.dp).heightIn(max = 320.dp),
             ) {
                 if (searchable) CodegTextField(query, { query = it }, stringResource(R.string.ds_controls_search), Modifier.padding(4.dp))
-                val matches = options.filter { it.contains(query, ignoreCase = true) }
+                val matches = options.filter { choiceMatches(it, query, optionLabel, optionDescription) }
                 if (matches.isEmpty()) Text(stringResource(R.string.ds_controls_empty), Modifier.padding(12.dp), color = web.mutedForeground)
                 matches.forEach { option ->
-                    Row(Modifier.fillMaxWidth().padding(horizontal = 4.dp).clip(CodegShapes.small)
-                        .background(if (option == value) web.accent else androidx.compose.ui.graphics.Color.Transparent)
-                        .selectable(option == value, role = Role.RadioButton) { onSelect(option); expanded = false }
-                        .padding(horizontal = 12.dp, vertical = 8.dp), verticalAlignment = Alignment.CenterVertically) {
-                        Text(option, Modifier.weight(1f), color = web.popoverForeground, fontSize = 14.sp)
-                        if (option == value) Icon(Icons.Rounded.Check, null, Modifier.size(16.dp), tint = web.popoverForeground)
+                    key(optionKey?.invoke(option) ?: option) {
+                        val isSelected = choiceSelected(option, value, optionKey)
+                        Row(Modifier.fillMaxWidth().padding(horizontal = 4.dp).clip(CodegShapes.small)
+                            .background(if (isSelected) web.accent else androidx.compose.ui.graphics.Color.Transparent)
+                            .selectable(isSelected, role = Role.RadioButton) { onSelect(option); expanded = false }
+                            .padding(horizontal = 12.dp, vertical = 8.dp), verticalAlignment = Alignment.CenterVertically) {
+                            Column(Modifier.weight(1f)) {
+                                Text(optionLabel(option), color = web.popoverForeground, fontSize = 14.sp)
+                                optionDescription?.invoke(option)?.let { Text(it, color = web.mutedForeground, fontSize = 12.sp) }
+                            }
+                            if (isSelected) Icon(Lucide.Check, null, Modifier.size(16.dp), tint = web.popoverForeground)
+                        }
                     }
                 }
             }
@@ -109,7 +135,7 @@ fun CodegCheckbox(checked: Boolean, onCheckedChange: (Boolean) -> Unit,
         horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         Box(Modifier.size(16.dp).clip(shape).background(if (checked) web.primary else web.input.withOpacity(.30f))
             .border(1.dp, if (checked) web.primary else web.input, shape), contentAlignment = Alignment.Center) {
-            if (checked) Icon(Icons.Rounded.Check, null, Modifier.size(14.dp), tint = web.primaryForeground)
+            if (checked) Icon(Lucide.Check, null, Modifier.size(14.dp), tint = web.primaryForeground)
         }
         label?.let { Text(it, color = web.foreground, fontSize = 14.sp) }
     }
@@ -152,7 +178,7 @@ internal fun T45Gallery() {
             })) }
         }
         CodegButtonSize.entries.forEach { size ->
-            CodegButton({}, size = size) { if (size == CodegButtonSize.Icon) Icon(Icons.Rounded.Check, example, Modifier.size(16.dp)) else Text(example) }
+            CodegButton({}, size = size) { if (size == CodegButtonSize.Icon) Icon(Lucide.Check, example, Modifier.size(16.dp)) else Text(example) }
         }
         CodegButton({}, loading = true) { Text(example) }
         CodegButton({}, enabled = false) { Text(example) }
@@ -162,6 +188,15 @@ internal fun T45Gallery() {
         CodegField(example, stringResource(R.string.ds_controls_description), stringResource(R.string.ds_controls_required)) {
             CodegTextField(text, { text = it }, example, isError = true, supportingText = stringResource(R.string.ds_controls_required))
         }
+        CodegTextField(text, { text = it }, example, enabled = false)
+        CodegTextField(text, {}, example, readOnly = true, leading = { Icon(Lucide.Check, null) }, trailing = { CodegSpinner() })
+        CodegTextField(text, { text = it }, example, singleLine = false, minLines = 2, maxLines = 4,
+            keyboardOptions = androidx.compose.foundation.text.KeyboardOptions(imeAction = androidx.compose.ui.text.input.ImeAction.Done),
+            keyboardActions = androidx.compose.foundation.text.KeyboardActions(onDone = {}))
+        val entities = listOf(1, 2)
+        var entity by remember { mutableStateOf<Int?>(null) }
+        CodegSelect(example, entity, entities, { example }, { entity = it }, optionDescription = { it.toString() }, key = { it })
+        CodegCombobox(example, entity, entities, { example }, { entity = it }, optionDescription = { it.toString() }, key = { it })
         SecretField(text, { text = it }, example)
         CodegSelect(example, value, options, { value = it })
         CodegCombobox(example, value, options, { value = it })
