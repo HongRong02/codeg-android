@@ -91,7 +91,7 @@ fun CodegConfirmDialog(
         }
         Button(onClick = onConfirm, colors = ButtonDefaults.buttonColors(
             containerColor = if (destructive) web.destructive else web.primary,
-            contentColor = web.primaryForeground,
+            contentColor = if (destructive) web.background else web.primaryForeground,
         )) { Text(confirmLabel) }
     }) { Text(target, color = web.foreground, fontWeight = FontWeight.SemiBold) }
 }
