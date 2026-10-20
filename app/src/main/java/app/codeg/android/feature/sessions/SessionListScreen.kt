@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Check
@@ -33,7 +32,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -62,8 +60,10 @@ import app.codeg.android.core.designsystem.component.CodegIconButton
 import app.codeg.android.core.designsystem.component.CodegTopBar
 import app.codeg.android.core.designsystem.component.EmptyState
 import app.codeg.android.core.designsystem.component.InlineError
+import app.codeg.android.core.designsystem.component.webSurface
 import app.codeg.android.core.designsystem.component.LoadingView
 import app.codeg.android.core.designsystem.theme.CodegTheme
+import app.codeg.android.core.designsystem.theme.withOpacity
 import app.codeg.android.core.designsystem.theme.colorFromHex
 import app.codeg.android.core.model.ConversationSummary
 import app.codeg.android.feature.main.LocalBarsVisible
@@ -106,9 +106,6 @@ fun SessionListScreen(
                 title = selectedName,
                 showDivider = true,
                 titleContent = {
-                    MaterialTheme(typography = MaterialTheme.typography.copy(
-                        titleLarge = MaterialTheme.typography.labelLarge,
-                    )) {
                     ServerSwitcher(
                         name = selectedName,
                         servers = servers,
@@ -116,7 +113,6 @@ fun SessionListScreen(
                         onSelect = onSelectServer,
                         onManageServers = onManageServers,
                     )
-                    }
                 },
                 actions = {
                     CodegIconButton(onClick = onManageServers, visualSize = 32.dp) {
@@ -145,13 +141,13 @@ fun SessionListScreen(
         Box(Modifier.padding(padding).fillMaxSize()) {
             when {
                 ui.isLoading && !ui.hasLoaded -> {
-                    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Box(Modifier.fillMaxSize().padding(horizontal = 24.dp, vertical = 16.dp), contentAlignment = Alignment.Center) {
                         LoadingView(message = stringResource(R.string.common_loading))
                     }
                 }
 
                 !ui.hasLoaded && ui.error != null -> {
-                    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Box(Modifier.fillMaxSize().padding(horizontal = 24.dp, vertical = 16.dp), contentAlignment = Alignment.Center) {
                         InlineError(
                             icon = Icons.Rounded.Forum,
                             title = stringResource(R.string.sessions_load_failed),
@@ -163,7 +159,7 @@ fun SessionListScreen(
                 }
 
                 ui.hasLoaded && ui.isEmpty -> {
-                    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Box(Modifier.fillMaxSize().padding(horizontal = 24.dp, vertical = 16.dp), contentAlignment = Alignment.Center) {
                         EmptyState(
                             icon = Icons.Rounded.Forum,
                             title = stringResource(R.string.sessions_empty_title),
@@ -305,13 +301,13 @@ private fun RefreshErrorBanner(
     modifier: Modifier = Modifier,
 ) {
     val colors = CodegTheme.colors
-    val shape = RoundedCornerShape(14.dp)
+    val shape = MaterialTheme.shapes.small
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .clip(shape)
-            .background(colors.danger.copy(alpha = 0.12f))
-            .border(CodegTheme.dimens.hairlineWidth, colors.danger.copy(alpha = 0.35f), shape)
+            .webSurface(shape)
+            .background(colors.danger.withOpacity(0.08f))
+            .border(CodegTheme.dimens.hairlineWidth, colors.danger.withOpacity(0.35f), shape)
             .padding(start = 12.dp, end = 4.dp, top = 4.dp, bottom = 4.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -336,7 +332,7 @@ private fun RefreshErrorBanner(
         ) {
             Text(stringResource(R.string.common_retry))
         }
-        IconButton(onClick = onDismiss) {
+        CodegIconButton(onClick = onDismiss, visualSize = 32.dp) {
             Icon(
                 Icons.Rounded.Close,
                 contentDescription = stringResource(R.string.common_dismiss),
@@ -360,7 +356,7 @@ private fun ServerSwitcher(
     Box {
         Row(
             modifier = Modifier
-                .clip(RoundedCornerShape(8.dp))
+                .clip(MaterialTheme.shapes.extraSmall)
                 .clickable { open = true }
                 .padding(horizontal = 4.dp, vertical = 2.dp),
             verticalAlignment = Alignment.CenterVertically,
@@ -368,9 +364,12 @@ private fun ServerSwitcher(
         ) {
             Text(
                 text = name,
-                style = MaterialTheme.typography.titleLarge,
+                style = MaterialTheme.typography.labelLarge,
                 fontWeight = FontWeight.SemiBold,
                 color = colors.textPrimary,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.weight(1f, fill = false),
             )
             Icon(
                 Icons.Rounded.ExpandMore,
@@ -399,7 +398,7 @@ private fun ServerSwitcher(
                     },
                 )
             }
-            HorizontalDivider()
+            HorizontalDivider(color = colors.web.border)
             DropdownMenuItem(
                 text = { Text(stringResource(R.string.home_manage_servers)) },
                 leadingIcon = { Icon(Icons.Rounded.Dns, contentDescription = null) },

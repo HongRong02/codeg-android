@@ -4,10 +4,10 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ExpandMore
 import androidx.compose.material3.Icon
@@ -27,18 +27,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import app.codeg.android.R
 import app.codeg.android.core.designsystem.component.CountBadge
-import app.codeg.android.core.designsystem.component.SectionBadgeIcon
 import app.codeg.android.core.designsystem.theme.CodegTheme
 
-/**
- * A grouped-list section header shared by the Chats and Activity tabs: a tinted
- * circular [SectionBadgeIcon] + a **prominent** group title (`titleLarge`, larger
- * than the row titles so the grouping reads at a glance) + a trailing [CountBadge],
- * tappable to collapse/expand its rows with a chevron that flips ▾↔▴.
- *
- * The whole row is the toggle target (the native accordion idiom). When [collapsible]
- * is false (an empty group), it renders statically — no chevron, no tap.
- */
+/** Compact web-style group label with a full-row touch target for folding. */
 @Composable
 fun CollapsibleSectionHeader(
     icon: ImageVector,
@@ -62,8 +53,9 @@ fun CollapsibleSectionHeader(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .padding(top = 10.dp) // inter-section gap, kept outside the ripple
-            .clip(RoundedCornerShape(14.dp))
+            .padding(top = 12.dp) // inter-section gap, kept outside the ripple
+            .clip(MaterialTheme.shapes.extraSmall)
+            .heightIn(min = 48.dp)
             .then(
                 if (collapsible) {
                     Modifier.clickable(onClickLabel = toggleLabel, role = Role.Button, onClick = onToggle)
@@ -73,15 +65,13 @@ fun CollapsibleSectionHeader(
             )
             .padding(horizontal = 8.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(11.dp),
+        horizontalArrangement = Arrangement.spacedBy(6.dp),
     ) {
-        // Same 26dp diameter as the row AgentAvatars (SessionRow), so the group icon
-        // matches the agent icons and the big title lines up with the row titles.
-        SectionBadgeIcon(icon = icon, tint = tint, size = 26.dp)
+        Icon(icon, contentDescription = null, tint = tint, modifier = Modifier.size(16.dp))
         Text(
             text = label,
-            style = MaterialTheme.typography.titleLarge,
-            color = colors.textPrimary,
+            style = MaterialTheme.typography.bodyMedium,
+            color = colors.web.mutedForeground,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
             modifier = Modifier.weight(1f),
@@ -91,8 +81,8 @@ fun CollapsibleSectionHeader(
             Icon(
                 Icons.Rounded.ExpandMore,
                 contentDescription = null,
-                tint = colors.textTertiary,
-                modifier = Modifier.size(22.dp).rotate(rotation),
+                tint = colors.web.mutedForeground,
+                modifier = Modifier.size(16.dp).rotate(rotation),
             )
         }
     }
