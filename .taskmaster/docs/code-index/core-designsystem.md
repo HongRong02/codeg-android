@@ -259,7 +259,7 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 20 | `@Composable fun Modifier.hairlineBorder( shape: Shape, color: Color = CodegTheme.colors.surfaceStroke, width: Dp = CodegTheme.dimens.hairlineWidth, ): Modifier` |
 | 32 | `@Composable fun Modifier.webSurface(shape: Shape): Modifier` |
 | 33 |   `val colors` |
-| 46 | `@Composable fun GlassCard( modifier: Modifier = Modifier, cornerRadius: Dp = CodegTheme.dimens.radiusLg, padding: Dp = 16.dp, content: @Composable ColumnScope.() -> Unit, )` |
+| 46 | `@Composable fun GlassCard( modifier: Modifier = Modifier, cornerRadius: Dp = 18.dp, padding: Dp = 16.dp, content: @Composable ColumnScope.() -> Unit, )` |
 | 52 |   `val colors` |
 | 53 |   `val shape` |
 | 69 | `@Composable fun GlassRow( modifier: Modifier = Modifier, selected: Boolean = false, content: @Composable ColumnScope.() -> Unit, )` |
@@ -430,14 +430,20 @@ Source root: `app/src/main/java/app/codeg/android/`
 
 | Line | Declaration |
 |---|---|
-| 32 | `@Composable fun CodegTabs( selected: Int, tabs: List<String>, onSelect: (Int) -> Unit, modifier: Modifier = Modifier, )` |
-| 38 |   `val colors` |
-| 39 |   `val web` |
-| 40 |   `val trigger` |
-| 71 | `@Composable internal fun T46TabsGallery()` |
-| 72 |   `var selected by remember` |
-| 79 | `@Composable private fun TabsLightPreview()` |
-| 83 | `@Composable private fun TabsDarkPreview()` |
+| 40 | `@Composable fun CodegTabs( selected: Int, tabs: List<String>, onSelect: (Int) -> Unit, modifier: Modifier = Modifier, )` |
+| 46 |   `val colors` |
+| 47 |   `val web` |
+| 48 |   `val trigger` |
+| 49 |   `val textStyle` |
+| 50 |   `val measurer` |
+| 51 |   `val density` |
+| 52 |   `val scroll` |
+| 96 | `@Composable internal fun T46TabsGallery()` |
+| 97 |   `var selected by remember` |
+| 98 |   `var overflowSelected by remember` |
+| 101 |   `val longLabel` |
+| 107 | `@Composable private fun TabsLightPreview()` |
+| 111 | `@Composable private fun TabsDarkPreview()` |
 
 ## core/designsystem/component/TextFields.kt
 

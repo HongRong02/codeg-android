@@ -32,19 +32,19 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 65 |   `val selected` |
 | 165 | `@Composable private fun AutomationListView( ui: AutomationUiState, onFilterChanged: (AutomationFilter) -> Unit, onSelectAutomation: (Automation) -> Unit, onToggleEnabled: (Automation) -> Unit, )` |
 | 171 |   `val colors` |
-| 235 | `@Composable private fun AutomationListItem( automation: Automation, onClick: () -> Unit, onToggle: () -> Unit, )` |
-| 240 |   `val colors` |
-| 274 | `@Composable private fun AutomationDetailView( automation: Automation, runs: List<AutomationRun>, detailLoading: Boolean, onToggleEnabled: () -> Unit, onRefreshRuns: () -> Unit, actions: @Composable () -> Unit, onCancelRun: (AutomationRun) -> Unit, canCancel: Boolean, )` |
-| 284 |   `val colors` |
-| 419 | `@Composable private fun RunHistoryItem(run: AutomationRun)` |
-| 420 |   `val colors` |
-| 422 |   `val statusLabel` |
-| 477 | `@Composable private fun DetailRow( icon: ImageVector, label: String, value: String, )` |
-| 482 |   `val colors` |
-| 510 | `@Composable private fun formatAutomationSubtitle(automation: Automation): String` |
-| 511 |   `val parts` |
-| 525 | `private val dateTimeFormatter` |
-| 528 | `private fun formatDateTime(instant: Instant): String` |
+| 218 | `@Composable private fun AutomationListItem( automation: Automation, onClick: () -> Unit, onToggle: () -> Unit, )` |
+| 223 |   `val colors` |
+| 257 | `@Composable private fun AutomationDetailView( automation: Automation, runs: List<AutomationRun>, detailLoading: Boolean, onToggleEnabled: () -> Unit, onRefreshRuns: () -> Unit, actions: @Composable () -> Unit, onCancelRun: (AutomationRun) -> Unit, canCancel: Boolean, )` |
+| 267 |   `val colors` |
+| 402 | `@Composable private fun RunHistoryItem(run: AutomationRun)` |
+| 403 |   `val colors` |
+| 405 |   `val statusLabel` |
+| 460 | `@Composable private fun DetailRow( icon: ImageVector, label: String, value: String, )` |
+| 465 |   `val colors` |
+| 493 | `@Composable private fun formatAutomationSubtitle(automation: Automation): String` |
+| 494 |   `val parts` |
+| 508 | `private val dateTimeFormatter` |
+| 511 | `private fun formatDateTime(instant: Instant): String` |
 
 ## feature/automations/AutomationViewModel.kt
 

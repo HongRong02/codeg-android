@@ -23,12 +23,12 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 113 |   `val tabRoutes` |
 | 114 |   `val selectedProfile by appViewModel.selectedProfile.collectAsStateWithLifecycle()` |
 | 116 |   `val wide` |
-| 123 |   `var barsVisible by remember` |
+| 123 |   `var barsVisible by remember(backStackEntry)` |
 | 124 |   `val density` |
 | 128 |   `val barProgress by animateFloatAsState( targetValue = if (barsVisible) 0f else 1f, animationSpec = tween(durationMillis = 280), label = "bottomBarCollapse", )` |
-| 139 |   `val barConnection` |
-| 141 |     `object : NestedScrollConnection` |
-| 164 |   `val onTab: (HomeTab) -> Unit` |
+| 136 |   `val barConnection` |
+| 138 |     `object : NestedScrollConnection` |
+| 163 |   `val onTab: (HomeTab) -> Unit` |
 | 173 |   `val pendingLink by app.codeg.android.core.common.DeepLinkBus.pending.collectAsStateWithLifecycle()` |
 | 176 |     `fun toTab(it: HomeTab)` |
 | 198 |   `var bottomBarHeight by remember` |
