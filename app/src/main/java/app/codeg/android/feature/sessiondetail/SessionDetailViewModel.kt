@@ -969,8 +969,9 @@ class SessionDetailViewModel @Inject constructor(
                 if (liveBuilder !== builder) return@launch
                 val detail = runCatching { c.conversationDetail(id) }.getOrNull() ?: return@repeat
                 val last = detail.turns.lastOrNull()
-                val advanced = detail.turns.size > turnBaseline &&
-                    last?.role == TurnRole.ASSISTANT && last.blocks.isNotEmpty()
+                val advanced = hasReconciledReply(
+                    detail.turns, turnBaseline, _ui.value.liveFromReattach,
+                )
                 if (advanced) {
                     if (liveBuilder !== builder) return@launch
                     // This turn ended without a `turn_complete` of its own (a dead
@@ -1802,3 +1803,14 @@ data class SessionConnectionActions(
 /** Completion events and persisted completion timestamps both prove a normal ending. */
 internal fun isInterruptedTurn(stopReason: String?, transcriptCompleted: Boolean): Boolean =
     stopReason == null && !transcriptCompleted
+
+/** Reattached replies may finish in place without increasing transcript length. */
+internal fun hasReconciledReply(
+    turns: List<MessageTurn>,
+    baseline: Int,
+    liveFromReattach: Boolean,
+): Boolean {
+    val last = turns.lastOrNull() ?: return false
+    return last.role == TurnRole.ASSISTANT && last.blocks.isNotEmpty() &&
+        (turns.size > baseline || (liveFromReattach && last.completedAt != null))
+}
