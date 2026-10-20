@@ -1112,6 +1112,24 @@ class CodegClient(
     suspend fun workTaskDiff(id: Int, file: String? = null): String =
         decode(send("work_task_diff", encode(app.codeg.android.core.model.wire.WorkTaskDiffBody(id, file))), String.serializer())
 
+    suspend fun workTaskSave(body: app.codeg.android.core.model.wire.WorkTaskSaveBody): app.codeg.android.core.model.WorkTask =
+        decode(send(if (body.id == null) "work_task_create" else "work_task_update", encode(body)), app.codeg.android.core.model.WorkTask.serializer())
+
+    suspend fun workTaskStartAll() { send("work_task_start_all", "{}") }
+
+    suspend fun workTaskReorder(body: app.codeg.android.core.model.wire.WorkTaskReorderBody) {
+        send("work_task_reorder", encode(body))
+    }
+
+    suspend fun workTaskAction(action: String, body: app.codeg.android.core.model.wire.WorkTaskActionBody) {
+        require(action in setOf("start", "delete", "cancel", "retry", "requeue", "return", "schedule",
+            "defer", "complete", "merge", "merge_unqueue", "deliver_pr", "archive", "cleanup"))
+        send("work_task_$action", encode(body))
+    }
+
+    suspend fun workTaskTemplates(): List<app.codeg.android.core.model.WorkTaskTemplate> =
+        decode(send("work_task_template_list", "{}"), ListSerializer(app.codeg.android.core.model.WorkTaskTemplate.serializer()))
+
     // endregion
 
     // region logs-stats
