@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -24,11 +23,11 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -39,9 +38,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.codeg.android.R
+import app.codeg.android.core.designsystem.component.webSurface
 import app.codeg.android.core.designsystem.markdown.MarkdownContent
 import app.codeg.android.core.designsystem.theme.CodegSans
+import app.codeg.android.core.designsystem.theme.CodegShapes
 import app.codeg.android.core.designsystem.theme.CodegTheme
+import app.codeg.android.core.designsystem.theme.withOpacity
 import app.codeg.android.core.model.PlanApprovalDecision
 
 /**
@@ -80,10 +82,8 @@ fun PlanApprovalCard(
     Column(
         modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(14.dp))
-            .background(colors.bgElevated)
-            .border(1.dp, colors.surfaceStroke, RoundedCornerShape(14.dp))
-            .padding(14.dp),
+            .webSurface(CodegShapes.small)
+            .padding(12.dp),
         verticalArrangement = Arrangement.spacedBy(10.dp),
     ) {
         Row(verticalAlignment = Alignment.Top, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -100,9 +100,13 @@ fun PlanApprovalCard(
         // An empty plan still opens the approval surface (the turn is blocked either
         // way), so it gets an explicit notice instead of a blank card.
         if (plan.isEmpty()) {
-            Text(stringResource(R.string.plan_approval_empty), fontSize = 13.sp, color = colors.textTertiary)
+            Text(stringResource(R.string.plan_approval_empty), fontSize = 13.sp, color = colors.web.mutedForeground)
         } else {
-            Column(Modifier.heightIn(max = 320.dp).verticalScroll(rememberScrollState())) {
+            Column(Modifier.fillMaxWidth().heightIn(max = 320.dp).verticalScroll(rememberScrollState())
+                .clip(CodegShapes.extraSmall)
+                .background(colors.web.muted.withOpacity(0.3f))
+                .border(1.dp, colors.web.border.withOpacity(0.6f), CodegShapes.extraSmall)
+                .padding(12.dp)) {
                 MarkdownContent(plan)
             }
         }
@@ -111,13 +115,13 @@ fun PlanApprovalCard(
             Box(
                 Modifier
                     .fillMaxWidth()
-                    .clip(RoundedCornerShape(8.dp))
+                    .clip(CodegShapes.extraSmall)
                     .background(colors.codeSurface)
-                    .border(1.dp, colors.surfaceStroke, RoundedCornerShape(8.dp))
+                    .border(1.dp, colors.web.border, CodegShapes.extraSmall)
                     .padding(horizontal = 10.dp, vertical = 8.dp),
             ) {
                 if (feedback.isEmpty()) {
-                    Text(stringResource(R.string.plan_approval_notes_placeholder), color = colors.textTertiary, fontSize = 13.sp)
+                    Text(stringResource(R.string.plan_approval_notes_placeholder), color = colors.web.mutedForeground, fontSize = 13.sp)
                 }
                 BasicTextField(
                     value = feedback,
@@ -151,8 +155,8 @@ fun PlanApprovalCard(
                 colors = ButtonDefaults.buttonColors(
                     containerColor = colors.accent,
                     contentColor = colors.onAccent,
-                    disabledContainerColor = colors.accent.copy(alpha = 0.4f),
-                    disabledContentColor = colors.onAccent.copy(alpha = 0.8f),
+                    disabledContainerColor = colors.accent.withOpacity(0.4f),
+                    disabledContentColor = colors.onAccent.withOpacity(0.8f),
                 ),
                 modifier = Modifier.weight(1f),
             ) {

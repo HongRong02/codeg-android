@@ -18,7 +18,6 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.AltRoute
@@ -43,13 +42,13 @@ import androidx.compose.material3.ModalBottomSheetProperties
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -58,7 +57,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -66,7 +64,10 @@ import app.codeg.android.R
 import app.codeg.android.core.designsystem.component.AgentAvatar
 import app.codeg.android.core.designsystem.component.AgentVisuals
 import app.codeg.android.core.designsystem.component.CodegTextField
+import app.codeg.android.core.designsystem.component.webSurface
+import app.codeg.android.core.designsystem.theme.CodegShapes
 import app.codeg.android.core.designsystem.theme.CodegTheme
+import app.codeg.android.core.designsystem.theme.withOpacity
 import app.codeg.android.core.model.AgentType
 import app.codeg.android.core.model.FolderDetail
 import app.codeg.android.core.model.GitBranchList
@@ -169,17 +170,17 @@ fun AgentOptionsSheet(
                     }
 
                     if (ui.isInFlight) {
-                        Text(stringResource(R.string.agentopts_busy), fontSize = 12.sp, color = colors.textTertiary)
+                        Text(stringResource(R.string.agentopts_busy), fontSize = 12.sp, color = colors.web.mutedForeground)
                     }
 
-                    note?.let { Text(it, fontSize = 12.sp, color = colors.textTertiary) }
+                    note?.let { Text(it, fontSize = 12.sp, color = colors.web.mutedForeground) }
 
                     when {
                         loading -> Box(Modifier.fillMaxWidth().padding(40.dp), contentAlignment = Alignment.Center) {
                             CircularProgressIndicator(color = colors.accent)
                         }
                         showModes -> {
-                            Text(stringResource(R.string.agentopts_mode), fontSize = 11.sp, fontWeight = FontWeight.SemiBold, color = colors.textTertiary)
+                            Text(stringResource(R.string.agentopts_mode), fontSize = 11.sp, fontWeight = FontWeight.SemiBold, color = colors.web.mutedForeground)
                             val modeApplying = MODE_APPLY in applying
                             OptionGroup {
                                 data.modes!!.availableModes.forEachIndexed { i, mode ->
@@ -226,7 +227,7 @@ fun AgentOptionsSheet(
                             }
                         }
                         else -> Box(Modifier.fillMaxWidth().padding(30.dp), contentAlignment = Alignment.Center) {
-                            Text(stringResource(R.string.agentopts_no_options), fontSize = 13.sp, color = colors.textTertiary)
+                            Text(stringResource(R.string.agentopts_no_options), fontSize = 13.sp, color = colors.web.mutedForeground)
                         }
                     }
                 }
@@ -241,13 +242,13 @@ fun AgentOptionsSheet(
 private fun AgentPickerSection(agents: List<AgentType>, selected: AgentType, onSelect: (AgentType) -> Unit) {
     val colors = CodegTheme.colors
     Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-        Text(stringResource(R.string.agentopts_agent_section), fontSize = 11.sp, fontWeight = FontWeight.SemiBold, color = colors.textTertiary)
+        Text(stringResource(R.string.agentopts_agent_section), fontSize = 11.sp, fontWeight = FontWeight.SemiBold, color = colors.web.mutedForeground)
         LazyRow(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
             items(agents, key = { it.wire }) { agent ->
                 val isSelected = agent == selected
                 Column(
                     Modifier
-                        .clip(RoundedCornerShape(14.dp))
+                        .clip(CodegShapes.small)
                         .clickable { onSelect(agent) }
                         .padding(vertical = 6.dp, horizontal = 6.dp)
                         .width(64.dp),
@@ -286,7 +287,7 @@ private fun WorkspaceSection(
 ) {
     val colors = CodegTheme.colors
     Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-        Text(stringResource(R.string.agentopts_workspace), fontSize = 11.sp, fontWeight = FontWeight.SemiBold, color = colors.textTertiary)
+        Text(stringResource(R.string.agentopts_workspace), fontSize = 11.sp, fontWeight = FontWeight.SemiBold, color = colors.web.mutedForeground)
         OptionGroup {
             if (ui.isDraftEditable) FolderMenuRow(ui, onSelectFolder) else FolderReadOnlyRow(ui)
             GroupDivider()
@@ -306,10 +307,10 @@ private fun FolderMenuRow(ui: SessionDetailUiState, onSelectFolder: (FolderDetai
         ) {
             Icon(Icons.Rounded.Folder, null, tint = colors.accent, modifier = Modifier.size(18.dp))
             Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(1.dp)) {
-                Text(ui.folderName ?: stringResource(R.string.agentopts_choose_folder), fontSize = 15.sp, fontWeight = FontWeight.Medium, color = colors.textPrimary, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                Text(ui.folderName ?: stringResource(R.string.agentopts_choose_folder), fontSize = 14.sp, fontWeight = FontWeight.Medium, color = colors.textPrimary, maxLines = 1, overflow = TextOverflow.Ellipsis)
                 ui.folderPath?.let { PathLine(it) }
             }
-            Icon(Icons.Rounded.UnfoldMore, null, tint = colors.textTertiary, modifier = Modifier.size(16.dp))
+            Icon(Icons.Rounded.UnfoldMore, null, tint = colors.web.mutedForeground, modifier = Modifier.size(16.dp))
         }
         DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
             ui.availableFolders.forEach { f ->
@@ -317,10 +318,10 @@ private fun FolderMenuRow(ui: SessionDetailUiState, onSelectFolder: (FolderDetai
                     text = {
                         Column {
                             Text(f.name, fontSize = 14.sp, color = colors.textPrimary, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                            Text(f.path, fontSize = 10.sp, fontFamily = FontFamily.Monospace, color = colors.textTertiary, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                            Text(f.path, fontSize = 12.sp, fontFamily = FontFamily.Monospace, color = colors.web.mutedForeground, maxLines = 1, overflow = TextOverflow.Ellipsis)
                         }
                     },
-                    leadingIcon = { Icon(Icons.Rounded.Folder, null, tint = if (f.id == ui.selectedFolderId) colors.accent else colors.textTertiary, modifier = Modifier.size(18.dp)) },
+                    leadingIcon = { Icon(Icons.Rounded.Folder, null, tint = if (f.id == ui.selectedFolderId) colors.accent else colors.web.mutedForeground, modifier = Modifier.size(18.dp)) },
                     onClick = { onSelectFolder(f); expanded = false },
                 )
             }
@@ -335,12 +336,12 @@ private fun FolderReadOnlyRow(ui: SessionDetailUiState) {
         Modifier.fillMaxWidth().padding(horizontal = 14.dp, vertical = 11.dp),
         verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        Icon(Icons.Rounded.Folder, null, tint = colors.textTertiary, modifier = Modifier.size(18.dp))
+        Icon(Icons.Rounded.Folder, null, tint = colors.web.mutedForeground, modifier = Modifier.size(18.dp))
         Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(1.dp)) {
-            Text(ui.folderName ?: "—", fontSize = 15.sp, fontWeight = FontWeight.Medium, color = colors.textPrimary, maxLines = 1, overflow = TextOverflow.Ellipsis)
+            Text(ui.folderName ?: "—", fontSize = 14.sp, fontWeight = FontWeight.Medium, color = colors.textPrimary, maxLines = 1, overflow = TextOverflow.Ellipsis)
             ui.folderPath?.let { PathLine(it) }
         }
-        Icon(Icons.Rounded.Lock, contentDescription = stringResource(R.string.agentopts_folder_readonly), tint = colors.textTertiary, modifier = Modifier.size(14.dp))
+        Icon(Icons.Rounded.Lock, contentDescription = stringResource(R.string.agentopts_folder_readonly), tint = colors.web.mutedForeground, modifier = Modifier.size(14.dp))
     }
 }
 
@@ -355,21 +356,21 @@ private fun BranchRow(current: String?, isBusy: Boolean, onClick: () -> Unit) {
             .padding(horizontal = 14.dp, vertical = 11.dp),
         verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        Icon(Icons.AutoMirrored.Rounded.AltRoute, null, tint = if (isBusy) colors.textTertiary else colors.accent, modifier = Modifier.size(18.dp))
+        Icon(Icons.AutoMirrored.Rounded.AltRoute, null, tint = if (isBusy) colors.web.mutedForeground else colors.accent, modifier = Modifier.size(18.dp))
         Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(1.dp)) {
-            Text(stringResource(R.string.agentopts_branch), fontSize = 15.sp, fontWeight = FontWeight.Medium, color = colors.textPrimary)
+            Text(stringResource(R.string.agentopts_branch), fontSize = 14.sp, fontWeight = FontWeight.Medium, color = colors.textPrimary)
             Text(
                 current ?: stringResource(R.string.agentopts_select_branch),
-                fontSize = 10.sp, fontFamily = FontFamily.Monospace, color = colors.textTertiary, maxLines = 1, overflow = TextOverflow.Ellipsis,
+                fontSize = 12.sp, fontFamily = FontFamily.Monospace, color = colors.web.mutedForeground, maxLines = 1, overflow = TextOverflow.Ellipsis,
             )
         }
-        Icon(Icons.AutoMirrored.Rounded.KeyboardArrowRight, null, tint = colors.textTertiary, modifier = Modifier.size(18.dp))
+        Icon(Icons.AutoMirrored.Rounded.KeyboardArrowRight, null, tint = colors.web.mutedForeground, modifier = Modifier.size(18.dp))
     }
 }
 
 @Composable
 private fun PathLine(path: String) {
-    Text(path, fontSize = 10.sp, fontFamily = FontFamily.Monospace, color = CodegTheme.colors.textTertiary, maxLines = 1, overflow = TextOverflow.Ellipsis)
+    Text(path, fontSize = 12.sp, fontFamily = FontFamily.Monospace, color = CodegTheme.colors.web.mutedForeground, maxLines = 1, overflow = TextOverflow.Ellipsis)
 }
 
 // endregion
@@ -502,11 +503,11 @@ private fun NewBranchInline(
     val colors = CodegTheme.colors
     if (!show) {
         Row(
-            Modifier.fillMaxWidth().clip(RoundedCornerShape(14.dp)).clickable { onShow() }.padding(horizontal = 14.dp, vertical = 12.dp),
+            Modifier.fillMaxWidth().clip(CodegShapes.small).clickable { onShow() }.padding(horizontal = 14.dp, vertical = 12.dp),
             verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             Icon(Icons.Rounded.Add, null, tint = colors.accent, modifier = Modifier.size(18.dp))
-            Text(stringResource(R.string.branch_new_branch), fontSize = 15.sp, fontWeight = FontWeight.Medium, color = colors.textPrimary)
+            Text(stringResource(R.string.branch_new_branch), fontSize = 14.sp, fontWeight = FontWeight.Medium, color = colors.textPrimary)
         }
     } else {
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -516,15 +517,15 @@ private fun NewBranchInline(
                     onClick = onCreate,
                     enabled = name.isNotBlank() && !creating,
                     modifier = Modifier.size(48.dp),
-                    shape = RoundedCornerShape(14.dp),
-                    colors = IconButtonDefaults.filledIconButtonColors(containerColor = colors.accent.copy(alpha = 0.16f), contentColor = colors.accent),
+                    shape = CodegShapes.small,
+                    colors = IconButtonDefaults.filledIconButtonColors(containerColor = colors.accent.withOpacity(0.16f), contentColor = colors.accent),
                 ) {
                     if (creating) CircularProgressIndicator(color = colors.accent, modifier = Modifier.size(18.dp))
                     else Icon(Icons.Rounded.Check, stringResource(R.string.branch_create_branch))
                 }
             }
             Row(verticalAlignment = Alignment.CenterVertically) {
-                current?.let { Text(stringResource(R.string.branch_from, it), fontSize = 11.sp, color = colors.textTertiary, modifier = Modifier.weight(1f), maxLines = 1, overflow = TextOverflow.Ellipsis) } ?: Box(Modifier.weight(1f))
+                current?.let { Text(stringResource(R.string.branch_from, it), fontSize = 11.sp, color = colors.web.mutedForeground, modifier = Modifier.weight(1f), maxLines = 1, overflow = TextOverflow.Ellipsis) } ?: Box(Modifier.weight(1f))
                 TextButton(onClick = onCancel) { Text(stringResource(R.string.common_cancel), color = colors.textSecondary) }
             }
         }
@@ -546,16 +547,16 @@ private fun BranchRowItem(
     Row(
         Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(8.dp))
+            .clip(CodegShapes.extraSmall)
             .clickable(enabled = enabled && !occupied && !isCurrent) { onClick() }
             .alpha(if (occupied) 0.5f else 1f)
             .padding(horizontal = 12.dp, vertical = 10.dp),
         verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp),
     ) {
-        Icon(Icons.AutoMirrored.Rounded.AltRoute, null, tint = if (occupied) colors.textTertiary else colors.accent, modifier = Modifier.size(16.dp))
+        Icon(Icons.AutoMirrored.Rounded.AltRoute, null, tint = if (occupied) colors.web.mutedForeground else colors.accent, modifier = Modifier.size(16.dp))
         Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(1.dp)) {
             Text(display, fontSize = 13.sp, fontFamily = FontFamily.Monospace, color = colors.textPrimary, maxLines = 1, overflow = TextOverflow.Ellipsis)
-            if (occupied) Text(stringResource(R.string.branch_occupied), fontSize = 11.sp, color = colors.textTertiary)
+            if (occupied) Text(stringResource(R.string.branch_occupied), fontSize = 11.sp, color = colors.web.mutedForeground)
         }
         when {
             switching -> CircularProgressIndicator(color = colors.accent, modifier = Modifier.size(16.dp))
@@ -566,7 +567,7 @@ private fun BranchRowItem(
 
 @Composable
 private fun BranchSectionLabel(text: String) {
-    Text(text, fontSize = 11.sp, fontWeight = FontWeight.SemiBold, color = CodegTheme.colors.textTertiary, modifier = Modifier.padding(top = 6.dp, start = 4.dp, bottom = 2.dp))
+    Text(text, fontSize = 11.sp, fontWeight = FontWeight.SemiBold, color = CodegTheme.colors.web.mutedForeground, modifier = Modifier.padding(top = 6.dp, start = 4.dp, bottom = 2.dp))
 }
 
 // endregion
@@ -578,7 +579,7 @@ private fun ConfigOptionSection(option: SessionConfigOption, currentValue: Strin
     val colors = CodegTheme.colors
     val flat: List<SessionConfigSelectOption> = if (option.kind.groups.isNotEmpty()) option.kind.groups.flatMap { it.options } else option.kind.options
     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-        Text(option.name.uppercase().ifEmpty { option.id.uppercase() }, fontSize = 11.sp, fontWeight = FontWeight.SemiBold, color = colors.textTertiary)
+        Text(option.name.uppercase().ifEmpty { option.id.uppercase() }, fontSize = 11.sp, fontWeight = FontWeight.SemiBold, color = colors.web.mutedForeground)
         OptionGroup {
             flat.forEachIndexed { i, opt ->
                 if (i > 0) GroupDivider()
@@ -592,12 +593,12 @@ private fun ConfigOptionSection(option: SessionConfigOption, currentValue: Strin
 
 @Composable
 private fun OptionGroup(content: @Composable () -> Unit) {
-    Column(Modifier.fillMaxWidth().clip(RoundedCornerShape(14.dp)).background(CodegTheme.colors.bg.copy(alpha = 0.4f))) { content() }
+    Column(Modifier.fillMaxWidth().webSurface(CodegShapes.small)) { content() }
 }
 
 @Composable
 private fun GroupDivider() {
-    HorizontalDivider(modifier = Modifier.padding(start = 14.dp), thickness = Dp.Hairline, color = CodegTheme.colors.textPrimary.copy(alpha = 0.06f))
+    HorizontalDivider(modifier = Modifier.padding(start = 14.dp), thickness = CodegTheme.dimens.hairlineWidth, color = CodegTheme.colors.web.border)
 }
 
 @Composable
@@ -608,8 +609,8 @@ private fun OptionRow(title: String, description: String?, selected: Boolean, bu
         verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp),
     ) {
         Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
-            Text(title, fontSize = 15.sp, color = colors.textPrimary)
-            description?.takeIf { it.isNotEmpty() }?.let { Text(it, fontSize = 12.sp, color = colors.textTertiary) }
+            Text(title, fontSize = 14.sp, color = colors.textPrimary)
+            description?.takeIf { it.isNotEmpty() }?.let { Text(it, fontSize = 12.sp, color = colors.web.mutedForeground) }
         }
         if (busy) CircularProgressIndicator(color = colors.accent, modifier = Modifier.size(16.dp))
         else if (selected) Icon(Icons.Rounded.Check, null, tint = colors.accent, modifier = Modifier.size(18.dp))

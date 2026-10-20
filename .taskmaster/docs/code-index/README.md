@@ -5,8 +5,8 @@ Paths are relative to `app/src/main/java/app/codeg/android/`.
 
 | Area | Index file | Files |
 |---|---|---|
-| app | [app.md](app.md) | 2 |
 | root | [root.md](root.md) | 2 |
+| app | [app.md](app.md) | 2 |
 | core/common | [core-common.md](core-common.md) | 5 |
 | core/data | [core-data.md](core-data.md) | 1 |
 | core/datastore | [core-datastore.md](core-datastore.md) | 5 |

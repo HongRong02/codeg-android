@@ -5,7 +5,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -24,14 +23,13 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
@@ -40,9 +38,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.codeg.android.R
 import app.codeg.android.core.designsystem.component.CodeBlock
+import app.codeg.android.core.designsystem.component.webSurface
 import app.codeg.android.core.designsystem.diff.DiffView
 import app.codeg.android.core.designsystem.markdown.MarkdownContent
+import app.codeg.android.core.designsystem.theme.CodegShapes
 import app.codeg.android.core.designsystem.theme.CodegTheme
+import app.codeg.android.core.designsystem.theme.withOpacity
 import app.codeg.android.core.model.PermissionOption
 
 /** A tool-permission approval card shown above the composer. Port of iOS `PermissionRequestCard`. */
@@ -60,10 +61,8 @@ fun PermissionRequestCard(
     Column(
         modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(14.dp))
-            .background(colors.bgElevated)
-            .border(1.dp, colors.surfaceStroke, RoundedCornerShape(14.dp))
-            .padding(14.dp),
+            .webSurface(CodegShapes.small)
+            .padding(12.dp),
         verticalArrangement = Arrangement.spacedBy(10.dp),
     ) {
         // Header.
@@ -85,11 +84,11 @@ fun PermissionRequestCard(
             if (!parsed.isPlan) {
                 Text(
                     parsed.kind,
-                    fontSize = 10.sp,
-                    color = colors.textTertiary,
+                    fontSize = 11.sp,
+                    color = colors.web.mutedForeground,
                     modifier = Modifier
                         .clip(RoundedCornerShape(50))
-                        .background(colors.textPrimary.copy(alpha = 0.06f))
+                        .background(colors.web.muted)
                         .padding(horizontal = 7.dp, vertical = 2.dp),
                 )
             }
@@ -129,7 +128,7 @@ private fun PermissionBody(parsed: ParsedPermission) {
     }
     parsed.command?.let { cmd ->
         CodeBlock(code = cmd, language = "bash")
-        parsed.cwd?.let { Text("cwd: $it", fontSize = 11.sp, fontFamily = FontFamily.Monospace, color = colors.textTertiary) }
+        parsed.cwd?.let { Text("cwd: $it", fontSize = 11.sp, fontFamily = FontFamily.Monospace, color = colors.web.mutedForeground) }
     }
     if (parsed.diffFiles.isNotEmpty()) DiffView(parsed.diffFiles)
     parsed.planMarkdown?.let { MarkdownContent(it) }
@@ -137,7 +136,7 @@ private fun PermissionBody(parsed: ParsedPermission) {
         Column(verticalArrangement = Arrangement.spacedBy(3.dp)) {
             for (entry in parsed.planEntries) {
                 Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                    Text("•", color = colors.textTertiary, fontSize = 13.sp)
+                    Text("•", color = colors.web.mutedForeground, fontSize = 13.sp)
                     Text(entry.text, fontSize = 13.sp, color = colors.textPrimary, modifier = Modifier.weight(1f))
                 }
             }
@@ -150,12 +149,12 @@ private fun PermissionBody(parsed: ParsedPermission) {
                     if (ap.tool.isNotEmpty()) {
                         Text(
                             ap.tool,
-                            fontSize = 10.sp,
+                            fontSize = 11.sp,
                             fontFamily = FontFamily.Monospace,
                             color = colors.accent,
                             modifier = Modifier
                                 .clip(RoundedCornerShape(4.dp))
-                                .background(colors.accent.copy(alpha = 0.12f))
+                                .background(colors.accent.withOpacity(0.12f))
                                 .padding(horizontal = 5.dp, vertical = 1.dp),
                         )
                     }
@@ -178,7 +177,7 @@ private fun PermissionBody(parsed: ParsedPermission) {
 private fun OptionButton(option: PermissionOption, submitting: Boolean, enabled: Boolean, onClick: () -> Unit) {
     val colors = CodegTheme.colors
     val isReject = option.isReject
-    val shape = RoundedCornerShape(8.dp)
+    val shape = CodegShapes.extraSmall
     // Keep the actively-submitting button enabled-looking (spinner) while the
     // others disable; clicking is gated by `enabled` regardless.
     val clickable = enabled
@@ -188,7 +187,7 @@ private fun OptionButton(option: PermissionOption, submitting: Boolean, enabled:
             enabled = clickable,
             modifier = Modifier.fillMaxWidth(),
             shape = shape,
-            border = BorderStroke(0.5.dp, colors.surfaceStroke),
+            border = BorderStroke(0.5.dp, colors.web.border),
             colors = ButtonDefaults.outlinedButtonColors(contentColor = colors.textPrimary),
         ) {
             if (submitting) {
@@ -206,8 +205,8 @@ private fun OptionButton(option: PermissionOption, submitting: Boolean, enabled:
             colors = ButtonDefaults.buttonColors(
                 containerColor = colors.accent,
                 contentColor = colors.onAccent,
-                disabledContainerColor = colors.accent.copy(alpha = 0.4f),
-                disabledContentColor = colors.onAccent.copy(alpha = 0.8f),
+                disabledContainerColor = colors.accent.withOpacity(0.4f),
+                disabledContentColor = colors.onAccent.withOpacity(0.8f),
             ),
         ) {
             if (submitting) {
