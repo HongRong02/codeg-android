@@ -1,8 +1,5 @@
 package app.codeg.android.feature.projects
 
-import androidx.compose.foundation.layout.safeDrawing
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,20 +10,19 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FilledIconButton
+import app.codeg.android.core.designsystem.component.CodegButton
+import app.codeg.android.core.designsystem.component.CodegButtonVariant
+import app.codeg.android.core.designsystem.component.CodegButtonSize
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButtonDefaults
-import androidx.compose.material3.ListItem
-import androidx.compose.material3.ListItemDefaults
-import androidx.compose.material3.ModalBottomSheet
+import app.codeg.android.core.designsystem.component.CodegSheet
+import app.codeg.android.core.designsystem.component.CodegListRow
+import app.codeg.android.core.designsystem.component.CodegSectionHeader
 import androidx.compose.material3.Text
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -35,19 +31,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import app.codeg.android.core.designsystem.component.CodegTopBar
 import app.codeg.android.R
 import app.codeg.android.core.designsystem.component.CodegTextField
-import app.codeg.android.core.designsystem.theme.withOpacity
 import app.codeg.android.core.designsystem.theme.CodegTheme
 
 /**
@@ -59,7 +48,6 @@ import app.codeg.android.core.designsystem.theme.CodegTheme
 fun BranchPickerSheet(viewModel: ProjectDetailViewModel, onDismiss: () -> Unit) {
     val ui by viewModel.ui.collectAsStateWithLifecycle()
     val colors = CodegTheme.colors
-    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     var loading by remember { mutableStateOf(true) }
     var locals by remember { mutableStateOf<List<String>>(emptyList()) }
     var remotes by remember { mutableStateOf<List<String>>(emptyList()) }
@@ -79,23 +67,21 @@ fun BranchPickerSheet(viewModel: ProjectDetailViewModel, onDismiss: () -> Unit) 
         viewModel.checkout(branch) { err -> busy = false; if (err == null) onDismiss() else error = err }
     }
 
-    ModalBottomSheet(contentWindowInsets = { WindowInsets.safeDrawing }, onDismissRequest = onDismiss, sheetState = sheetState, containerColor = colors.bgElevated) {
+    CodegSheet(title = stringResource(R.string.branch_switch_branch), onDismiss = onDismiss) {
         Column(Modifier.fillMaxWidth().heightIn(max = 520.dp).padding(horizontal = 16.dp).padding(bottom = 28.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-            CodegTopBar(title = stringResource(R.string.branch_switch_branch), showDivider = true)
+            // TODO(T52): CodegToaster for checkout/create failures.
             error?.let { Text(it, fontSize = 12.sp, color = colors.danger) }
 
             // New branch.
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 Box(Modifier.weight(1f)) { CodegTextField(newBranch, { newBranch = it }, label = stringResource(R.string.branch_new_branch), mono = true) }
-                FilledIconButton(
+                CodegButton(variant = CodegButtonVariant.Secondary, size = CodegButtonSize.Icon,
                     onClick = {
                         busy = true; error = null
                         viewModel.createBranch(newBranch) { err -> busy = false; if (err == null) onDismiss() else error = err }
                     },
                     enabled = newBranch.isNotBlank() && !busy,
                     modifier = Modifier.size(48.dp),
-                    shape = RoundedCornerShape(CodegTheme.dimens.radiusMd),
-                    colors = IconButtonDefaults.filledIconButtonColors(containerColor = colors.accent.withOpacity(0.16f), contentColor = colors.accent),
                 ) { Icon(Icons.Rounded.Add, stringResource(R.string.branch_create_branch)) }
             }
 
@@ -115,21 +101,18 @@ fun BranchPickerSheet(viewModel: ProjectDetailViewModel, onDismiss: () -> Unit) 
 
 @Composable
 private fun SectionLabel(text: String) {
-    Text(text, fontSize = 12.sp, fontWeight = FontWeight.SemiBold, color = CodegTheme.colors.textSecondary, modifier = Modifier.padding(top = 8.dp, start = 4.dp, bottom = 2.dp))
+    CodegSectionHeader(title = text)
 }
 
 @Composable
 private fun BranchRow(branch: String, current: Boolean, enabled: Boolean, onClick: () -> Unit) {
     val colors = CodegTheme.colors
-    ListItem(
-        headlineContent = { Text(branch, fontSize = 14.sp, fontFamily = FontFamily.Monospace, maxLines = 1, overflow = TextOverflow.Ellipsis) },
-        trailingContent = if (current) {
+    CodegListRow(
+        title = branch,
+        selected = current,
+        onClick = { if (enabled && !current) onClick() },
+        trailing = if (current) {
             { Icon(Icons.Rounded.Check, null, tint = colors.accent, modifier = Modifier.size(18.dp)) }
         } else null,
-        colors = ListItemDefaults.colors(
-            containerColor = Color.Transparent,
-            headlineColor = if (current) colors.accent else colors.textPrimary,
-        ),
-        modifier = Modifier.clip(RoundedCornerShape(8.dp)).clickable(enabled = enabled && !current) { onClick() },
     )
 }

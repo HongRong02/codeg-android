@@ -1,5 +1,6 @@
 package app.codeg.android.feature.projects
 
+import app.codeg.android.core.designsystem.theme.CodegShapes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -7,7 +8,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.CheckCircle
 import androidx.compose.material.icons.rounded.Close
@@ -21,7 +21,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -47,7 +46,7 @@ internal fun GitStatusStrip(
     val colors = CodegTheme.colors
     when {
         busy -> Row(
-            modifier.fillMaxWidth().webSurface(RoundedCornerShape(CodegTheme.dimens.radiusMd)).padding(horizontal = 14.dp, vertical = 11.dp),
+            modifier.fillMaxWidth().webSurface(CodegShapes.small).padding(horizontal = 14.dp, vertical = 11.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(10.dp),
         ) {
@@ -55,6 +54,7 @@ internal fun GitStatusStrip(
             Text(busyTitle ?: stringResource(R.string.git_working), fontSize = 12.sp, color = colors.textSecondary)
         }
 
+        // TODO(T52): CodegToaster for transient Git operation feedback.
         banner != null -> {
             val tint = when (banner.kind) {
                 GitBannerKind.SUCCESS -> colors.accent
@@ -67,7 +67,7 @@ internal fun GitStatusStrip(
                 GitBannerKind.ERROR -> Icons.Rounded.ErrorOutline
             }
             Row(
-                modifier.fillMaxWidth().clip(RoundedCornerShape(CodegTheme.dimens.radiusMd)).background(tint.withOpacity(0.12f)).border(1.dp, tint.withOpacity(0.35f), RoundedCornerShape(CodegTheme.dimens.radiusMd)).padding(start = 14.dp, top = 8.dp, bottom = 8.dp, end = 6.dp),
+                modifier.fillMaxWidth().clip(CodegShapes.small).background(tint.withOpacity(0.12f)).border(1.dp, tint.withOpacity(0.35f), CodegShapes.small).padding(start = 14.dp, top = 8.dp, bottom = 8.dp, end = 6.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(10.dp),
             ) {

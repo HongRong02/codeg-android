@@ -1,19 +1,16 @@
 package app.codeg.android.feature.projects.git
 
-import androidx.compose.ui.window.DialogProperties
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.*
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.codeg.android.R
+import app.codeg.android.core.designsystem.component.*
 import app.codeg.android.core.network.CodegClient
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun MergeOpsSheet(vm: MergeOpsViewModel, client: CodegClient, path: String, branch: String?, onDismiss: () -> Unit) {
     val ui by vm.ui.collectAsStateWithLifecycle()
@@ -22,56 +19,52 @@ fun MergeOpsSheet(vm: MergeOpsViewModel, client: CodegClient, path: String, bran
     var mode by remember { mutableStateOf("mixed") }
     var confirm by remember { mutableStateOf(false) }
     var typed by remember { mutableStateOf("") }
-    ModalBottomSheet(contentWindowInsets = { WindowInsets.safeDrawing }, onDismissRequest = { if (!ui.busy) onDismiss() }) {
-        Column(Modifier.fillMaxWidth().verticalScroll(rememberScrollState()).padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            Text(stringResource(R.string.gm_title), style = MaterialTheme.typography.titleLarge)
+    var hardVerified by remember { mutableStateOf(false) }
+    CodegSheet(title = stringResource(R.string.gm_title), onDismiss = { if (!ui.busy) onDismiss() }) {
+        Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
             Text(stringResource(R.string.gm_current, branch.orEmpty()))
-            if (ui.busy) LinearProgressIndicator(Modifier.fillMaxWidth())
-            ui.error?.let { Text(it, color = MaterialTheme.colorScheme.error) }
+            if (ui.busy) LoadingView(stringResource(R.string.common_loading))
+            // TODO(T52): CodegToaster for operation feedback.
+            ui.error?.let { Text(it, color = app.codeg.android.core.designsystem.theme.CodegTheme.colors.danger) }
             if (ui.completed) Text(stringResource(R.string.gm_done))
-            TextButton(onClick = { vm.refresh(client, path) }, enabled = !ui.busy) { Text(stringResource(R.string.gm_refresh)) }
+            CodegButton(size = CodegButtonSize.Sm, variant = CodegButtonVariant.Ghost, onClick = { vm.refresh(client, path) }, enabled = !ui.busy) { Text(stringResource(R.string.gm_refresh)) }
             if (ui.active || ui.conflicts.isNotEmpty()) {
                 ConflictListScreen(vm, client, path, branch.orEmpty())
             } else {
-                Row {
-                    listOf("merge", "rebase", "reset").forEach { value ->
-                        FilterChip(selected = action == value, onClick = { action = value; target = "" }, enabled = !ui.busy,
-                            label = { Text(operationLabel(value)) })
-                    }
-                }
+                val actions = listOf("merge", "rebase", "reset")
+                CodegTabs(selected = actions.indexOf(action), tabs = actions.map { operationLabel(it) }, onSelect = { if (!ui.busy) { action = actions[it]; target = "" } })
                 if (action == "reset") {
-                    OutlinedTextField(value = target, onValueChange = { target = it }, enabled = !ui.busy,
-                        label = { Text(stringResource(R.string.gm_commit)) })
-                    Row {
-                        listOf("soft", "mixed", "hard").forEach { value ->
-                            FilterChip(selected = mode == value, onClick = { mode = value }, enabled = !ui.busy, label = { Text(value) })
-                        }
-                    }
+                    CodegTextField(value = target, onValueChange = { if (!ui.busy) target = it }, label = stringResource(R.string.gm_commit))
+                    CodegRadioGroup(options = listOf("soft", "mixed", "hard"), value = mode, onSelect = { mode = it }, enabled = !ui.busy)
                 } else {
-                    ui.branches.filter { it != branch }.forEach { value ->
-                        TextButton(onClick = { target = value }, enabled = !ui.busy) { Text(if (target == value) "✓ $value" else value) }
-                    }
+                    CodegSelect(label = stringResource(R.string.branch_switch_branch), value = target,
+                        options = ui.branches.filter { it != branch }, onSelect = { target = it }, enabled = !ui.busy)
                 }
-                Button(onClick = { typed = ""; confirm = true }, enabled = ui.ready && !ui.busy && target.isNotBlank() && !branch.isNullOrBlank()) {
+                CodegButton(onClick = { typed = ""; hardVerified = false; confirm = true }, enabled = ui.ready && !ui.busy && target.isNotBlank() && !branch.isNullOrBlank()) {
                     Text(operationLabel(action))
                 }
             }
         }
     }
-    if (confirm) AlertDialog(onDismissRequest = { confirm = false },
-        modifier = Modifier.imePadding(),
-        properties = DialogProperties(decorFitsSystemWindows = false), title = { Text(operationLabel(action)) }, text = {
-        Column {
-            Text(stringResource(when (action) { "merge" -> R.string.gm_confirm_merge; "rebase" -> R.string.gm_confirm_rebase; else -> R.string.gm_confirm_reset }, target, branch.orEmpty(), mode))
-            if (action == "reset" && mode == "hard") {
+    if (confirm) {
+        val message = stringResource(when (action) { "merge" -> R.string.gm_confirm_merge; "rebase" -> R.string.gm_confirm_rebase; else -> R.string.gm_confirm_reset }, target, branch.orEmpty(), mode)
+        if (action == "reset" && mode == "hard" && !hardVerified) {
+            CodegDialog(title = operationLabel(action), description = message,
+                onDismiss = { confirm = false }, footer = {
+                    CodegButton(onClick = { confirm = false }, variant = CodegButtonVariant.Ghost) { Text(stringResource(R.string.gm_cancel)) }
+                    CodegButton(onClick = { hardVerified = true }, enabled = typed == branch) { Text(stringResource(R.string.gm_confirm)) }
+                }) {
                 Text(stringResource(R.string.gm_hard, branch.orEmpty()))
-                OutlinedTextField(value = typed, onValueChange = { typed = it })
+                CodegTextField(value = typed, onValueChange = { typed = it }, label = stringResource(R.string.git_misc_branch))
             }
+        } else {
+            CodegConfirmDialog(title = operationLabel(action), message = message,
+                target = "${branch.orEmpty()} → ${target.trim()}", confirmLabel = stringResource(R.string.gm_confirm),
+                destructive = action == "reset" || action == "rebase",
+                onConfirm = { confirm = false; vm.execute(client, path, action, target.trim(), mode) },
+                onDismiss = { confirm = false })
         }
-    }, confirmButton = {
-        TextButton(onClick = { confirm = false; vm.execute(client, path, action, target.trim(), mode) },
-            enabled = action != "reset" || mode != "hard" || typed == branch) { Text(stringResource(R.string.gm_confirm)) }
-    }, dismissButton = { TextButton(onClick = { confirm = false }) { Text(stringResource(R.string.gm_cancel)) } })
+    }
 }
 
 @Composable

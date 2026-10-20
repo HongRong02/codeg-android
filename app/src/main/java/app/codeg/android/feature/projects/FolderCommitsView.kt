@@ -1,9 +1,14 @@
 package app.codeg.android.feature.projects
 
+import app.codeg.android.core.designsystem.component.CodegListRow
+import app.codeg.android.core.designsystem.component.CodegButton
+import app.codeg.android.core.designsystem.component.CodegButtonVariant
+import app.codeg.android.core.designsystem.component.CodegBadge
+import app.codeg.android.core.designsystem.component.CodegBadgeVariant
+import app.codeg.android.core.designsystem.component.CodegCard
+import app.codeg.android.core.designsystem.component.CodegCardContent
+import app.codeg.android.core.designsystem.component.CodegSectionHeader
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,7 +20,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.CallSplit
 import androidx.compose.material.icons.rounded.Cloud
@@ -25,19 +29,15 @@ import androidx.compose.material.icons.rounded.CloudUpload
 import androidx.compose.material.icons.rounded.History
 import androidx.compose.material.icons.rounded.Sync
 import androidx.compose.material3.Icon
-import androidx.compose.material3.ListItem
-import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
@@ -53,7 +53,6 @@ import app.codeg.android.core.designsystem.component.InlineError
 import app.codeg.android.core.designsystem.component.LoadingView
 import app.codeg.android.core.designsystem.diff.DiffView
 import app.codeg.android.core.designsystem.diff.UnifiedDiff
-import app.codeg.android.core.designsystem.theme.withOpacity
 import app.codeg.android.core.designsystem.theme.CodegTheme
 import app.codeg.android.core.model.GitLogEntry
 import app.codeg.android.core.model.GitLogResult
@@ -61,7 +60,6 @@ import app.codeg.android.core.model.GitPushInfo
 import app.codeg.android.core.network.ApiError
 import app.codeg.android.core.network.CodegClient
 import java.time.OffsetDateTime
-import app.codeg.android.core.designsystem.component.webSurface
 
 /**
  * A folder's commit history (git_log) plus a sync header (branch → remote, with
@@ -187,52 +185,29 @@ private fun SyncButton(
     modifier: Modifier = Modifier,
     badge: Int? = null,
 ) {
-    val colors = CodegTheme.colors
-    val tint = if (enabled) colors.accent else colors.textSecondary
-    Row(
-        modifier
-            .clip(RoundedCornerShape(8.dp))
-            .border(1.dp, colors.surfaceStroke, RoundedCornerShape(8.dp))
-            .background(if (enabled) colors.accent.withOpacity(0.08f) else Color.Transparent)
-            .clickable(enabled = enabled) { onClick() }
-            .padding(vertical = 9.dp),
-        horizontalArrangement = Arrangement.Center,
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Icon(icon, contentDescription = null, tint = tint, modifier = Modifier.size(16.dp))
-        Text(label, fontSize = 13.sp, fontWeight = FontWeight.Medium, color = tint, modifier = Modifier.padding(start = 6.dp))
-        if (badge != null) {
-            Text(
-                badge.toString(),
-                fontSize = 12.sp,
-                fontWeight = FontWeight.Bold,
-                color = colors.onAccent,
-                modifier = Modifier.padding(start = 5.dp).clip(RoundedCornerShape(50)).background(colors.accent).padding(horizontal = 5.dp, vertical = 1.dp),
-            )
-        }
+    CodegButton(onClick = onClick, modifier = modifier, enabled = enabled,
+        variant = CodegButtonVariant.Outline,
+        leadingIcon = { Icon(icon, null, modifier = Modifier.size(16.dp)) }) {
+        Text(label, fontSize = 13.sp)
+        if (badge != null) CodegBadge(text = badge.toString(), variant = CodegBadgeVariant.Secondary)
     }
 }
 
 @Composable
 private fun CommitRow(entry: GitLogEntry, onClick: () -> Unit) {
     val colors = CodegTheme.colors
-    ListItem(
-        headlineContent = { Text(entry.subject, fontSize = 14.sp, fontWeight = FontWeight.Medium, maxLines = 2) },
-        supportingContent = {
-            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                Text(entry.author, fontSize = 12.sp, color = colors.textSecondary, maxLines = 1)
-                Text(relativeDate(entry.date), fontSize = 12.sp, color = colors.textSecondary)
-                if (entry.totalAdditions > 0) Text("+${entry.totalAdditions}", fontSize = 12.sp, color = colors.accent)
-                if (entry.totalDeletions > 0) Text("−${entry.totalDeletions}", fontSize = 12.sp, color = colors.danger)
-                Box(Modifier.weight(1f))
-                Text(entry.hash, fontFamily = FontFamily.Monospace, fontSize = 12.sp, color = colors.textSecondary, modifier = Modifier.clip(RoundedCornerShape(50)).background(colors.web.muted).padding(horizontal = 6.dp, vertical = 1.dp))
+    CodegListRow(
+        title = entry.subject,
+        subtitle = "${entry.author} · ${relativeDate(entry.date)} · +${entry.totalAdditions} −${entry.totalDeletions}",
+        onClick = onClick,
+        trailing = {
+            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                CodegBadge(text = entry.hash, variant = CodegBadgeVariant.Outline)
+                entry.pushed?.let { pushed ->
+                    Icon(if (pushed) Icons.Rounded.Cloud else Icons.Rounded.CloudOff, null, tint = colors.textSecondary, modifier = Modifier.size(14.dp))
+                }
             }
         },
-        trailingContent = entry.pushed?.let { pushed ->
-            { Icon(if (pushed) Icons.Rounded.Cloud else Icons.Rounded.CloudOff, null, tint = colors.textSecondary, modifier = Modifier.size(14.dp)) }
-        },
-        colors = ListItemDefaults.colors(containerColor = Color.Transparent, headlineColor = colors.textPrimary),
-        modifier = Modifier.clip(RoundedCornerShape(8.dp)).clickable { onClick() },
     )
 }
 
@@ -243,7 +218,7 @@ private fun CommitDetail(client: CodegClient, rootPath: String, entry: GitLogEnt
     BackHandler(enabled = selectedFile != null) { selectedFile = null }
     selectedFile?.let { path ->
         Column(Modifier.fillMaxSize()) {
-            androidx.compose.material3.TextButton(onClick = { selectedFile = null }) { Text(stringResource(R.string.file_viewer_back)) }
+            CodegButton(variant = CodegButtonVariant.Ghost, onClick = { selectedFile = null }) { Text(stringResource(R.string.file_viewer_back)) }
             FilePreview(client, rootPath, path, commit = entry.fullHash, onUnsupported = { unavailableFiles = unavailableFiles + path; selectedFile = null })
         }
         return
@@ -254,7 +229,8 @@ private fun CommitDetail(client: CodegClient, rootPath: String, entry: GitLogEnt
 
     LazyColumn(Modifier.fillMaxSize(), contentPadding = PaddingValues(horizontal = 12.dp, vertical = 10.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
         item("header") {
-            Column(Modifier.fillMaxWidth().webSurface(RoundedCornerShape(CodegTheme.dimens.radiusMd)).padding(12.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+            CodegCard(Modifier.fillMaxWidth()) {
+                CodegCardContent {
                 Text(entry.subject, fontSize = 16.sp, fontWeight = FontWeight.SemiBold, color = colors.textPrimary)
                 if (entry.body.isNotEmpty()) Text(entry.body, fontSize = 13.sp, color = colors.textSecondary)
                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -266,16 +242,16 @@ private fun CommitDetail(client: CodegClient, rootPath: String, entry: GitLogEnt
                     Text(entry.fullHash, fontFamily = FontFamily.Monospace, fontSize = 12.sp, color = colors.textSecondary, maxLines = 1, modifier = Modifier.weight(1f, fill = false))
                     CopyButton(entry.fullHash)
                 }
+                }
             }
         }
         item("summary") {
-            Text(stringResource(R.string.commits_files_changed_summary, entry.files.size, entry.totalAdditions, entry.totalDeletions), fontSize = 12.sp, color = colors.textSecondary)
+            CodegSectionHeader(title = stringResource(R.string.commits_files_changed_summary, entry.files.size, entry.totalAdditions, entry.totalDeletions))
         }
         items(entry.files.filter { it.path !in unavailableFiles }, key = { "file:${it.path}" }) { file ->
-            Text(
-                if (file.status == "D") stringResource(R.string.file_viewer_deleted, file.path) else "${file.status}  ${file.path}", fontFamily = FontFamily.Monospace, fontSize = 12.sp,
-                color = colors.accent,
-                modifier = Modifier.fillMaxWidth().clickable(enabled = file.status != "D") { selectedFile = file.path }.padding(vertical = 12.dp),
+            CodegListRow(
+                title = if (file.status == "D") stringResource(R.string.file_viewer_deleted, file.path) else "${file.status}  ${file.path}",
+                onClick = { if (file.status != "D") selectedFile = file.path },
             )
         }
         item("diff") {

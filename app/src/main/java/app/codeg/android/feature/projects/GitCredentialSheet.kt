@@ -1,31 +1,20 @@
 package app.codeg.android.feature.projects
 
-import androidx.compose.foundation.layout.imePadding
+import app.codeg.android.core.designsystem.theme.CodegShapes
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeDrawing
-import androidx.compose.foundation.layout.windowInsetsPadding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.Key
-import androidx.compose.material3.Checkbox
+import app.codeg.android.core.designsystem.component.CodegCheckbox
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import app.codeg.android.core.designsystem.component.CodegIconButton
-import app.codeg.android.core.designsystem.component.CodegTopBar
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
+import app.codeg.android.core.designsystem.component.CodegButton
+import app.codeg.android.core.designsystem.component.CodegButtonVariant
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
@@ -42,9 +31,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
 import app.codeg.android.R
+import app.codeg.android.core.designsystem.component.CodegSheet
 import app.codeg.android.core.designsystem.component.CodegTextField
 import app.codeg.android.core.designsystem.component.PrimaryButton
 import app.codeg.android.core.designsystem.component.SecretField
@@ -129,57 +117,47 @@ fun GitCredentialSheet(
         onDispose { viewModel.cancelCredentialsIfShowing(prompt.id) }
     }
 
-    Dialog(onDismissRequest = { viewModel.cancelCredentials() }, properties = DialogProperties(usePlatformDefaultWidth = false, decorFitsSystemWindows = false)) {
-        Column(Modifier.fillMaxSize().background(colors.bg).windowInsetsPadding(WindowInsets.safeDrawing).imePadding()) {
-            CodegTopBar(
-                title = stringResource(if (prompt.github) R.string.cred_title_github else R.string.cred_title_generic),
-                navigationIcon = {
-                    CodegIconButton(onClick = { viewModel.cancelCredentials() }, enabled = !submitting) {
-                        Icon(Icons.Rounded.Close, contentDescription = stringResource(R.string.common_cancel), tint = colors.textPrimary)
-                    }
-                },
-                showDivider = true,
-            )
-            Column(
-                Modifier.weight(1f).fillMaxWidth().verticalScroll(rememberScrollState()).padding(horizontal = 16.dp),
-                verticalArrangement = Arrangement.spacedBy(14.dp),
-            ) {
-                if (prompt.isRetry) {
-                    Banner(stringResource(R.string.cred_retry_hint), colors.textSecondary, colors.textSecondary)
-                }
-                if (prompt.github) {
-                    Text(stringResource(R.string.cred_github_footer, hostLabel), fontSize = 12.sp, color = colors.textSecondary)
-                    Row(verticalAlignment = Alignment.Bottom, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                        SecretField(token, { token = it }, label = stringResource(R.string.cred_token_label), modifier = Modifier.weight(1f))
-                        TextButton(onClick = {
-                            val url = "$serverUrl/settings/tokens/new?description=codeg&scopes=repo,read:org,workflow,gist,read:user,user:email"
-                            runCatching { uriHandler.openUri(url) }
-                        }, enabled = !submitting) {
-                            Text(stringResource(R.string.cred_generate), color = colors.accent, fontWeight = FontWeight.SemiBold)
-                        }
-                    }
-                } else {
-                    Text(stringResource(R.string.cred_generic_footer, hostLabel), fontSize = 12.sp, color = colors.textSecondary)
-                    CodegTextField(username, { username = it }, label = stringResource(R.string.cred_username))
-                    SecretField(password, { password = it }, label = stringResource(R.string.cred_password_label))
-                    Row(
-                        Modifier.fillMaxWidth().clip(RoundedCornerShape(8.dp)),
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        Checkbox(checked = saveCredentials, onCheckedChange = { saveCredentials = it }, enabled = !submitting)
-                        Text(stringResource(R.string.cred_save), fontSize = 14.sp, color = colors.textPrimary)
-                    }
-                }
-                error?.let { Banner(it, colors.danger, colors.danger) }
+    CodegSheet(title = stringResource(if (prompt.github) R.string.cred_title_github else R.string.cred_title_generic), onDismiss = { viewModel.cancelCredentials() }, footer = {
+        PrimaryButton(
+            text = stringResource(R.string.cred_authenticate),
+            onClick = { submit() },
+            icon = Icons.Rounded.Key,
+            enabled = canSubmit,
+            loading = submitting,
+        )
+    }) {
+        Column(
+            Modifier.fillMaxWidth(),
+            verticalArrangement = Arrangement.spacedBy(14.dp),
+        ) {
+            if (prompt.isRetry) {
+                Banner(stringResource(R.string.cred_retry_hint), colors.textSecondary, colors.textSecondary)
             }
-            PrimaryButton(
-                text = stringResource(R.string.cred_authenticate),
-                onClick = { submit() },
-                icon = Icons.Rounded.Key,
-                enabled = canSubmit,
-                loading = submitting,
-                modifier = Modifier.padding(16.dp),
-            )
+            if (prompt.github) {
+                Text(stringResource(R.string.cred_github_footer, hostLabel), fontSize = 12.sp, color = colors.textSecondary)
+                Row(verticalAlignment = Alignment.Bottom, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    SecretField(token, { token = it }, label = stringResource(R.string.cred_token_label), modifier = Modifier.weight(1f))
+                    CodegButton(variant = CodegButtonVariant.Ghost, onClick = {
+                        val url = "$serverUrl/settings/tokens/new?description=codeg&scopes=repo,read:org,workflow,gist,read:user,user:email"
+                        runCatching { uriHandler.openUri(url) }
+                    }, enabled = !submitting) {
+                        Text(stringResource(R.string.cred_generate), color = colors.accent, fontWeight = FontWeight.SemiBold)
+                    }
+                }
+            } else {
+                Text(stringResource(R.string.cred_generic_footer, hostLabel), fontSize = 12.sp, color = colors.textSecondary)
+                CodegTextField(username, { username = it }, label = stringResource(R.string.cred_username))
+                SecretField(password, { password = it }, label = stringResource(R.string.cred_password_label))
+                Row(
+                    Modifier.fillMaxWidth().clip(CodegShapes.extraSmall),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    CodegCheckbox(checked = saveCredentials, onCheckedChange = { saveCredentials = it }, enabled = !submitting)
+                    Text(stringResource(R.string.cred_save), fontSize = 14.sp, color = colors.textPrimary)
+                }
+            }
+            // TODO(T52): CodegToaster for operation errors.
+            error?.let { Banner(it, colors.danger, colors.danger) }
         }
     }
 }
@@ -190,6 +168,6 @@ private fun Banner(message: String, tint: Color, textColor: Color) {
         message,
         fontSize = 13.sp,
         color = textColor,
-        modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(8.dp)).background(tint.withOpacity(0.12f)).padding(12.dp),
+        modifier = Modifier.fillMaxWidth().clip(CodegShapes.extraSmall).background(tint.withOpacity(0.12f)).padding(12.dp),
     )
 }

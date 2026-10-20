@@ -3,8 +3,6 @@ package app.codeg.android.feature.projects.git
 import androidx.compose.foundation.layout.Box
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.MoreVert
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -20,7 +18,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import app.codeg.android.R
-import app.codeg.android.core.designsystem.component.CodegIconButton
+import app.codeg.android.core.designsystem.component.*
 import app.codeg.android.feature.projects.ProjectDetailViewModel
 
 /**
@@ -103,9 +101,9 @@ fun GitActionsMenu(onSwitchBranch: () -> Unit, enabled: Boolean = true) {
         CodegIconButton(onClick = { expanded = true }, enabled = enabled) {
             Icon(Icons.Rounded.MoreVert, contentDescription = stringResource(R.string.project_detail_actions))
         }
-        DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+        CodegDropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
             // T05: existing branch picker
-            DropdownMenuItem(
+            CodegMenuItem(
                 text = { Text(stringResource(R.string.branch_switch_branch)) },
                 onClick = {
                     expanded = false
@@ -114,7 +112,7 @@ fun GitActionsMenu(onSwitchBranch: () -> Unit, enabled: Boolean = true) {
             )
             // T17
             if (stash != null && stashUi?.supported == true) {
-                DropdownMenuItem(
+                CodegMenuItem(
                     text = { Text(stringResource(R.string.stash_title)) },
                     onClick = { expanded = false; showStash = true; stash.refresh() },
                     enabled = !projectUi.gitBusy,
@@ -122,27 +120,27 @@ fun GitActionsMenu(onSwitchBranch: () -> Unit, enabled: Boolean = true) {
             }
             // T18
             if (manager != null && manageUi?.supported == true) {
-                DropdownMenuItem(
+                CodegMenuItem(
                     text = { Text(stringResource(R.string.bm_title)) },
                     onClick = { expanded = false; showManage = true; manager.refresh() },
                 )
             }
             // T19
             if (client != null && path != null && mergeUi.supported) {
-                DropdownMenuItem(text = { Text(stringResource(R.string.gm_title)) }, onClick = {
+                CodegMenuItem(text = { Text(stringResource(R.string.gm_title)) }, onClick = {
                     expanded = false
                     showMerge = true
                     mergeVm.refresh(client, path)
                 }, enabled = !projectUi.gitBusy)
             }
             // T20
-            DropdownMenuItem(
+            CodegMenuItem(
                 text = { Text(stringResource(R.string.git_misc_title)) },
                 onClick = { expanded = false; showMisc = true },
             )
             // T32
             if (forge != null && forgeUi?.remote?.supported == true) {
-                DropdownMenuItem(
+                CodegMenuItem(
                     text = { Text(stringResource(R.string.forge_title)) },
                     onClick = { expanded = false; showForge = true; forge.refresh() },
                     enabled = !projectUi.gitBusy,

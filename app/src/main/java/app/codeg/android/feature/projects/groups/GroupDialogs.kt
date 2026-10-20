@@ -2,9 +2,9 @@ package app.codeg.android.feature.projects.groups
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.*
+import androidx.compose.material3.Text
+import app.codeg.android.core.designsystem.component.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -28,13 +28,14 @@ fun folderTint(value: String): androidx.compose.ui.graphics.Color {
 @Composable
 fun GroupTextDialog(title: String, initial: String, allowEmpty: Boolean = false, onDismiss: () -> Unit, onSave: (String) -> Unit) {
     var value by remember { mutableStateOf(initial) }
-    AlertDialog(onDismissRequest = onDismiss, title = { Text(title) }, text = {
-        OutlinedTextField(value = value, onValueChange = { value = it }, singleLine = true, label = { Text(title) })
-    }, confirmButton = {
-        TextButton(enabled = allowEmpty || value.isNotBlank(), onClick = { onSave(value.trim()); onDismiss() }) {
+    CodegDialog(title = title, onDismiss = onDismiss, footer = {
+        CodegButton(onClick = onDismiss, variant = CodegButtonVariant.Ghost) { Text(stringResource(R.string.fg_cancel)) }
+        CodegButton(enabled = allowEmpty || value.isNotBlank(), onClick = { onSave(value.trim()); onDismiss() }) {
             Text(stringResource(R.string.fg_save))
         }
-    }, dismissButton = { TextButton(onClick = onDismiss) { Text(stringResource(R.string.fg_cancel)) } })
+    }) {
+        CodegTextField(value = value, onValueChange = { value = it }, label = title)
+    }
 }
 
 @Composable
@@ -45,30 +46,25 @@ fun FolderEditDialog(folder: FolderDetail, groups: List<FolderGroup>, onDismiss:
         GroupTextDialog(stringResource(R.string.fg_alias), folder.alias.orEmpty(), true, onDismiss, onAlias)
         return
     }
-    AlertDialog(onDismissRequest = onDismiss, title = { Text(folderDisplayName(folder)) }, text = {
-        LazyColumn {
-            if (page == 0) {
-                item { TextButton(onClick = { page = 1 }) { Text(stringResource(R.string.fg_alias)) } }
-                item { TextButton(onClick = { page = 2 }) { Text(stringResource(R.string.fg_color)) } }
-                item { TextButton(onClick = { page = 3 }) { Text(stringResource(R.string.fg_move)) } }
-            } else if (page == 2) {
-                val presets = listOf("inherit", "neutral", "zinc", "slate", "stone", "gray", "red", "rose", "orange", "green", "blue", "yellow", "violet")
-                val labels = listOf(R.string.fg_inherit, R.string.fg_neutral, R.string.fg_zinc, R.string.fg_slate, R.string.fg_stone, R.string.fg_gray, R.string.fg_red, R.string.fg_rose, R.string.fg_orange, R.string.fg_green, R.string.fg_blue, R.string.fg_yellow, R.string.fg_violet)
-                presets.forEachIndexed { index, color ->
-                    item {
-                        TextButton(onClick = { onColor(color); onDismiss() }) {
-                            Box(Modifier.size(12.dp).background(folderTint(color), CircleShape))
-                            Spacer(Modifier.width(12.dp))
-                            Text(stringResource(labels[index]))
-                        }
-                    }
-                }
-            } else {
-                item { TextButton(onClick = { onGroup(null); onDismiss() }) { Text(stringResource(R.string.fg_ungrouped)) } }
-                groups.forEach { group -> item {
-                    TextButton(onClick = { onGroup(group.id); onDismiss() }) { Text(group.name) }
-                } }
+    CodegDialog(title = folderDisplayName(folder), onDismiss = onDismiss, footer = {
+        CodegButton(onClick = onDismiss, variant = CodegButtonVariant.Ghost) { Text(stringResource(R.string.fg_cancel)) }
+    }) {
+        if (page == 0) {
+            CodegListRow(title = stringResource(R.string.fg_alias), onClick = { page = 1 })
+            CodegListRow(title = stringResource(R.string.fg_color), onClick = { page = 2 })
+            CodegListRow(title = stringResource(R.string.fg_move), onClick = { page = 3 })
+        } else if (page == 2) {
+            val presets = listOf("inherit", "neutral", "zinc", "slate", "stone", "gray", "red", "rose", "orange", "green", "blue", "yellow", "violet")
+            val labels = listOf(R.string.fg_inherit, R.string.fg_neutral, R.string.fg_zinc, R.string.fg_slate, R.string.fg_stone, R.string.fg_gray, R.string.fg_red, R.string.fg_rose, R.string.fg_orange, R.string.fg_green, R.string.fg_blue, R.string.fg_yellow, R.string.fg_violet)
+            presets.forEachIndexed { index, color ->
+                CodegListRow(title = stringResource(labels[index]), onClick = { onColor(color); onDismiss() },
+                    leading = { Box(Modifier.size(12.dp).background(folderTint(color), CircleShape)) })
+            }
+        } else {
+            CodegListRow(title = stringResource(R.string.fg_ungrouped), onClick = { onGroup(null); onDismiss() })
+            groups.forEach { group ->
+                CodegListRow(title = group.name, onClick = { onGroup(group.id); onDismiss() })
             }
         }
-    }, confirmButton = { TextButton(onClick = onDismiss) { Text(stringResource(R.string.fg_cancel)) } })
+    }
 }
