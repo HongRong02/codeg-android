@@ -6,16 +6,16 @@ Source root: `app/src/main/java/app/codeg/android/`
 
 | Line | Declaration |
 |---|---|
-| 53 | `@Composable fun ActivityScreen( onOpenConversation: (Int) -> Unit, viewModel: ActivityViewModel = hiltViewModel(), )` |
-| 57 |   `val ui by viewModel.ui.collectAsStateWithLifecycle()` |
-| 58 |   `val sections by viewModel.sections.collectAsStateWithLifecycle()` |
-| 59 |   `var collapsed by rememberSaveable` |
-| 60 |   `val colors` |
-| 123 | `private data class ActivityStyle(val icon: ImageVector, val tint: Color, val label: String)` |
-| 126 | `@Composable private fun activitySectionStyle(kind: ActivityKind): ActivityStyle` |
-| 127 |   `val colors` |
-| 144 | `@Composable private fun UpdatedFooter(timestamp: Instant)` |
-| 145 |   `val relative` |
+| 58 | `@Composable fun ActivityScreen( onOpenConversation: (Int) -> Unit, viewModel: ActivityViewModel = hiltViewModel(), )` |
+| 62 |   `val ui by viewModel.ui.collectAsStateWithLifecycle()` |
+| 63 |   `val sections by viewModel.sections.collectAsStateWithLifecycle()` |
+| 64 |   `var collapsed by rememberSaveable` |
+| 65 |   `val colors` |
+| 173 | `private data class ActivityStyle(val icon: ImageVector, val tint: Color, val label: String)` |
+| 176 | `@Composable private fun activitySectionStyle(kind: ActivityKind): ActivityStyle` |
+| 177 |   `val colors` |
+| 194 | `@Composable private fun UpdatedFooter(timestamp: Instant)` |
+| 195 |   `val relative` |
 
 ## feature/activity/ActivityViewModel.kt
 
