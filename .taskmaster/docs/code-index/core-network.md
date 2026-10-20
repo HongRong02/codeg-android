@@ -150,14 +150,21 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 927 |   `suspend fun describeAgentOptions(agentType: AgentType, workingDir: String?): AgentOptionsSnapshot` |
 | 930 |   `suspend fun acpSetMode(connectionId: String, modeId: String)` |
 | 934 |   `suspend fun acpSetConfigOption(connectionId: String, configId: String, valueId: String)` |
-| 948 |   `private suspend fun send(path: String, bodyJson: String): String` |
-| 982 |   `private inline fun <reified T> encode(body: T): String` |
-| 985 |   `private fun <T> decode(text: String, deserializer: DeserializationStrategy<T>): T` |
-| 991 |   `companion object` |
-| 993 |     `fun normalizeBaseUrl(raw: String): String` |
-| 1001 |     `fun decodeConnectionId(text: String): String` |
-| 1017 |     `fun decodeAgentList(text: String): List<AcpAgentInfo>` |
-| 1034 |     `fun isJsonNull(text: String): Boolean` |
+| 944 |   `suspend fun gitAddRemote(path: String, name: String, url: String)` |
+| 948 |   `suspend fun gitRemoveRemote(path: String, name: String)` |
+| 952 |   `suspend fun gitSetRemoteUrl(path: String, name: String, url: String)` |
+| 956 |   `suspend fun gitWorktreeAdd(path: String, branchName: String, worktreePath: String, base: String? = null)` |
+| 960 |   `suspend fun gitRemoveWorktree(path: String, branchName: String, sourceFolderId: Int)` |
+| 964 |   `suspend fun gitInit(path: String)` |
+| 966 |   `suspend fun gitFetchRemote(path: String, name: String, credentials: GitCredentials? = null): String` |
+| 977 |   `private suspend fun send(path: String, bodyJson: String): String` |
+| 1011 |   `private inline fun <reified T> encode(body: T): String` |
+| 1014 |   `private fun <T> decode(text: String, deserializer: DeserializationStrategy<T>): T` |
+| 1020 |   `companion object` |
+| 1022 |     `fun normalizeBaseUrl(raw: String): String` |
+| 1030 |     `fun decodeConnectionId(text: String): String` |
+| 1046 |     `fun decodeAgentList(text: String): List<AcpAgentInfo>` |
+| 1063 |     `fun isJsonNull(text: String): Boolean` |
 
 ## core/network/CodegClientFactory.kt
 

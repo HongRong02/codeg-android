@@ -149,13 +149,6 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 179 | `private fun sortItems(items: List<DirectoryItem>): List<DirectoryItem>` |
 | 182 | `private fun formatBytes(bytes: Long): String` |
 
-## feature/projects/git/GitActionsMenu.kt
-
-| Line | Declaration |
-|---|---|
-| 21 | `@Composable fun GitActionsMenu(onSwitchBranch: () -> Unit, enabled: Boolean = true)` |
-| 22 |   `var expanded by remember` |
-
 ## feature/projects/GitChangeVisuals.kt
 
 | Line | Declaration |
@@ -321,3 +314,52 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 125 |   `val error: String?` |
 | 127 |   `val isBusy: Boolean get()` |
 | 128 |   `fun runningCount(folderId: Int): Int` |
+
+## feature/projects/git/GitActionsMenu.kt
+
+| Line | Declaration |
+|---|---|
+| 22 | `@Composable fun GitActionsMenu(onSwitchBranch: () -> Unit, enabled: Boolean = true)` |
+| 23 |   `val project: app.codeg.android.feature.projects.ProjectDetailViewModel` |
+| 24 |   `val projectUi by project.ui.collectAsStateWithLifecycle()` |
+| 25 |   `var showMisc by remember` |
+| 26 |   `val client` |
+| 27 |   `val folder` |
+| 31 |   `var expanded by remember` |
+
+## feature/projects/git/GitMiscSheet.kt
+
+| Line | Declaration |
+|---|---|
+| 22 | `@Composable fun GitMiscSheet(client: CodegClient, path: String, folderId: Int, onDismiss: () -> Unit, onChanged: () -> Unit)` |
+| 23 |   `val model: GitMiscViewModel` |
+| 24 |   `val ui by model.ui.collectAsStateWithLifecycle()` |
+| 25 |   `var name by remember` |
+| 26 |   `var url by remember` |
+| 27 |   `var branch by remember` |
+| 28 |   `var destination by remember` |
+| 29 |   `var base by remember` |
+| 30 |   `var username by remember` |
+| 31 |   `var password by remember` |
+| 32 |   `var confirmation by remember` |
+| 34 |   `fun mutate(action: String, operation: suspend () -> Unit)` |
+
+## feature/projects/git/GitMiscViewModel.kt
+
+| Line | Declaration |
+|---|---|
+| 18 | `class GitMiscViewModel : ViewModel()` |
+| 19 |   `private val state` |
+| 20 |   `val ui` |
+| 22 |   `fun run(action: String, operation: suspend () -> Unit)` |
+| 43 |   `suspend fun load(client: CodegClient, path: String)` |
+| 59 |   `fun fetch(client: CodegClient, path: String, name: String, credentials: GitCredentials? = null)` |
+| 70 | `data class GitMiscUi( val busy: Boolean = false, val error: String? = null, val success: Boolean = false, val notRepository: Boolean = false, val remotes: List<GitRemote> = emptyList(), val worktrees: List<GitMiscWorktree> = emptyList(), val hidden: Set<String> = emptySet(), val authRemote: String? = null, )` |
+| 71 |   `val busy: Boolean` |
+| 72 |   `val error: String?` |
+| 73 |   `val success: Boolean` |
+| 74 |   `val notRepository: Boolean` |
+| 75 |   `val remotes: List<GitRemote>` |
+| 76 |   `val worktrees: List<GitMiscWorktree>` |
+| 77 |   `val hidden: Set<String>` |
+| 78 |   `val authRemote: String?` |

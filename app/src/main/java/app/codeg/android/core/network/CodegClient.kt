@@ -939,6 +939,35 @@ class CodegClient(
 
     // endregion
 
+    // region git-misc
+
+    suspend fun gitAddRemote(path: String, name: String, url: String) {
+        send("git_add_remote", encode(app.codeg.android.core.model.wire.GitMiscRemoteRequest(path, name, url)))
+    }
+
+    suspend fun gitRemoveRemote(path: String, name: String) {
+        send("git_remove_remote", encode(app.codeg.android.core.model.wire.GitMiscRemoteRequest(path, name)))
+    }
+
+    suspend fun gitSetRemoteUrl(path: String, name: String, url: String) {
+        send("git_set_remote_url", encode(app.codeg.android.core.model.wire.GitMiscRemoteRequest(path, name, url)))
+    }
+
+    suspend fun gitWorktreeAdd(path: String, branchName: String, worktreePath: String, base: String? = null) {
+        send("git_worktree_add", encode(app.codeg.android.core.model.wire.GitMiscWorktreeAddRequest(path, branchName, worktreePath, base)))
+    }
+
+    suspend fun gitRemoveWorktree(path: String, branchName: String, sourceFolderId: Int) {
+        send("git_remove_worktree", encode(app.codeg.android.core.model.wire.GitMiscWorktreeRemoveRequest(path, branchName, sourceFolderId)))
+    }
+
+    suspend fun gitInit(path: String) { send("git_init", encode(PathBody(path))) }
+
+    suspend fun gitFetchRemote(path: String, name: String, credentials: GitCredentials? = null): String =
+        decodeBareString(send("git_fetch_remote", encode(app.codeg.android.core.model.wire.GitMiscRemoteRequest(path, name, credentials = credentials))))
+
+    // endregion
+
     // region Transport
 
     /**
