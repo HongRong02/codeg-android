@@ -241,7 +241,7 @@ class SessionDetailViewModel @Inject constructor(
             } catch (e: CancellationException) {
                 throw e
             } catch (e: Exception) {
-                _ui.update { it.copy(loading = false, error = e.displayMessage()) }
+                _ui.update { it.copy(loading = false, error = e.displayMessage(appContext)) }
             }
         }
     }
@@ -339,7 +339,7 @@ class SessionDetailViewModel @Inject constructor(
         } catch (e: ApiError.TurnInProgress) {
             discardOptimistic(userTurn, text, attachments, createdConversation, createdId, notice = "A turn is already running on this session.")
         } catch (e: Exception) {
-            discardOptimistic(userTurn, text, attachments, createdConversation, createdId, notice = e.displayMessage())
+            discardOptimistic(userTurn, text, attachments, createdConversation, createdId, notice = errorNotice(e))
         }
     }
 
@@ -704,7 +704,7 @@ class SessionDetailViewModel @Inject constructor(
         _ui.update { it.copy(pendingPermission = null) }
         viewModelScope.launch {
             runCatching { client?.respondPermission(conn, pending.requestId, optionId) }
-                .onFailure { e -> _ui.update { it.copy(notice = e.displayMessage(), pendingPermission = pending) } }
+                .onFailure { e -> _ui.update { it.copy(notice = errorNotice(e), pendingPermission = pending) } }
         }
     }
 
@@ -714,7 +714,7 @@ class SessionDetailViewModel @Inject constructor(
         _ui.update { it.copy(pendingQuestion = null) }
         viewModelScope.launch {
             runCatching { client?.answerQuestion(conn, pending.questionId, answer) }
-                .onFailure { e -> _ui.update { it.copy(notice = e.displayMessage(), pendingQuestion = pending) } }
+                .onFailure { e -> _ui.update { it.copy(notice = errorNotice(e), pendingQuestion = pending) } }
         }
     }
 
@@ -759,7 +759,7 @@ class SessionDetailViewModel @Inject constructor(
                             _ui.update { it.copy(notice = appContext.getString(R.string.plan_approval_notes_dropped)) }
                     }
                 }
-                .onFailure { e -> _ui.update { it.copy(notice = e.displayMessage(), pendingPlanApproval = pending) } }
+                .onFailure { e -> _ui.update { it.copy(notice = errorNotice(e), pendingPlanApproval = pending) } }
         }
     }
 
@@ -918,9 +918,16 @@ class SessionDetailViewModel @Inject constructor(
         streamPaused = _ui.value.isInFlight
     }
 
+    private fun errorNotice(error: Throwable): String? =
+        if (suppressAuthNotice(error, _streamStatus.value)) null else error.displayMessage(appContext)
+
     private fun stopForStreamAuth() {
         closeStream()
         streamAuthFailed = true
+        // The request may fail before the stream reports 401; remove that duplicate too.
+        _ui.update {
+            if (it.notice == ApiError.Unauthorized.displayMessage(appContext)) it.copy(notice = null) else it
+        }
         _streamStatus.value = StreamNotice(appContext.getString(R.string.stream_token_expired), openServers = true)
     }
 
@@ -1043,7 +1050,7 @@ class SessionDetailViewModel @Inject constructor(
         attachments: List<Attachment>,
         createdConversation: Boolean,
         createdConversationId: Int?,
-        notice: String,
+        notice: String?,
     ) {
         liveBuilder = null
         closeStream()
@@ -1197,7 +1204,7 @@ class SessionDetailViewModel @Inject constructor(
             } catch (e: Exception) {
                 if (unsupportedSessionCommand(e)) {
                     _sessionActions.update { if (fork) it.copy(forkSupported = false) else it.copy(disconnectSupported = false) }
-                } else _ui.update { it.copy(notice = e.displayMessage()) }
+                } else _ui.update { it.copy(notice = errorNotice(e)) }
             } finally {
                 _sessionActions.update { it.copy(busy = false) }
             }
@@ -1218,7 +1225,7 @@ class SessionDetailViewModel @Inject constructor(
         viewModelScope.launch {
             runCatching { c.renameConversation(id, trimmed) }
                 .onSuccess { repository.notifyConversationsChanged() }
-                .onFailure { e -> _ui.update { it.copy(summary = previous, notice = e.displayMessage()) } }
+                .onFailure { e -> _ui.update { it.copy(summary = previous, notice = errorNotice(e)) } }
         }
     }
 
@@ -1233,7 +1240,7 @@ class SessionDetailViewModel @Inject constructor(
         viewModelScope.launch {
             runCatching { c.setPinned(id, pin) }
                 .onSuccess { repository.notifyConversationsChanged() }
-                .onFailure { e -> _ui.update { it.copy(summary = summary, notice = e.displayMessage()) } }
+                .onFailure { e -> _ui.update { it.copy(summary = summary, notice = errorNotice(e)) } }
         }
     }
 
@@ -1245,7 +1252,7 @@ class SessionDetailViewModel @Inject constructor(
         viewModelScope.launch {
             runCatching { c.setStatus(id, status.wire) }
                 .onSuccess { repository.notifyConversationsChanged() }
-                .onFailure { e -> _ui.update { it.copy(summary = previous, notice = e.displayMessage()) } }
+                .onFailure { e -> _ui.update { it.copy(summary = previous, notice = errorNotice(e)) } }
         }
     }
 
@@ -1256,7 +1263,7 @@ class SessionDetailViewModel @Inject constructor(
         viewModelScope.launch {
             runCatching { c.deleteConversation(id) }
                 .onSuccess { repository.notifyConversationsChanged(); onDeleted() }
-                .onFailure { e -> _ui.update { it.copy(notice = e.displayMessage()) } }
+                .onFailure { e -> _ui.update { it.copy(notice = errorNotice(e)) } }
         }
     }
 
@@ -1361,7 +1368,7 @@ class SessionDetailViewModel @Inject constructor(
             }
             list
         } catch (e: Exception) {
-            _ui.update { it.copy(notice = e.displayMessage()) }
+            _ui.update { it.copy(notice = errorNotice(e)) }
             null
         }
     }
@@ -1410,7 +1417,7 @@ class SessionDetailViewModel @Inject constructor(
             // git refuses a branch already checked out by another worktree. Recover
             // the way the web's resolve step would — locate it and open a session there.
             recoverFromWorktreeCheckout(c, branch, root, e)?.let { return it }
-            _ui.update { it.copy(notice = e.displayMessage()) }
+            _ui.update { it.copy(notice = errorNotice(e)) }
             return BranchSwitchOutcome.Failed
         }
         return if (root.id == active.id) {
@@ -1430,7 +1437,7 @@ class SessionDetailViewModel @Inject constructor(
         runCatching { c.resolveWorktreeFolder(root.path, branch) }.getOrNull()?.path?.let { path ->
             return openWorktreeSession(c, path, root)
         }
-        worktreePathFromError(error.displayMessage())?.let { path ->
+        worktreePathFromError(error.displayMessage(appContext))?.let { path ->
             return openWorktreeSession(c, path, root)
         }
         return null
@@ -1463,7 +1470,7 @@ class SessionDetailViewModel @Inject constructor(
             _ui.update { it.copy(currentBranch = trimmed) }
             true
         } catch (e: Exception) {
-            _ui.update { it.copy(notice = e.displayMessage()) }
+            _ui.update { it.copy(notice = errorNotice(e)) }
             false
         }
     }
@@ -1788,3 +1795,6 @@ data class SessionConnectionActions(
     val disconnectSupported: Boolean = true,
     val busy: Boolean = false,
 )
+
+internal fun suppressAuthNotice(error: Throwable, streamNotice: StreamNotice?): Boolean =
+    error is ApiError.Unauthorized && streamNotice?.openServers == true

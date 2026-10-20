@@ -1,5 +1,7 @@
 package app.codeg.android.feature.settings
 
+import android.content.Context
+import dagger.hilt.android.qualifiers.ApplicationContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.codeg.android.core.data.ServerRepository
@@ -24,6 +26,7 @@ import javax.inject.Inject
 /** General settings: conversation-tool toggles + multi-agent delegation. */
 @HiltViewModel
 class GeneralViewModel @Inject constructor(
+    @ApplicationContext private val appContext: Context,
     private val repository: ServerRepository,
 ) : ViewModel() {
 
@@ -60,7 +63,7 @@ class GeneralViewModel @Inject constructor(
                     )
                 }
             } catch (e: Exception) {
-                _ui.update { it.copy(loading = false, error = e.displayMessage()) }
+                _ui.update { it.copy(loading = false, error = e.displayMessage(appContext)) }
             }
         }
     }

@@ -1,5 +1,7 @@
 package app.codeg.android.feature.settings
 
+import android.content.Context
+import dagger.hilt.android.qualifiers.ApplicationContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.codeg.android.core.data.ServerRepository
@@ -21,6 +23,7 @@ import javax.inject.Inject
 /** Version Control: git installation/custom-path + linked GitHub accounts (read). */
 @HiltViewModel
 class VersionControlViewModel @Inject constructor(
+    @ApplicationContext private val appContext: Context,
     private val repository: ServerRepository,
 ) : ViewModel() {
 
@@ -46,7 +49,7 @@ class VersionControlViewModel @Inject constructor(
                 }
                 _ui.update { it.copy(loading = false, detect = detect, customPath = settings ?: "", accounts = accounts, error = null) }
             } catch (e: Exception) {
-                _ui.update { it.copy(loading = false, error = e.displayMessage()) }
+                _ui.update { it.copy(loading = false, error = e.displayMessage(appContext)) }
             }
         }
     }
@@ -73,7 +76,7 @@ class VersionControlViewModel @Inject constructor(
                 c.updateGitSettings(path)
                 _ui.update { it.copy(saving = false, detect = runCatching { c.detectGit() }.getOrDefault(it.detect)) }
             } catch (e: Exception) {
-                _ui.update { it.copy(saving = false, error = e.displayMessage()) }
+                _ui.update { it.copy(saving = false, error = e.displayMessage(appContext)) }
             }
         }
     }

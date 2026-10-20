@@ -31,25 +31,25 @@ Source root: `app/src/main/java/app/codeg/android/`
 
 | Line | Declaration |
 |---|---|
-| 19 | `enum class AutomationFilter` |
-| 25 | `data class AutomationUiState( val loading: Boolean = true, val refreshing: Boolean = false, val automations: List<Automation> = emptyList(), val filter: AutomationFilter = AutomationFilter.ALL, val selectedAutomationId: Int? = null, val detailLoading: Boolean = false, val runs: List<AutomationRun> = emptyList(), val error: String? = null, )` |
-| 26 |   `val loading: Boolean` |
-| 27 |   `val refreshing: Boolean` |
-| 28 |   `val automations: List<Automation>` |
-| 29 |   `val filter: AutomationFilter` |
-| 30 |   `val selectedAutomationId: Int?` |
-| 31 |   `val detailLoading: Boolean` |
-| 32 |   `val runs: List<AutomationRun>` |
-| 33 |   `val error: String?` |
-| 35 |   `val selectedAutomation: Automation?` |
-| 38 |   `val filteredAutomations: List<Automation>` |
-| 47 | `class AutomationViewModel @Inject constructor( private val repository: ServerRepository, ) : ViewModel()` |
-| 48 |   `private val repository: ServerRepository` |
-| 51 |   `private val _ui` |
-| 52 |   `val ui: StateFlow<AutomationUiState>` |
-| 54 |   `private var client: CodegClient?` |
-| 60 |   `fun load(isInitial: Boolean = false)` |
-| 108 |   `fun setFilter(filter: AutomationFilter)` |
-| 112 |   `fun selectAutomation(automationId: Int?)` |
-| 119 |   `fun loadRuns(automationId: Int)` |
-| 139 |   `fun toggleEnabled(automation: Automation)` |
+| 21 | `enum class AutomationFilter` |
+| 27 | `data class AutomationUiState( val loading: Boolean = true, val refreshing: Boolean = false, val automations: List<Automation> = emptyList(), val filter: AutomationFilter = AutomationFilter.ALL, val selectedAutomationId: Int? = null, val detailLoading: Boolean = false, val runs: List<AutomationRun> = emptyList(), val error: String? = null, )` |
+| 28 |   `val loading: Boolean` |
+| 29 |   `val refreshing: Boolean` |
+| 30 |   `val automations: List<Automation>` |
+| 31 |   `val filter: AutomationFilter` |
+| 32 |   `val selectedAutomationId: Int?` |
+| 33 |   `val detailLoading: Boolean` |
+| 34 |   `val runs: List<AutomationRun>` |
+| 35 |   `val error: String?` |
+| 37 |   `val selectedAutomation: Automation?` |
+| 40 |   `val filteredAutomations: List<Automation>` |
+| 49 | `class AutomationViewModel @Inject constructor( @ApplicationContext private val appContext: Context, private val repository: ServerRepository, ) : ViewModel()` |
+| 51 |   `private val repository: ServerRepository` |
+| 54 |   `private val _ui` |
+| 55 |   `val ui: StateFlow<AutomationUiState>` |
+| 57 |   `private var client: CodegClient?` |
+| 63 |   `fun load(isInitial: Boolean = false)` |
+| 111 |   `fun setFilter(filter: AutomationFilter)` |
+| 115 |   `fun selectAutomation(automationId: Int?)` |
+| 122 |   `fun loadRuns(automationId: Int)` |
+| 142 |   `fun toggleEnabled(automation: Automation)` |

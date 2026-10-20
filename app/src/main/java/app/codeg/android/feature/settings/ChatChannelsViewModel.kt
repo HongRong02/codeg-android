@@ -55,8 +55,8 @@ class ChatChannelsViewModel @Inject constructor(
                 _ui.update { it.copy(phase = ChatChannelsPhase.LOADED, channels = channels, refreshError = null) }
                 loadStatuses()
             } catch (e: Exception) {
-                if (_ui.value.channels.isEmpty()) _ui.update { it.copy(phase = ChatChannelsPhase.FAILED, error = e.displayMessage()) }
-                else _ui.update { it.copy(refreshError = e.displayMessage()) }
+                if (_ui.value.channels.isEmpty()) _ui.update { it.copy(phase = ChatChannelsPhase.FAILED, error = e.displayMessage(appContext)) }
+                else _ui.update { it.copy(refreshError = e.displayMessage(appContext)) }
             }
         }
     }
@@ -93,7 +93,7 @@ class ChatChannelsViewModel @Inject constructor(
                 val updated = c.updateChatChannel(UpdateChatChannelBody(id = channel.id, enabled = on))
                 _ui.update { it.copy(channels = it.channels.map { ch -> if (ch.id == channel.id) updated else ch }) }
             } catch (e: Exception) {
-                _ui.update { it.copy(channels = it.channels.map { ch -> if (ch.id == channel.id) ch.withEnabled(previous) else ch }, refreshError = e.displayMessage()) }
+                _ui.update { it.copy(channels = it.channels.map { ch -> if (ch.id == channel.id) ch.withEnabled(previous) else ch }, refreshError = e.displayMessage(appContext)) }
             } finally {
                 _ui.update { it.copy(togglingEnabled = it.togglingEnabled - channel.id) }
             }
@@ -134,7 +134,7 @@ class ChatChannelsViewModel @Inject constructor(
                 c.deleteChatChannel(channel.id)
                 _ui.update { it.copy(toast = appContext.getString(R.string.cc_toast_deleted, channel.name)) }
             } catch (e: Exception) {
-                _ui.update { it.copy(channels = previous, toast = appContext.getString(R.string.cc_toast_delete_failed, e.displayMessage())) }
+                _ui.update { it.copy(channels = previous, toast = appContext.getString(R.string.cc_toast_delete_failed, e.displayMessage(appContext))) }
             }
         }
     }
@@ -190,7 +190,7 @@ class ChatChannelsViewModel @Inject constructor(
                 updateDetail { if (it.channelId == id) it.copy(messages = messages) else it }
                 if (poll) pollUntilSettled(id)
             } catch (e: Exception) {
-                updateDetail { it.copy(actionError = e.displayMessage()) }
+                updateDetail { it.copy(actionError = e.displayMessage(appContext)) }
             } finally {
                 updateDetail { it.copy(busy = false) }
             }
@@ -213,7 +213,7 @@ class ChatChannelsViewModel @Inject constructor(
                 c.deleteChatChannelToken(id)
                 updateDetail { it.copy(hasToken = false, toast = appContext.getString(R.string.cc_token_removed)) }
             } catch (e: Exception) {
-                updateDetail { it.copy(actionError = e.displayMessage()) }
+                updateDetail { it.copy(actionError = e.displayMessage(appContext)) }
             }
         }
     }

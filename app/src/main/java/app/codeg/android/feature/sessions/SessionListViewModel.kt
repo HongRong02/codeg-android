@@ -141,7 +141,7 @@ class SessionListViewModel @Inject constructor(
             throw e
         } catch (e: Exception) {
             if (token != fetchGeneration) return
-            _ui.update { it.copy(isLoading = false, isRefreshing = false, error = e.displayMessage()) }
+            _ui.update { it.copy(isLoading = false, isRefreshing = false, error = e.displayMessage(appContext)) }
         }
     }
 
@@ -164,7 +164,7 @@ class SessionListViewModel @Inject constructor(
             try {
                 active.setPinned(conversation.id, pinned)
             } catch (e: Exception) {
-                _ui.update { it.copy(conversations = previous, error = e.displayMessage()) }
+                _ui.update { it.copy(conversations = previous, error = e.displayMessage(appContext)) }
             }
         }
     }

@@ -1,5 +1,7 @@
 package app.codeg.android.feature.settings
 
+import android.content.Context
+import dagger.hilt.android.qualifiers.ApplicationContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.codeg.android.core.data.ServerRepository
@@ -18,6 +20,7 @@ import javax.inject.Inject
 /** System settings: HTTP proxy + server update check. */
 @HiltViewModel
 class SystemViewModel @Inject constructor(
+    @ApplicationContext private val appContext: Context,
     private val repository: ServerRepository,
 ) : ViewModel() {
 
@@ -38,7 +41,7 @@ class SystemViewModel @Inject constructor(
                 val proxy = c.getSystemProxySettings()
                 _ui.update { it.copy(loading = false, proxyEnabled = proxy.enabled, proxyUrl = proxy.proxyUrl ?: "", error = null) }
             } catch (e: Exception) {
-                _ui.update { it.copy(loading = false, error = e.displayMessage()) }
+                _ui.update { it.copy(loading = false, error = e.displayMessage(appContext)) }
             }
         }
     }
@@ -55,7 +58,7 @@ class SystemViewModel @Inject constructor(
                 c.updateSystemProxySettings(s.proxyEnabled, s.proxyUrl.trim().ifEmpty { null })
                 _ui.update { it.copy(savingProxy = false) }
             } catch (e: Exception) {
-                _ui.update { it.copy(savingProxy = false, error = e.displayMessage()) }
+                _ui.update { it.copy(savingProxy = false, error = e.displayMessage(appContext)) }
             }
         }
     }
@@ -67,7 +70,7 @@ class SystemViewModel @Inject constructor(
             try {
                 _ui.update { it.copy(checking = false, updateResult = c.checkAppUpdate()) }
             } catch (e: Exception) {
-                _ui.update { it.copy(checking = false, error = e.displayMessage()) }
+                _ui.update { it.copy(checking = false, error = e.displayMessage(appContext)) }
             }
         }
     }

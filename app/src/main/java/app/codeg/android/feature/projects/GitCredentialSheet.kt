@@ -1,5 +1,6 @@
 package app.codeg.android.feature.projects
 
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -67,6 +68,7 @@ fun GitCredentialSheet(
     viewModel: ProjectDetailViewModel,
     prompt: GitCredentialPrompt,
 ) {
+    val context = LocalContext.current
     val colors = CodegTheme.colors
     val scope = rememberCoroutineScope()
     val uriHandler = LocalUriHandler.current
@@ -109,7 +111,7 @@ fun GitCredentialSheet(
                 } catch (e: CancellationException) {
                     throw e
                 } catch (e: Exception) {
-                    error = e.displayMessage()
+                    error = e.displayMessage(context)
                     submitting = false
                 }
             }

@@ -1,5 +1,7 @@
 package app.codeg.android.feature.server
 
+import android.content.Context
+import dagger.hilt.android.qualifiers.ApplicationContext
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -19,6 +21,7 @@ import javax.inject.Inject
 /** Add/edit form state for a server profile, plus the Test Connection probe. */
 @HiltViewModel
 class ServerEditorViewModel @Inject constructor(
+    @ApplicationContext private val appContext: Context,
     private val repository: ServerRepository,
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
@@ -62,7 +65,7 @@ class ServerEditorViewModel @Inject constructor(
                 val health = repository.transientClient(url.trim(), token.trim()).health()
                 TestState.Success(health.version)
             } catch (e: Exception) {
-                TestState.Failure(e.displayMessage())
+                TestState.Failure(e.displayMessage(appContext))
             }
         }
     }

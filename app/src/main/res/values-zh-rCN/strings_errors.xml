@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="error_unauthorized">Token 无效或缺失</string>
+    <string name="error_turn_in_progress">当前会话已有一轮对话正在进行</string>
+    <string name="error_decoding">服务器返回了意外的响应</string>
+    <string name="error_unknown">发生错误</string>
+</resources>

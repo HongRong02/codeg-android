@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="error_unauthorized">Invalid or missing token</string>
+    <string name="error_turn_in_progress">A turn is already in progress</string>
+    <string name="error_decoding">Unexpected response from the server</string>
+    <string name="error_unknown">Something went wrong</string>
+</resources>

@@ -1,5 +1,7 @@
 package app.codeg.android.feature.settings
 
+import android.content.Context
+import dagger.hilt.android.qualifiers.ApplicationContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.codeg.android.core.data.ServerRepository
@@ -45,6 +47,7 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class AgentsViewModel @Inject constructor(
+    @ApplicationContext private val appContext: Context,
     private val repository: ServerRepository,
 ) : ViewModel() {
 
@@ -90,7 +93,7 @@ class AgentsViewModel @Inject constructor(
                 )
             }
         } catch (e: Exception) {
-            _ui.update { it.copy(loading = false, error = e.displayMessage()) }
+            _ui.update { it.copy(loading = false, error = e.displayMessage(appContext)) }
         }
     }
 
@@ -112,7 +115,7 @@ class AgentsViewModel @Inject constructor(
                     applyEnabled(agent.agentType, enabled)
                 }.onFailure { e ->
                     applyEnabled(agent.agentType, wasEnabled)
-                    _ui.update { it.copy(error = e.displayMessage()) }
+                    _ui.update { it.copy(error = e.displayMessage(appContext)) }
                 }
             }
         }
@@ -156,7 +159,7 @@ class AgentsViewModel @Inject constructor(
                     it.copy(detail = AgentDetailState(agentType, agent, draft = draft, original = draft, providers = providers))
                 }
             } catch (e: Exception) {
-                _ui.update { it.copy(error = e.displayMessage()) }
+                _ui.update { it.copy(error = e.displayMessage(appContext)) }
             }
         }
     }
@@ -302,7 +305,7 @@ class AgentsViewModel @Inject constructor(
                 updateDetail { it.copy(saving = false) }
                 onSuccess()
             } catch (e: Exception) {
-                updateDetail { it.copy(saving = false, saveError = e.displayMessage()) }
+                updateDetail { it.copy(saving = false, saveError = e.displayMessage(appContext)) }
             }
         }
     }

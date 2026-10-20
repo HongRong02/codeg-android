@@ -1,5 +1,7 @@
 package app.codeg.android.feature.settings
 
+import android.content.Context
+import dagger.hilt.android.qualifiers.ApplicationContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.codeg.android.core.data.ServerRepository
@@ -26,6 +28,7 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class SkillsViewModel @Inject constructor(
+    @ApplicationContext private val appContext: Context,
     private val repository: ServerRepository,
 ) : ViewModel() {
 
@@ -52,7 +55,7 @@ class SkillsViewModel @Inject constructor(
                 _ui.update { it.copy(phase = SkillsPhase.LOADED, agents = agents, selectedAgent = selected, error = null) }
                 selected?.let { loadSkills(it) }
             } catch (e: Exception) {
-                _ui.update { it.copy(phase = SkillsPhase.FAILED, error = e.displayMessage()) }
+                _ui.update { it.copy(phase = SkillsPhase.FAILED, error = e.displayMessage(appContext)) }
             }
         }
     }
@@ -78,7 +81,7 @@ class SkillsViewModel @Inject constructor(
                 _ui.update { it.copy(skillsLoading = false, result = loaded, resultAgent = agent, refreshError = null) }
             } catch (e: Exception) {
                 if (token != loadToken) return@launch
-                _ui.update { it.copy(skillsLoading = false, refreshError = e.displayMessage()) }
+                _ui.update { it.copy(skillsLoading = false, refreshError = e.displayMessage(appContext)) }
             }
         }
     }
@@ -104,7 +107,7 @@ class SkillsViewModel @Inject constructor(
                 if (agent == _ui.value.selectedAgent) loadSkills(agent)
             } catch (e: Exception) {
                 // Don't surface A's failure on B's view if the user switched mid-delete.
-                if (agent == _ui.value.selectedAgent) _ui.update { it.copy(refreshError = e.displayMessage()) }
+                if (agent == _ui.value.selectedAgent) _ui.update { it.copy(refreshError = e.displayMessage(appContext)) }
             }
         }
     }

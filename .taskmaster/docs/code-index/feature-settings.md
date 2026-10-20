@@ -26,50 +26,51 @@ Source root: `app/src/main/java/app/codeg/android/`
 
 | Line | Declaration |
 |---|---|
-| 71 | `private data class KimiBanner(val text: String, val isError: Boolean)` |
-| 85 | `@Composable fun AgentConfigKimiView(agent: AcpAgentInfo, viewModel: AgentsViewModel)` |
-| 86 |   `val colors` |
-| 87 |   `val scope` |
-| 91 |   `val seed` |
-| 92 |   `val seedInterface` |
-| 93 |   `var mode by remember` |
-| 94 |   `var interfaceType by remember` |
-| 95 |   `var region by remember` |
-| 96 |   `var baseUrl by remember` |
-| 97 |   `var authType by remember` |
-| 98 |   `var apiKey by remember` |
-| 99 |   `var modelId by remember` |
-| 100 |   `var maxContext by remember` |
-| 101 |   `var vertexProject by remember` |
-| 102 |   `var vertexLocation by remember` |
-| 103 |   `var rawConfig by remember` |
-| 104 |   `var models by remember` |
-| 105 |   `var saving by remember` |
-| 106 |   `var fetchingModels by remember` |
-| 107 |   `var banner by remember` |
-| 109 |   `val meta` |
-| 110 |   `val isKimi` |
-| 111 |   `val isVertex` |
-| 112 |   `val effectiveBaseUrl` |
-| 113 |   `val liveConfig` |
-| 121 |   `val savedMsg` |
-| 122 |   `val modelRequiredMsg` |
-| 123 |   `val enterKeyMsg` |
-| 124 |   `val modelsNoneMsg` |
-| 125 |   `val modelsErrMsg` |
-| 126 |   `val modelsFoundFmt` |
-| 128 |   `fun runSave(body: UpdateKimiCodeConfigBody)` |
-| 143 |   `fun handleSave()` |
-| 167 |   `fun fetchModels()` |
-| 189 |   `fun setInterface(next: KimiInterfaceType)` |
-| 333 | `@Composable private fun KimiGateBanner(present: Boolean, mode: KimiAuthMode)` |
-| 334 |   `val colors` |
-| 335 |   `val tint` |
-| 336 |   `val text` |
-| 351 | `@Composable private fun KimiResultBanner(banner: KimiBanner)` |
-| 352 |   `val colors` |
-| 353 |   `val tint` |
-| 365 | `@Composable internal fun Caption(text: String)` |
+| 72 | `private data class KimiBanner(val text: String, val isError: Boolean)` |
+| 86 | `@Composable fun AgentConfigKimiView(agent: AcpAgentInfo, viewModel: AgentsViewModel)` |
+| 87 |   `val context` |
+| 88 |   `val colors` |
+| 89 |   `val scope` |
+| 93 |   `val seed` |
+| 94 |   `val seedInterface` |
+| 95 |   `var mode by remember` |
+| 96 |   `var interfaceType by remember` |
+| 97 |   `var region by remember` |
+| 98 |   `var baseUrl by remember` |
+| 99 |   `var authType by remember` |
+| 100 |   `var apiKey by remember` |
+| 101 |   `var modelId by remember` |
+| 102 |   `var maxContext by remember` |
+| 103 |   `var vertexProject by remember` |
+| 104 |   `var vertexLocation by remember` |
+| 105 |   `var rawConfig by remember` |
+| 106 |   `var models by remember` |
+| 107 |   `var saving by remember` |
+| 108 |   `var fetchingModels by remember` |
+| 109 |   `var banner by remember` |
+| 111 |   `val meta` |
+| 112 |   `val isKimi` |
+| 113 |   `val isVertex` |
+| 114 |   `val effectiveBaseUrl` |
+| 115 |   `val liveConfig` |
+| 123 |   `val savedMsg` |
+| 124 |   `val modelRequiredMsg` |
+| 125 |   `val enterKeyMsg` |
+| 126 |   `val modelsNoneMsg` |
+| 127 |   `val modelsErrMsg` |
+| 128 |   `val modelsFoundFmt` |
+| 130 |   `fun runSave(body: UpdateKimiCodeConfigBody)` |
+| 145 |   `fun handleSave()` |
+| 169 |   `fun fetchModels()` |
+| 191 |   `fun setInterface(next: KimiInterfaceType)` |
+| 335 | `@Composable private fun KimiGateBanner(present: Boolean, mode: KimiAuthMode)` |
+| 336 |   `val colors` |
+| 337 |   `val tint` |
+| 338 |   `val text` |
+| 353 | `@Composable private fun KimiResultBanner(banner: KimiBanner)` |
+| 354 |   `val colors` |
+| 355 |   `val tint` |
+| 367 | `@Composable internal fun Caption(text: String)` |
 
 ## feature/settings/AgentConfigKiroView.kt
 
@@ -81,63 +82,64 @@ Source root: `app/src/main/java/app/codeg/android/`
 
 | Line | Declaration |
 |---|---|
-| 64 | `private data class PiBanner(val text: String, val isError: Boolean)` |
-| 76 | `@Composable fun AgentConfigPiView(agent: AcpAgentInfo, viewModel: AgentsViewModel)` |
-| 77 |   `val colors` |
-| 78 |   `val scope` |
-| 80 |   `val seedEnv` |
-| 82 |   `val seedCmd` |
-| 83 |   `var mode by remember` |
-| 84 |   `var command by remember` |
-| 85 |   `var configDir by remember` |
-| 86 |   `var sessionDir by remember` |
-| 87 |   `var validation by remember` |
-| 88 |   `var validating by remember` |
-| 89 |   `var piStatus by remember` |
-| 90 |   `var checkingPi by remember` |
-| 91 |   `var piOp by remember` |
-| 92 |   `var savingRuntime by remember` |
-| 95 |   `var selectedProvider by remember` |
-| 96 |   `var customId by remember` |
-| 97 |   `var customBaseUrl by remember` |
-| 98 |   `var customApi by remember` |
-| 99 |   `var customProviders by remember` |
-| 100 |   `var modelText by remember` |
-| 101 |   `var thinkingLevel by remember` |
-| 102 |   `var apiKey by remember` |
-| 103 |   `var authProviders by remember` |
-| 104 |   `var savingCreds by remember` |
-| 105 |   `var loadingCreds by remember` |
-| 108 |   `var trustWorkspace by remember` |
-| 109 |   `var savingTrust by remember` |
-| 111 |   `var banner by remember` |
-| 113 |   `val isCustomProvider` |
-| 114 |   `val effectiveProvider` |
-| 115 |   `val providerHasKey` |
-| 116 |   `val customIncomplete` |
-| 117 |   `val credsIncomplete` |
-| 120 |   `val providerOptions` |
-| 130 |   `val runtimeSaved` |
-| 131 |   `val configSaved` |
-| 132 |   `val providerModelRequired` |
-| 133 |   `val baseUrlRequired` |
-| 134 |   `val installedMsg` |
-| 135 |   `val uninstalledMsg` |
-| 136 |   `val installFailed` |
-| 137 |   `val uninstallFailed` |
-| 138 |   `val trustFailed` |
-| 169 |   `fun detectPi()` |
-| 177 |   `fun handleValidate()` |
-| 188 |   `fun handleSaveRuntime()` |
-| 204 |   `fun handleSaveCreds()` |
-| 244 |   `fun handlePiOp(install: Boolean)` |
-| 260 |   `fun toggleTrust(next: Boolean)` |
-| 418 | `@Composable private fun PiActionButton(text: String, busy: Boolean, enabled: Boolean, onClick: () -> Unit)` |
-| 419 |   `val colors` |
-| 427 | `@Composable private fun PiResultBanner(banner: PiBanner)` |
-| 428 |   `val colors` |
-| 429 |   `val tint` |
-| 440 | `@Composable private fun piThinkingLabel(level: String): String` |
+| 65 | `private data class PiBanner(val text: String, val isError: Boolean)` |
+| 77 | `@Composable fun AgentConfigPiView(agent: AcpAgentInfo, viewModel: AgentsViewModel)` |
+| 78 |   `val context` |
+| 79 |   `val colors` |
+| 80 |   `val scope` |
+| 82 |   `val seedEnv` |
+| 84 |   `val seedCmd` |
+| 85 |   `var mode by remember` |
+| 86 |   `var command by remember` |
+| 87 |   `var configDir by remember` |
+| 88 |   `var sessionDir by remember` |
+| 89 |   `var validation by remember` |
+| 90 |   `var validating by remember` |
+| 91 |   `var piStatus by remember` |
+| 92 |   `var checkingPi by remember` |
+| 93 |   `var piOp by remember` |
+| 94 |   `var savingRuntime by remember` |
+| 97 |   `var selectedProvider by remember` |
+| 98 |   `var customId by remember` |
+| 99 |   `var customBaseUrl by remember` |
+| 100 |   `var customApi by remember` |
+| 101 |   `var customProviders by remember` |
+| 102 |   `var modelText by remember` |
+| 103 |   `var thinkingLevel by remember` |
+| 104 |   `var apiKey by remember` |
+| 105 |   `var authProviders by remember` |
+| 106 |   `var savingCreds by remember` |
+| 107 |   `var loadingCreds by remember` |
+| 110 |   `var trustWorkspace by remember` |
+| 111 |   `var savingTrust by remember` |
+| 113 |   `var banner by remember` |
+| 115 |   `val isCustomProvider` |
+| 116 |   `val effectiveProvider` |
+| 117 |   `val providerHasKey` |
+| 118 |   `val customIncomplete` |
+| 119 |   `val credsIncomplete` |
+| 122 |   `val providerOptions` |
+| 132 |   `val runtimeSaved` |
+| 133 |   `val configSaved` |
+| 134 |   `val providerModelRequired` |
+| 135 |   `val baseUrlRequired` |
+| 136 |   `val installedMsg` |
+| 137 |   `val uninstalledMsg` |
+| 138 |   `val installFailed` |
+| 139 |   `val uninstallFailed` |
+| 140 |   `val trustFailed` |
+| 171 |   `fun detectPi()` |
+| 179 |   `fun handleValidate()` |
+| 190 |   `fun handleSaveRuntime()` |
+| 206 |   `fun handleSaveCreds()` |
+| 246 |   `fun handlePiOp(install: Boolean)` |
+| 262 |   `fun toggleTrust(next: Boolean)` |
+| 420 | `@Composable private fun PiActionButton(text: String, busy: Boolean, enabled: Boolean, onClick: () -> Unit)` |
+| 421 |   `val colors` |
+| 429 | `@Composable private fun PiResultBanner(banner: PiBanner)` |
+| 430 |   `val colors` |
+| 431 |   `val tint` |
+| 442 | `@Composable private fun piThinkingLabel(level: String): String` |
 
 ## feature/settings/AgentConfigQoderView.kt
 
@@ -270,70 +272,70 @@ Source root: `app/src/main/java/app/codeg/android/`
 
 | Line | Declaration |
 |---|---|
-| 47 | `class AgentsViewModel @Inject constructor( private val repository: ServerRepository, ) : ViewModel()` |
-| 48 |   `private val repository: ServerRepository` |
-| 51 |   `private val _ui` |
-| 52 |   `val ui: StateFlow<AgentsUiState>` |
-| 54 |   `private var client: CodegClient?` |
-| 62 |   `private val opMutex` |
-| 68 |   `fun load()` |
-| 72 |   `private suspend fun reload()` |
-| 98 |   `fun setEnabled(agent: AcpAgentInfo, enabled: Boolean)` |
-| 121 |   `private fun applyEnabled(type: AgentType, enabled: Boolean)` |
-| 139 |   `fun openDetail(agentType: AgentType)` |
-| 164 |   `fun closeDetail()` |
-| 167 |   `fun editDraft(transform: (AgentDraft) -> AgentDraft)` |
-| 177 |   `fun rebakeDraft()` |
-| 180 |   `fun editRawConfig(text: String)` |
-| 190 |   `fun setModelProvider(id: Int?)` |
-| 192 |   `fun setClaudeAuthMode(mode: ClaudeAuthMode)` |
-| 205 |   `fun setCodexAuthMode(mode: CodexAuthMode)` |
-| 213 |   `fun setGeminiAuthMode(mode: GeminiAuthMode)` |
-| 218 |   `fun setHermesProvider(id: String)` |
-| 230 |   `fun save(onSuccess: () -> Unit)` |
-| 318 |   `suspend fun saveKimiCodeConfig(body: UpdateKimiCodeConfigBody)` |
-| 327 |   `suspend fun fetchKimiModels(baseUrl: String, apiKey: String): List<String>` |
-| 341 |   `suspend fun updatePiEnv(agent: AcpAgentInfo, env: Map<String, String>)` |
-| 350 |   `suspend fun loadPiConfig(): PiConfigProjection` |
-| 359 |   `suspend fun savePiConfig(body: UpdatePiConfigBody)` |
-| 365 |   `suspend fun validatePiCommand(command: String): PiCommandValidation` |
-| 371 |   `suspend fun installPiBinary()` |
-| 376 |   `suspend fun uninstallPiBinary()` |
-| 390 |   `suspend fun cursorAuthStatus(apiKey: String): CursorAuthStatus` |
-| 396 |   `suspend fun cursorListModels(apiKey: String): CursorModelsResult` |
-| 403 |   `private fun updateDetail(block: (AgentDetailState) -> AgentDetailState)` |
-| 406 |   `private fun agentSupportsProviders(agent: AgentType): Boolean` |
-| 409 |   `private data class ConfigPayload( val configJson: String?, val opencodeAuthJson: String?, val codexAuthJson: String?, val codexConfigToml: String?, val grokConfigToml: String? = null, val cursorCliConfigJson: String? = null, val cursorStructured: CursorStructuredConfig? = null, )` |
-| 420 |   `private fun makeConfigBody(agentType: AgentType, draft: AgentDraft, original: AcpAgentInfo): ConfigPayload` |
-| 468 |   `private data class HermesBody(val provider: String, val model: String?, val apiKey: FieldEdit, val baseUrl: FieldEdit)` |
-| 470 |   `private fun hermesBody(d: AgentDraft): HermesBody` |
-| 491 | `internal fun toggleWriteSource(agents: List<AcpAgentInfo>, captured: AcpAgentInfo): AcpAgentInfo` |
-| 504 | `internal fun grokConfigTomlForSave(draft: AgentDraft, snapshot: AcpAgentInfo, freshToml: String): String?` |
-| 506 |   `val pmChanged` |
-| 507 |   `val reChanged` |
-| 520 | `private val nativeRawConfigAgents` |
-| 528 | `internal fun cursorCliConfigForSave(draft: AgentDraft, original: AcpAgentInfo): String?` |
-| 545 | `internal fun cursorStructuredForSave(draft: AgentDraft, original: AcpAgentInfo): CursorStructuredConfig?` |
-| 554 | `data class AgentsUiState( val agents: List<AcpAgentInfo> = emptyList(), val loading: Boolean = false, val error: String? = null, val detail: AgentDetailState? = null, )` |
-| 555 |   `val agents: List<AcpAgentInfo>` |
-| 556 |   `val loading: Boolean` |
-| 557 |   `val error: String?` |
-| 558 |   `val detail: AgentDetailState?` |
-| 561 | `data class AgentDetailState( val agentType: AgentType, val agent: AcpAgentInfo, val draft: AgentDraft, val original: AgentDraft, val providers: List<ModelProviderInfo> = emptyList(), val saving: Boolean = false, val saveError: String? = null, )` |
-| 562 |   `val agentType: AgentType` |
-| 563 |   `val agent: AcpAgentInfo` |
-| 564 |   `val draft: AgentDraft` |
-| 565 |   `val original: AgentDraft` |
-| 566 |   `val providers: List<ModelProviderInfo>` |
-| 567 |   `val saving: Boolean` |
-| 568 |   `val saveError: String?` |
-| 570 |   `val dirty: Boolean get()` |
-| 571 |   `val missingProvider: Boolean get()` |
-| 573 |   `val missingCodeBuddyBaseUrl: Boolean get()` |
-| 575 |   `val missingCursorApiKey: Boolean get()` |
-| 576 |   `val canSave: Boolean` |
-| 578 |   `val configError: String?` |
-| 581 |   `val provider: ModelProviderInfo? get()` |
+| 49 | `class AgentsViewModel @Inject constructor( @ApplicationContext private val appContext: Context, private val repository: ServerRepository, ) : ViewModel()` |
+| 51 |   `private val repository: ServerRepository` |
+| 54 |   `private val _ui` |
+| 55 |   `val ui: StateFlow<AgentsUiState>` |
+| 57 |   `private var client: CodegClient?` |
+| 65 |   `private val opMutex` |
+| 71 |   `fun load()` |
+| 75 |   `private suspend fun reload()` |
+| 101 |   `fun setEnabled(agent: AcpAgentInfo, enabled: Boolean)` |
+| 124 |   `private fun applyEnabled(type: AgentType, enabled: Boolean)` |
+| 142 |   `fun openDetail(agentType: AgentType)` |
+| 167 |   `fun closeDetail()` |
+| 170 |   `fun editDraft(transform: (AgentDraft) -> AgentDraft)` |
+| 180 |   `fun rebakeDraft()` |
+| 183 |   `fun editRawConfig(text: String)` |
+| 193 |   `fun setModelProvider(id: Int?)` |
+| 195 |   `fun setClaudeAuthMode(mode: ClaudeAuthMode)` |
+| 208 |   `fun setCodexAuthMode(mode: CodexAuthMode)` |
+| 216 |   `fun setGeminiAuthMode(mode: GeminiAuthMode)` |
+| 221 |   `fun setHermesProvider(id: String)` |
+| 233 |   `fun save(onSuccess: () -> Unit)` |
+| 321 |   `suspend fun saveKimiCodeConfig(body: UpdateKimiCodeConfigBody)` |
+| 330 |   `suspend fun fetchKimiModels(baseUrl: String, apiKey: String): List<String>` |
+| 344 |   `suspend fun updatePiEnv(agent: AcpAgentInfo, env: Map<String, String>)` |
+| 353 |   `suspend fun loadPiConfig(): PiConfigProjection` |
+| 362 |   `suspend fun savePiConfig(body: UpdatePiConfigBody)` |
+| 368 |   `suspend fun validatePiCommand(command: String): PiCommandValidation` |
+| 374 |   `suspend fun installPiBinary()` |
+| 379 |   `suspend fun uninstallPiBinary()` |
+| 393 |   `suspend fun cursorAuthStatus(apiKey: String): CursorAuthStatus` |
+| 399 |   `suspend fun cursorListModels(apiKey: String): CursorModelsResult` |
+| 406 |   `private fun updateDetail(block: (AgentDetailState) -> AgentDetailState)` |
+| 409 |   `private fun agentSupportsProviders(agent: AgentType): Boolean` |
+| 412 |   `private data class ConfigPayload( val configJson: String?, val opencodeAuthJson: String?, val codexAuthJson: String?, val codexConfigToml: String?, val grokConfigToml: String? = null, val cursorCliConfigJson: String? = null, val cursorStructured: CursorStructuredConfig? = null, )` |
+| 423 |   `private fun makeConfigBody(agentType: AgentType, draft: AgentDraft, original: AcpAgentInfo): ConfigPayload` |
+| 471 |   `private data class HermesBody(val provider: String, val model: String?, val apiKey: FieldEdit, val baseUrl: FieldEdit)` |
+| 473 |   `private fun hermesBody(d: AgentDraft): HermesBody` |
+| 494 | `internal fun toggleWriteSource(agents: List<AcpAgentInfo>, captured: AcpAgentInfo): AcpAgentInfo` |
+| 507 | `internal fun grokConfigTomlForSave(draft: AgentDraft, snapshot: AcpAgentInfo, freshToml: String): String?` |
+| 509 |   `val pmChanged` |
+| 510 |   `val reChanged` |
+| 523 | `private val nativeRawConfigAgents` |
+| 531 | `internal fun cursorCliConfigForSave(draft: AgentDraft, original: AcpAgentInfo): String?` |
+| 548 | `internal fun cursorStructuredForSave(draft: AgentDraft, original: AcpAgentInfo): CursorStructuredConfig?` |
+| 557 | `data class AgentsUiState( val agents: List<AcpAgentInfo> = emptyList(), val loading: Boolean = false, val error: String? = null, val detail: AgentDetailState? = null, )` |
+| 558 |   `val agents: List<AcpAgentInfo>` |
+| 559 |   `val loading: Boolean` |
+| 560 |   `val error: String?` |
+| 561 |   `val detail: AgentDetailState?` |
+| 564 | `data class AgentDetailState( val agentType: AgentType, val agent: AcpAgentInfo, val draft: AgentDraft, val original: AgentDraft, val providers: List<ModelProviderInfo> = emptyList(), val saving: Boolean = false, val saveError: String? = null, )` |
+| 565 |   `val agentType: AgentType` |
+| 566 |   `val agent: AcpAgentInfo` |
+| 567 |   `val draft: AgentDraft` |
+| 568 |   `val original: AgentDraft` |
+| 569 |   `val providers: List<ModelProviderInfo>` |
+| 570 |   `val saving: Boolean` |
+| 571 |   `val saveError: String?` |
+| 573 |   `val dirty: Boolean get()` |
+| 574 |   `val missingProvider: Boolean get()` |
+| 576 |   `val missingCodeBuddyBaseUrl: Boolean get()` |
+| 578 |   `val missingCursorApiKey: Boolean get()` |
+| 579 |   `val canSave: Boolean` |
+| 581 |   `val configError: String?` |
+| 584 |   `val provider: ModelProviderInfo? get()` |
 
 ## feature/settings/ChatChannelsScreen.kt
 
@@ -491,27 +493,27 @@ Source root: `app/src/main/java/app/codeg/android/`
 
 | Line | Declaration |
 |---|---|
-| 22 | `class ChatGlobalSettingsViewModel @Inject constructor( private val repository: ServerRepository, ) : ViewModel()` |
-| 23 |   `private val repository: ServerRepository` |
-| 26 |   `private val _ui` |
-| 27 |   `val ui: StateFlow<ChatGlobalUiState>` |
-| 29 |   `private var client: CodegClient?` |
-| 33 |   `fun load()` |
-| 60 |   `fun setCommandPrefix(prefix: String)` |
-| 67 |   `fun setLanguage(code: String)` |
-| 73 |   `fun toggleEvent(id: String, on: Boolean)` |
-| 82 |   `fun addWebhook(url: String)` |
-| 88 |   `fun setWebhookEnabled(index: Int, on: Boolean)` |
-| 95 |   `fun removeWebhook(index: Int)` |
-| 102 |   `private fun persistWebhooks(next: List<WebhookConfig>)` |
-| 111 |   `fun dismissError()` |
-| 114 | `data class ChatGlobalUiState( val loading: Boolean = false, val commandPrefix: String = "/", val language: String = "en", val enabledEvents: Set<String> = ChatEventCatalog.defaultEnabled, val webhooks: List<WebhookConfig> = emptyList(), val error: String? = null, )` |
-| 115 |   `val loading: Boolean` |
-| 116 |   `val commandPrefix: String` |
-| 117 |   `val language: String` |
-| 118 |   `val enabledEvents: Set<String>` |
-| 119 |   `val webhooks: List<WebhookConfig>` |
-| 120 |   `val error: String?` |
+| 24 | `class ChatGlobalSettingsViewModel @Inject constructor( @ApplicationContext private val appContext: Context, private val repository: ServerRepository, ) : ViewModel()` |
+| 26 |   `private val repository: ServerRepository` |
+| 29 |   `private val _ui` |
+| 30 |   `val ui: StateFlow<ChatGlobalUiState>` |
+| 32 |   `private var client: CodegClient?` |
+| 36 |   `fun load()` |
+| 63 |   `fun setCommandPrefix(prefix: String)` |
+| 70 |   `fun setLanguage(code: String)` |
+| 76 |   `fun toggleEvent(id: String, on: Boolean)` |
+| 85 |   `fun addWebhook(url: String)` |
+| 91 |   `fun setWebhookEnabled(index: Int, on: Boolean)` |
+| 98 |   `fun removeWebhook(index: Int)` |
+| 105 |   `private fun persistWebhooks(next: List<WebhookConfig>)` |
+| 114 |   `fun dismissError()` |
+| 117 | `data class ChatGlobalUiState( val loading: Boolean = false, val commandPrefix: String = "/", val language: String = "en", val enabledEvents: Set<String> = ChatEventCatalog.defaultEnabled, val webhooks: List<WebhookConfig> = emptyList(), val error: String? = null, )` |
+| 118 |   `val loading: Boolean` |
+| 119 |   `val commandPrefix: String` |
+| 120 |   `val language: String` |
+| 121 |   `val enabledEvents: Set<String>` |
+| 122 |   `val webhooks: List<WebhookConfig>` |
+| 123 |   `val error: String?` |
 
 ## feature/settings/ExpertsScreen.kt
 
@@ -545,38 +547,38 @@ Source root: `app/src/main/java/app/codeg/android/`
 
 | Line | Declaration |
 |---|---|
-| 28 | `class ExpertsViewModel @Inject constructor( private val repository: ServerRepository, ) : ViewModel()` |
-| 29 |   `private val repository: ServerRepository` |
-| 32 |   `private val _ui` |
-| 33 |   `val ui: StateFlow<ExpertsUiState>` |
-| 35 |   `private var client: CodegClient?` |
-| 39 |   `fun load()` |
-| 59 |   `fun dismissRefreshError()` |
-| 63 |   `fun openDetail(expert: ExpertListItem)` |
-| 85 |   `fun closeDetail()` |
-| 87 |   `fun dismissDetailError()` |
-| 90 |   `private fun updateDetail(transform: (DetailState) -> DetailState)` |
-| 93 |   `fun toggleLink(agent: AgentType, on: Boolean)` |
-| 128 | `enum class ExpertsPhase` |
-| 130 | `data class DetailState( val expert: ExpertListItem, val loading: Boolean = true, val content: String = "", val statusByAgent: Map<AgentType, ExpertInstallStatus> = emptyMap(), val toggling: Set<AgentType> = emptySet(), val error: String? = null, )` |
-| 131 |   `val expert: ExpertListItem` |
-| 132 |   `val loading: Boolean` |
-| 133 |   `val content: String` |
-| 134 |   `val statusByAgent: Map<AgentType, ExpertInstallStatus>` |
-| 135 |   `val toggling: Set<AgentType>` |
-| 136 |   `val error: String?` |
-| 139 | `data class ExpertsUiState( val phase: ExpertsPhase = ExpertsPhase.LOADING, val experts: List<ExpertListItem> = emptyList(), val agents: List<AgentType> = emptyList(), val refreshError: String? = null, val error: String? = null, val detail: DetailState? = null, )` |
-| 140 |   `val phase: ExpertsPhase` |
-| 141 |   `val experts: List<ExpertListItem>` |
-| 142 |   `val agents: List<AgentType>` |
-| 143 |   `val refreshError: String?` |
-| 144 |   `val error: String?` |
-| 145 |   `val detail: DetailState?` |
-| 148 |   `val grouped: List<Triple<String, String, List<ExpertListItem>>>` |
-| 162 | `object ExpertCategory` |
-| 163 |   `private val known` |
-| 173 |   `fun rank(key: String): Int` |
-| 175 |   `fun label(key: String): String` |
+| 30 | `class ExpertsViewModel @Inject constructor( @ApplicationContext private val appContext: Context, private val repository: ServerRepository, ) : ViewModel()` |
+| 32 |   `private val repository: ServerRepository` |
+| 35 |   `private val _ui` |
+| 36 |   `val ui: StateFlow<ExpertsUiState>` |
+| 38 |   `private var client: CodegClient?` |
+| 42 |   `fun load()` |
+| 62 |   `fun dismissRefreshError()` |
+| 66 |   `fun openDetail(expert: ExpertListItem)` |
+| 88 |   `fun closeDetail()` |
+| 90 |   `fun dismissDetailError()` |
+| 93 |   `private fun updateDetail(transform: (DetailState) -> DetailState)` |
+| 96 |   `fun toggleLink(agent: AgentType, on: Boolean)` |
+| 131 | `enum class ExpertsPhase` |
+| 133 | `data class DetailState( val expert: ExpertListItem, val loading: Boolean = true, val content: String = "", val statusByAgent: Map<AgentType, ExpertInstallStatus> = emptyMap(), val toggling: Set<AgentType> = emptySet(), val error: String? = null, )` |
+| 134 |   `val expert: ExpertListItem` |
+| 135 |   `val loading: Boolean` |
+| 136 |   `val content: String` |
+| 137 |   `val statusByAgent: Map<AgentType, ExpertInstallStatus>` |
+| 138 |   `val toggling: Set<AgentType>` |
+| 139 |   `val error: String?` |
+| 142 | `data class ExpertsUiState( val phase: ExpertsPhase = ExpertsPhase.LOADING, val experts: List<ExpertListItem> = emptyList(), val agents: List<AgentType> = emptyList(), val refreshError: String? = null, val error: String? = null, val detail: DetailState? = null, )` |
+| 143 |   `val phase: ExpertsPhase` |
+| 144 |   `val experts: List<ExpertListItem>` |
+| 145 |   `val agents: List<AgentType>` |
+| 146 |   `val refreshError: String?` |
+| 147 |   `val error: String?` |
+| 148 |   `val detail: DetailState?` |
+| 151 |   `val grouped: List<Triple<String, String, List<ExpertListItem>>>` |
+| 165 | `object ExpertCategory` |
+| 166 |   `private val known` |
+| 176 |   `fun rank(key: String): Int` |
+| 178 |   `fun label(key: String): String` |
 
 ## feature/settings/GeneralScreen.kt
 
@@ -598,26 +600,26 @@ Source root: `app/src/main/java/app/codeg/android/`
 
 | Line | Declaration |
 |---|---|
-| 26 | `class GeneralViewModel @Inject constructor( private val repository: ServerRepository, ) : ViewModel()` |
-| 27 |   `private val repository: ServerRepository` |
-| 30 |   `private val _ui` |
-| 31 |   `val ui: StateFlow<GeneralUiState>` |
-| 33 |   `private var client: CodegClient?` |
-| 34 |   `private var delegationRaw: JsonObject` |
-| 38 |   `fun load()` |
-| 68 |   `fun setFeedback(enabled: Boolean)` |
-| 74 |   `fun setQuestion(enabled: Boolean)` |
-| 80 |   `fun setDelegationEnabled(enabled: Boolean)` |
-| 85 |   `fun setDepth(depth: Int)` |
-| 91 |   `private fun patchDelegation(key: String, value: JsonPrimitive)` |
-| 98 |   `private fun reload()` |
-| 101 | `data class GeneralUiState( val loading: Boolean = false, val feedbackEnabled: Boolean = true, val questionEnabled: Boolean = true, val delegationEnabled: Boolean = false, val depthLimit: Int = 3, val error: String? = null, )` |
-| 102 |   `val loading: Boolean` |
-| 103 |   `val feedbackEnabled: Boolean` |
-| 104 |   `val questionEnabled: Boolean` |
-| 105 |   `val delegationEnabled: Boolean` |
-| 106 |   `val depthLimit: Int` |
-| 107 |   `val error: String?` |
+| 28 | `class GeneralViewModel @Inject constructor( @ApplicationContext private val appContext: Context, private val repository: ServerRepository, ) : ViewModel()` |
+| 30 |   `private val repository: ServerRepository` |
+| 33 |   `private val _ui` |
+| 34 |   `val ui: StateFlow<GeneralUiState>` |
+| 36 |   `private var client: CodegClient?` |
+| 37 |   `private var delegationRaw: JsonObject` |
+| 41 |   `fun load()` |
+| 71 |   `fun setFeedback(enabled: Boolean)` |
+| 77 |   `fun setQuestion(enabled: Boolean)` |
+| 83 |   `fun setDelegationEnabled(enabled: Boolean)` |
+| 88 |   `fun setDepth(depth: Int)` |
+| 94 |   `private fun patchDelegation(key: String, value: JsonPrimitive)` |
+| 101 |   `private fun reload()` |
+| 104 | `data class GeneralUiState( val loading: Boolean = false, val feedbackEnabled: Boolean = true, val questionEnabled: Boolean = true, val delegationEnabled: Boolean = false, val depthLimit: Int = 3, val error: String? = null, )` |
+| 105 |   `val loading: Boolean` |
+| 106 |   `val feedbackEnabled: Boolean` |
+| 107 |   `val questionEnabled: Boolean` |
+| 108 |   `val delegationEnabled: Boolean` |
+| 109 |   `val depthLimit: Int` |
+| 110 |   `val error: String?` |
 
 ## feature/settings/LanguageScreen.kt
 
@@ -692,19 +694,19 @@ Source root: `app/src/main/java/app/codeg/android/`
 
 | Line | Declaration |
 |---|---|
-| 21 | `class ModelProvidersViewModel @Inject constructor( private val repository: ServerRepository, ) : ViewModel()` |
-| 22 |   `private val repository: ServerRepository` |
-| 25 |   `private val _ui` |
-| 26 |   `val ui: StateFlow<ModelProvidersUiState>` |
-| 28 |   `private var client: CodegClient?` |
-| 32 |   `fun load()` |
-| 46 |   `fun save(existing: ModelProviderInfo?, name: String, apiUrl: String, apiKey: String, agentType: AgentType, model: String?)` |
-| 69 |   `fun delete(provider: ModelProviderInfo)` |
-| 79 | `data class ModelProvidersUiState( val providers: List<ModelProviderInfo> = emptyList(), val loading: Boolean = false, val error: String? = null, )` |
-| 80 |   `val providers: List<ModelProviderInfo>` |
-| 81 |   `val loading: Boolean` |
-| 82 |   `val error: String?` |
-| 85 |   `val supportedAgents: List<AgentType>` |
+| 23 | `class ModelProvidersViewModel @Inject constructor( @ApplicationContext private val appContext: Context, private val repository: ServerRepository, ) : ViewModel()` |
+| 25 |   `private val repository: ServerRepository` |
+| 28 |   `private val _ui` |
+| 29 |   `val ui: StateFlow<ModelProvidersUiState>` |
+| 31 |   `private var client: CodegClient?` |
+| 35 |   `fun load()` |
+| 49 |   `fun save(existing: ModelProviderInfo?, name: String, apiUrl: String, apiKey: String, agentType: AgentType, model: String?)` |
+| 72 |   `fun delete(provider: ModelProviderInfo)` |
+| 82 | `data class ModelProvidersUiState( val providers: List<ModelProviderInfo> = emptyList(), val loading: Boolean = false, val error: String? = null, )` |
+| 83 |   `val providers: List<ModelProviderInfo>` |
+| 84 |   `val loading: Boolean` |
+| 85 |   `val error: String?` |
+| 88 |   `val supportedAgents: List<AgentType>` |
 
 ## feature/settings/OpenSourceLicensesScreen.kt
 
@@ -737,18 +739,18 @@ Source root: `app/src/main/java/app/codeg/android/`
 
 | Line | Declaration |
 |---|---|
-| 21 | `class QuickMessagesViewModel @Inject constructor( private val repository: ServerRepository, ) : ViewModel()` |
-| 22 |   `private val repository: ServerRepository` |
-| 25 |   `private val _ui` |
-| 26 |   `val ui: StateFlow<QuickMessagesUiState>` |
-| 28 |   `private var client: CodegClient?` |
-| 32 |   `fun load()` |
-| 49 |   `fun save(existing: QuickMessage?, title: String, content: String)` |
-| 61 |   `fun delete(message: QuickMessage)` |
-| 75 | `data class QuickMessagesUiState( val messages: List<QuickMessage> = emptyList(), val loading: Boolean = false, val error: String? = null, )` |
-| 76 |   `val messages: List<QuickMessage>` |
-| 77 |   `val loading: Boolean` |
-| 78 |   `val error: String?` |
+| 23 | `class QuickMessagesViewModel @Inject constructor( @ApplicationContext private val appContext: Context, private val repository: ServerRepository, ) : ViewModel()` |
+| 25 |   `private val repository: ServerRepository` |
+| 28 |   `private val _ui` |
+| 29 |   `val ui: StateFlow<QuickMessagesUiState>` |
+| 31 |   `private var client: CodegClient?` |
+| 35 |   `fun load()` |
+| 52 |   `fun save(existing: QuickMessage?, title: String, content: String)` |
+| 64 |   `fun delete(message: QuickMessage)` |
+| 78 | `data class QuickMessagesUiState( val messages: List<QuickMessage> = emptyList(), val loading: Boolean = false, val error: String? = null, )` |
+| 79 |   `val messages: List<QuickMessage>` |
+| 80 |   `val loading: Boolean` |
+| 81 |   `val error: String?` |
 
 ## feature/settings/SettingsScreen.kt
 
@@ -828,31 +830,31 @@ Source root: `app/src/main/java/app/codeg/android/`
 
 | Line | Declaration |
 |---|---|
-| 28 | `class SkillsViewModel @Inject constructor( private val repository: ServerRepository, ) : ViewModel()` |
-| 29 |   `private val repository: ServerRepository` |
-| 32 |   `private val _ui` |
-| 33 |   `val ui: StateFlow<SkillsUiState>` |
-| 35 |   `private var client: CodegClient?` |
-| 36 |   `private var loadToken` |
-| 40 |   `fun load()` |
-| 60 |   `fun select(agent: AgentType)` |
-| 66 |   `fun reloadCurrent()` |
-| 70 |   `private fun loadSkills(agent: AgentType)` |
-| 87 |   `suspend fun content(skill: AgentSkillItem, agent: AgentType): String` |
-| 93 |   `suspend fun save(skillId: String, scope: String, content: String, layout: String?, agent: AgentType)` |
-| 99 |   `fun delete(skill: AgentSkillItem, agent: AgentType)` |
-| 112 |   `fun dismissRefreshError()` |
-| 115 | `enum class SkillsPhase` |
-| 117 | `data class SkillsUiState( val phase: SkillsPhase = SkillsPhase.LOADING, val agents: List<AgentType> = emptyList(), val selectedAgent: AgentType? = null, val result: AgentSkillsListResult? = null, /** The agent [result] actually belongs to (mutations target THIS, not [selectedAgent]). */ val resultAgent: AgentType? = null, val skillsLoading: Boolean = false, val refreshError: String? = null, val error: String? = null, )` |
-| 118 |   `val phase: SkillsPhase` |
-| 119 |   `val agents: List<AgentType>` |
-| 120 |   `val selectedAgent: AgentType?` |
-| 121 |   `val result: AgentSkillsListResult?` |
-| 123 |   `val resultAgent: AgentType?` |
-| 124 |   `val skillsLoading: Boolean` |
-| 125 |   `val refreshError: String?` |
-| 126 |   `val error: String?` |
-| 129 |   `val grouped: List<Pair<String, List<AgentSkillItem>>>` |
+| 30 | `class SkillsViewModel @Inject constructor( @ApplicationContext private val appContext: Context, private val repository: ServerRepository, ) : ViewModel()` |
+| 32 |   `private val repository: ServerRepository` |
+| 35 |   `private val _ui` |
+| 36 |   `val ui: StateFlow<SkillsUiState>` |
+| 38 |   `private var client: CodegClient?` |
+| 39 |   `private var loadToken` |
+| 43 |   `fun load()` |
+| 63 |   `fun select(agent: AgentType)` |
+| 69 |   `fun reloadCurrent()` |
+| 73 |   `private fun loadSkills(agent: AgentType)` |
+| 90 |   `suspend fun content(skill: AgentSkillItem, agent: AgentType): String` |
+| 96 |   `suspend fun save(skillId: String, scope: String, content: String, layout: String?, agent: AgentType)` |
+| 102 |   `fun delete(skill: AgentSkillItem, agent: AgentType)` |
+| 115 |   `fun dismissRefreshError()` |
+| 118 | `enum class SkillsPhase` |
+| 120 | `data class SkillsUiState( val phase: SkillsPhase = SkillsPhase.LOADING, val agents: List<AgentType> = emptyList(), val selectedAgent: AgentType? = null, val result: AgentSkillsListResult? = null, /** The agent [result] actually belongs to (mutations target THIS, not [selectedAgent]). */ val resultAgent: AgentType? = null, val skillsLoading: Boolean = false, val refreshError: String? = null, val error: String? = null, )` |
+| 121 |   `val phase: SkillsPhase` |
+| 122 |   `val agents: List<AgentType>` |
+| 123 |   `val selectedAgent: AgentType?` |
+| 124 |   `val result: AgentSkillsListResult?` |
+| 126 |   `val resultAgent: AgentType?` |
+| 127 |   `val skillsLoading: Boolean` |
+| 128 |   `val refreshError: String?` |
+| 129 |   `val error: String?` |
+| 132 |   `val grouped: List<Pair<String, List<AgentSkillItem>>>` |
 
 ## feature/settings/SystemScreen.kt
 
@@ -868,24 +870,24 @@ Source root: `app/src/main/java/app/codeg/android/`
 
 | Line | Declaration |
 |---|---|
-| 20 | `class SystemViewModel @Inject constructor( private val repository: ServerRepository, ) : ViewModel()` |
-| 21 |   `private val repository: ServerRepository` |
-| 24 |   `private val _ui` |
-| 25 |   `val ui: StateFlow<SystemUiState>` |
-| 27 |   `private var client: CodegClient?` |
-| 31 |   `fun load()` |
-| 46 |   `fun setProxyEnabled(enabled: Boolean)` |
-| 47 |   `fun onProxyUrl(url: String)` |
-| 49 |   `fun saveProxy()` |
-| 63 |   `fun checkUpdate()` |
-| 76 | `data class SystemUiState( val loading: Boolean = false, val proxyEnabled: Boolean = false, val proxyUrl: String = "", val savingProxy: Boolean = false, val checking: Boolean = false, val updateResult: AppUpdateCheckResult? = null, val error: String? = null, )` |
-| 77 |   `val loading: Boolean` |
-| 78 |   `val proxyEnabled: Boolean` |
-| 79 |   `val proxyUrl: String` |
-| 80 |   `val savingProxy: Boolean` |
-| 81 |   `val checking: Boolean` |
-| 82 |   `val updateResult: AppUpdateCheckResult?` |
-| 83 |   `val error: String?` |
+| 22 | `class SystemViewModel @Inject constructor( @ApplicationContext private val appContext: Context, private val repository: ServerRepository, ) : ViewModel()` |
+| 24 |   `private val repository: ServerRepository` |
+| 27 |   `private val _ui` |
+| 28 |   `val ui: StateFlow<SystemUiState>` |
+| 30 |   `private var client: CodegClient?` |
+| 34 |   `fun load()` |
+| 49 |   `fun setProxyEnabled(enabled: Boolean)` |
+| 50 |   `fun onProxyUrl(url: String)` |
+| 52 |   `fun saveProxy()` |
+| 66 |   `fun checkUpdate()` |
+| 79 | `data class SystemUiState( val loading: Boolean = false, val proxyEnabled: Boolean = false, val proxyUrl: String = "", val savingProxy: Boolean = false, val checking: Boolean = false, val updateResult: AppUpdateCheckResult? = null, val error: String? = null, )` |
+| 80 |   `val loading: Boolean` |
+| 81 |   `val proxyEnabled: Boolean` |
+| 82 |   `val proxyUrl: String` |
+| 83 |   `val savingProxy: Boolean` |
+| 84 |   `val checking: Boolean` |
+| 85 |   `val updateResult: AppUpdateCheckResult?` |
+| 86 |   `val error: String?` |
 
 ## feature/settings/VersionControlScreen.kt
 
@@ -901,21 +903,21 @@ Source root: `app/src/main/java/app/codeg/android/`
 
 | Line | Declaration |
 |---|---|
-| 23 | `class VersionControlViewModel @Inject constructor( private val repository: ServerRepository, ) : ViewModel()` |
-| 24 |   `private val repository: ServerRepository` |
-| 27 |   `private val _ui` |
-| 28 |   `val ui: StateFlow<VersionControlUiState>` |
-| 30 |   `private var client: CodegClient?` |
-| 34 |   `fun load()` |
-| 54 |   `fun onPath(path: String)` |
-| 56 |   `fun test()` |
-| 67 |   `fun save()` |
-| 82 | `data class VersionControlUiState( val loading: Boolean = false, val detect: GitDetectResult = GitDetectResult(), val customPath: String = "", val accounts: List<GitHubAccount> = emptyList(), val testing: Boolean = false, val testResult: GitDetectResult? = null, val saving: Boolean = false, val error: String? = null, )` |
-| 83 |   `val loading: Boolean` |
-| 84 |   `val detect: GitDetectResult` |
-| 85 |   `val customPath: String` |
-| 86 |   `val accounts: List<GitHubAccount>` |
-| 87 |   `val testing: Boolean` |
-| 88 |   `val testResult: GitDetectResult?` |
-| 89 |   `val saving: Boolean` |
-| 90 |   `val error: String?` |
+| 25 | `class VersionControlViewModel @Inject constructor( @ApplicationContext private val appContext: Context, private val repository: ServerRepository, ) : ViewModel()` |
+| 27 |   `private val repository: ServerRepository` |
+| 30 |   `private val _ui` |
+| 31 |   `val ui: StateFlow<VersionControlUiState>` |
+| 33 |   `private var client: CodegClient?` |
+| 37 |   `fun load()` |
+| 57 |   `fun onPath(path: String)` |
+| 59 |   `fun test()` |
+| 70 |   `fun save()` |
+| 85 | `data class VersionControlUiState( val loading: Boolean = false, val detect: GitDetectResult = GitDetectResult(), val customPath: String = "", val accounts: List<GitHubAccount> = emptyList(), val testing: Boolean = false, val testResult: GitDetectResult? = null, val saving: Boolean = false, val error: String? = null, )` |
+| 86 |   `val loading: Boolean` |
+| 87 |   `val detect: GitDetectResult` |
+| 88 |   `val customPath: String` |
+| 89 |   `val accounts: List<GitHubAccount>` |
+| 90 |   `val testing: Boolean` |
+| 91 |   `val testResult: GitDetectResult?` |
+| 92 |   `val saving: Boolean` |
+| 93 |   `val error: String?` |

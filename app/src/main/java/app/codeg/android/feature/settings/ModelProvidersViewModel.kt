@@ -1,5 +1,7 @@
 package app.codeg.android.feature.settings
 
+import android.content.Context
+import dagger.hilt.android.qualifiers.ApplicationContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.codeg.android.core.data.ServerRepository
@@ -19,6 +21,7 @@ import javax.inject.Inject
 /** CRUD for custom model providers (OpenAI-compatible endpoints), grouped by agent. */
 @HiltViewModel
 class ModelProvidersViewModel @Inject constructor(
+    @ApplicationContext private val appContext: Context,
     private val repository: ServerRepository,
 ) : ViewModel() {
 
@@ -38,7 +41,7 @@ class ModelProvidersViewModel @Inject constructor(
                 client = c
                 _ui.update { it.copy(loading = false, providers = c.listModelProviders(), error = null) }
             } catch (e: Exception) {
-                _ui.update { it.copy(loading = false, error = e.displayMessage()) }
+                _ui.update { it.copy(loading = false, error = e.displayMessage(appContext)) }
             }
         }
     }
@@ -61,7 +64,7 @@ class ModelProvidersViewModel @Inject constructor(
                 }
                 load()
             } catch (e: Exception) {
-                _ui.update { it.copy(error = e.displayMessage()) }
+                _ui.update { it.copy(error = e.displayMessage(appContext)) }
             }
         }
     }
@@ -71,7 +74,7 @@ class ModelProvidersViewModel @Inject constructor(
         val previous = _ui.value.providers
         _ui.update { it.copy(providers = it.providers.filterNot { p -> p.id == provider.id }) }
         viewModelScope.launch {
-            runCatching { c.deleteModelProvider(provider.id) }.onFailure { e -> _ui.update { it.copy(providers = previous, error = e.displayMessage()) } }
+            runCatching { c.deleteModelProvider(provider.id) }.onFailure { e -> _ui.update { it.copy(providers = previous, error = e.displayMessage(appContext)) } }
         }
     }
 }
