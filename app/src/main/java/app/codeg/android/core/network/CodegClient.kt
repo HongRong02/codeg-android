@@ -1068,6 +1068,30 @@ class CodegClient(
 
     // endregion
 
+    // region git-stash
+    suspend fun gitStashList(path: String): List<app.codeg.android.core.model.StashEntry> =
+        decode(send("git_stash_list", encode(app.codeg.android.core.model.wire.StashPathRequest(path))), ListSerializer(app.codeg.android.core.model.StashEntry.serializer()))
+
+    suspend fun gitStashShow(path: String, ref: String): List<GitStatusEntry> =
+        decode(send("git_stash_show", encode(app.codeg.android.core.model.wire.StashRefRequest(path, ref))), ListSerializer(GitStatusEntry.serializer()))
+
+    suspend fun gitStashPush(path: String, message: String?, keepIndex: Boolean): String =
+        decodeBareString(send("git_stash_push", encode(app.codeg.android.core.model.wire.StashPushRequest(path, message, keepIndex))))
+
+    suspend fun gitStashApply(path: String, ref: String): String =
+        decodeBareString(send("git_stash_apply", encode(app.codeg.android.core.model.wire.StashRefRequest(path, ref))))
+
+    suspend fun gitStashPop(path: String, ref: String): String =
+        decodeBareString(send("git_stash_pop", encode(app.codeg.android.core.model.wire.StashRefRequest(path, ref))))
+
+    suspend fun gitStashDrop(path: String, ref: String): String =
+        decodeBareString(send("git_stash_drop", encode(app.codeg.android.core.model.wire.StashRefRequest(path, ref))))
+
+    suspend fun gitStashClear(path: String): String =
+        decodeBareString(send("git_stash_clear", encode(app.codeg.android.core.model.wire.StashPathRequest(path))))
+
+    // endregion
+
     // region Transport
 
     /**

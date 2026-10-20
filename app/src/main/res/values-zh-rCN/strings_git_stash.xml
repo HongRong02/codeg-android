@@ -1,0 +1,17 @@
+<resources>
+    <string name="stash_title">暂存管理</string>
+    <string name="stash_message">消息（可选）</string>
+    <string name="stash_keep_index">保留已暂存的改动</string>
+    <string name="stash_save">保存</string>
+    <string name="stash_refresh">刷新</string>
+    <string name="stash_clear">清空全部</string>
+    <string name="stash_empty">暂无 stash</string>
+    <string name="stash_show">查看</string>
+    <string name="stash_apply">应用</string>
+    <string name="stash_pop">弹出</string>
+    <string name="stash_drop">删除</string>
+    <string name="stash_no_diff">无文本差异</string>
+    <string name="stash_confirm">确认%1$s：%2$s？</string>
+    <string name="stash_cancel">取消</string>
+    <string name="stash_all">当前项目全部 %1$d 个 stash</string>
+</resources>
