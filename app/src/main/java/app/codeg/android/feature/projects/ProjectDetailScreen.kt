@@ -158,7 +158,13 @@ private fun Header(name: String, path: String, color: Color, branch: String?, ru
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(12.dp),
     ) {
-        Box(Modifier.size(48.dp).clip(CodegShapes.small).background(color.withOpacity(0.22f)).border(1.dp, color.withOpacity(0.45f), CodegShapes.small))
+        Box(
+            Modifier.size(48.dp).clip(CodegShapes.small).background(color.withOpacity(0.22f))
+                .border(1.dp, color.withOpacity(0.45f), CodegShapes.small),
+            contentAlignment = Alignment.Center,
+        ) {
+            Icon(Lucide.FolderOpen, null, Modifier.size(24.dp), tint = colors.web.foreground)
+        }
         Column(Modifier.weight(1f)) {
             Text(name, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold, color = colors.textPrimary, maxLines = 1, overflow = TextOverflow.Ellipsis)
             Text(path, fontFamily = FontFamily.Monospace, fontSize = 12.sp, color = colors.textSecondary, maxLines = 1, overflow = TextOverflow.Ellipsis)

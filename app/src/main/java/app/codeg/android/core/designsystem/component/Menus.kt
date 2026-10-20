@@ -345,8 +345,9 @@ private fun MenuPopup(
 ) {
     val density = LocalDensity.current
     val gap = with(density) { 4.dp.roundToPx() }
+    val collisionPadding = with(density) { 8.dp.roundToPx() }
     val offsetPx = with(density) { IntOffset(offset.x.roundToPx(), offset.y.roundToPx()) }
-    val provider = remember(gap, offsetPx) {
+    val provider = remember(gap, collisionPadding, offsetPx) {
         object : PopupPositionProvider {
             override fun calculatePosition(
                 anchorBounds: IntRect,
@@ -354,11 +355,22 @@ private fun MenuPopup(
                 layoutDirection: LayoutDirection,
                 popupContentSize: IntSize,
             ): IntOffset = menuPopupPosition(
-                anchorBounds.translate(offsetPx), windowSize, popupContentSize, layoutDirection, gap,
+                anchorBounds.translate(offsetPx), windowSize, popupContentSize, layoutDirection, gap, collisionPadding,
             )
         }
     }
-    if (expanded) Popup(provider, onDismissRequest, properties, content = content)
+    if (expanded) Popup(provider, onDismissRequest, properties) {
+        // Constrain measurement as well as placement so long items cannot consume the edge margin.
+        Box(Modifier.layout { measurable, constraints ->
+            val placeable = measurable.measure(constraints.copy(
+                minWidth = 0,
+                maxWidth = (constraints.maxWidth - collisionPadding * 2).coerceAtLeast(0),
+                minHeight = 0,
+                maxHeight = (constraints.maxHeight - collisionPadding * 2).coerceAtLeast(0),
+            ))
+            layout(placeable.width, placeable.height) { placeable.place(0, 0) }
+        }) { content() }
+    }
 }
 
 /** Prefer below, then above, and keep the result within the visible window (including RTL). */
@@ -368,13 +380,16 @@ internal fun menuPopupPosition(
     popup: IntSize,
     direction: LayoutDirection,
     gap: Int,
+    collisionPadding: Int = 8,
 ): IntOffset {
     val x = if (direction == LayoutDirection.Ltr) anchor.left else anchor.right - popup.width
     val below = anchor.bottom + gap
-    val y = if (below + popup.height <= window.height) below else anchor.top - gap - popup.height
+    val y = if (below + popup.height <= window.height - collisionPadding) below else anchor.top - gap - popup.height
+    val marginX = collisionPadding.coerceIn(0, ((window.width - popup.width) / 2).coerceAtLeast(0))
+    val marginY = collisionPadding.coerceIn(0, ((window.height - popup.height) / 2).coerceAtLeast(0))
     return IntOffset(
-        x.coerceIn(0, (window.width - popup.width).coerceAtLeast(0)),
-        y.coerceIn(0, (window.height - popup.height).coerceAtLeast(0)),
+        x.coerceIn(marginX, (window.width - popup.width - marginX).coerceAtLeast(marginX)),
+        y.coerceIn(marginY, (window.height - popup.height - marginY).coerceAtLeast(marginY)),
     )
 }
 

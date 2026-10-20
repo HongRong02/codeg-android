@@ -19,12 +19,16 @@ import app.codeg.android.R
 
 /** Web card surface, with section spacing and horizontal padding owned by its slots. */
 @Composable
-fun CodegCard(modifier: Modifier = Modifier, content: @Composable ColumnScope.() -> Unit) {
+fun CodegCard(
+    modifier: Modifier = Modifier,
+    contentPadding: PaddingValues = PaddingValues(0.dp),
+    content: @Composable ColumnScope.() -> Unit,
+) {
     ProvideTextStyle(TextStyle(color = CodegTheme.colors.web.cardForeground, fontSize = 14.sp)) {
         Column(
             modifier.shadow(1.dp, CodegShapes.small).webSurface(CodegShapes.small)
-                .padding(vertical = 24.dp),
-            verticalArrangement = Arrangement.spacedBy(24.dp),
+                .padding(contentPadding),
+            verticalArrangement = Arrangement.spacedBy(0.dp),
             content = content,
         )
     }
@@ -46,8 +50,12 @@ fun CodegCardHeader(
 }
 
 @Composable
-fun CodegCardContent(modifier: Modifier = Modifier, content: @Composable ColumnScope.() -> Unit) {
-    Column(modifier.padding(horizontal = 24.dp), content = content)
+fun CodegCardContent(
+    modifier: Modifier = Modifier,
+    contentPadding: PaddingValues = PaddingValues(horizontal = 24.dp),
+    content: @Composable ColumnScope.() -> Unit,
+) {
+    Column(modifier.padding(contentPadding), content = content)
 }
 
 @Composable

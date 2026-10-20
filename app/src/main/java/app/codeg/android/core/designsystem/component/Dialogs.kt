@@ -58,7 +58,8 @@ fun CodegDialog(
                 Column(Modifier.verticalScroll(rememberScrollState()).padding(24.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
                     T44PanelHeading(title, description)
                     content()
-                    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.End), content = footer)
+                    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.End),
+                        verticalAlignment = Alignment.CenterVertically, content = footer)
                 }
             }
         }
@@ -89,7 +90,7 @@ fun CodegConfirmDialog(
 ) {
     val web = CodegTheme.colors.web
     CodegDialog(title, message, { if (!busy) onDismiss() }, footer = {
-        TextButton(onClick = onDismiss, enabled = !busy, colors = ButtonDefaults.textButtonColors(contentColor = web.foreground)) {
+        CodegButton(onClick = onDismiss, enabled = !busy, variant = CodegButtonVariant.Outline) {
             Text(stringResource(R.string.ds_dialogs_cancel))
         }
         CodegButton(onClick = onConfirm, enabled = confirmEnabled && !busy, loading = busy,
