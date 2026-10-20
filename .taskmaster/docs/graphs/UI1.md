@@ -1,0 +1,72 @@
+# 批次 UI1：界面对齐网页端（shadcn radix-maia）
+
+> 格式与状态图例见 `WORKFLOW.md` 第 8 节。本文件是本批次任务状态的唯一事实来源。
+
+```
+批次 UI1：菜单/对话框/面板/按钮/表单/图标/Toast 与网页端一致　集成分支：sit　状态：进行中
+│
+├─ L1 设计系统基础组件　[并行 ×4｜⟂ 互不依赖]　门禁：sit CI 绿 ✔（run 39417266720）
+│  ├─ T43 菜单/弹出层/提示　🔗　← 无　冲突域：component/Menus.kt
+│  ├─ T44 对话框/抽屉/卡片　🔗　← 无　冲突域：component/Dialogs.kt、Sheets.kt、Cards.kt
+│  ├─ T45 按钮/表单控件　　🔗　← 无　冲突域：component/Buttons.kt、TextFields.kt、Controls.kt
+│  └─ T46 标签页/徽章/列表行　🔗　← 无　冲突域：component/Tabs.kt、Badges.kt、Feedback.kt、ListRows.kt
+│
+├─ L2 页面替换 + 补充组件　[并行 ×8]　门禁：L1 全部 🔗 ✔
+│  ├─ 组 A 页面替换（M3 → L1 组件）　⟂ 组内互不依赖（按 feature 目录划分）
+│  │  ├─ T47 会话列表/详情　🔄　← 硬：L1　冲突域：feature/sessions/**、feature/sessiondetail/**
+│  │  ├─ T48 项目与 Git　　 🔄　← 硬：L1　冲突域：feature/projects/**
+│  │  ├─ T49 设置　　　　　 🔄　← 硬：L1　冲突域：feature/settings/**
+│  │  └─ T50 其余页面/主框架 🔄　← 硬：L1　冲突域：feature/{worktasks,automations,serverlogs,activity,search,server,onboarding,main}/**、core/update/**
+│  │     （组 A 与组 B 的约定：组 A 不换图标、不接 Toast，在需要处留 TODO(T52)/TODO(T53)）
+│  └─ 组 B 补充组件　⟂ 组内互不依赖
+│     ├─ T51 lucide 图标　🔄　← 硬：无　冲突域：designsystem/icon/**、scripts/gen_lucide_icons.py、scripts/lucide_icons.txt、docs/icon-map.md
+│     ├─ T52 Toast　　　　🔄　← 硬：无　⇠ 软：T51（契约：先用 Material 图标，留 TODO(T51): Lucide.Xxx）　冲突域：component/Toasts.kt
+│     ├─ T53 杂项组件　　 🔄　← 硬：无　⇠ 软：T51（同上）　冲突域：component/{Collapsible,Avatar,InputGroup,ImagePreview,Command,FolderBadge}.kt
+│     └─ T54 顶栏/状态视图 🔄　← 硬：无　⇠ 软：T51（同上）　冲突域：component/TopBar.kt、StateViews.kt（签名不变）
+│
+├─ L3 图标/Toast 接入 + 组件预览　[并行 ×5]　门禁：所需硬依赖 🔗（就绪即派）
+│  ├─ 组 C 页面接入（与 L2 组 A 同一目录 → 必须等对应的 A 合入）　⟂ 组内互不依赖
+│  │  ├─ T55 会话：图标/Toast/TODO　⏳　← 硬：T47、T51、T52、T53　冲突域：同 T47
+│  │  ├─ T56 项目：图标/Toast/TODO　⏳　← 硬：T48、T51、T52、T53　冲突域：同 T48
+│  │  ├─ T57 设置：图标/Toast/TODO　⏳　← 硬：T49、T51、T52、T53　冲突域：同 T49
+│  │  └─ T58 其余：图标/Toast/TODO + 挂 CodegToasterHost　⏳　← 硬：T50、T51、T52、T53　冲突域：同 T50（MainShell 路由表除外）
+│  ├─ 组 D 设计系统收尾
+│  │  └─ T59 组件预览页（debug 版可见，挂载全部 TxxGallery）＋ 把 L2 组 B 的 TODO(T51) 换成 Lucide　⏳
+│  │        ← 硬：T43–T46、T51–T54（不依赖组 A → T51–T54 都 🔗 后即可提前派发）
+│  │        冲突域：feature/devgallery/**（新建）、designsystem/component/**（只改 TODO(T51) 处）；共享追加点：MainShell 路由表 +1
+│  └─ 关键路径：T47–T50（页面量最大）→ T55–T58
+│
+├─ SIT 集成测试（批次末尾统一测）
+│  ├─ S1 编译门禁：每层合入后 sit CI 绿（协调方）
+│  ├─ S2 真机测试：按 tests/T43…T59 逐条执行 → tests/RESULTS-UI1.md（明/暗）
+│  └─ S3 修复轮次：bugs/Bnn-<区域>.md，按区域并行 fix/Bnn-*（CI 模式）→ 回到 S2 复测
+│
+└─ 发布：全量回归 → sit 合入 main → 真机自动更新验证
+```
+
+## 运行记录
+
+| 任务 | 状态 | codeg run ID | 会话 | 分支 | 备注 |
+|---|---|---|---|---|---|
+| T43 | 🔗 | 9d9d1563-d31a-4f19-bd98-f76518013018 | 58 | task/T43-ds-menus | CI 模式，分支 CI 通过 |
+| T44 | 🔗 | a766b6d2-d0d2-453f-8f58-4abf01a8b46d | 59 | task/T44-ds-dialogs-sheets | 同上 |
+| T45 | 🔗 | 6f0f25d1-977b-4a80-b07a-b4bb2f43e366 | 60 | task/T45-ds-buttons-forms | 同上 |
+| T46 | 🔗 | 668b57c0-60ab-47bb-a295-f53033ba149f | 61 | task/T46-ds-tabs-badges-rows | 同上；`CodegFilterChip` 新增重载，与 Buttons.kt 旧版共存 |
+| T47 | 🔄 | 18abffee-714c-4350-8acd-275088e228a5 | 62 | task/T47-ui-sessions | 测试文档模式 |
+| T48 | 🔄 | 881aa9a4-28bb-48ef-afeb-20b7dd40efb0 | 63 | task/T48-ui-projects | 同上 |
+| T49 | 🔄 | 7d1c94ed-a2b6-47a7-a9cc-53583f36a0a2 | 64 | task/T49-ui-settings | 同上 |
+| T50 | 🔄 | 645929a2-439e-4d19-9f48-112779cd18f2 | 65 | task/T50-ui-misc | 同上 |
+| T51 | 🔄 | bb215266-1dbe-4a0e-920c-02b7d85b0371 | 66 | task/T51-ds-icons | 同上 |
+| T52 | 🔄 | f072fcae-f347-4364-a502-9ad5161833f4 | 67 | task/T52-ds-toasts | 同上 |
+| T53 | 🔄 | 788c0647-a1cd-414c-a4c8-51819f9c721e | 68 | task/T53-ds-misc | 同上 |
+| T54 | 🔄 | 77981623-a22f-4ca7-99d2-5f8961749644 | 69 | task/T54-ds-topbar-states | 同上 |
+| T55–T59 | ⏳ | | | | 待写任务文档 |
+
+## 修复记录
+
+| bug 单 | 区域 | 轮次 | 来源 | 状态 |
+|---|---|---|---|---|
+
+## 复盘
+- L1：T43–T46 用的是旧的 CI 模式，11 次 verify，平均 4–5 分钟一次。
+- L1：T45 和 T46 都声明了 `CodegFilterChip`，是重载、编译通过。教训：冲突域应该按"符号"而不只是按文件来划分，第二阶段要统一成一个版本。
