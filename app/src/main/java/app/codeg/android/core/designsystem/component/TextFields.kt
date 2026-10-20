@@ -80,7 +80,7 @@ fun CodegTextField(
         textStyle = if (mono) LocalTextStyle.current.copy(fontFamily = FontFamily.Monospace) else LocalTextStyle.current,
         keyboardOptions = keyboardOptions ?: KeyboardOptions(keyboardType = keyboardType),
         modifier = modifier.alpha(if (enabled) 1f else .5f).fillMaxWidth().heightIn(min = if (singleLine) 36.dp else 64.dp),
-        shape = if (singleLine) PillShape else CodegShapes.small,
+        shape = if (singleLine) CodegShapes.extraLarge else CodegShapes.small,
         colors = fieldColors(),
     )
 }
@@ -112,7 +112,7 @@ fun SecretField(
             }
         },
         modifier = modifier.fillMaxWidth(),
-        shape = PillShape,
+        shape = CodegShapes.extraLarge,
         colors = fieldColors(),
     )
 }

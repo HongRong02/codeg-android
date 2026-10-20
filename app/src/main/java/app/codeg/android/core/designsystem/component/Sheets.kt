@@ -37,7 +37,7 @@ fun CodegSheet(
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
-        shape = CodegShapes.small.copy(
+        shape = CodegShapes.extraLarge.copy(
             bottomStart = androidx.compose.foundation.shape.CornerSize(0.dp),
             bottomEnd = androidx.compose.foundation.shape.CornerSize(0.dp),
         ),

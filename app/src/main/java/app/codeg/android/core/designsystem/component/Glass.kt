@@ -45,7 +45,7 @@ fun Modifier.webSurface(shape: Shape): Modifier {
 @Composable
 fun GlassCard(
     modifier: Modifier = Modifier,
-    cornerRadius: Dp = CodegTheme.dimens.radiusLg,
+    cornerRadius: Dp = 18.dp,
     padding: Dp = 16.dp,
     content: @Composable ColumnScope.() -> Unit,
 ) {
@@ -72,7 +72,7 @@ fun GlassRow(
     content: @Composable ColumnScope.() -> Unit,
 ) {
     val colors = CodegTheme.colors
-    val shape = RoundedCornerShape(CodegTheme.dimens.radiusMd)
+    val shape = RoundedCornerShape(14.dp)
     val fill = if (selected) colors.web.accent else colors.bgElevated
     val stroke = colors.surfaceStroke
     Column(

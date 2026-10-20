@@ -26,7 +26,7 @@ fun CodegCard(
 ) {
     ProvideTextStyle(TextStyle(color = CodegTheme.colors.web.cardForeground, fontSize = 14.sp)) {
         Column(
-            modifier.shadow(1.dp, CodegShapes.small).webSurface(CodegShapes.small)
+            modifier.shadow(1.dp, CodegShapes.medium).webSurface(CodegShapes.medium)
                 .padding(contentPadding),
             verticalArrangement = Arrangement.spacedBy(0.dp),
             content = content,

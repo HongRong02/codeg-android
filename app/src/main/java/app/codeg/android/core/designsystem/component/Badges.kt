@@ -269,9 +269,9 @@ fun CodegBadge(
     }
     Text(text, color = foreground, fontSize = 12.sp, lineHeight = 16.sp, fontWeight = FontWeight.Medium,
         maxLines = 1, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
-        modifier = modifier.clip(CodegShapes.extraSmall).background(fill)
+        modifier = modifier.clip(CodegShapes.extraLarge).background(fill)
             .border(1.dp, if (variant == CodegBadgeVariant.Outline) web.border else Color.Transparent,
-                CodegShapes.extraSmall)
+                CodegShapes.extraLarge)
             .padding(horizontal = 8.dp, vertical = 2.dp))
 }
 
@@ -287,9 +287,9 @@ fun CodegFilterChip(
 ) {
     val web = CodegTheme.colors.web
     val foreground = if (selected) web.secondaryForeground else web.foreground
-    Row(modifier.alpha(if (enabled) 1f else .5f).clip(CodegShapes.extraSmall)
+    Row(modifier.alpha(if (enabled) 1f else .5f).clip(CodegShapes.extraLarge)
         .background(if (selected) web.secondary else web.input.withOpacity(.3f))
-        .border(1.dp, if (selected) Color.Transparent else web.border, CodegShapes.extraSmall)
+        .border(1.dp, if (selected) Color.Transparent else web.border, CodegShapes.extraLarge)
         .toggleable(selected, enabled = enabled, role = Role.Checkbox, onValueChange = { onClick() })
         .padding(horizontal = 8.dp, vertical = 2.dp),
         verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {

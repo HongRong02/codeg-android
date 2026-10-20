@@ -71,7 +71,7 @@ fun CodegButton(
         CodegButtonVariant.Link -> web.primary
         else -> web.foreground
     }
-    val shape = CodegShapes.extraSmall
+    val shape = if (size == CodegButtonSize.Icon) androidx.compose.foundation.shape.CircleShape else CodegShapes.extraLarge
     val height = when (size) { CodegButtonSize.Sm -> 32.dp; CodegButtonSize.Lg -> 40.dp; else -> 36.dp }
     val inset = when (size) { CodegButtonSize.Sm -> 12.dp; CodegButtonSize.Lg -> 24.dp; CodegButtonSize.Icon -> 0.dp; else -> 16.dp }
     androidx.compose.material3.ProvideTextStyle(androidx.compose.ui.text.TextStyle(
@@ -124,7 +124,7 @@ fun CodegSegmented(
     val colors = CodegTheme.colors
     val web = colors.web
     val track = PillShape
-    val tab = RoundedCornerShape(CodegTheme.dimens.radiusMd)
+    val tab = CodegShapes.small
     Row(
         modifier
             .fillMaxWidth()

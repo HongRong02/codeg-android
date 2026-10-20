@@ -71,7 +71,7 @@ private fun <T> ChoiceControl(label: String, value: T?, options: List<T>, option
     CodegField(label, modifier = modifier) {
         Box {
             Row(Modifier.fillMaxWidth().heightIn(min = 36.dp).alpha(if (enabled) 1f else .5f)
-                .clip(PillShape).background(web.input.withOpacity(.30f)).border(1.dp, web.input, PillShape)
+                .clip(CodegShapes.extraLarge).background(web.input.withOpacity(.30f)).border(1.dp, web.input, CodegShapes.extraLarge)
                 .clickable(enabled = enabled, role = Role.DropdownList) { query = ""; expanded = true }
                 .padding(horizontal = 12.dp, vertical = 8.dp), verticalAlignment = Alignment.CenterVertically) {
                 Text(value?.let(optionLabel)?.ifEmpty { label } ?: label, Modifier.weight(1f), color = web.foreground, fontSize = 14.sp)

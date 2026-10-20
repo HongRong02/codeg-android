@@ -80,8 +80,8 @@ import app.codeg.android.core.designsystem.theme.CodegShapes
 import app.codeg.android.core.designsystem.theme.CodegTheme
 import kotlinx.coroutines.delay
 
-/** Web rounded-lg (10dp); rounded-md menu rows use CodegShapes.extraSmall (8dp). */
-private val MenuShape = RoundedCornerShape(10.dp)
+/** Web rounded-2xl containers and rounded-xl menu rows. */
+private val MenuShape = CodegShapes.medium
 private val MenuTextStyle = TextStyle(fontSize = 14.sp, lineHeight = 20.sp)
 
 enum class CodegMenuItemVariant { Default, Destructive }
@@ -170,7 +170,7 @@ private fun MenuRow(
     Row(
         modifier.fillMaxWidth().hoverable(interactions, enabled)
             .alpha(if (enabled) 1f else 0.5f)
-            .background(if (active) web.accent else Color.Transparent, CodegShapes.extraSmall)
+            .background(if (active) web.accent else Color.Transparent, CodegShapes.small)
             .padding(horizontal = 8.dp, vertical = 6.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(8.dp),

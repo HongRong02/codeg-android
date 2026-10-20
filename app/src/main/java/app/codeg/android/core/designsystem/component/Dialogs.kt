@@ -50,7 +50,7 @@ fun CodegDialog(
             Surface(
                 modifier = Modifier.widthIn(max = 448.dp).fillMaxWidth()
                     .clickable(remember { MutableInteractionSource() }, indication = null) {},
-                shape = CodegShapes.small,
+                shape = CodegShapes.extraLarge,
                 color = CodegTheme.colors.web.background,
                 contentColor = CodegTheme.colors.web.foreground,
                 border = androidx.compose.foundation.BorderStroke(1.dp, CodegTheme.colors.web.border),

@@ -96,7 +96,7 @@ fun CodegTopBar(
 }
 
 /**
- * Ghost icon button with a [visualSize] web rounded rectangle (32dp or 36dp) inside a 48dp touch target.
+ * Ghost icon button with a [visualSize] web circle (32dp or 36dp) inside a 48dp touch target.
  * [content] should provide an icon with an accessible content description; icons default
  * to the web's 16dp size. Hover, focus and press use the theme's accent background.
  */
@@ -128,8 +128,8 @@ fun CodegIconButton(
             Modifier.size(visualSize).background(
                 if (active) colors.web.accent
                 else androidx.compose.ui.graphics.Color.Transparent,
-                CodegShapes.extraSmall,
-            ).then(if (enabled && focused) Modifier.border(3.dp, colors.web.ring.withOpacity(0.5f), CodegShapes.extraSmall) else Modifier),
+                androidx.compose.foundation.shape.CircleShape,
+            ).then(if (enabled && focused) Modifier.border(3.dp, colors.web.ring.withOpacity(0.5f), androidx.compose.foundation.shape.CircleShape) else Modifier),
             contentAlignment = Alignment.Center,
         ) {
             CompositionLocalProvider(
