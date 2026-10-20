@@ -93,39 +93,42 @@ fun SkillsContent(viewModel: SkillsViewModel = hiltViewModel()) {
     var editor by remember { mutableStateOf<SkillEditTarget?>(null) }
     var pendingDelete by remember { mutableStateOf<Pair<AgentSkillItem, AgentType>?>(null) }
 
-    Box(Modifier.fillMaxSize()) {
-        when {
-            ui.phase == SkillsPhase.LOADING && ui.agents.isEmpty() ->
-                Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { LoadingView(stringResource(R.string.common_loading)) }
-            ui.phase == SkillsPhase.FAILED && ui.agents.isEmpty() ->
-                Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    InlineError(Icons.Rounded.Description, stringResource(R.string.skills_couldnt_load), ui.error ?: stringResource(R.string.skills_unknown_error), onRetry = { viewModel.load() })
+    Column(Modifier.fillMaxSize()) {
+        app.codeg.android.feature.settings.customskills.CustomSkillsEntry(onClosed = { viewModel.reloadCurrent() })
+        Box(Modifier.weight(1f)) {
+            when {
+                ui.phase == SkillsPhase.LOADING && ui.agents.isEmpty() ->
+                    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { LoadingView(stringResource(R.string.common_loading)) }
+                ui.phase == SkillsPhase.FAILED && ui.agents.isEmpty() ->
+                    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        InlineError(Icons.Rounded.Description, stringResource(R.string.skills_couldnt_load), ui.error ?: stringResource(R.string.skills_unknown_error), onRetry = { viewModel.load() })
+                    }
+                ui.agents.isEmpty() ->
+                    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        EmptyState(Icons.Rounded.Description, stringResource(R.string.skills_no_agents), stringResource(R.string.skills_enable_agent_hint))
+                    }
+                else -> Column(Modifier.fillMaxSize()) {
+                    AgentFilterBar(ui.agents, ui.selectedAgent) { viewModel.select(it) }
+                    SkillsArea(
+                        ui = ui,
+                        onAdd = { editor = SkillEditTarget.Add },
+                        onOpen = { editor = SkillEditTarget.Edit(it) },
+                        onDelete = { skill -> ui.resultAgent?.let { pendingDelete = skill to it } },
+                        onRetry = { viewModel.reloadCurrent() },
+                        onDismissError = { viewModel.dismissRefreshError() },
+                    )
                 }
-            ui.agents.isEmpty() ->
-                Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    EmptyState(Icons.Rounded.Description, stringResource(R.string.skills_no_agents), stringResource(R.string.skills_enable_agent_hint))
-                }
-            else -> Column(Modifier.fillMaxSize()) {
-                AgentFilterBar(ui.agents, ui.selectedAgent) { viewModel.select(it) }
-                SkillsArea(
-                    ui = ui,
-                    onAdd = { editor = SkillEditTarget.Add },
-                    onOpen = { editor = SkillEditTarget.Edit(it) },
-                    onDelete = { skill -> ui.resultAgent?.let { pendingDelete = skill to it } },
-                    onRetry = { viewModel.reloadCurrent() },
-                    onDismissError = { viewModel.dismissRefreshError() },
-                )
             }
-        }
 
-        // Floating "add" button — only when the agent supports skills.
-        if (ui.selectedAgent != null && ui.result?.supported == true) {
-            FloatingActionButton(
-                onClick = { editor = SkillEditTarget.Add },
-                modifier = Modifier.align(Alignment.BottomEnd).padding(20.dp),
-                containerColor = colors.accent,
-                contentColor = colors.onAccent,
-            ) { Icon(Icons.Rounded.Add, contentDescription = stringResource(R.string.skills_new_skill)) }
+            // Floating "add" button — only when the agent supports skills.
+            if (ui.selectedAgent != null && ui.result?.supported == true) {
+                FloatingActionButton(
+                    onClick = { editor = SkillEditTarget.Add },
+                    modifier = Modifier.align(Alignment.BottomEnd).padding(20.dp),
+                    containerColor = colors.accent,
+                    contentColor = colors.onAccent,
+                ) { Icon(Icons.Rounded.Add, contentDescription = stringResource(R.string.skills_new_skill)) }
+            }
         }
     }
 
