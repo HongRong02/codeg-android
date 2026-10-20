@@ -1268,6 +1268,21 @@ class CodegClient(
 
     // endregion
 
+    // region mcp-market
+    suspend fun mcpListMarketplaces(): List<app.codeg.android.core.model.McpMarketProvider> =
+        decode(send("mcp_list_marketplaces", encode(EmptyBody)), ListSerializer(app.codeg.android.core.model.McpMarketProvider.serializer()))
+
+    suspend fun mcpSearchMarketplace(body: app.codeg.android.core.model.wire.McpMarketSearchBody): List<app.codeg.android.core.model.McpMarketItem> =
+        decode(send("mcp_search_marketplace", encode(body)), ListSerializer(app.codeg.android.core.model.McpMarketItem.serializer()))
+
+    suspend fun mcpMarketplaceDetail(body: app.codeg.android.core.model.wire.McpMarketDetailBody): app.codeg.android.core.model.McpMarketDetail =
+        decode(send("mcp_get_marketplace_server_detail", encode(body)), app.codeg.android.core.model.McpMarketDetail.serializer())
+
+    suspend fun mcpInstallMarketplace(body: app.codeg.android.core.model.wire.McpMarketInstallBody) {
+        send("mcp_install_from_marketplace", encode(body))
+    }
+    // endregion
+
     // region Transport
 
     /**

@@ -635,21 +635,24 @@ Source root: `app/src/main/java/app/codeg/android/`
 
 | Line | Declaration |
 |---|---|
-| 70 | `private const val SPEC_TEMPLATE` |
-| 74 | `@Composable fun McpContent(viewModel: McpViewModel = hiltViewModel())` |
-| 75 |   `val ui by viewModel.ui.collectAsStateWithLifecycle()` |
-| 76 |   `val colors` |
-| 77 |   `var editor by remember` |
-| 108 | `private data class McpEditorTarget(val server: LocalMcpServer?)` |
-| 112 | `@Composable private fun McpRow(s: LocalMcpServer, onEdit: () -> Unit, onDelete: () -> Unit)` |
-| 113 |   `val colors` |
-| 114 |   `var menu by remember` |
-| 133 | `@Composable private fun McpEditor( existing: LocalMcpServer?, onDismiss: () -> Unit, onSave: (String, String, List<String>, (String) -> Unit) -> Unit, )` |
-| 138 |   `val colors` |
-| 139 |   `var id by remember` |
-| 140 |   `var spec by remember` |
-| 141 |   `val apps: SnapshotStateList<String>` |
-| 142 |   `var error by remember` |
+| 72 | `private const val SPEC_TEMPLATE` |
+| 76 | `@Composable fun McpContent(viewModel: McpViewModel = hiltViewModel())` |
+| 77 |   `val ui by viewModel.ui.collectAsStateWithLifecycle()` |
+| 78 |   `val colors` |
+| 79 |   `val marketViewModel: McpMarketViewModel` |
+| 80 |   `val marketUi by marketViewModel.ui.collectAsStateWithLifecycle()` |
+| 81 |   `var marketOpen by remember` |
+| 82 |   `var editor by remember` |
+| 120 | `private data class McpEditorTarget(val server: LocalMcpServer?)` |
+| 124 | `@Composable private fun McpRow(s: LocalMcpServer, onEdit: () -> Unit, onDelete: () -> Unit)` |
+| 125 |   `val colors` |
+| 126 |   `var menu by remember` |
+| 145 | `@Composable private fun McpEditor( existing: LocalMcpServer?, onDismiss: () -> Unit, onSave: (String, String, List<String>, (String) -> Unit) -> Unit, )` |
+| 150 |   `val colors` |
+| 151 |   `var id by remember` |
+| 152 |   `var spec by remember` |
+| 153 |   `val apps: SnapshotStateList<String>` |
+| 154 |   `var error by remember` |
 
 ## feature/settings/McpViewModel.kt
 
@@ -924,3 +927,53 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 91 |   `val testResult: GitDetectResult?` |
 | 92 |   `val saving: Boolean` |
 | 93 |   `val error: String?` |
+
+## feature/settings/mcpmarket/McpMarketParameters.kt
+
+| Line | Declaration |
+|---|---|
+| 6 | `class MarketParameterException(val field: String) : IllegalArgumentException()` |
+| 8 | `fun parseMarketParameters(fields: List<McpMarketParameter>, draft: Map<String, String>): JsonObject` |
+
+## feature/settings/mcpmarket/McpMarketSheet.kt
+
+| Line | Declaration |
+|---|---|
+| 23 | `@Composable fun McpMarketSheet(viewModel: McpMarketViewModel, onDismiss: () -> Unit, onInstalled: () -> Unit)` |
+| 24 |   `val ui by viewModel.ui.collectAsState()` |
+| 25 |   `val colors` |
+| 26 |   `var confirm by remember` |
+| 27 |   `val close` |
+| 101 | `@Composable private fun MarketSelect(label: String, choices: List<Pair<String, String>>, enabled: Boolean, onSelect: (String) -> Unit)` |
+| 102 |   `var expanded by remember` |
+
+## feature/settings/mcpmarket/McpMarketViewModel.kt
+
+| Line | Declaration |
+|---|---|
+| 22 | `class McpMarketViewModel @Inject constructor( private val repository: ServerRepository, @ApplicationContext private val context: Context, ) : ViewModel()` |
+| 23 |   `private val repository: ServerRepository` |
+| 26 |   `private val _ui` |
+| 27 |   `val ui` |
+| 28 |   `private var client: CodegClient?` |
+| 29 |   `private var searchJob: Job?` |
+| 30 |   `private var detailJob: Job?` |
+| 34 |   `fun load()` |
+| 48 |   `fun query(value: String)` |
+| 49 |   `fun provider(id: String)` |
+| 54 |   `fun search(more: Boolean = false)` |
+| 68 |   `fun detail(item: McpMarketItem)` |
+| 79 |   `fun back()` |
+| 80 |   `fun option(option: McpMarketOption)` |
+| 81 |   `fun field(key: String, value: String)` |
+| 82 |   `fun app(app: String)` |
+| 83 |   `fun install(onInstalled: () -> Unit)` |
+| 101 |   `private fun failure(e: Exception)` |
+| 106 |   `private fun defaults(option: McpMarketOption?): Map<String, String>` |
+| 113 | `data class McpMarketUi( val available: Boolean = false, val loading: Boolean = false, val installing: Boolean = false, val providers: List<McpMarketProvider> = emptyList(), val provider: String? = null, val query: String = "", val items: List<McpMarketItem> = emptyList(), val limit: Int = 30, val canLoadMore: Boolean = false, val detail: McpMarketDetail? = null, val option: McpMarketOption? = null, val draft: Map<String, String> = emptyMap(), val apps: Set<String> = AgentType.entries.map { it.wire }.toSet(), val error: String? = null, )` |
+| 114 |   `val available: Boolean` |
+| 115 |   `val providers: List<McpMarketProvider>` |
+| 116 |   `val query: String` |
+| 117 |   `val canLoadMore: Boolean` |
+| 118 |   `val draft: Map<String, String>` |
+| 119 |   `val error: String?` |

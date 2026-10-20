@@ -65,6 +65,8 @@ import app.codeg.android.core.designsystem.theme.withOpacity
 import app.codeg.android.core.designsystem.theme.CodegTheme
 import app.codeg.android.core.model.AgentType
 import app.codeg.android.core.model.LocalMcpServer
+import app.codeg.android.feature.settings.mcpmarket.McpMarketViewModel
+import app.codeg.android.feature.settings.mcpmarket.McpMarketSheet
 import app.codeg.android.core.designsystem.component.webSurface
 
 private const val SPEC_TEMPLATE = "{\n  \"type\": \"stdio\",\n  \"command\": \"\",\n  \"args\": []\n}"
@@ -74,12 +76,18 @@ private const val SPEC_TEMPLATE = "{\n  \"type\": \"stdio\",\n  \"command\": \"\
 fun McpContent(viewModel: McpViewModel = hiltViewModel()) {
     val ui by viewModel.ui.collectAsStateWithLifecycle()
     val colors = CodegTheme.colors
+    val marketViewModel: McpMarketViewModel = hiltViewModel()
+    val marketUi by marketViewModel.ui.collectAsStateWithLifecycle()
+    var marketOpen by remember { mutableStateOf(false) }
     var editor by remember { mutableStateOf<McpEditorTarget?>(null) }
 
     Box(Modifier.fillMaxSize()) {
         when {
             ui.loading && ui.servers.isEmpty() -> Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { LoadingView(stringResource(R.string.common_loading)) }
             else -> LazyColumn(Modifier.fillMaxSize(), contentPadding = androidx.compose.foundation.layout.PaddingValues(start = 12.dp, end = 12.dp, top = 8.dp, bottom = 88.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                if (marketUi.available) {
+                    item("market") { TextButton(onClick = { marketOpen = true }) { Text(stringResource(R.string.mcp_market_title)) } }
+                }
                 if (ui.servers.isEmpty() && !ui.loading) {
                     item("empty") { Box(Modifier.fillMaxWidth().padding(40.dp), contentAlignment = Alignment.Center) { EmptyState(Icons.Rounded.Memory, stringResource(R.string.mcp_empty_title), stringResource(R.string.mcp_empty_subtitle)) } }
                 }
@@ -94,6 +102,10 @@ fun McpContent(viewModel: McpViewModel = hiltViewModel()) {
                 contentColor = colors.onAccent,
             ) { Icon(Icons.Rounded.Add, contentDescription = stringResource(R.string.mcp_new_cd)) }
         }
+    }
+
+    if (marketOpen && marketUi.available) {
+        McpMarketSheet(marketViewModel, onDismiss = { marketOpen = false }, onInstalled = { marketOpen = false; viewModel.load() })
     }
 
     editor?.let { target ->
