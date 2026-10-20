@@ -1,5 +1,24 @@
 package app.codeg.android.feature.settings
 
+import app.codeg.android.core.designsystem.component.AgentAvatar
+import app.codeg.android.core.designsystem.component.CodegButton
+import app.codeg.android.core.designsystem.component.CodegButtonVariant
+import app.codeg.android.core.designsystem.component.CodegCard
+import app.codeg.android.core.designsystem.component.CodegCardContent
+import app.codeg.android.core.designsystem.component.CodegCardHeader
+import app.codeg.android.core.designsystem.component.CodegDropdownMenu
+import app.codeg.android.core.designsystem.component.CodegField
+import app.codeg.android.core.designsystem.component.CodegListRow
+import app.codeg.android.core.designsystem.component.CodegMenuItem
+import app.codeg.android.core.designsystem.component.CodegMenuLabel
+import app.codeg.android.core.designsystem.component.CodegSeparator
+import app.codeg.android.core.designsystem.component.CodegSwitch
+import app.codeg.android.core.designsystem.component.CodegTextField
+import app.codeg.android.core.designsystem.component.CopyButton
+import app.codeg.android.core.designsystem.component.LoadingView
+import app.codeg.android.core.designsystem.component.PrimaryButton
+import app.codeg.android.core.designsystem.component.SecretField
+import app.codeg.android.core.designsystem.component.webSurface
 import androidx.annotation.StringRes
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
@@ -13,14 +32,12 @@ import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Delete
@@ -28,19 +45,9 @@ import androidx.compose.material.icons.rounded.ExpandMore
 import androidx.compose.material.icons.rounded.Refresh
 import androidx.compose.material.icons.rounded.Warning
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExposedDropdownMenuBox
-import androidx.compose.material3.ExposedDropdownMenuDefaults
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MenuAnchorType
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Switch
-import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -63,13 +70,6 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.codeg.android.R
-import app.codeg.android.core.designsystem.component.AgentAvatar
-import app.codeg.android.core.designsystem.component.CodegTextField
-import app.codeg.android.core.designsystem.component.CopyButton
-import app.codeg.android.core.designsystem.component.LoadingView
-import app.codeg.android.core.designsystem.component.PrimaryButton
-import app.codeg.android.core.designsystem.component.SecretField
-import app.codeg.android.core.designsystem.theme.CodegColors
 import app.codeg.android.core.designsystem.theme.CodegShapes
 import app.codeg.android.core.designsystem.theme.withOpacity
 import app.codeg.android.core.designsystem.theme.CodegTheme
@@ -91,7 +91,6 @@ import app.codeg.android.core.model.clineProviders
 import app.codeg.android.core.model.codexReasoningEffortOptions
 import app.codeg.android.core.model.hermesProvider
 import app.codeg.android.core.model.hermesProviders
-import app.codeg.android.core.designsystem.component.webSurface
 
 /**
  * Per-agent configuration editor — a native Material 3 port of the iOS
@@ -119,7 +118,7 @@ fun AgentDetailContent(
     // — like Hermes' raw editor, they hide the host "Save" and the generic
     // native-config editor.
     val selfContained = agentType == AgentType.KIMI_CODE || agentType == AgentType.PI ||
-        agentType.isServerManagedConfig
+    agentType.isServerManagedConfig
     Column(Modifier.fillMaxSize().imePadding()) {
         Column(
             Modifier.weight(1f).fillMaxWidth().verticalScroll(rememberScrollState())
@@ -175,38 +174,32 @@ fun AgentDetailContent(
 private fun AgentHeader(state: AgentDetailState, onToggle: (Boolean) -> Unit) {
     val colors = CodegTheme.colors
     val agent = state.agent
-    Column(
-        Modifier.fillMaxWidth().webSurface(CodegShapes.extraSmall).padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(10.dp),
-    ) {
-        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(14.dp)) {
-            AgentAvatar(agent.agentType, size = 48.dp)
-            Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
-                Text(
-                    agent.name.ifEmpty { agent.agentType.displayName },
-                    fontSize = 17.sp, fontWeight = FontWeight.SemiBold, color = colors.textPrimary,
-                    maxLines = 1, overflow = TextOverflow.Ellipsis,
-                )
-                VersionLine(state)
+    CodegCard(modifier = Modifier.fillMaxWidth()) {
+        Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(14.dp)) {
+                AgentAvatar(agent.agentType, size = 48.dp)
+                Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                    Text(
+                        agent.name.ifEmpty { agent.agentType.displayName },
+                        fontSize = 17.sp, fontWeight = FontWeight.SemiBold, color = colors.textPrimary,
+                        maxLines = 1, overflow = TextOverflow.Ellipsis,
+                    )
+                    VersionLine(state)
+                }
+                CodegSwitch(checked = agent.enabled, onCheckedChange = onToggle, enabled = agent.available)
             }
-            Switch(
-                checked = agent.enabled,
-                onCheckedChange = onToggle,
-                enabled = agent.available,
-                colors = SwitchDefaults.colors(checkedTrackColor = colors.accent, checkedThumbColor = colors.onAccent),
-            )
-        }
-        if (agent.description.isNotEmpty()) {
-            Text(agent.description, fontSize = 13.sp, color = colors.web.mutedForeground)
-        }
-        if (!agent.available) {
-            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                Icon(Icons.Rounded.Warning, contentDescription = null, tint = colors.danger, modifier = Modifier.size(16.dp))
-                Text(stringResource(R.string.agents_detail_unavailable), fontSize = 12.sp, color = colors.danger)
+            if (agent.description.isNotEmpty()) {
+                Text(agent.description, fontSize = 13.sp, color = colors.web.mutedForeground)
             }
-        }
-        agent.configFilePath?.takeIf { it.isNotBlank() }?.let { path ->
-            Text(path, fontFamily = FontFamily.Monospace, fontSize = 11.sp, color = colors.web.mutedForeground, maxLines = 1, overflow = TextOverflow.Ellipsis)
+            if (!agent.available) {
+                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                    Icon(Icons.Rounded.Warning, contentDescription = null, tint = colors.danger, modifier = Modifier.size(16.dp))
+                    Text(stringResource(R.string.agents_detail_unavailable), fontSize = 12.sp, color = colors.danger)
+                }
+            }
+            agent.configFilePath?.takeIf { it.isNotBlank() }?.let { path ->
+                Text(path, fontFamily = FontFamily.Monospace, fontSize = 11.sp, color = colors.web.mutedForeground, maxLines = 1, overflow = TextOverflow.Ellipsis)
+            }
         }
     }
 }
@@ -219,7 +212,7 @@ private fun VersionLine(state: AgentDetailState) {
     val text = when {
         installed.isNullOrBlank() -> stringResource(R.string.agents_detail_not_installed)
         latest != null && latest.isNotBlank() && latest != installed ->
-            stringResource(R.string.agents_detail_version_latest, installed, latest)
+        stringResource(R.string.agents_detail_version_latest, installed, latest)
         else -> "v$installed"
     }
     Text(text, fontSize = 12.sp, color = colors.web.mutedForeground)
@@ -230,7 +223,7 @@ private fun SaveBar(canSave: Boolean, saving: Boolean, error: String?, onSave: (
     val colors = CodegTheme.colors
     Surface(color = colors.bg) {
         Column(Modifier.fillMaxWidth().navigationBarsPadding().padding(horizontal = 16.dp, vertical = 12.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            HorizontalDivider(color = colors.hairline)
+            CodegSeparator()
             error?.let { Text(it, fontSize = 12.sp, color = colors.danger) }
             PrimaryButton(text = stringResource(R.string.common_save), onClick = onSave, enabled = canSave, loading = saving)
         }
@@ -364,13 +357,13 @@ private fun GeminiSection(state: AgentDetailState, vm: AgentsViewModel) {
         )
         when (d.geminiAuthMode) {
             GeminiAuthMode.LOGIN_GOOGLE ->
-                Text(stringResource(R.string.agents_gemini_oauth_hint), fontSize = 12.sp, color = colors.web.mutedForeground)
+            Text(stringResource(R.string.agents_gemini_oauth_hint), fontSize = 12.sp, color = colors.web.mutedForeground)
             GeminiAuthMode.CUSTOM -> {
                 CodegTextField(d.apiBaseUrl, { v -> vm.editDraft { it.copy(apiBaseUrl = v) } }, stringResource(R.string.agents_field_api_url), placeholder = "https://…", keyboardType = KeyboardType.Uri, mono = true)
                 SecretField(d.geminiApiKey, { v -> vm.editDraft { it.copy(geminiApiKey = v) } }, stringResource(R.string.agents_gemini_api_key))
             }
             GeminiAuthMode.GEMINI_API_KEY ->
-                SecretField(d.geminiApiKey, { v -> vm.editDraft { it.copy(geminiApiKey = v) } }, stringResource(R.string.agents_gemini_api_key))
+            SecretField(d.geminiApiKey, { v -> vm.editDraft { it.copy(geminiApiKey = v) } }, stringResource(R.string.agents_gemini_api_key))
             GeminiAuthMode.VERTEX_API_KEY -> {
                 SecretField(d.googleApiKey, { v -> vm.editDraft { it.copy(googleApiKey = v) } }, stringResource(R.string.agents_gemini_google_api_key))
                 CodegTextField(d.googleCloudProject, { v -> vm.editDraft { it.copy(googleCloudProject = v) } }, stringResource(R.string.agents_gemini_cloud_project), mono = true)
@@ -793,16 +786,7 @@ private fun RuleEditor(
         Text(label, fontSize = 12.sp, fontWeight = FontWeight.Medium, color = colors.textSecondary)
         rules.forEachIndexed { index, rule ->
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                OutlinedTextField(
-                    value = rule,
-                    onValueChange = { v -> onChange(rules.toMutableList().also { it[index] = v }) },
-                    placeholder = { Text(placeholder, fontFamily = FontFamily.Monospace, fontSize = 13.sp) },
-                    singleLine = true,
-                    textStyle = androidx.compose.ui.text.TextStyle(fontFamily = FontFamily.Monospace, fontSize = 13.sp),
-                    keyboardOptions = KeyboardOptions(autoCorrectEnabled = false),
-                    colors = dropdownColors(colors),
-                    modifier = Modifier.weight(1f),
-                )
+                CodegTextField(value = rule, onValueChange = { v -> onChange(rules.toMutableList().also { it[index] = v }) }, label = label, modifier = Modifier.weight(1f), singleLine = true, mono = true, placeholder = placeholder)
                 IconButton(
                     onClick = { onChange(rules.toMutableList().also { it.removeAt(index) }) },
                     modifier = Modifier.size(36.dp),
@@ -867,70 +851,39 @@ private fun ReadonlyRow(label: String, value: String) {
 
 @Composable
 internal fun FormSection(title: String, footer: String? = null, content: @Composable ColumnScope.() -> Unit) {
-    val colors = CodegTheme.colors
-    Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-        Text(title, fontSize = 11.sp, fontWeight = FontWeight.SemiBold, color = colors.web.mutedForeground, modifier = Modifier.padding(start = 4.dp))
-        Column(
-            Modifier.fillMaxWidth().webSurface(CodegShapes.extraSmall).padding(14.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
-            content = content,
-        )
-        footer?.let { Text(it, fontSize = 11.sp, color = colors.web.mutedForeground, modifier = Modifier.padding(start = 4.dp)) }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-internal fun <T> SelectField(label: String, value: T, options: List<Pair<T, String>>, onSelect: (T) -> Unit) {
-    val colors = CodegTheme.colors
-    var expanded by remember { mutableStateOf(false) }
-    val display = options.firstOrNull { it.first == value }?.second ?: ""
-    ExposedDropdownMenuBox(expanded = expanded, onExpandedChange = { expanded = it }) {
-        OutlinedTextField(
-            value = display,
-            onValueChange = {},
-            readOnly = true,
-            label = { Text(label) },
-            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
-            colors = dropdownColors(colors),
-            modifier = Modifier.menuAnchor(MenuAnchorType.PrimaryNotEditable).fillMaxWidth(),
-        )
-        ExposedDropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
-            options.forEach { (id, lbl) ->
-                DropdownMenuItem(text = { Text(lbl) }, onClick = { onSelect(id); expanded = false })
-            }
+    CodegCard {
+        CodegCardHeader(title = title, description = footer)
+        CodegCardContent {
+            Column(verticalArrangement = Arrangement.spacedBy(12.dp), content = content)
         }
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+internal fun <T> SelectField(label: String, value: T, options: List<Pair<T, String>>, onSelect: (T) -> Unit) {
+    val keys = options.indices.map { it.toString() }
+    val selected = options.indexOfFirst { it.first == value }.takeIf { it >= 0 }?.toString().orEmpty()
+    SettingsChoice(label, selected, options.mapIndexed { index, option -> index.toString() to option.second },
+        enabled = options.isNotEmpty()) { key -> keys.indexOf(key).takeIf { it >= 0 }?.let { onSelect(options[it].first) } }
+}
+
 @Composable
 private fun HermesProviderField(value: String, onSelect: (String) -> Unit) {
-    val colors = CodegTheme.colors
     var expanded by remember { mutableStateOf(false) }
-    val display = hermesProvider(value)?.label ?: ""
-    ExposedDropdownMenuBox(expanded = expanded, onExpandedChange = { expanded = it }) {
-        OutlinedTextField(
-            value = display,
-            onValueChange = {},
-            readOnly = true,
-            label = { Text(stringResource(R.string.agents_field_provider)) },
-            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
-            colors = dropdownColors(colors),
-            modifier = Modifier.menuAnchor(MenuAnchorType.PrimaryNotEditable).fillMaxWidth(),
-        )
-        ExposedDropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
-            var lastKind: HermesProviderKind? = null
-            hermesProviders.forEach { opt ->
-                if (opt.kind != lastKind) {
-                    lastKind = opt.kind
-                    Text(
-                        stringResource(kindLabelRes(opt.kind)),
-                        fontSize = 11.sp, fontWeight = FontWeight.SemiBold, color = colors.web.mutedForeground,
-                        modifier = Modifier.padding(start = 16.dp, top = 8.dp, bottom = 2.dp),
-                    )
+    CodegField(label = stringResource(R.string.agents_field_provider)) {
+        Box {
+            CodegButton(onClick = { expanded = true }, variant = CodegButtonVariant.Outline) {
+                Text(hermesProvider(value)?.label.orEmpty())
+            }
+            CodegDropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+                var lastKind: HermesProviderKind? = null
+                hermesProviders.forEach { option ->
+                    if (option.kind != lastKind) {
+                        lastKind = option.kind
+                        CodegMenuLabel(text = { Text(stringResource(kindLabelRes(option.kind))) })
+                    }
+                    CodegMenuItem(text = { Text(option.label) }, onClick = { onSelect(option.id); expanded = false })
                 }
-                DropdownMenuItem(text = { Text(opt.label) }, onClick = { onSelect(opt.id); expanded = false })
             }
         }
     }
@@ -945,21 +898,11 @@ private fun kindLabelRes(kind: HermesProviderKind): Int = when (kind) {
 
 @Composable
 private fun ToggleRow(title: String, checked: Boolean, onChange: (Boolean) -> Unit) {
-    val colors = CodegTheme.colors
-    Row(
-        Modifier.fillMaxWidth().clickable { onChange(!checked) },
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween,
-    ) {
-        Text(title, fontSize = 14.sp, color = colors.textPrimary, modifier = Modifier.weight(1f))
-        Switch(
-            checked = checked,
-            onCheckedChange = onChange,
-            colors = SwitchDefaults.colors(checkedTrackColor = colors.accent, checkedThumbColor = colors.onAccent),
-        )
-    }
+    CodegListRow(title = title, onClick = { onChange(!checked) },
+        trailing = { CodegSwitch(checked = checked, onCheckedChange = onChange) })
 }
 
+// TODO(T53): CodegCollapsible
 @Composable
 internal fun ColumnScope.ExpandableGroup(title: String, content: @Composable ColumnScope.() -> Unit) {
     val colors = CodegTheme.colors
@@ -981,15 +924,10 @@ internal fun ColumnScope.ExpandableGroup(title: String, content: @Composable Col
 @Composable
 private fun TonalAction(text: String, onClick: () -> Unit) {
     val colors = CodegTheme.colors
-    androidx.compose.material3.FilledTonalButton(
-        onClick = onClick,
-        colors = androidx.compose.material3.ButtonDefaults.filledTonalButtonColors(
-            containerColor = colors.accent.withOpacity(0.14f),
-            contentColor = colors.accent,
-        ),
-    ) { Text(text) }
+    CodegButton(onClick = onClick, variant = CodegButtonVariant.Secondary) { Text(text) }
 }
 
+// TODO(T53): CodegCollapsible
 @Composable
 private fun AdvancedSection(state: AgentDetailState, vm: AgentsViewModel) {
     val colors = CodegTheme.colors
@@ -1022,37 +960,12 @@ private fun AdvancedSection(state: AgentDetailState, vm: AgentsViewModel) {
         }
         AnimatedVisibility(open) {
             Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                OutlinedTextField(
-                    value = text,
-                    onValueChange = vm::editRawConfig,
-                    textStyle = androidx.compose.ui.text.TextStyle(fontFamily = FontFamily.Monospace, fontSize = 12.sp),
-                    keyboardOptions = KeyboardOptions(autoCorrectEnabled = false),
-                    modifier = Modifier.fillMaxWidth().heightIn(min = 160.dp),
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = colors.accent,
-                        unfocusedBorderColor = colors.surfaceStroke,
-                        focusedTextColor = colors.textPrimary,
-                        unfocusedTextColor = colors.textPrimary,
-                        cursorColor = colors.accent,
-                    ),
-                )
+                CodegTextField(value = text, onValueChange = vm::editRawConfig, label = stringResource(R.string.agents_advanced), modifier = Modifier.fillMaxWidth().heightIn(min = 160.dp), singleLine = false, mono = true)
                 state.configError?.let { Text(it, fontSize = 11.sp, color = colors.danger, modifier = Modifier.padding(start = 4.dp)) }
                 Text(stringResource(R.string.agents_advanced_override_hint), fontSize = 11.sp, color = colors.web.mutedForeground, modifier = Modifier.padding(start = 4.dp))
             }
         }
     }
 }
-
-@Composable
-private fun dropdownColors(colors: CodegColors) = OutlinedTextFieldDefaults.colors(
-    focusedBorderColor = colors.accent,
-    unfocusedBorderColor = colors.surfaceStroke,
-    focusedLabelColor = colors.accent,
-    unfocusedLabelColor = colors.web.mutedForeground,
-    focusedTextColor = colors.textPrimary,
-    unfocusedTextColor = colors.textPrimary,
-    focusedTrailingIconColor = colors.web.mutedForeground,
-    unfocusedTrailingIconColor = colors.web.mutedForeground,
-)
 
 // endregion

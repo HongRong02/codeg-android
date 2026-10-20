@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_delete_target_message">删除此项目？此操作无法撤销。</string>
+</resources>

@@ -1,5 +1,13 @@
 package app.codeg.android.feature.settings
 
+import app.codeg.android.core.designsystem.component.CodegCard
+import app.codeg.android.core.designsystem.component.CodegIconButton
+import app.codeg.android.core.designsystem.component.CodegListRow
+import app.codeg.android.core.designsystem.component.CodegSectionHeader
+import app.codeg.android.core.designsystem.component.CodegSeparator
+import app.codeg.android.core.designsystem.component.CodegTabs
+import app.codeg.android.core.designsystem.component.CodegTopBar
+import app.codeg.android.core.designsystem.component.SettingsIconBadge
 import androidx.compose.foundation.layout.imePadding
 import androidx.activity.compose.BackHandler
 import androidx.annotation.StringRes
@@ -36,10 +44,7 @@ import androidx.compose.material.icons.rounded.School
 import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material.icons.rounded.Tune
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.ListItem
-import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -53,7 +58,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -61,17 +65,11 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.codeg.android.R
-import app.codeg.android.core.designsystem.component.CodegTopBar
-import app.codeg.android.core.designsystem.component.CodegIconButton
-import app.codeg.android.core.designsystem.component.CodegSegmented
-import app.codeg.android.core.designsystem.component.SettingsIconBadge
 import app.codeg.android.core.designsystem.theme.PillShape
 import app.codeg.android.core.designsystem.theme.WebThemePreset
-import app.codeg.android.core.designsystem.theme.CodegShapes
 import app.codeg.android.core.designsystem.theme.CodegTheme
 import app.codeg.android.core.datastore.ThemeMode
 import app.codeg.android.core.model.AgentType
-import app.codeg.android.core.designsystem.component.webSurface
 import androidx.compose.material.icons.rounded.Schedule
 
 private enum class SettingsLeaf(@StringRes val titleRes: Int, val icon: ImageVector, @StringRes val groupRes: Int, val implemented: Boolean) {
@@ -157,8 +155,8 @@ fun SettingsScreen(
                 SettingsLeaf.OPEN_SOURCE_LICENSES -> OpenSourceLicensesScreen()
                 SettingsLeaf.MCP -> McpContent()
                 SettingsLeaf.AGENTS ->
-                    if (agentDetail == null) AgentsContent(onOpen = { agentDetail = it })
-                    else AgentDetailContent(agentDetail!!, onClose = { agentDetail = null })
+                if (agentDetail == null) AgentsContent(onOpen = { agentDetail = it })
+                else AgentDetailContent(agentDetail!!, onClose = { agentDetail = null })
                 SettingsLeaf.SKILLS -> SkillsContent()
                 SettingsLeaf.EXPERTS -> ExpertsContent()
                 SettingsLeaf.ASSISTANTS -> AssistantsContent()
@@ -185,31 +183,17 @@ private fun SettingsRoot(
     Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(horizontal = 12.dp, vertical = 8.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
         for (group in SettingsLeaf.entries.map { it.groupRes }.distinct()) {
             Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
-                Text(stringResource(group), fontSize = 12.sp, fontWeight = FontWeight.Medium, color = colors.textSecondary, modifier = Modifier.padding(start = 12.dp, bottom = 4.dp))
-                Column(Modifier.fillMaxWidth().webSurface(CodegShapes.small)) {
-                    val leaves = SettingsLeaf.entries.filter {
-                        it.groupRes == group &&
+                CodegSectionHeader(title = stringResource(group))
+                CodegCard(modifier = Modifier.fillMaxWidth()) {
+                    Column(Modifier) {
+                        val leaves = SettingsLeaf.entries.filter {
+                            it.groupRes == group &&
                             (it != SettingsLeaf.WORK_TASKS || workTaskUi.supported) &&
                             (it != SettingsLeaf.SERVER_LOGS || showServerLogs) &&
                             (it != SettingsLeaf.ASSISTANTS || (!assistantUi.loading && assistantUi.supported))
-                    }
-                    leaves.forEachIndexed { index, l ->
-                        ListItem(
-                            headlineContent = { Text(stringResource(l.titleRes), fontSize = 14.sp) },
-                            leadingContent = { SettingsIconBadge(l.icon) },
-                            trailingContent = {
-                                Icon(
-                                    Icons.AutoMirrored.Rounded.KeyboardArrowRight,
-                                    contentDescription = null,
-                                    tint = colors.textSecondary,
-                                    modifier = Modifier.size(18.dp),
-                                )
-                            },
-                            colors = ListItemDefaults.colors(
-                                containerColor = Color.Transparent,
-                                headlineColor = colors.textPrimary,
-                            ),
-                            modifier = Modifier.clickable {
+                        }
+                        leaves.forEachIndexed { index, l ->
+                            CodegListRow(title = stringResource(l.titleRes), onClick = {
                                 if (l == SettingsLeaf.WORK_TASKS) {
                                     onOpenWorkTasks()
                                 } else if (l == SettingsLeaf.AUTOMATIONS) {
@@ -217,10 +201,17 @@ private fun SettingsRoot(
                                 } else {
                                     onSelect(l)
                                 }
-                            },
-                        )
-                        if (index < leaves.lastIndex) {
-                            HorizontalDivider(color = colors.hairline, modifier = Modifier.padding(start = 60.dp))
+                            }, modifier = Modifier, leading = { SettingsIconBadge(l.icon) }, trailing = {
+                                Icon(
+                                    Icons.AutoMirrored.Rounded.KeyboardArrowRight,
+                                    contentDescription = null,
+                                    tint = colors.textSecondary,
+                                    modifier = Modifier.size(18.dp),
+                                )
+                            })
+                            if (index < leaves.lastIndex) {
+                                CodegSeparator(modifier = Modifier.padding(start = 60.dp))
+                            }
                         }
                     }
                 }
@@ -235,46 +226,48 @@ private fun AppearanceSettings(viewModel: SettingsViewModel) {
     val colors = CodegTheme.colors
     val settings by viewModel.settings.collectAsStateWithLifecycle()
     Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
-        Column(Modifier.fillMaxWidth().webSurface(CodegShapes.small).padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-            Text(stringResource(R.string.settings_theme), style = MaterialTheme.typography.titleSmall, color = colors.textSecondary)
-            val modes = ThemeMode.entries
-            CodegSegmented(
-                options = modes.map { mode ->
+        CodegCard(modifier = Modifier.fillMaxWidth()) {
+            Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                Text(stringResource(R.string.settings_theme), style = MaterialTheme.typography.titleSmall, color = colors.textSecondary)
+                val modes = ThemeMode.entries
+                CodegTabs(tabs = modes.map { mode ->
                     stringResource(when (mode) {
                         ThemeMode.SYSTEM -> R.string.settings_core_theme_system
                         ThemeMode.LIGHT -> R.string.settings_core_theme_light
                         ThemeMode.DARK -> R.string.settings_core_theme_dark
                     })
-                },
-                selectedIndex = modes.indexOf(settings.themeMode),
-                onSelect = { viewModel.setThemeMode(modes[it]) },
-            )
+                }, selected = modes.indexOf(settings.themeMode), onSelect = { viewModel.setThemeMode(modes[it]) })
+            }
         }
-        Column(Modifier.fillMaxWidth().webSurface(CodegShapes.small).padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-            Text(stringResource(R.string.settings_accent), fontSize = 13.sp, fontWeight = FontWeight.SemiBold, color = colors.textSecondary)
-            FlowRow(
-                Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp),
-            ) {
-                for (preset in WebThemePreset.entries) {
-                    val selected = WebThemePreset.from(settings.accentId) == preset
-                    val swatch = preset.resolve(colors.isDark)
-                    Box(
-                        Modifier.size(34.dp).clip(CircleShape).background(swatch.primary)
-                            .border(1.dp, swatch.border, CircleShape)
-                            .then(if (selected) Modifier.border(3.dp, colors.web.ring, CircleShape) else Modifier)
-                            .clickable { viewModel.setAccent(preset.id) },
-                    )
+        CodegCard(modifier = Modifier.fillMaxWidth()) {
+            Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                Text(stringResource(R.string.settings_accent), fontSize = 13.sp, fontWeight = FontWeight.SemiBold, color = colors.textSecondary)
+                FlowRow(
+                    Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                ) {
+                    for (preset in WebThemePreset.entries) {
+                        val selected = WebThemePreset.from(settings.accentId) == preset
+                        val swatch = preset.resolve(colors.isDark)
+                        Box(
+                            Modifier.size(34.dp).clip(CircleShape).background(swatch.primary)
+                                .border(1.dp, swatch.border, CircleShape)
+                                .then(if (selected) Modifier.border(3.dp, colors.web.ring, CircleShape) else Modifier)
+                                .clickable { viewModel.setAccent(preset.id) },
+                        )
+                    }
                 }
             }
         }
         // Live preview.
-        Column(Modifier.fillMaxWidth().webSurface(CodegShapes.small).padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            Text(stringResource(R.string.settings_preview), fontSize = 13.sp, color = colors.textSecondary)
-            Text(stringResource(R.string.settings_accent_preview_caption), fontSize = 14.sp, color = colors.textPrimary)
-            Box(Modifier.clip(PillShape).background(colors.accent).padding(horizontal = 16.dp, vertical = 8.dp)) {
-                Text(stringResource(R.string.settings_accent_button), color = colors.onAccent, fontWeight = FontWeight.SemiBold)
+        CodegCard(modifier = Modifier.fillMaxWidth()) {
+            Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Text(stringResource(R.string.settings_preview), fontSize = 13.sp, color = colors.textSecondary)
+                Text(stringResource(R.string.settings_accent_preview_caption), fontSize = 14.sp, color = colors.textPrimary)
+                Box(Modifier.clip(PillShape).background(colors.accent).padding(horizontal = 16.dp, vertical = 8.dp)) {
+                    Text(stringResource(R.string.settings_accent_button), color = colors.onAccent, fontWeight = FontWeight.SemiBold)
+                }
             }
         }
     }

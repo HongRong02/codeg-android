@@ -1,5 +1,10 @@
 package app.codeg.android.feature.settings
 
+import app.codeg.android.core.designsystem.component.CodegButton
+import app.codeg.android.core.designsystem.component.CodegCard
+import app.codeg.android.core.designsystem.component.CodegSwitch
+import app.codeg.android.core.designsystem.component.CodegTextField
+import app.codeg.android.core.designsystem.component.webSurface
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -9,11 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Switch
-import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -26,10 +27,8 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.codeg.android.R
-import app.codeg.android.core.designsystem.component.CodegTextField
 import app.codeg.android.core.designsystem.theme.CodegShapes
 import app.codeg.android.core.designsystem.theme.CodegTheme
-import app.codeg.android.core.designsystem.component.webSurface
 
 @Composable
 fun SystemContent(viewModel: SystemViewModel = hiltViewModel()) {
@@ -38,29 +37,35 @@ fun SystemContent(viewModel: SystemViewModel = hiltViewModel()) {
 
     Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
         // Proxy.
-        Column(Modifier.fillMaxWidth().webSurface(CodegShapes.small).padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-            Text(stringResource(R.string.system_http_proxy), fontSize = 14.sp, fontWeight = FontWeight.SemiBold, color = colors.textPrimary)
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(stringResource(R.string.system_enable_proxy), fontSize = 14.sp, color = colors.textPrimary, modifier = Modifier.weight(1f))
-                Switch(checked = ui.proxyEnabled, onCheckedChange = viewModel::setProxyEnabled, colors = SwitchDefaults.colors(checkedTrackColor = colors.accent, checkedThumbColor = colors.onAccent))
+        CodegCard(modifier = Modifier.fillMaxWidth()) {
+            Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                Text(stringResource(R.string.system_http_proxy), fontSize = 14.sp, fontWeight = FontWeight.SemiBold, color = colors.textPrimary)
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(stringResource(R.string.system_enable_proxy), fontSize = 14.sp, color = colors.textPrimary, modifier = Modifier.weight(1f))
+                    CodegSwitch(checked = ui.proxyEnabled, onCheckedChange = viewModel::setProxyEnabled)
+                }
+                if (ui.proxyEnabled) {
+                    CodegTextField(ui.proxyUrl, viewModel::onProxyUrl, label = stringResource(R.string.system_proxy_url), placeholder = stringResource(R.string.settings_core_proxy_placeholder), mono = true)
+                }
+                PillButton(stringResource(R.string.common_save), loading = ui.savingProxy, onClick = viewModel::saveProxy)
             }
-            if (ui.proxyEnabled) {
-                CodegTextField(ui.proxyUrl, viewModel::onProxyUrl, label = stringResource(R.string.system_proxy_url), placeholder = stringResource(R.string.settings_core_proxy_placeholder), mono = true)
-            }
-            PillButton(stringResource(R.string.common_save), loading = ui.savingProxy, onClick = viewModel::saveProxy)
         }
         // Update check.
-        Column(Modifier.fillMaxWidth().webSurface(CodegShapes.small).padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-            Text(stringResource(R.string.system_server_update), fontSize = 14.sp, fontWeight = FontWeight.SemiBold, color = colors.textPrimary)
-            PillButton(stringResource(R.string.system_check_for_updates), loading = ui.checking, onClick = viewModel::checkUpdate)
-            ui.updateResult?.let { r ->
-                Column(Modifier.fillMaxWidth().webSurface(CodegShapes.extraSmall).padding(14.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                    Text(stringResource(R.string.system_current_version, r.currentVersion), fontSize = 13.sp, color = colors.textSecondary)
-                    if (r.update != null) {
-                        Text(stringResource(R.string.system_update_available, r.update.version), fontSize = 14.sp, fontWeight = FontWeight.SemiBold, color = colors.accent)
-                        if (r.update.body.isNotEmpty()) Text(r.update.body, fontSize = 12.sp, color = colors.textSecondary)
-                    } else {
-                        Text(stringResource(R.string.system_up_to_date), fontSize = 13.sp, color = colors.textSecondary)
+        CodegCard(modifier = Modifier.fillMaxWidth()) {
+            Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                Text(stringResource(R.string.system_server_update), fontSize = 14.sp, fontWeight = FontWeight.SemiBold, color = colors.textPrimary)
+                PillButton(stringResource(R.string.system_check_for_updates), loading = ui.checking, onClick = viewModel::checkUpdate)
+                ui.updateResult?.let { r ->
+                    CodegCard(modifier = Modifier.fillMaxWidth()) {
+                        Column(Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                            Text(stringResource(R.string.system_current_version, r.currentVersion), fontSize = 13.sp, color = colors.textSecondary)
+                            if (r.update != null) {
+                                Text(stringResource(R.string.system_update_available, r.update.version), fontSize = 14.sp, fontWeight = FontWeight.SemiBold, color = colors.accent)
+                                if (r.update.body.isNotEmpty()) Text(r.update.body, fontSize = 12.sp, color = colors.textSecondary)
+                            } else {
+                                Text(stringResource(R.string.system_up_to_date), fontSize = 13.sp, color = colors.textSecondary)
+                            }
+                        }
                     }
                 }
             }
@@ -74,12 +79,7 @@ fun SystemContent(viewModel: SystemViewModel = hiltViewModel()) {
 @Composable
 private fun PillButton(label: String, loading: Boolean, onClick: () -> Unit) {
     val colors = CodegTheme.colors
-    Button(
-        onClick = onClick,
-        enabled = !loading,
-        shape = CodegShapes.extraSmall,
-        colors = ButtonDefaults.buttonColors(containerColor = colors.accent, contentColor = colors.onAccent),
-    ) {
+    CodegButton(onClick = onClick, enabled = !loading) {
         if (loading) CircularProgressIndicator(Modifier.size(16.dp), strokeWidth = 2.dp, color = colors.onAccent)
         else Text(label, fontSize = 14.sp, fontWeight = FontWeight.SemiBold)
     }

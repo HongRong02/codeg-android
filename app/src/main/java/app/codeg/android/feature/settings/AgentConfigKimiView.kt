@@ -1,5 +1,13 @@
 package app.codeg.android.feature.settings
 
+import app.codeg.android.core.designsystem.component.CodegButton
+import app.codeg.android.core.designsystem.component.CodegButtonVariant
+import app.codeg.android.core.designsystem.component.CodegDropdownMenu
+import app.codeg.android.core.designsystem.component.CodegMenuItem
+import app.codeg.android.core.designsystem.component.CodegSeparator
+import app.codeg.android.core.designsystem.component.CodegTextField
+import app.codeg.android.core.designsystem.component.PrimaryButton
+import app.codeg.android.core.designsystem.component.SecretField
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -9,23 +17,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.CheckCircle
 import androidx.compose.material.icons.rounded.ErrorOutline
 import androidx.compose.material.icons.rounded.Verified
 import androidx.compose.material.icons.rounded.WarningAmber
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -36,17 +35,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.codeg.android.R
-import app.codeg.android.core.designsystem.component.CodegTextField
-import app.codeg.android.core.designsystem.component.PrimaryButton
-import app.codeg.android.core.designsystem.component.SecretField
 import app.codeg.android.core.designsystem.theme.CodegShapes
 import app.codeg.android.core.designsystem.theme.withOpacity
 import app.codeg.android.core.designsystem.theme.CodegTheme
@@ -67,7 +60,6 @@ import app.codeg.android.core.network.displayMessage
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-
 
 private data class KimiBanner(val text: String, val isError: Boolean)
 
@@ -201,8 +193,9 @@ fun AgentConfigKimiView(agent: AcpAgentInfo, viewModel: AgentsViewModel) {
 
     FormSection(stringResource(R.string.agents_kimi_section), footer = stringResource(R.string.agents_kimi_footer)) {
         KimiGateBanner(present = liveConfig.credentialPresent == true, mode = mode)
+        // TODO(T52): CodegToaster
         banner?.let { KimiResultBanner(it) }
-        HorizontalDivider(color = colors.hairline)
+        CodegSeparator()
 
         SelectField(
             label = stringResource(R.string.agents_kimi_auth_method),
@@ -216,7 +209,7 @@ fun AgentConfigKimiView(agent: AcpAgentInfo, viewModel: AgentsViewModel) {
         Caption(stringResource(R.string.agents_kimi_auth_caption))
 
         if (mode == KimiAuthMode.APIKEY) {
-            HorizontalDivider(color = colors.hairline)
+            CodegSeparator()
             // Provider type
             SelectField(
                 label = stringResource(R.string.agents_kimi_provider_type),
@@ -272,19 +265,19 @@ fun AgentConfigKimiView(agent: AcpAgentInfo, viewModel: AgentsViewModel) {
             // Model + fetch
             CodegTextField(modelId, { modelId = it }, stringResource(R.string.agents_kimi_model), placeholder = KIMI_MODEL_PLACEHOLDER, mono = true)
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                OutlinedButton(onClick = { fetchModels() }, enabled = !saving && !fetchingModels) {
+                CodegButton(onClick = { fetchModels() }, enabled = !saving && !fetchingModels, variant = CodegButtonVariant.Outline) {
                     if (fetchingModels) CircularProgressIndicator(Modifier.size(16.dp), strokeWidth = 2.dp, color = colors.accent)
-                    else Text(stringResource(R.string.agents_kimi_fetch), color = colors.accent)
+                    else Text(stringResource(R.string.agents_kimi_fetch))
                 }
                 if (models.isNotEmpty()) {
                     Box {
                         var expanded by remember { mutableStateOf(false) }
-                        TextButton(onClick = { expanded = true }) {
-                            Text(stringResource(R.string.agents_kimi_models_count, models.size), color = colors.textSecondary)
+                        CodegButton(onClick = { expanded = true }, variant = CodegButtonVariant.Ghost) {
+                            Text(stringResource(R.string.agents_kimi_models_count, models.size))
                         }
-                        DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+                        CodegDropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
                             models.forEach { m ->
-                                DropdownMenuItem(text = { Text(m) }, onClick = { modelId = m; expanded = false })
+                                CodegMenuItem(text = { Text(m) }, onClick = { modelId = m; expanded = false })
                             }
                         }
                     }
@@ -298,7 +291,7 @@ fun AgentConfigKimiView(agent: AcpAgentInfo, viewModel: AgentsViewModel) {
             Caption(stringResource(R.string.agents_kimi_login_caption))
         }
 
-        HorizontalDivider(color = colors.hairline)
+        CodegSeparator()
         PrimaryButton(
             text = stringResource(R.string.agents_kimi_save),
             onClick = { handleSave() },
@@ -306,27 +299,11 @@ fun AgentConfigKimiView(agent: AcpAgentInfo, viewModel: AgentsViewModel) {
             loading = saving,
         )
 
-        HorizontalDivider(color = colors.hairline)
+        CodegSeparator()
         ExpandableGroup(stringResource(R.string.agents_kimi_raw_disclosure)) {
-            OutlinedTextField(
-                value = rawConfig,
-                onValueChange = { rawConfig = it },
-                textStyle = TextStyle(fontFamily = FontFamily.Monospace, fontSize = 12.sp),
-                keyboardOptions = KeyboardOptions(autoCorrectEnabled = false),
-                modifier = Modifier.fillMaxWidth().heightIn(min = 160.dp),
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = colors.accent,
-                    unfocusedBorderColor = colors.surfaceStroke,
-                    focusedTextColor = colors.textPrimary,
-                    unfocusedTextColor = colors.textPrimary,
-                    cursorColor = colors.accent,
-                ),
-            )
+            CodegTextField(value = rawConfig, onValueChange = { rawConfig = it }, label = stringResource(R.string.agents_kimi_raw_disclosure), modifier = Modifier.fillMaxWidth().heightIn(min = 160.dp), singleLine = false, mono = true)
             Caption(stringResource(R.string.agents_kimi_raw_caption))
-            OutlinedButton(
-                onClick = { runSave(UpdateKimiCodeConfigBody(mode = "raw", rawConfigToml = rawConfig)) },
-                enabled = !saving,
-            ) { Text(stringResource(R.string.agents_kimi_save_raw), color = colors.accent) }
+            CodegButton(onClick = { runSave(UpdateKimiCodeConfigBody(mode = "raw", rawConfigToml = rawConfig)) }, enabled = !saving, variant = CodegButtonVariant.Outline) { Text(stringResource(R.string.agents_kimi_save_raw)) }
         }
     }
 }
