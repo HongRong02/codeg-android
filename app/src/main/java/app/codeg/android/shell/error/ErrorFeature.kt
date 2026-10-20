@@ -1,5 +1,8 @@
 package app.codeg.android.shell.error
 
+import android.content.ActivityNotFoundException
+import android.content.Intent
+import android.net.Uri
 import android.graphics.Bitmap
 import android.net.ConnectivityManager
 import android.net.Network
@@ -11,6 +14,7 @@ import android.webkit.WebResourceResponse
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Toast
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.*
@@ -24,6 +28,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
+import app.codeg.android.BuildConfig
 import app.codeg.android.R
 import app.codeg.android.shell.ShellFeature
 import app.codeg.android.shell.ShellHost
@@ -37,6 +42,8 @@ class ErrorFeature : ShellFeature {
     private var status by mutableIntStateOf(0)
     private var progress by mutableIntStateOf(100)
     private var loading by mutableStateOf(false)
+    private var webViewVersion by mutableStateOf<String?>(null)
+    private var versionWarningDismissed by mutableStateOf(false)
     private var failedLoad = false
     private var retryJob: Job? = null
     private var networkCallback: ConnectivityManager.NetworkCallback? = null
@@ -49,14 +56,19 @@ class ErrorFeature : ShellFeature {
 
     override fun onWebViewCreated(host: ShellHost, webView: WebView) {
         clearError(host)
-        loading = false
-        progress = 100
+        loading = true
+        progress = 0
+        failedLoad = false
+        val version = WebView.getCurrentWebViewPackage()?.versionName
+        webViewVersion = version?.takeIf { it.substringBefore('.').toIntOrNull()?.let { major -> major < 111 } == true }
     }
 
     override fun onPageStarted(host: ShellHost, view: WebView, url: String, favicon: Bitmap?) {
+        trace("started active=${view === host.webView} failed=$failedLoad")
         if (view !== host.webView) return
-        failedLoad = false
-        loading = true
+        // Chromium can start its internal error document after reporting a failure.
+        // Only an explicit retry (or a new WebView) may reset that failure latch.
+        loading = reason == null
         progress = 0
     }
 
@@ -67,13 +79,19 @@ class ErrorFeature : ShellFeature {
     }
 
     override fun onPageFinished(host: ShellHost, view: WebView, url: String) {
+        trace("finished active=${view === host.webView} failed=$failedLoad internal=${url.startsWith("chrome-error://")}")
         if (view !== host.webView) return
         loading = false
         progress = 100
-        if (!failedLoad && url != "chrome-error://chromewebdata/") clearError(host)
+        if (url.startsWith("chrome-error://")) {
+            if (reason == null) showError(host, R.string.shell_error_connection)
+        } else if (!failedLoad) {
+            clearError(host)
+        }
     }
 
     override fun onReceivedError(host: ShellHost, view: WebView, request: WebResourceRequest, error: WebResourceError) {
+        trace("error active=${view === host.webView} main=${request.isForMainFrame} code=${error.errorCode}")
         if (view !== host.webView || !request.isForMainFrame) return
         showError(host, when (error.errorCode) {
             WebViewClient.ERROR_HOST_LOOKUP -> R.string.shell_error_dns
@@ -84,6 +102,7 @@ class ErrorFeature : ShellFeature {
     }
 
     override fun onReceivedHttpError(host: ShellHost, view: WebView, request: WebResourceRequest, response: WebResourceResponse) {
+        trace("http active=${view === host.webView} main=${request.isForMainFrame} status=${response.statusCode}")
         if (view !== host.webView || !request.isForMainFrame || response.statusCode !in 500..599) return
         status = response.statusCode
         showError(host, R.string.shell_error_http)
@@ -99,7 +118,7 @@ class ErrorFeature : ShellFeature {
             repeat(6) {
                 delay(10_000)
                 if (reason == null) return@launch
-                host.reload()
+                retry(host)
             }
         }
         val manager = host.activity.getSystemService(ConnectivityManager::class.java)
@@ -113,7 +132,7 @@ class ErrorFeature : ShellFeature {
                 // Initial registration also delivers the current network. Only retry a recovery.
                 if (!wasOffline || recovered || !capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)) return
                 recovered = true
-                host.scope.launch { if (reason != null) host.reload() }
+                host.scope.launch { if (reason != null) retry(host) }
             }
         }
         try {
@@ -121,6 +140,28 @@ class ErrorFeature : ShellFeature {
             networkCallback = callback
         } catch (_: SecurityException) {
             // Periodic and manual retries remain available if network observation is restricted.
+        }
+    }
+
+    private fun trace(message: String) {
+        if (BuildConfig.DEBUG) Log.d("CodegShellError", message)
+    }
+
+    private fun retry(host: ShellHost) {
+        // Keep the native error page visible until this attempt finishes successfully.
+        failedLoad = false
+        host.reload()
+    }
+
+    private fun openWebViewStore(host: ShellHost) {
+        try {
+            host.activity.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=com.google.android.webview")))
+        } catch (_: ActivityNotFoundException) {
+            try {
+                host.activity.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=com.google.android.webview")))
+            } catch (_: ActivityNotFoundException) {
+                Toast.makeText(host.activity, R.string.shell_error_store_unavailable, Toast.LENGTH_LONG).show()
+            }
         }
     }
 
@@ -139,7 +180,7 @@ class ErrorFeature : ShellFeature {
     }
 
     override fun onResume(host: ShellHost) {
-        if (reason != null) host.reload()
+        if (reason != null) retry(host)
     }
 
     override fun onRenderProcessGone(host: ShellHost, view: WebView, detail: RenderProcessGoneDetail): Boolean {
@@ -169,13 +210,36 @@ class ErrorFeature : ShellFeature {
                         Spacer(Modifier.height(12.dp))
                         Text(host.currentServerUrl.orEmpty(), style = MaterialTheme.typography.bodySmall)
                         Spacer(Modifier.height(28.dp))
-                        Button(onClick = { host.reload() }) { Text(stringResource(R.string.shell_error_retry)) }
+                        Button(onClick = { retry(host) }) { Text(stringResource(R.string.shell_error_retry)) }
                         TextButton(onClick = { host.openServerManager() }) { Text(stringResource(R.string.shell_error_switch)) }
                     }
                 }
             }
+            if (loading && reason == null) {
+                CircularProgressIndicator(Modifier.align(Alignment.Center))
+            }
             AnimatedVisibility(visible = loading, exit = fadeOut(), modifier = Modifier.align(Alignment.TopCenter)) {
-                LinearProgressIndicator(progress = { progress / 100f }, modifier = Modifier.fillMaxWidth().height(2.dp))
+                if (progress == 0 || progress == 100) {
+                    LinearProgressIndicator(modifier = Modifier.fillMaxWidth().height(2.dp))
+                } else {
+                    LinearProgressIndicator(progress = { progress / 100f }, modifier = Modifier.fillMaxWidth().height(2.dp))
+                }
+            }
+            if (!versionWarningDismissed) webViewVersion?.let { version ->
+                Surface(Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
+                    Column(
+                        Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(32.dp),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                    ) {
+                        Text(stringResource(R.string.shell_error_webview_title), style = MaterialTheme.typography.headlineSmall)
+                        Spacer(Modifier.height(16.dp))
+                        Text(stringResource(R.string.shell_error_webview_version, version, 111))
+                        Spacer(Modifier.height(24.dp))
+                        Button(onClick = { openWebViewStore(host) }) { Text(stringResource(R.string.shell_error_webview_store)) }
+                        TextButton(onClick = { versionWarningDismissed = true }) { Text(stringResource(R.string.shell_error_webview_continue)) }
+                    }
+                }
             }
         }
     }

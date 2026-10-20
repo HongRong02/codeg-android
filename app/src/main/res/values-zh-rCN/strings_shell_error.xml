@@ -9,4 +9,9 @@
     <string name="shell_error_retry">重试</string>
     <string name="shell_error_switch">切换服务器</string>
     <string name="shell_error_reloaded">页面已重新加载</string>
+    <string name="shell_error_webview_title">请更新 Android 系统 WebView</string>
+    <string name="shell_error_webview_version">当前 WebView 内核过旧，无法正常运行此网页。当前版本：%1$s；要求主版本：%2$d 或更高。请更新 Android 系统 WebView 后重启应用。</string>
+    <string name="shell_error_webview_store">打开应用商店</string>
+    <string name="shell_error_webview_continue">仍然继续</string>
+    <string name="shell_error_store_unavailable">没有可打开商店链接的应用。</string>
 </resources>
