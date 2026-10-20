@@ -1,6 +1,7 @@
 package app.codeg.android.feature.server
 
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.border
+import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -105,7 +106,10 @@ fun ServerListScreen(
                     ServerRow(
                         profile = profile,
                         selected = profile.id == selectedId,
-                        onClick = { onSelect(profile.id) },
+                        onClick = {
+                            onSelect(profile.id)
+                            onBack()
+                        },
                         onEdit = { onEdit(profile.id) },
                         onDelete = { pendingDelete = profile },
                     )
@@ -145,7 +149,17 @@ private fun ServerRow(
     val colors = CodegTheme.colors
     var menuOpen by remember { mutableStateOf(false) }
 
-    Column(modifier = Modifier.fillMaxWidth().webSurface(MaterialTheme.shapes.medium).clickable(onClick = onClick).padding(start = 16.dp, end = 8.dp, top = 12.dp, bottom = 12.dp)) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .webSurface(MaterialTheme.shapes.medium)
+            .then(
+                if (selected) Modifier.border(1.dp, colors.accent, MaterialTheme.shapes.medium)
+                else Modifier,
+            )
+            .selectable(selected = selected, onClick = onClick)
+            .padding(start = 16.dp, end = 8.dp, top = 12.dp, bottom = 12.dp),
+    ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Column(modifier = Modifier.weight(1f)) {
                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
