@@ -1,8 +1,6 @@
 package app.codeg.android.feature.projects
 
-import app.codeg.android.core.designsystem.theme.CodegShapes
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -11,8 +9,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.CheckCircle
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import app.codeg.android.core.designsystem.component.CodegButton
@@ -25,7 +21,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -41,7 +36,6 @@ import app.codeg.android.core.designsystem.component.EmptyState
 import app.codeg.android.core.designsystem.component.InlineError
 import app.codeg.android.core.designsystem.component.LoadingView
 import app.codeg.android.core.designsystem.component.PrimaryButton
-import app.codeg.android.core.designsystem.theme.withOpacity
 import app.codeg.android.core.designsystem.theme.CodegTheme
 import app.codeg.android.core.model.GitChange
 import app.codeg.android.core.model.GitStatusEntry
@@ -49,6 +43,9 @@ import app.codeg.android.core.network.CodegClient
 import app.codeg.android.core.network.displayMessage
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.launch
+import androidx.compose.runtime.LaunchedEffect
+import app.codeg.android.core.designsystem.component.LocalCodegToaster
+import app.codeg.android.core.designsystem.icon.*
 
 /**
  * The commit composer, presented from the Changes tab. Lists the working-tree
@@ -67,6 +64,9 @@ fun CommitSheet(
     onCommitted: (push: Boolean) -> Unit,
 ) {
     val context = LocalContext.current
+    val toaster = LocalCodegToaster.current
+    val failureTitle = stringResource(R.string.t56_operation_failed)
+    val doneTitle = stringResource(R.string.t56_operation_completed)
     val colors = CodegTheme.colors
     val scope = rememberCoroutineScope()
 
@@ -76,6 +76,9 @@ fun CommitSheet(
     var loadError by remember { mutableStateOf<String?>(null) }
     var committing by remember { mutableStateOf(false) }
     var commitError by remember { mutableStateOf<String?>(null) }
+    LaunchedEffect(commitError) {
+        commitError?.let { toaster.error(failureTitle, it); commitError = null }
+    }
 
     suspend fun load() {
         loadError = null
@@ -102,6 +105,7 @@ fun CommitSheet(
             try {
                 viewModel.gitCommit(trimmedMessage, selected.toList())
                 committing = false
+                toaster.success(doneTitle)
                 onCommitted(push)
             } catch (e: CancellationException) {
                 throw e
@@ -134,11 +138,11 @@ fun CommitSheet(
                 Box(Modifier.fillMaxWidth().heightIn(min = 160.dp), contentAlignment = Alignment.Center) { LoadingView(stringResource(R.string.common_loading)) }
             loadError != null ->
                 Box(Modifier.fillMaxWidth().heightIn(min = 160.dp), contentAlignment = Alignment.Center) {
-                    InlineError(Icons.Rounded.CheckCircle, stringResource(R.string.commit_load_failed), loadError!!, onRetry = { entries = null; scope.launch { load() } })
+                    InlineError(Lucide.CircleCheckBig, stringResource(R.string.commit_load_failed), loadError!!, onRetry = { entries = null; scope.launch { load() } })
                 }
             all.isEmpty() ->
                 Box(Modifier.fillMaxWidth().heightIn(min = 160.dp), contentAlignment = Alignment.Center) {
-                    EmptyState(Icons.Rounded.CheckCircle, stringResource(R.string.commit_nothing_title), stringResource(R.string.commit_nothing_message))
+                    EmptyState(Lucide.CircleCheckBig, stringResource(R.string.commit_nothing_title), stringResource(R.string.commit_nothing_message))
                 }
             else -> {
                 val tracked = all.filter { it.change != GitChange.UNTRACKED }
@@ -175,15 +179,7 @@ fun CommitSheet(
                             selected = if (path in selected) selected - path else selected + path
                         }
                     }
-                    // TODO(T52): CodegToaster for commit failures.
-                    commitError?.let {
-                        Text(
-                            it,
-                            fontSize = 13.sp,
-                            color = colors.danger,
-                            modifier = Modifier.fillMaxWidth().clip(CodegShapes.extraSmall).background(colors.danger.withOpacity(0.12f)).padding(12.dp),
-                        )
-                    }
+
                 }
 
             }

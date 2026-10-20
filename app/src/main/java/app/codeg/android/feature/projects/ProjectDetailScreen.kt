@@ -14,9 +14,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.ArrowBack
-import androidx.compose.material.icons.rounded.FolderOpen
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import app.codeg.android.core.designsystem.component.CodegIconButton
@@ -52,6 +49,7 @@ import app.codeg.android.core.designsystem.component.LoadingView
 import app.codeg.android.core.designsystem.theme.withOpacity
 import app.codeg.android.core.designsystem.theme.CodegTheme
 import app.codeg.android.core.designsystem.theme.colorFromHex
+import app.codeg.android.core.designsystem.icon.*
 
 private enum class ProjectTab(val labelRes: Int) {
     FILES(R.string.projects_tab_files),
@@ -103,7 +101,7 @@ fun ProjectDetailScreen(
                 title = ui.folder?.name ?: stringResource(R.string.tab_folders),
                 navigationIcon = {
                     CodegIconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Rounded.ArrowBack, contentDescription = stringResource(R.string.common_back), tint = colors.textPrimary)
+                        Icon(Lucide.ArrowLeft, contentDescription = stringResource(R.string.common_back), tint = colors.textPrimary, modifier = Modifier.size(16.dp))
                     }
                 },
                 showDivider = true,
@@ -123,7 +121,7 @@ fun ProjectDetailScreen(
                     Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { LoadingView(stringResource(R.string.common_loading)) }
                 folder == null ->
                     Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                        InlineError(Icons.Rounded.FolderOpen, stringResource(R.string.projects_load_failed), ui.error ?: stringResource(R.string.projects_load_failed), viewModel::load)
+                        InlineError(Lucide.FolderOpen, stringResource(R.string.projects_load_failed), ui.error ?: stringResource(R.string.projects_load_failed), viewModel::load)
                     }
                 else -> Column(Modifier.fillMaxSize()) {
                     Header(

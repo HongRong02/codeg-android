@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.codeg.android.R
@@ -15,13 +14,15 @@ import app.codeg.android.core.model.importableKeys
 @Composable
 fun ImportSessionsSheet(ui: ImportSessionsUi, viewModel: ImportSessionsViewModel, onDismiss: () -> Unit, onImported: () -> Unit) {
     var confirmAll by remember { mutableStateOf(false) }
+    val toaster = LocalCodegToaster.current
+    val failureTitle = stringResource(R.string.t56_operation_failed)
+    LaunchedEffect(ui.error) { ui.error?.let { toaster.error(failureTitle, it) } }
     val all = ui.scan?.folders.orEmpty().flatMap { it.sessions }.importableKeys()
     CodegFullScreenSheet(title = stringResource(R.string.imp_title), onDismiss = { if (!ui.busy) onDismiss() }) {
         if (ui.busy) {
-            CodegSkeleton(Modifier.fillMaxWidth().height(4.dp))
+            CodegProgress()
             Text(stringResource(R.string.imp_working))
         }
-        // TODO(T52): CodegToaster for import result feedback.
         ui.error?.let { Text(it, color = MaterialTheme.colorScheme.error) }
         ui.result?.let { result ->
             Text(stringResource(R.string.imp_result, result.imported, result.updated, result.skipped, result.failed, result.notFound))

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="t56_operation_failed">操作失败</string>
+    <string name="t56_operation_completed">操作完成</string>
+    <string name="t56_preview_image">预览图片</string>
+</resources>

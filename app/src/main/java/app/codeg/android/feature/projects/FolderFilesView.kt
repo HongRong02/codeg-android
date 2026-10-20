@@ -11,10 +11,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.InsertDriveFile
-import androidx.compose.material.icons.rounded.ArrowUpward
-import androidx.compose.material.icons.rounded.Folder
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -41,6 +37,18 @@ import kotlinx.coroutines.CancellationException
 import app.codeg.android.core.model.DirectoryItem
 import app.codeg.android.core.network.CodegClient
 import app.codeg.android.core.network.ApiError
+import android.graphics.BitmapFactory
+import android.util.Base64
+import androidx.compose.runtime.produceState
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.graphics.painter.BitmapPainter
+import app.codeg.android.core.designsystem.component.CodegButton
+import app.codeg.android.core.designsystem.component.CodegImagePreviewDialog
+import app.codeg.android.core.designsystem.component.CodegPreviewImage
+import app.codeg.android.core.designsystem.icon.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 /** Recursive file browser with an internal directory stack + file preview. */
 @Composable
@@ -69,7 +77,7 @@ fun FolderFilesView(client: CodegClient, rootPath: String) {
     when {
         r == null -> Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { LoadingView(message = stringResource(R.string.common_loading)) }
         r.isFailure -> Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            InlineError(Icons.AutoMirrored.Rounded.InsertDriveFile, stringResource(R.string.files_load_failed), r.exceptionOrNull()?.message ?: stringResource(R.string.files_error), onRetry = { result = null })
+            InlineError(Lucide.File, stringResource(R.string.files_load_failed), r.exceptionOrNull()?.message ?: stringResource(R.string.files_error), onRetry = { result = null })
         }
         else -> {
             val items = sortItems(r.getOrDefault(emptyList())).filter { it.path !in unavailablePaths }
@@ -77,11 +85,11 @@ fun FolderFilesView(client: CodegClient, rootPath: String) {
                 if (stack.size > 1) {
                     item("up") {
                         CodegListRow(title = "..", onClick = { stack = stack.dropLast(1) },
-                            leading = { Icon(Icons.Rounded.ArrowUpward, null, tint = colors.textSecondary, modifier = Modifier.size(20.dp)) })
+                            leading = { Icon(Lucide.ArrowUp, null, tint = colors.textSecondary, modifier = Modifier.size(16.dp)) })
                     }
                 }
                 if (items.isEmpty()) {
-                    item("empty") { Box(Modifier.fillMaxWidth().padding(40.dp), contentAlignment = Alignment.Center) { EmptyState(Icons.Rounded.Folder, stringResource(R.string.files_empty_folder), stringResource(R.string.files_empty_folder_message)) } }
+                    item("empty") { Box(Modifier.fillMaxWidth().padding(40.dp), contentAlignment = Alignment.Center) { EmptyState(Lucide.Folder, stringResource(R.string.files_empty_folder), stringResource(R.string.files_empty_folder_message)) } }
                 }
                 items(items, key = { it.path }) { item ->
                     FileRow(item) {
@@ -101,8 +109,8 @@ private fun FileRow(item: DirectoryItem, onClick: () -> Unit) {
         title = item.name,
         onClick = onClick,
         leading = {
-            Icon(if (item.isDir) Icons.Rounded.Folder else Icons.AutoMirrored.Rounded.InsertDriveFile,
-                null, tint = if (item.isDir) colors.accent else colors.textSecondary, modifier = Modifier.size(20.dp))
+            Icon(if (item.isDir) Lucide.Folder else Lucide.File,
+                null, tint = if (item.isDir) colors.accent else colors.textSecondary, modifier = Modifier.size(16.dp))
         },
         trailing = sizeLabel?.let { { Text(it, fontSize = 12.sp, color = colors.textSecondary) } },
     )
@@ -140,10 +148,11 @@ internal fun FilePreview(client: CodegClient, rootPath: String, absPath: String,
         when {
             r == null -> Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { LoadingView(stringResource(R.string.common_loading)) }
             r.isFailure -> Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                InlineError(Icons.AutoMirrored.Rounded.InsertDriveFile, stringResource(R.string.files_read_failed), r.exceptionOrNull()?.message ?: stringResource(R.string.files_error), onRetry = { result = null; attempt++ })
+                InlineError(Lucide.File, stringResource(R.string.files_read_failed), r.exceptionOrNull()?.message ?: stringResource(R.string.files_error), onRetry = { result = null; attempt++ })
             }
-            // TODO(T53): CodegImagePreviewDialog for image content.
-            else -> r.getOrNull()?.let { FileViewer(it) }
+            else -> r.getOrNull()?.let { content ->
+                if (content is FileViewerContent.Image) ProjectImagePreview(content) else FileViewer(content)
+            }
         }
     }
 }
@@ -156,4 +165,34 @@ private fun formatBytes(bytes: Long): String = when {
     bytes >= 1_048_576 -> String.format("%.1f MB", bytes / 1_048_576.0)
     bytes >= 1024 -> String.format("%.1f KB", bytes / 1024.0)
     else -> "$bytes B"
+}
+
+@Composable
+private fun ProjectImagePreview(content: FileViewerContent.Image) {
+    var open by remember(content) { mutableStateOf(true) }
+    var decoding by remember(content) { mutableStateOf(true) }
+    val bitmap by produceState<ImageBitmap?>(null, content) {
+        value = withContext(Dispatchers.Default) {
+            runCatching {
+                val bytes = Base64.decode(content.base64.substringAfter(','), Base64.DEFAULT)
+                val bounds = BitmapFactory.Options().apply { inJustDecodeBounds = true }
+                BitmapFactory.decodeByteArray(bytes, 0, bytes.size, bounds)
+                val options = BitmapFactory.Options().apply {
+                    while (bounds.outWidth / inSampleSize > 4096 || bounds.outHeight / inSampleSize > 4096) inSampleSize *= 2
+                }
+                BitmapFactory.decodeByteArray(bytes, 0, bytes.size, options)?.asImageBitmap()
+            }.getOrNull()
+        }
+        decoding = false
+    }
+    val image = bitmap
+    when {
+        decoding -> LoadingView(stringResource(R.string.common_loading))
+        image == null -> Text(stringResource(R.string.file_viewer_image_unavailable), color = CodegTheme.colors.web.mutedForeground)
+        else -> {
+            val images = remember(image, content.path) { listOf(CodegPreviewImage(BitmapPainter(image), content.path)) }
+            CodegButton(onClick = { open = true }) { Text(stringResource(R.string.t56_preview_image)) }
+            if (open) CodegImagePreviewDialog(images, onDismiss = { open = false })
+        }
+    }
 }

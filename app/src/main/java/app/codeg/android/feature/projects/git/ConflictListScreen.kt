@@ -20,11 +20,12 @@ fun ConflictListScreen(vm: MergeOpsViewModel, client: CodegClient, path: String,
     val operations = listOf("merge", "rebase")
     CodegTabs(selected = operations.indexOf(ui.operation).coerceAtLeast(0), tabs = operations.map { operationLabel(it) },
         onSelect = { if (!ui.busy) vm.operation(operations[it]) })
-    ui.conflicts.forEach { file ->
-        CodegListRow(title = file, onClick = { if (!ui.busy) { version = "base"; vm.versions(client, path, file) } }, selected = ui.file == file)
-    }
+    var query by remember { mutableStateOf("") }
     if (ui.conflicts.isEmpty()) Text(stringResource(R.string.gm_resolved))
-    // TODO(T53): CodegCommandList for conflict file selection.
+    else CodegCommandList(query = query, onQueryChange = { query = it },
+        groups = listOf(CodegCommandGroup(stringResource(R.string.gm_conflicts),
+            ui.conflicts.map { CodegCommandItem(it, it, enabled = !ui.busy) })),
+        onSelect = { version = "base"; vm.versions(client, path, it.id) })
     ui.versions?.let { versions ->
         Text(ui.file.orEmpty())
         val sides = listOf("base", "ours", "theirs")

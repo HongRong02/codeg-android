@@ -61,10 +61,12 @@ fun FolderEditDialog(folder: FolderDetail, groups: List<FolderGroup>, onDismiss:
                     leading = { Box(Modifier.size(12.dp).background(folderTint(color), CircleShape)) })
             }
         } else {
-            CodegListRow(title = stringResource(R.string.fg_ungrouped), onClick = { onGroup(null); onDismiss() })
-            groups.forEach { group ->
-                CodegListRow(title = group.name, onClick = { onGroup(group.id); onDismiss() })
-            }
+            val ungrouped = stringResource(R.string.fg_ungrouped)
+            val options = listOf(null to ungrouped) + groups.map { it.id to it.name }
+            CodegSelect<Pair<Int?, String>>(label = stringResource(R.string.fg_move),
+                selected = options.firstOrNull { it.first == folder.groupId }, options = options,
+                optionLabel = { it.second }, key = { it.first ?: "ungrouped" },
+                onSelect = { onGroup(it.first); onDismiss() })
         }
     }
 }

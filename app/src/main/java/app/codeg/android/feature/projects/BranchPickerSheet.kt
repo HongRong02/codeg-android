@@ -10,10 +10,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Add
-import androidx.compose.material.icons.rounded.Check
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import app.codeg.android.core.designsystem.component.CodegButton
 import app.codeg.android.core.designsystem.component.CodegButtonVariant
@@ -22,7 +18,6 @@ import androidx.compose.material3.Icon
 import app.codeg.android.core.designsystem.component.CodegSheet
 import app.codeg.android.core.designsystem.component.CodegListRow
 import app.codeg.android.core.designsystem.component.CodegSectionHeader
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -33,11 +28,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.codeg.android.R
 import app.codeg.android.core.designsystem.component.CodegTextField
 import app.codeg.android.core.designsystem.theme.CodegTheme
+import app.codeg.android.core.designsystem.component.CodegSpinner
+import app.codeg.android.core.designsystem.component.LocalCodegToaster
+import app.codeg.android.core.designsystem.icon.*
 
 /**
  * Branch picker: lists the repo's local + remote branches (current marked) for
@@ -47,6 +44,9 @@ import app.codeg.android.core.designsystem.theme.CodegTheme
 @Composable
 fun BranchPickerSheet(viewModel: ProjectDetailViewModel, onDismiss: () -> Unit) {
     val ui by viewModel.ui.collectAsStateWithLifecycle()
+    val toaster = LocalCodegToaster.current
+    val failureTitle = stringResource(R.string.t56_operation_failed)
+    val doneTitle = stringResource(R.string.t56_operation_completed)
     val colors = CodegTheme.colors
     var loading by remember { mutableStateOf(true) }
     var locals by remember { mutableStateOf<List<String>>(emptyList()) }
@@ -54,6 +54,9 @@ fun BranchPickerSheet(viewModel: ProjectDetailViewModel, onDismiss: () -> Unit) 
     var newBranch by remember { mutableStateOf("") }
     var busy by remember { mutableStateOf(false) }
     var error by remember { mutableStateOf<String?>(null) }
+    LaunchedEffect(error) {
+        error?.let { toaster.error(failureTitle, it); error = null }
+    }
 
     LaunchedEffect(Unit) {
         val list = viewModel.loadBranches()
@@ -64,13 +67,11 @@ fun BranchPickerSheet(viewModel: ProjectDetailViewModel, onDismiss: () -> Unit) 
 
     fun doCheckout(branch: String) {
         busy = true; error = null
-        viewModel.checkout(branch) { err -> busy = false; if (err == null) onDismiss() else error = err }
+        viewModel.checkout(branch) { err -> busy = false; if (err == null) { toaster.success(doneTitle); onDismiss() } else error = err }
     }
 
     CodegSheet(title = stringResource(R.string.branch_switch_branch), onDismiss = onDismiss) {
         Column(Modifier.fillMaxWidth().heightIn(max = 520.dp).padding(horizontal = 16.dp).padding(bottom = 28.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-            // TODO(T52): CodegToaster for checkout/create failures.
-            error?.let { Text(it, fontSize = 12.sp, color = colors.danger) }
 
             // New branch.
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -78,15 +79,15 @@ fun BranchPickerSheet(viewModel: ProjectDetailViewModel, onDismiss: () -> Unit) 
                 CodegButton(variant = CodegButtonVariant.Secondary, size = CodegButtonSize.Icon,
                     onClick = {
                         busy = true; error = null
-                        viewModel.createBranch(newBranch) { err -> busy = false; if (err == null) onDismiss() else error = err }
+                        viewModel.createBranch(newBranch) { err -> busy = false; if (err == null) { toaster.success(doneTitle); onDismiss() } else error = err }
                     },
                     enabled = newBranch.isNotBlank() && !busy,
                     modifier = Modifier.size(48.dp),
-                ) { Icon(Icons.Rounded.Add, stringResource(R.string.branch_create_branch)) }
+                ) { Icon(Lucide.Plus, stringResource(R.string.branch_create_branch), modifier = Modifier.size(16.dp)) }
             }
 
             if (loading) {
-                Box(Modifier.fillMaxWidth().padding(30.dp), contentAlignment = Alignment.Center) { CircularProgressIndicator(color = colors.accent) }
+                Box(Modifier.fillMaxWidth().padding(30.dp), contentAlignment = Alignment.Center) { CodegSpinner(size = 24.dp) }
             } else {
                 LazyColumn(Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(2.dp)) {
                     if (locals.isNotEmpty()) item("lh") { SectionLabel(stringResource(R.string.branch_local)) }
@@ -112,7 +113,7 @@ private fun BranchRow(branch: String, current: Boolean, enabled: Boolean, onClic
         selected = current,
         onClick = { if (enabled && !current) onClick() },
         trailing = if (current) {
-            { Icon(Icons.Rounded.Check, null, tint = colors.accent, modifier = Modifier.size(18.dp)) }
+            { Icon(Lucide.Check, null, tint = colors.accent, modifier = Modifier.size(16.dp)) }
         } else null,
     )
 }
