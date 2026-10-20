@@ -40,6 +40,8 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Popup
+import androidx.compose.ui.window.PopupProperties
 import app.codeg.android.R
 import app.codeg.android.core.datastore.ThemeMode
 import app.codeg.android.core.designsystem.theme.CodegTheme
@@ -96,6 +98,7 @@ internal class ToastQueue {
 class CodegToaster internal constructor(private val silent: Boolean) {
     constructor() : this(false)
     private val queue = ToastQueue()
+    internal val layers = mutableStateListOf<Any>()
     private val mutableEntries = MutableStateFlow<List<ToastEntry>>(emptyList())
     internal val entries = mutableEntries.asStateFlow()
 
@@ -132,17 +135,6 @@ fun CodegToasterHost(
     toaster: CodegToaster = remember { CodegToaster() },
     content: @Composable () -> Unit,
 ) {
-    val entries by toaster.entries.collectAsState()
-    // Retain dismissed cards briefly so their exit animation can finish.
-    val rendered = remember(toaster) { mutableStateListOf<ToastEntry>() }
-    LaunchedEffect(entries.map { it.id }) {
-        entries.forEach { entry ->
-            val index = rendered.indexOfFirst { it.id == entry.id }
-            if (index < 0) rendered.add(entry) else rendered[index] = entry
-        }
-        delay(200)
-        rendered.removeAll { old -> entries.none { it.id == old.id } }
-    }
     LaunchedEffect(toaster) {
         var previous = System.nanoTime()
         while (true) {
@@ -155,15 +147,55 @@ fun CodegToasterHost(
     CompositionLocalProvider(LocalCodegToaster provides toaster) {
         Box(Modifier.fillMaxSize()) {
             content()
+            if (toaster.layers.isEmpty()) ToastLayer(toaster)
+        }
+    }
+}
+
+/** Register each independent modal window; only the newest window presents the queue. */
+@Composable
+internal fun CodegModalToaster(content: @Composable () -> Unit) {
+    val toaster = LocalCodegToaster.current
+    val token = remember(toaster) { Any() }
+    DisposableEffect(toaster, token) {
+        toaster.layers.add(token)
+        onDispose { toaster.layers.remove(token) }
+    }
+    content()
+    if (toaster.layers.lastOrNull() === token) ToastLayer(toaster)
+}
+
+@Composable
+private fun ToastLayer(toaster: CodegToaster) {
+    val entries by toaster.entries.collectAsState()
+    // Retain dismissed cards briefly so their exit animation can finish.
+    val initialIds = remember(toaster) { entries.map { it.id }.toSet() }
+    val rendered = remember(toaster) { mutableStateListOf<ToastEntry>().apply { addAll(entries) } }
+    LaunchedEffect(entries.map { it.id }) {
+        entries.forEach { entry ->
+            val index = rendered.indexOfFirst { it.id == entry.id }
+            if (index < 0) rendered.add(entry) else rendered[index] = entry
+        }
+        delay(200)
+        rendered.removeAll { old -> entries.none { it.id == old.id } }
+    }
+    if (rendered.isNotEmpty()) {
+        // Attached to the elected window, above its sheet/dialog content. Only the
+        // cards occupy touchable space; outside touches and Back stay with the modal.
+        Popup(
+            alignment = Alignment.BottomEnd,
+            properties = PopupProperties(focusable = false, dismissOnBackPress = false, dismissOnClickOutside = false),
+        ) {
             Column(
-                Modifier.align(Alignment.BottomEnd).windowInsetsPadding(WindowInsets.safeDrawing)
+                Modifier.windowInsetsPadding(WindowInsets.safeDrawing)
                     .imePadding().padding(16.dp).widthIn(max = 356.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 // Oldest above newest: sonner's bottom-right origin.
                 rendered.sortedBy { it.id.value }.forEach { entry ->
                     key(entry.id) {
-                        var entered by remember { mutableStateOf(false) }
+                        // A window handoff must not replay the entry animation.
+                        var entered by remember { mutableStateOf(entry.id in initialIds) }
                         LaunchedEffect(Unit) { entered = true }
                         AnimatedVisibility(
                             visible = entered && entries.any { it.id == entry.id },
@@ -243,15 +275,22 @@ internal fun T52Gallery() {
     val description = stringResource(R.string.ds_toasts_description)
     val action = stringResource(R.string.ds_toasts_action)
     val finish = stringResource(R.string.ds_toasts_finish)
+    var showSheet by remember { mutableStateOf(false) }
     var pending by remember { mutableStateOf<ToastId?>(null) }
     CodegToasterHost(toaster) {
         Column {
+            TextButton(onClick = { showSheet = true }) { Text(stringResource(R.string.ds_dialogs_sheet)) }
             TextButton(onClick = { toaster.success(success) }) { Text(success) }
             TextButton(onClick = { toaster.error(error, description) }) { Text(error) }
             TextButton(onClick = { toaster.info(info, description, ToastAction(action) { toaster.success(success) }) }) { Text(info) }
             TextButton(onClick = { toaster.warning(warning) }) { Text(warning) }
             TextButton(onClick = { pending = toaster.loading(loading) }) { Text(loading) }
             TextButton(onClick = { pending?.let { toaster.update(it, ToastType.Success, success) } }) { Text(finish) }
+        }
+        if (showSheet) {
+            CodegSheet(stringResource(R.string.ds_dialogs_sheet), onDismiss = { showSheet = false }) {
+                TextButton(onClick = { toaster.error(error, description) }) { Text(error) }
+            }
         }
     }
 }

@@ -51,15 +51,17 @@ fun CodegSheet(
                 .background(web.muted, RoundedCornerShape(50)))
         },
     ) {
-        Column(Modifier.fillMaxWidth().imePadding().navigationBarsPadding()) {
-            Box(Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp)) {
-                T44PanelHeading(title, description)
+        CodegModalToaster {
+            Column(Modifier.fillMaxWidth().imePadding().navigationBarsPadding()) {
+                Box(Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp)) {
+                    T44PanelHeading(title, description)
+                }
+                Column(
+                    Modifier.weight(1f, fill = false).verticalScroll(rememberScrollState()).padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp), content = content,
+                )
+                Column(Modifier.fillMaxWidth().padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp), content = footer)
             }
-            Column(
-                Modifier.weight(1f, fill = false).verticalScroll(rememberScrollState()).padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp), content = content,
-            )
-            Column(Modifier.fillMaxWidth().padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp), content = footer)
         }
     }
 }
@@ -75,17 +77,19 @@ fun CodegFullScreenSheet(
     Dialog(onDismissRequest = onDismiss, properties = DialogProperties(
         usePlatformDefaultWidth = false, decorFitsSystemWindows = false,
     )) {
-        Surface(Modifier.fillMaxSize(), color = CodegTheme.colors.web.background, contentColor = CodegTheme.colors.web.foreground) {
-            Column(Modifier.safeDrawingPadding().imePadding()) {
-                Row(Modifier.fillMaxWidth().padding(8.dp), verticalAlignment = Alignment.CenterVertically) {
-                    IconButton(onClick = onDismiss) {
-                        Icon(Lucide.X, contentDescription = stringResource(R.string.ds_dialogs_close))
+        CodegModalToaster {
+            Surface(Modifier.fillMaxSize(), color = CodegTheme.colors.web.background, contentColor = CodegTheme.colors.web.foreground) {
+                Column(Modifier.safeDrawingPadding().imePadding()) {
+                    Row(Modifier.fillMaxWidth().padding(8.dp), verticalAlignment = Alignment.CenterVertically) {
+                        IconButton(onClick = onDismiss) {
+                            Icon(Lucide.X, contentDescription = stringResource(R.string.ds_dialogs_close))
+                        }
+                        Box(Modifier.weight(1f).padding(horizontal = 8.dp)) { T44PanelHeading(title, null) }
+                        actions()
                     }
-                    Box(Modifier.weight(1f).padding(horizontal = 8.dp)) { T44PanelHeading(title, null) }
-                    actions()
+                    Column(Modifier.weight(1f).fillMaxWidth().verticalScroll(rememberScrollState()).padding(16.dp),
+                        verticalArrangement = Arrangement.spacedBy(16.dp), content = content)
                 }
-                Column(Modifier.weight(1f).fillMaxWidth().verticalScroll(rememberScrollState()).padding(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(16.dp), content = content)
             }
         }
     }
