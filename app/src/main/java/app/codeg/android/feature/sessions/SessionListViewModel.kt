@@ -3,6 +3,10 @@ package app.codeg.android.feature.sessions
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import app.codeg.android.core.model.ConversationTag
+import app.codeg.android.core.network.ApiError
+import app.codeg.android.feature.sessions.tags.matchesTagFilter
+import app.codeg.android.feature.sessions.tags.tagDelta
 import app.codeg.android.R
 import app.codeg.android.core.data.ServerRepository
 import app.codeg.android.core.datastore.ServerProfile
@@ -59,7 +63,7 @@ class SessionListViewModel @Inject constructor(
      */
     val sections: StateFlow<List<SessionSection>> =
         _ui
-            .map { GroupingInput(it.folders, it.conversations) }
+            .map { GroupingInput(it.folders, it.conversations.filter { c -> matchesTagFilter(c.tagIds, it.selectedTags, it.matchAllTags) }) }
             .distinctUntilChanged()
             .map { buildSessionSections(it.folders, it.conversations) }
             .flowOn(Dispatchers.Default)
@@ -87,6 +91,7 @@ class SessionListViewModel @Inject constructor(
 
     private suspend fun onProfile(profile: ServerProfile?) {
         if (profile == null) {
+            fetchGeneration += 1
             client = null
             loadedEndpoint = null
             _ui.value = SessionListUiState()
@@ -115,7 +120,7 @@ class SessionListViewModel @Inject constructor(
         fetchGeneration += 1
         val token = fetchGeneration
         if (force) {
-            _ui.update { it.copy(folders = emptyList(), conversations = emptyList(), hasLoaded = false) }
+            _ui.update { SessionListUiState() }
         }
         _ui.update {
             if (isInitial) it.copy(isLoading = true, error = null)
@@ -125,13 +130,17 @@ class SessionListViewModel @Inject constructor(
             val result = coroutineScope {
                 val folders = async { active.listFolders() }
                 val conversations = async { active.listConversations() }
-                folders.await() to conversations.await()
+                val tags = async { loadTags(active) }
+                Triple(folders.await(), conversations.await(), tags.await())
             }
             if (token != fetchGeneration) return
             _ui.update {
                 it.copy(
                     folders = result.first,
                     conversations = result.second,
+                    tags = result.third.orEmpty(),
+                    tagsSupported = result.third != null,
+                    selectedTags = it.selectedTags.intersect(result.third.orEmpty().map { tag -> tag.id }.toSet()),
                     hasLoaded = true,
                     isLoading = false,
                     isRefreshing = false,
@@ -169,11 +178,73 @@ class SessionListViewModel @Inject constructor(
         }
     }
 
+    private suspend fun loadTags(active: CodegClient): List<ConversationTag>? = try {
+        active.listConversationTags()
+    } catch (e: ApiError.Server) {
+        if (e.status == 404 || e.code?.contains("unknown", ignoreCase = true) == true ||
+            e.serverMessage.contains("unknown", ignoreCase = true)) null else throw e
+    }
+
+    fun toggleTagFilter(id: Int) = _ui.update {
+        it.copy(selectedTags = if (id in it.selectedTags) it.selectedTags - id else it.selectedTags + id)
+    }
+
+    fun clearTagFilter() = _ui.update { it.copy(selectedTags = emptySet()) }
+    fun setMatchAllTags(value: Boolean) = _ui.update { it.copy(matchAllTags = value) }
+
+    fun saveConversationTags(conversationId: Int, selected: Set<Int>, onSaved: () -> Unit) = tagAction { active ->
+        val previous = _ui.value.conversations.firstOrNull { it.id == conversationId } ?: return@tagAction
+        val (add, remove) = tagDelta(previous.tagIds, selected)
+        val updated = active.updateConversationTags(conversationId, add, remove)
+        if (active !== client) return@tagAction
+        _ui.update { state -> state.copy(conversations = state.conversations.map { if (it.id == updated.id) updated else it }) }
+        onSaved()
+    }
+
+    fun saveTag(tag: ConversationTag?, name: String, color: String, onSaved: () -> Unit) = tagAction { active ->
+        val saved = if (tag == null) active.createConversationTag(name.trim(), color)
+            else active.updateConversationTag(tag.id, name.trim(), color)
+        if (active !== client) return@tagAction
+        _ui.update { it.copy(tags = (it.tags.filterNot { old -> old.id == saved.id } + saved).sortedBy { tag -> tag.sortOrder }) }
+        onSaved()
+    }
+
+    fun deleteTag(tag: ConversationTag, onDeleted: () -> Unit) = tagAction { active ->
+        active.deleteConversationTag(tag.id)
+        if (active !== client) return@tagAction
+        _ui.update { state -> state.copy(
+            tags = state.tags.filterNot { it.id == tag.id },
+            selectedTags = state.selectedTags - tag.id,
+            conversations = state.conversations.map { it.copy(tagIds = it.tagIds?.filterNot { id -> id == tag.id }) },
+        ) }
+        onDeleted()
+    }
+
+    private fun tagAction(action: suspend (CodegClient) -> Unit) {
+        val active = client ?: return
+        if (_ui.value.tagsBusy) return
+        _ui.update { it.copy(tagsBusy = true, error = null) }
+        viewModelScope.launch {
+            try { action(active) }
+            catch (e: CancellationException) { throw e }
+            catch (e: Exception) {
+                if (active === client) _ui.update { it.copy(error = e.displayMessage(appContext)) }
+            } finally {
+                if (active === client) _ui.update { it.copy(tagsBusy = false) }
+            }
+        }
+    }
+
     fun dismissError() = _ui.update { it.copy(error = null) }
 }
 
 /** Raw list state; the grouped display is derived by [SessionGrouping]. */
 data class SessionListUiState(
+    val tags: List<ConversationTag> = emptyList(),
+    val tagsSupported: Boolean = false,
+    val selectedTags: Set<Int> = emptySet(),
+    val matchAllTags: Boolean = false,
+    val tagsBusy: Boolean = false,
     val folders: List<FolderDetail> = emptyList(),
     val conversations: List<ConversationSummary> = emptyList(),
     val isLoading: Boolean = false,

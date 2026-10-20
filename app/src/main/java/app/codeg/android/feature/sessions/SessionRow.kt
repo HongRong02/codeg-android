@@ -6,6 +6,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -32,6 +33,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import app.codeg.android.core.model.ConversationTag
+import app.codeg.android.feature.sessions.tags.ConversationTagChip
 import app.codeg.android.R
 import app.codeg.android.core.common.RelativeTime
 import app.codeg.android.core.designsystem.component.AgentAvatar
@@ -52,6 +55,8 @@ fun SessionRow(
     folderName: String? = null,
     selected: Boolean = false,
     onTogglePin: (() -> Unit)? = null,
+    tags: List<ConversationTag> = emptyList(),
+    onEditTags: (() -> Unit)? = null,
 ) {
     val colors = CodegTheme.colors
     var menuOpen by remember { mutableStateOf(false) }
@@ -67,7 +72,7 @@ fun SessionRow(
                 )
                 .combinedClickable(
                     onClick = onClick,
-                    onLongClick = if (onTogglePin != null) {
+                    onLongClick = if (onTogglePin != null || onEditTags != null) {
                         { menuOpen = true }
                     } else {
                         null
@@ -90,14 +95,20 @@ fun SessionRow(
                 )
             }
 
-            Text(
-                text = conversation.trimmedTitle ?: stringResource(R.string.session_untitled),
-                style = MaterialTheme.typography.bodyMedium,
-                color = colors.textPrimary,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                modifier = Modifier.weight(1f),
-            )
+            Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(3.dp)) {
+                Text(
+                    text = conversation.trimmedTitle ?: stringResource(R.string.session_untitled),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = colors.textPrimary,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
+                if (tags.isNotEmpty()) Row(horizontalArrangement = Arrangement.spacedBy(3.dp)) {
+                    tags.take(2).forEach { ConversationTagChip(it) }
+                    if (tags.size > 2) Text(stringResource(R.string.ct_more, tags.size - 2),
+                        style = MaterialTheme.typography.labelSmall, color = colors.textSecondary)
+                }
+            }
 
             if (folderName != null) {
                 Row(
@@ -132,9 +143,13 @@ fun SessionRow(
             }
         }
 
-        if (onTogglePin != null) {
+        if (onTogglePin != null || onEditTags != null) {
             DropdownMenu(expanded = menuOpen, onDismissRequest = { menuOpen = false }) {
-                DropdownMenuItem(
+                if (onEditTags != null) DropdownMenuItem(
+                    text = { Text(stringResource(R.string.ct_assign)) },
+                    onClick = { menuOpen = false; onEditTags() },
+                )
+                if (onTogglePin != null) DropdownMenuItem(
                     text = {
                         Text(
                             if (conversation.isPinned) {

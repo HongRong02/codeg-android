@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ct_title">会话标签</string>
+    <string name="ct_assign">标签…</string>
+    <string name="ct_manage">管理标签</string>
+    <string name="ct_match_all">匹配全部所选标签</string>
+    <string name="ct_clear">清除</string>
+    <string name="ct_create">新建标签</string>
+    <string name="ct_empty">暂无标签</string>
+    <string name="ct_edit">编辑</string>
+    <string name="ct_delete">删除</string>
+    <string name="ct_save">保存</string>
+    <string name="ct_cancel">取消</string>
+    <string name="ct_name">名称</string>
+    <string name="ct_color">颜色（#rrggbb）</string>
+    <string name="ct_delete_confirm">删除标签“%1$s”及其与所有会话的关联？</string>
+    <string name="ct_more">+%1$d</string>
+</resources>

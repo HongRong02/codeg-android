@@ -54,6 +54,10 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.compose.foundation.layout.Column
+import app.codeg.android.core.model.ConversationTag
+import app.codeg.android.feature.sessions.tags.ConversationTagFilter
+import app.codeg.android.feature.sessions.tags.ConversationTagSheet
 import app.codeg.android.R
 import app.codeg.android.core.datastore.ServerProfile
 import app.codeg.android.core.designsystem.component.CodegIconButton
@@ -90,6 +94,12 @@ fun SessionListScreen(
 ) {
     val ui by viewModel.ui.collectAsStateWithLifecycle()
     val sections by viewModel.sections.collectAsStateWithLifecycle()
+    var tagSheetOpen by remember(selectedId) { mutableStateOf(false) }
+    var tagConversation by remember(selectedId) { mutableStateOf<ConversationSummary?>(null) }
+    if (tagSheetOpen && ui.tagsSupported) ConversationTagSheet(
+        conversation = tagConversation, ui = ui, viewModel = viewModel,
+        onDismiss = { tagSheetOpen = false },
+    )
     // Collapsed section ids. In the composable (not the VM) so collapsing never
     // re-runs the grouping flow; rememberSaveable keeps the fold state across
     // rotation / process death.
@@ -176,20 +186,31 @@ fun SessionListScreen(
                         onRefresh = viewModel::refresh,
                         modifier = Modifier.fillMaxSize(),
                     ) {
-                        SessionList(
-                            sections = sections,
-                            collapsed = collapsed,
-                            onToggleSection = { id ->
-                                collapsed = if (id in collapsed) collapsed - id else collapsed + id
-                            },
-                            onOpenConversation = onOpenConversation,
-                            onTogglePin = { conv -> viewModel.setPinned(conv, !conv.isPinned) },
-                            // A refresh that failed over a still-populated list: surface
-                            // it inline above the rows rather than swallowing it.
-                            refreshError = ui.error,
-                            onRetry = viewModel::refresh,
-                            onDismissError = viewModel::dismissError,
-                        )
+                        Column {
+                            if (ui.tagsSupported) ConversationTagFilter(ui, viewModel) {
+                                tagConversation = null
+                                tagSheetOpen = true
+                            }
+                            SessionList(
+                                tags = ui.tags,
+                                onEditTags = if (ui.tagsSupported) ({ conv ->
+                                    tagConversation = conv
+                                    tagSheetOpen = true
+                                }) else null,
+                                sections = sections,
+                                collapsed = collapsed,
+                                onToggleSection = { id ->
+                                    collapsed = if (id in collapsed) collapsed - id else collapsed + id
+                                },
+                                onOpenConversation = onOpenConversation,
+                                onTogglePin = { conv -> viewModel.setPinned(conv, !conv.isPinned) },
+                                // A refresh that failed over a still-populated list: surface
+                                // it inline above the rows rather than swallowing it.
+                                refreshError = ui.error,
+                                onRetry = viewModel::refresh,
+                                onDismissError = viewModel::dismissError,
+                            )
+                        }
                     }
                 }
             }
@@ -199,6 +220,8 @@ fun SessionListScreen(
 
 @Composable
 private fun SessionList(
+    tags: List<ConversationTag>,
+    onEditTags: ((ConversationSummary) -> Unit)?,
     sections: List<SessionSection>,
     collapsed: Set<String>,
     onToggleSection: (String) -> Unit,
@@ -251,6 +274,8 @@ private fun SessionList(
                 ) { row ->
                     SessionRow(
                         conversation = row.conversation,
+                        tags = tags.filter { it.id in row.conversation.tagIds.orEmpty() },
+                        onEditTags = onEditTags?.let { edit -> { edit(row.conversation) } },
                         onClick = { onOpenConversation(row.conversation.id) },
                         modifier = Modifier.animateItem(),
                         folderName = row.folderName,
