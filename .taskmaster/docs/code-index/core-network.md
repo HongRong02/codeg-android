@@ -188,14 +188,25 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 1084 |   `suspend fun gitStashPop(path: String, ref: String): String` |
 | 1087 |   `suspend fun gitStashDrop(path: String, ref: String): String` |
 | 1090 |   `suspend fun gitStashClear(path: String): String` |
-| 1101 |   `private suspend fun send(path: String, bodyJson: String): String` |
-| 1135 |   `private inline fun <reified T> encode(body: T): String` |
-| 1138 |   `private fun <T> decode(text: String, deserializer: DeserializationStrategy<T>): T` |
-| 1144 |   `companion object` |
-| 1146 |     `fun normalizeBaseUrl(raw: String): String` |
-| 1154 |     `fun decodeConnectionId(text: String): String` |
-| 1170 |     `fun decodeAgentList(text: String): List<AcpAgentInfo>` |
-| 1187 |     `fun isJsonNull(text: String): Boolean` |
+| 1097 |   `suspend fun workTaskList(): List<app.codeg.android.core.model.WorkTask>` |
+| 1100 |   `suspend fun workTaskAttentionCount(): Long` |
+| 1103 |   `suspend fun workTaskGet(id: Int): app.codeg.android.core.model.WorkTask` |
+| 1106 |   `suspend fun workTaskEvents(id: Int): List<app.codeg.android.core.model.WorkTaskEvent>` |
+| 1109 |   `suspend fun workTaskChangedFiles(id: Int): List<app.codeg.android.core.model.WorkTaskChangedFile>` |
+| 1112 |   `suspend fun workTaskDiff(id: Int, file: String? = null): String` |
+| 1119 |   `suspend fun recentServerLogs(minLevel: String? = null): List<app.codeg.android.core.model.ServerLogRecord>` |
+| 1123 |   `suspend fun serverLogFiles(): List<app.codeg.android.core.model.ServerLogFile>` |
+| 1126 |   `suspend fun readServerLog(name: String): String` |
+| 1129 |   `suspend fun serverConversationStats(): app.codeg.android.core.model.ServerConversationStats` |
+| 1132 |   `suspend fun serverTokenReport(filter: app.codeg.android.core.model.wire.ServerTokenFilter): app.codeg.android.core.model.ServerTokenReport` |
+| 1144 |   `private suspend fun send(path: String, bodyJson: String): String` |
+| 1178 |   `private inline fun <reified T> encode(body: T): String` |
+| 1181 |   `private fun <T> decode(text: String, deserializer: DeserializationStrategy<T>): T` |
+| 1187 |   `companion object` |
+| 1189 |     `fun normalizeBaseUrl(raw: String): String` |
+| 1197 |     `fun decodeConnectionId(text: String): String` |
+| 1213 |     `fun decodeAgentList(text: String): List<AcpAgentInfo>` |
+| 1230 |     `fun isJsonNull(text: String): Boolean` |
 
 ## core/network/CodegClientFactory.kt
 

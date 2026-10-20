@@ -31,7 +31,7 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 169 |   `val onTab: (HomeTab) -> Unit` |
 | 178 |   `val pendingLink by app.codeg.android.core.common.DeepLinkBus.pending.collectAsStateWithLifecycle()` |
 | 181 |     `fun toTab(it: HomeTab)` |
-| 363 | `@Composable private fun CodegNavRail(currentRoute: String?, onSelect: (HomeTab) -> Unit)` |
-| 364 |   `val colors` |
-| 402 | `@Composable private fun CodegBottomBar( currentRoute: String?, onSelect: (HomeTab) -> Unit, modifier: Modifier = Modifier, )` |
-| 407 |   `val colors` |
+| 367 | `@Composable private fun CodegNavRail(currentRoute: String?, onSelect: (HomeTab) -> Unit)` |
+| 368 |   `val colors` |
+| 406 | `@Composable private fun CodegBottomBar( currentRoute: String?, onSelect: (HomeTab) -> Unit, modifier: Modifier = Modifier, )` |
+| 411 |   `val colors` |

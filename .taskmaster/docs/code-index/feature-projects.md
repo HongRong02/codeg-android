@@ -43,24 +43,25 @@ Source root: `app/src/main/java/app/codeg/android/`
 
 | Line | Declaration |
 |---|---|
-| 73 | `@Composable fun CommitSheet( viewModel: ProjectDetailViewModel, client: CodegClient, rootPath: String, onDismiss: () -> Unit, onCommitted: (push: Boolean) -> Unit, )` |
-| 80 |   `val colors` |
-| 81 |   `val scope` |
-| 83 |   `var entries by remember` |
-| 84 |   `var selected by remember` |
-| 85 |   `var message by remember` |
-| 86 |   `var loadError by remember` |
-| 87 |   `var committing by remember` |
-| 88 |   `var commitError by remember` |
-| 90 |   `suspend fun load()` |
-| 103 |   `val all` |
-| 104 |   `val trimmedMessage` |
-| 105 |   `val canCommit` |
-| 107 |   `fun runCommit(push: Boolean)` |
-| 215 | `@Composable private fun SelectionHeader( selectedCount: Int, total: Int, allSelected: Boolean, enabled: Boolean, onToggleAll: () -> Unit, )` |
-| 222 |   `val colors` |
-| 243 | `@Composable private fun FileSection( title: String, entries: List<GitStatusEntry>, selected: Set<String>, enabled: Boolean, onToggle: (String) -> Unit, )` |
-| 250 |   `val colors` |
+| 74 | `@Composable fun CommitSheet( viewModel: ProjectDetailViewModel, client: CodegClient, rootPath: String, onDismiss: () -> Unit, onCommitted: (push: Boolean) -> Unit, )` |
+| 81 |   `val context` |
+| 82 |   `val colors` |
+| 83 |   `val scope` |
+| 85 |   `var entries by remember` |
+| 86 |   `var selected by remember` |
+| 87 |   `var message by remember` |
+| 88 |   `var loadError by remember` |
+| 89 |   `var committing by remember` |
+| 90 |   `var commitError by remember` |
+| 92 |   `suspend fun load()` |
+| 105 |   `val all` |
+| 106 |   `val trimmedMessage` |
+| 107 |   `val canCommit` |
+| 109 |   `fun runCommit(push: Boolean)` |
+| 217 | `@Composable private fun SelectionHeader( selectedCount: Int, total: Int, allSelected: Boolean, enabled: Boolean, onToggleAll: () -> Unit, )` |
+| 224 |   `val colors` |
+| 245 | `@Composable private fun FileSection( title: String, entries: List<GitStatusEntry>, selected: Set<String>, enabled: Boolean, onToggle: (String) -> Unit, )` |
+| 252 |   `val colors` |
 
 ## feature/projects/DirectoryBrowserSheet.kt
 
@@ -148,6 +149,170 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 175 | `private fun sortItems(items: List<DirectoryItem>): List<DirectoryItem>` |
 | 178 | `private fun formatBytes(bytes: Long): String` |
 
+## feature/projects/git/BranchManageSheet.kt
+
+| Line | Declaration |
+|---|---|
+| 23 | `@Composable fun BranchManageSheet(viewModel: BranchManageViewModel, onDismiss: () -> Unit)` |
+| 24 |   `val ui by viewModel.ui.collectAsStateWithLifecycle()` |
+| 25 |   `var deleting by remember` |
+| 26 |   `var force by remember` |
+| 27 |   `val colors` |
+
+## feature/projects/git/BranchManageViewModel.kt
+
+| Line | Declaration |
+|---|---|
+| 15 | `class BranchManageViewModel(private val client: CodegClient, private val path: String) : ViewModel()` |
+| 16 |   `data class Ui( val branches: List<BranchManageEntry> = emptyList(), val busy: Boolean = false, val supported: Boolean = true, val hiddenActions: Set<String> = emptySet(), val error: String? = null, val completed: Boolean = false, val conflict: List<String>? = null, val diff: String? = null, val diffBranch: String? = null, val credentialsRequested: Boolean = false, )` |
+| 28 |   `private val state` |
+| 29 |   `val ui` |
+| 30 |   `private var credentials: CompletableDeferred<GitCredentials?>?` |
+| 34 |   `private suspend fun load()` |
+| 47 |   `fun refresh()` |
+| 49 |   `fun delete(branch: BranchManageEntry, force: Boolean)` |
+| 56 |   `fun update(branch: BranchManageEntry)` |
+| 62 |   `fun compare(branch: BranchManageEntry)` |
+| 67 |   `fun submitCredentials(value: GitCredentials?)` |
+| 69 |   `private suspend fun <T> withCredentials(body: suspend (GitCredentials?) -> T): T` |
+| 85 |   `private fun run(action: String, body: suspend () -> Unit)` |
+
+## feature/projects/git/ConflictListScreen.kt
+
+| Line | Declaration |
+|---|---|
+| 14 | `@Composable fun ConflictListScreen(vm: MergeOpsViewModel, client: CodegClient, path: String, branch: String)` |
+| 15 |   `val ui by vm.ui.collectAsStateWithLifecycle()` |
+| 16 |   `var pending by remember` |
+| 17 |   `var version by remember` |
+| 65 | `@Composable private fun versionLabel(value: String): String` |
+
+## feature/projects/git/GitActionsMenu.kt
+
+| Line | Declaration |
+|---|---|
+| 32 | `@Composable fun GitActionsMenu(onSwitchBranch: () -> Unit, enabled: Boolean = true)` |
+| 33 |   `val project: ProjectDetailViewModel` |
+| 34 |   `val projectUi by project.ui.collectAsStateWithLifecycle()` |
+| 35 |   `val client` |
+| 36 |   `val folder` |
+| 37 |   `val path` |
+| 40 |   `var showStash by remember(client, path)` |
+| 41 |   `val stash: StashViewModel?` |
+| 47 |   `val stashUi` |
+| 54 |   `var showManage by remember(client, path)` |
+| 55 |   `val manager: BranchManageViewModel?` |
+| 61 |   `val manageUi` |
+| 67 |   `val mergeVm: MergeOpsViewModel` |
+| 68 |   `val mergeUi by mergeVm.ui.collectAsStateWithLifecycle()` |
+| 69 |   `var showMerge by remember(path)` |
+| 81 |   `var showMisc by remember` |
+| 86 |   `var expanded by remember` |
+
+## feature/projects/git/GitMiscSheet.kt
+
+| Line | Declaration |
+|---|---|
+| 22 | `@Composable fun GitMiscSheet(client: CodegClient, path: String, folderId: Int, onDismiss: () -> Unit, onChanged: () -> Unit)` |
+| 23 |   `val model: GitMiscViewModel` |
+| 24 |   `val ui by model.ui.collectAsStateWithLifecycle()` |
+| 25 |   `var name by remember` |
+| 26 |   `var url by remember` |
+| 27 |   `var branch by remember` |
+| 28 |   `var destination by remember` |
+| 29 |   `var base by remember` |
+| 30 |   `var username by remember` |
+| 31 |   `var password by remember` |
+| 32 |   `var confirmation by remember` |
+| 34 |   `fun mutate(action: String, operation: suspend () -> Unit)` |
+
+## feature/projects/git/GitMiscViewModel.kt
+
+| Line | Declaration |
+|---|---|
+| 19 | `class GitMiscViewModel(application: Application) : AndroidViewModel(application)` |
+| 20 |   `private val appContext` |
+| 21 |   `private val state` |
+| 22 |   `val ui` |
+| 24 |   `fun run(action: String, operation: suspend () -> Unit)` |
+| 45 |   `suspend fun load(client: CodegClient, path: String)` |
+| 61 |   `fun fetch(client: CodegClient, path: String, name: String, credentials: GitCredentials? = null)` |
+| 72 | `data class GitMiscUi( val busy: Boolean = false, val error: String? = null, val success: Boolean = false, val notRepository: Boolean = false, val remotes: List<GitRemote> = emptyList(), val worktrees: List<GitMiscWorktree> = emptyList(), val hidden: Set<String> = emptySet(), val authRemote: String? = null, )` |
+| 73 |   `val busy: Boolean` |
+| 74 |   `val error: String?` |
+| 75 |   `val success: Boolean` |
+| 76 |   `val notRepository: Boolean` |
+| 77 |   `val remotes: List<GitRemote>` |
+| 78 |   `val worktrees: List<GitMiscWorktree>` |
+| 79 |   `val hidden: Set<String>` |
+| 80 |   `val authRemote: String?` |
+
+## feature/projects/git/MergeOpsSheet.kt
+
+| Line | Declaration |
+|---|---|
+| 17 | `@Composable fun MergeOpsSheet(vm: MergeOpsViewModel, client: CodegClient, path: String, branch: String?, onDismiss: () -> Unit)` |
+| 18 |   `val ui by vm.ui.collectAsStateWithLifecycle()` |
+| 19 |   `var action by remember` |
+| 20 |   `var target by remember` |
+| 21 |   `var mode by remember` |
+| 22 |   `var confirm by remember` |
+| 23 |   `var typed by remember` |
+| 75 | `@Composable internal fun operationLabel(value: String): String` |
+
+## feature/projects/git/MergeOpsViewModel.kt
+
+| Line | Declaration |
+|---|---|
+| 14 | `data class MergeOpsUi( val busy: Boolean = false, val ready: Boolean = false, val supported: Boolean = true, val branches: List<String> = emptyList(), val conflicts: List<String> = emptyList(), val active: Boolean = false, val operation: String = "merge", val file: String? = null, val versions: MergeVersions? = null, val error: String? = null, val completed: Boolean = false, )` |
+| 15 |   `val busy: Boolean` |
+| 16 |   `val ready: Boolean` |
+| 17 |   `val supported: Boolean` |
+| 18 |   `val branches: List<String>` |
+| 19 |   `val conflicts: List<String>` |
+| 20 |   `val active: Boolean` |
+| 21 |   `val operation: String` |
+| 22 |   `val file: String?` |
+| 23 |   `val versions: MergeVersions?` |
+| 24 |   `val error: String?` |
+| 25 |   `val completed: Boolean` |
+| 28 | `class MergeOpsViewModel : ViewModel()` |
+| 29 |   `private val state` |
+| 30 |   `val ui` |
+| 31 |   `private suspend fun detect(client: CodegClient, path: String)` |
+| 37 |   `private fun run(block: suspend () -> Unit)` |
+| 48 |   `fun refresh(client: CodegClient, path: String)` |
+| 53 |   `fun operation(value: String)` |
+| 54 |   `fun execute(client: CodegClient, path: String, action: String, target: String, mode: String)` |
+| 65 |   `fun versions(client: CodegClient, path: String, file: String)` |
+| 70 |   `fun resolve(client: CodegClient, path: String, ours: Boolean)` |
+| 77 |   `fun finish(client: CodegClient, path: String, abort: Boolean)` |
+
+## feature/projects/git/StashSheet.kt
+
+| Line | Declaration |
+|---|---|
+| 21 | `@Composable fun StashSheet(viewModel: StashViewModel, onDismiss: () -> Unit, onChanged: () -> Unit)` |
+| 22 |   `val ui by viewModel.ui.collectAsStateWithLifecycle()` |
+| 23 |   `var message by remember` |
+| 24 |   `var keepIndex by remember` |
+| 25 |   `var confirmation by remember` |
+| 26 |   `val colors` |
+| 87 | `@Composable private fun pathLabel(count: Int): String` |
+
+## feature/projects/git/StashViewModel.kt
+
+| Line | Declaration |
+|---|---|
+| 15 | `class StashViewModel(private val client: CodegClient, private val path: String) : ViewModel()` |
+| 16 |   `data class Ui( val entries: List<StashEntry> = emptyList(), val supported: Boolean = true, val busy: Boolean = false, val error: String? = null, val result: String? = null, val diff: String? = null, val diffRef: String? = null, )` |
+| 25 |   `private val state` |
+| 26 |   `val ui` |
+| 28 |   `fun refresh()` |
+| 30 |   `fun show(ref: String)` |
+| 37 |   `fun change(action: String, ref: String?, message: String, keepIndex: Boolean, onChanged: () -> Unit)` |
+| 55 |   `private fun run(block: suspend () -> Unit)` |
+
 ## feature/projects/GitChangeVisuals.kt
 
 | Line | Declaration |
@@ -160,22 +325,23 @@ Source root: `app/src/main/java/app/codeg/android/`
 
 | Line | Declaration |
 |---|---|
-| 66 | `@Composable fun GitCredentialSheet( viewModel: ProjectDetailViewModel, prompt: GitCredentialPrompt, )` |
-| 70 |   `val colors` |
-| 71 |   `val scope` |
-| 72 |   `val uriHandler` |
-| 74 |   `var token by remember` |
-| 75 |   `var username by remember` |
-| 76 |   `var password by remember` |
-| 77 |   `var saveCredentials by remember` |
-| 78 |   `var submitting by remember` |
-| 79 |   `var error by remember` |
-| 81 |   `val hostLabel` |
-| 82 |   `val serverUrl` |
-| 83 |   `val invalidTokenMsg` |
-| 85 |   `val canSubmit` |
-| 91 |   `fun submit()` |
-| 185 | `@Composable private fun Banner(message: String, tint: Color, textColor: Color)` |
+| 67 | `@Composable fun GitCredentialSheet( viewModel: ProjectDetailViewModel, prompt: GitCredentialPrompt, )` |
+| 71 |   `val context` |
+| 72 |   `val colors` |
+| 73 |   `val scope` |
+| 74 |   `val uriHandler` |
+| 76 |   `var token by remember` |
+| 77 |   `var username by remember` |
+| 78 |   `var password by remember` |
+| 79 |   `var saveCredentials by remember` |
+| 80 |   `var submitting by remember` |
+| 81 |   `var error by remember` |
+| 83 |   `val hostLabel` |
+| 84 |   `val serverUrl` |
+| 85 |   `val invalidTokenMsg` |
+| 87 |   `val canSubmit` |
+| 93 |   `fun submit()` |
+| 187 | `@Composable private fun Banner(message: String, tint: Color, textColor: Color)` |
 
 ## feature/projects/GitStatusStrip.kt
 
@@ -291,188 +457,25 @@ Source root: `app/src/main/java/app/codeg/android/`
 
 | Line | Declaration |
 |---|---|
-| 25 | `class ProjectsViewModel @Inject constructor( private val repository: ServerRepository, ) : ViewModel()` |
-| 26 |   `private val repository: ServerRepository` |
-| 29 |   `private val _ui` |
-| 30 |   `val ui: StateFlow<ProjectsUiState>` |
-| 32 |   `private var client: CodegClient?` |
-| 33 |   `private var loadedEndpoint: String?` |
-| 46 |   `private suspend fun onProfile(profile: ServerProfile?)` |
-| 60 |   `fun refresh()` |
-| 65 |   `private suspend fun fetch(initial: Boolean)` |
-| 84 |   `fun openFolder(path: String, onResult: (String?) -> Unit)` |
-| 94 |   `suspend fun homeDirectory(): String` |
-| 98 |   `suspend fun listDirectories(path: String): List<app.codeg.android.core.model.DirectoryEntry>` |
-| 102 |   `suspend fun clone( url: String, targetDir: String, credentials: app.codeg.android.core.model.GitCredentials?, ): String?` |
-| 119 | `data class ProjectsUiState( val folders: List<FolderDetail> = emptyList(), val conversations: List<ConversationSummary> = emptyList(), val loading: Boolean = false, val refreshing: Boolean = false, val hasLoaded: Boolean = false, val error: String? = null, )` |
-| 120 |   `val folders: List<FolderDetail>` |
-| 121 |   `val conversations: List<ConversationSummary>` |
-| 122 |   `val loading: Boolean` |
-| 123 |   `val refreshing: Boolean` |
-| 124 |   `val hasLoaded: Boolean` |
-| 125 |   `val error: String?` |
-| 127 |   `val isBusy: Boolean get()` |
-| 128 |   `fun runningCount(folderId: Int): Int` |
-
-## feature/projects/git/BranchManageSheet.kt
-
-| Line | Declaration |
-|---|---|
-| 23 | `@Composable fun BranchManageSheet(viewModel: BranchManageViewModel, onDismiss: () -> Unit)` |
-| 24 |   `val ui by viewModel.ui.collectAsStateWithLifecycle()` |
-| 25 |   `var deleting by remember` |
-| 26 |   `var force by remember` |
-| 27 |   `val colors` |
-
-## feature/projects/git/BranchManageViewModel.kt
-
-| Line | Declaration |
-|---|---|
-| 15 | `class BranchManageViewModel(private val client: CodegClient, private val path: String) : ViewModel()` |
-| 16 |   `data class Ui( val branches: List<BranchManageEntry> = emptyList(), val busy: Boolean = false, val supported: Boolean = true, val hiddenActions: Set<String> = emptySet(), val error: String? = null, val completed: Boolean = false, val conflict: List<String>? = null, val diff: String? = null, val diffBranch: String? = null, val credentialsRequested: Boolean = false, )` |
-| 28 |   `private val state` |
-| 29 |   `val ui` |
-| 30 |   `private var credentials: CompletableDeferred<GitCredentials?>?` |
-| 34 |   `private suspend fun load()` |
-| 47 |   `fun refresh()` |
-| 49 |   `fun delete(branch: BranchManageEntry, force: Boolean)` |
-| 56 |   `fun update(branch: BranchManageEntry)` |
-| 62 |   `fun compare(branch: BranchManageEntry)` |
-| 67 |   `fun submitCredentials(value: GitCredentials?)` |
-| 69 |   `private suspend fun <T> withCredentials(body: suspend (GitCredentials?) -> T): T` |
-| 85 |   `private fun run(action: String, body: suspend () -> Unit)` |
-
-## feature/projects/git/ConflictListScreen.kt
-
-| Line | Declaration |
-|---|---|
-| 14 | `@Composable fun ConflictListScreen(vm: MergeOpsViewModel, client: CodegClient, path: String, branch: String)` |
-| 15 |   `val ui by vm.ui.collectAsStateWithLifecycle()` |
-| 16 |   `var pending by remember` |
-| 17 |   `var version by remember` |
-| 65 | `@Composable private fun versionLabel(value: String): String` |
-
-## feature/projects/git/GitActionsMenu.kt
-
-| Line | Declaration |
-|---|---|
-| 32 | `@Composable fun GitActionsMenu(onSwitchBranch: () -> Unit, enabled: Boolean = true)` |
-| 33 |   `val project: ProjectDetailViewModel` |
-| 34 |   `val projectUi by project.ui.collectAsStateWithLifecycle()` |
-| 35 |   `val client` |
-| 36 |   `val folder` |
-| 37 |   `val path` |
-| 40 |   `var showStash by remember(client, path)` |
-| 41 |   `val stash: StashViewModel?` |
-| 47 |   `val stashUi` |
-| 54 |   `var showManage by remember(client, path)` |
-| 55 |   `val manager: BranchManageViewModel?` |
-| 61 |   `val manageUi` |
-| 67 |   `val mergeVm: MergeOpsViewModel` |
-| 68 |   `val mergeUi by mergeVm.ui.collectAsStateWithLifecycle()` |
-| 69 |   `var showMerge by remember(path)` |
-| 81 |   `var showMisc by remember` |
-| 86 |   `var expanded by remember` |
-
-## feature/projects/git/GitMiscSheet.kt
-
-| Line | Declaration |
-|---|---|
-| 22 | `@Composable fun GitMiscSheet(client: CodegClient, path: String, folderId: Int, onDismiss: () -> Unit, onChanged: () -> Unit)` |
-| 23 |   `val model: GitMiscViewModel` |
-| 24 |   `val ui by model.ui.collectAsStateWithLifecycle()` |
-| 25 |   `var name by remember` |
-| 26 |   `var url by remember` |
-| 27 |   `var branch by remember` |
-| 28 |   `var destination by remember` |
-| 29 |   `var base by remember` |
-| 30 |   `var username by remember` |
-| 31 |   `var password by remember` |
-| 32 |   `var confirmation by remember` |
-| 34 |   `fun mutate(action: String, operation: suspend () -> Unit)` |
-
-## feature/projects/git/GitMiscViewModel.kt
-
-| Line | Declaration |
-|---|---|
-| 18 | `class GitMiscViewModel : ViewModel()` |
-| 19 |   `private val state` |
-| 20 |   `val ui` |
-| 22 |   `fun run(action: String, operation: suspend () -> Unit)` |
-| 43 |   `suspend fun load(client: CodegClient, path: String)` |
-| 59 |   `fun fetch(client: CodegClient, path: String, name: String, credentials: GitCredentials? = null)` |
-| 70 | `data class GitMiscUi( val busy: Boolean = false, val error: String? = null, val success: Boolean = false, val notRepository: Boolean = false, val remotes: List<GitRemote> = emptyList(), val worktrees: List<GitMiscWorktree> = emptyList(), val hidden: Set<String> = emptySet(), val authRemote: String? = null, )` |
-| 71 |   `val busy: Boolean` |
-| 72 |   `val error: String?` |
-| 73 |   `val success: Boolean` |
-| 74 |   `val notRepository: Boolean` |
-| 75 |   `val remotes: List<GitRemote>` |
-| 76 |   `val worktrees: List<GitMiscWorktree>` |
-| 77 |   `val hidden: Set<String>` |
-| 78 |   `val authRemote: String?` |
-
-## feature/projects/git/MergeOpsSheet.kt
-
-| Line | Declaration |
-|---|---|
-| 17 | `@Composable fun MergeOpsSheet(vm: MergeOpsViewModel, client: CodegClient, path: String, branch: String?, onDismiss: () -> Unit)` |
-| 18 |   `val ui by vm.ui.collectAsStateWithLifecycle()` |
-| 19 |   `var action by remember` |
-| 20 |   `var target by remember` |
-| 21 |   `var mode by remember` |
-| 22 |   `var confirm by remember` |
-| 23 |   `var typed by remember` |
-| 75 | `@Composable internal fun operationLabel(value: String): String` |
-
-## feature/projects/git/MergeOpsViewModel.kt
-
-| Line | Declaration |
-|---|---|
-| 14 | `data class MergeOpsUi( val busy: Boolean = false, val ready: Boolean = false, val supported: Boolean = true, val branches: List<String> = emptyList(), val conflicts: List<String> = emptyList(), val active: Boolean = false, val operation: String = "merge", val file: String? = null, val versions: MergeVersions? = null, val error: String? = null, val completed: Boolean = false, )` |
-| 15 |   `val busy: Boolean` |
-| 16 |   `val ready: Boolean` |
-| 17 |   `val supported: Boolean` |
-| 18 |   `val branches: List<String>` |
-| 19 |   `val conflicts: List<String>` |
-| 20 |   `val active: Boolean` |
-| 21 |   `val operation: String` |
-| 22 |   `val file: String?` |
-| 23 |   `val versions: MergeVersions?` |
-| 24 |   `val error: String?` |
-| 25 |   `val completed: Boolean` |
-| 28 | `class MergeOpsViewModel : ViewModel()` |
-| 29 |   `private val state` |
-| 30 |   `val ui` |
-| 31 |   `private suspend fun detect(client: CodegClient, path: String)` |
-| 37 |   `private fun run(block: suspend () -> Unit)` |
-| 48 |   `fun refresh(client: CodegClient, path: String)` |
-| 53 |   `fun operation(value: String)` |
-| 54 |   `fun execute(client: CodegClient, path: String, action: String, target: String, mode: String)` |
-| 65 |   `fun versions(client: CodegClient, path: String, file: String)` |
-| 70 |   `fun resolve(client: CodegClient, path: String, ours: Boolean)` |
-| 77 |   `fun finish(client: CodegClient, path: String, abort: Boolean)` |
-
-## feature/projects/git/StashSheet.kt
-
-| Line | Declaration |
-|---|---|
-| 21 | `@Composable fun StashSheet(viewModel: StashViewModel, onDismiss: () -> Unit, onChanged: () -> Unit)` |
-| 22 |   `val ui by viewModel.ui.collectAsStateWithLifecycle()` |
-| 23 |   `var message by remember` |
-| 24 |   `var keepIndex by remember` |
-| 25 |   `var confirmation by remember` |
-| 26 |   `val colors` |
-| 87 | `@Composable private fun pathLabel(count: Int): String` |
-
-## feature/projects/git/StashViewModel.kt
-
-| Line | Declaration |
-|---|---|
-| 15 | `class StashViewModel(private val client: CodegClient, private val path: String) : ViewModel()` |
-| 16 |   `data class Ui( val entries: List<StashEntry> = emptyList(), val supported: Boolean = true, val busy: Boolean = false, val error: String? = null, val result: String? = null, val diff: String? = null, val diffRef: String? = null, )` |
-| 25 |   `private val state` |
-| 26 |   `val ui` |
-| 28 |   `fun refresh()` |
-| 30 |   `fun show(ref: String)` |
-| 37 |   `fun change(action: String, ref: String?, message: String, keepIndex: Boolean, onChanged: () -> Unit)` |
-| 55 |   `private fun run(block: suspend () -> Unit)` |
+| 27 | `class ProjectsViewModel @Inject constructor( @ApplicationContext private val appContext: Context, private val repository: ServerRepository, ) : ViewModel()` |
+| 29 |   `private val repository: ServerRepository` |
+| 32 |   `private val _ui` |
+| 33 |   `val ui: StateFlow<ProjectsUiState>` |
+| 35 |   `private var client: CodegClient?` |
+| 36 |   `private var loadedEndpoint: String?` |
+| 49 |   `private suspend fun onProfile(profile: ServerProfile?)` |
+| 63 |   `fun refresh()` |
+| 68 |   `private suspend fun fetch(initial: Boolean)` |
+| 87 |   `fun openFolder(path: String, onResult: (String?) -> Unit)` |
+| 97 |   `suspend fun homeDirectory(): String` |
+| 101 |   `suspend fun listDirectories(path: String): List<app.codeg.android.core.model.DirectoryEntry>` |
+| 105 |   `suspend fun clone( url: String, targetDir: String, credentials: app.codeg.android.core.model.GitCredentials?, ): String?` |
+| 122 | `data class ProjectsUiState( val folders: List<FolderDetail> = emptyList(), val conversations: List<ConversationSummary> = emptyList(), val loading: Boolean = false, val refreshing: Boolean = false, val hasLoaded: Boolean = false, val error: String? = null, )` |
+| 123 |   `val folders: List<FolderDetail>` |
+| 124 |   `val conversations: List<ConversationSummary>` |
+| 125 |   `val loading: Boolean` |
+| 126 |   `val refreshing: Boolean` |
+| 127 |   `val hasLoaded: Boolean` |
+| 128 |   `val error: String?` |
+| 130 |   `val isBusy: Boolean get()` |
+| 131 |   `fun runningCount(folderId: Int): Int` |
