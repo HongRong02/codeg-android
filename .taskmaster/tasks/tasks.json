@@ -411,18 +411,18 @@
         "description": "给带输入框的 Sheet/表单加 imePadding，键盘弹出时底部按钮可见。",
         "details": "需求文档：.taskmaster/docs/tasks/T30-ime-insets.md（先读 .taskmaster/docs/CONVENTIONS.md，再只读这一份需求文档及其中列出的代码位置；不要通读 PRD 或其它文件）。改动范围、代码定位、验收标准都在需求文档里。",
         "testStrategy": "",
-        "status": "in-progress",
+        "status": "done",
         "dependencies": [],
         "priority": "high",
         "subtasks": [],
-        "updatedAt": "2026-10-20T04:23:47.733Z"
+        "updatedAt": "2026-10-20T04:38:15.290Z"
       }
     ],
     "metadata": {
       "version": "1.0.0",
-      "lastModified": "2026-10-20T04:23:47.734Z",
+      "lastModified": "2026-10-20T04:38:15.291Z",
       "taskCount": 30,
-      "completedCount": 26,
+      "completedCount": 27,
       "tags": [
         "master"
       ]
