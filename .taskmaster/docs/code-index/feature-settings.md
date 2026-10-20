@@ -986,13 +986,13 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 39 |   `private var refreshing` |
 | 43 |   `fun refresh()` |
 | 61 |   `private suspend fun reload(c: CodegClient)` |
-| 69 |   `private fun report(e: Exception)` |
-| 78 |   `private fun currentClient(): CodegClient` |
-| 80 |   `suspend fun read(id: String): String` |
-| 83 |   `private suspend fun mutate(action: suspend (CodegClient) -> Unit): Boolean` |
-| 97 |   `suspend fun save(id: String, content: String, create: Boolean): Boolean` |
-| 101 |   `suspend fun duplicate(sourceId: String, newId: String): Boolean` |
-| 103 |   `fun delete(id: String)` |
-| 114 |   `fun toggle(id: String, agent: AgentType, enable: Boolean)` |
-| 133 |   `suspend fun importCandidates(agent: AgentType): List<AgentSkillItem>` |
-| 139 |   `suspend fun importFromAgent(agent: AgentType, ids: List<String>): Boolean` |
+| 70 |   `private fun report(e: Exception)` |
+| 79 |   `private fun currentClient(): CodegClient` |
+| 81 |   `suspend fun read(id: String): String` |
+| 84 |   `private suspend fun mutate(action: suspend (CodegClient) -> Unit): Boolean` |
+| 98 |   `suspend fun save(id: String, content: String, create: Boolean): Boolean` |
+| 102 |   `suspend fun duplicate(sourceId: String, newId: String): Boolean` |
+| 104 |   `fun delete(id: String)` |
+| 115 |   `fun toggle(id: String, agent: AgentType, enable: Boolean)` |
+| 134 |   `suspend fun importCandidates(agent: AgentType): List<AgentSkillItem>` |
+| 140 |   `suspend fun importFromAgent(agent: AgentType, ids: List<String>): Boolean` |

@@ -61,8 +61,9 @@ class CustomSkillsViewModel @Inject constructor(
     private suspend fun reload(c: CodegClient) {
         val skills = c.customSkillsList()
         val statuses = c.customSkillsStatuses()
-        val agents = c.acpListAgents().filter { it.available && it.enabled }
-            .sortedBy { it.sortOrder }.map { it.agentType }
+        // Keep disabled agents visible so existing links can still be inspected and removed.
+        val agents = (c.acpListAgents().sortedBy { it.sortOrder }.map { it.agentType } +
+            statuses.map { it.agentType }).distinct()
         state.update { it.copy(supported = true, skills = skills, statuses = statuses, agents = agents) }
     }
 
