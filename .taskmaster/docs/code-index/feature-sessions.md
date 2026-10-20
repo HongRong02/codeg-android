@@ -21,16 +21,16 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 96 |   `var collapsed by rememberSaveable` |
 | 97 |   `val colors` |
 | 98 |   `val selectedName` |
-| 203 | `@Composable private fun SessionList( sections: List<SessionSection>, collapsed: Set<String>, onToggleSection: (String) -> Unit, onOpenConversation: (Int) -> Unit, onTogglePin: (ConversationSummary) -> Unit, refreshError: String?, onRetry: () -> Unit, onDismissError: () -> Unit, )` |
-| 268 | `private data class SectionStyle(val icon: ImageVector, val tint: Color, val label: String)` |
-| 271 | `@Composable private fun sectionStyle(kind: SectionKind): SectionStyle` |
-| 272 |   `val colors` |
-| 299 | `@Composable private fun RefreshErrorBanner( message: String, onRetry: () -> Unit, onDismiss: () -> Unit, modifier: Modifier = Modifier, )` |
-| 305 |   `val colors` |
-| 306 |   `val shape` |
-| 349 | `@Composable private fun ServerSwitcher( name: String, servers: List<ServerProfile>, selectedId: String?, onSelect: (String) -> Unit, onManageServers: () -> Unit, )` |
-| 356 |   `var open by remember` |
-| 357 |   `val colors` |
+| 205 | `@Composable private fun SessionList( sections: List<SessionSection>, collapsed: Set<String>, onToggleSection: (String) -> Unit, onOpenConversation: (Int) -> Unit, onTogglePin: (ConversationSummary) -> Unit, refreshError: String?, onRetry: () -> Unit, onDismissError: () -> Unit, )` |
+| 270 | `private data class SectionStyle(val icon: ImageVector, val tint: Color, val label: String)` |
+| 273 | `@Composable private fun sectionStyle(kind: SectionKind): SectionStyle` |
+| 274 |   `val colors` |
+| 301 | `@Composable private fun RefreshErrorBanner( message: String, onRetry: () -> Unit, onDismiss: () -> Unit, modifier: Modifier = Modifier, )` |
+| 307 |   `val colors` |
+| 308 |   `val shape` |
+| 351 | `@Composable private fun ServerSwitcher( name: String, servers: List<ServerProfile>, selectedId: String?, onSelect: (String) -> Unit, onManageServers: () -> Unit, )` |
+| 358 |   `var open by remember` |
+| 359 |   `val colors` |
 
 ## feature/sessions/SessionListViewModel.kt
 

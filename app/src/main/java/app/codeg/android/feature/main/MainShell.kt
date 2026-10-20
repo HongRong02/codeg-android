@@ -290,6 +290,7 @@ fun MainShell(appViewModel: AppViewModel, servers: List<ServerProfile>) {
                 SessionDetailScreen(
                     onBack = { nav.popBackStack() },
                     onOpenSession = { folderId -> nav.navigate("$ROUTE_NEW_TASK?folderId=$folderId") },
+                    onOpenServers = { nav.navigate(ROUTE_SERVERS) },
                 )
             }
             composable(
@@ -304,6 +305,7 @@ fun MainShell(appViewModel: AppViewModel, servers: List<ServerProfile>) {
                 SessionDetailScreen(
                     onBack = { nav.popBackStack() },
                     onOpenSession = { folderId -> nav.navigate("$ROUTE_NEW_TASK?folderId=$folderId") },
+                    onOpenServers = { nav.navigate(ROUTE_SERVERS) },
                 )
             }
 

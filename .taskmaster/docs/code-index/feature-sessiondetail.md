@@ -124,292 +124,6 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 145 | `@Composable private fun InsertRow(title: String, subtitle: String, mono: Boolean = false, onClick: () -> Unit)` |
 | 146 |   `val colors` |
 
-## feature/sessiondetail/LiveTurn.kt
-
-| Line | Declaration |
-|---|---|
-| 14 | `data class LiveToolCallState( val id: String, val title: String, val kind: String, val status: String, val rawInput: String?, val rawOutput: String, val content: String?, /** The agent's opaque ACP metadata for this call (context compaction, Grok's * `x.ai/tool` identity, …). Null for most tools and hosts. */ val meta: JsonObject? = null, )` |
-| 15 |   `val id: String` |
-| 16 |   `val title: String` |
-| 17 |   `val kind: String` |
-| 18 |   `val status: String` |
-| 19 |   `val rawInput: String?` |
-| 20 |   `val rawOutput: String` |
-| 21 |   `val content: String?` |
-| 24 |   `val meta: JsonObject?` |
-| 26 |   `val isFinished: Boolean` |
-| 28 |   `val isError: Boolean get()` |
-| 32 | `sealed interface LiveSegment` |
-| 33 |   `val key: String` |
-| 35 |   `data class Text(val id: String, val text: String) : LiveSegment` |
-| 38 |   `data class Thinking(val id: String, val text: String) : LiveSegment` |
-| 41 |   `data class Tool(val call: LiveToolCallState) : LiveSegment` |
-| 47 | `data class LiveTurnState( val id: String, val segments: List<LiveSegment>, val livePlan: List<PlanEntry>, val isStreaming: Boolean, val stopReason: String?, val errorMessage: String?, )` |
-| 48 |   `val id: String` |
-| 49 |   `val segments: List<LiveSegment>` |
-| 50 |   `val livePlan: List<PlanEntry>` |
-| 51 |   `val isStreaming: Boolean` |
-| 52 |   `val stopReason: String?` |
-| 53 |   `val errorMessage: String?` |
-| 55 |   `val isEmpty: Boolean get()` |
-| 64 | `class LiveTurnBuilder(val id: String = "live-${java.util.UUID.randomUUID()}")` |
-| 66 |   `private sealed class Seg` |
-| 67 |     `class Text(val id: String, val text: StringBuilder) : Seg()` |
-| 68 |     `class Thinking(val id: String, val text: StringBuilder) : Seg()` |
-| 69 |     `class Tool(val call: ToolBuilder) : Seg()` |
-| 72 |   `private class ToolBuilder( val id: String, var title: String, var kind: String, var status: String, var rawInput: String?, val rawOutput: StringBuilder, var content: String?, var meta: JsonObject?, )` |
-| 83 |   `private val segments` |
-| 84 |   `private val toolIndex` |
-| 85 |   `private var seq` |
-| 87 |   `var livePlan: List<PlanEntry>` |
-| 88 |   `var isStreaming: Boolean` |
-| 89 |   `var stopReason: String?` |
-| 90 |   `var errorMessage: String?` |
-| 92 |   `fun appendText(delta: String)` |
-| 98 |   `fun appendThinking(delta: String)` |
-| 104 |   `fun upsertToolCall( id: String, title: String, kind: String, status: String, rawInput: String?, rawOutput: String?, content: String?, meta: JsonObject? = null, )` |
-| 142 |   `fun updateToolCall( id: String, title: String?, status: String?, rawInput: String?, rawOutput: String?, content: String?, append: Boolean, meta: JsonObject? = null, )` |
-| 170 |   `fun updatePlan(entries: List<PlanEntry>)` |
-| 179 |   `fun seedFrom(snapshot: LiveSessionSnapshot)` |
-| 193 |   `private fun seedTool(call: ToolCallStateSnapshot)` |
-| 206 |   `val isEmpty: Boolean get()` |
-| 209 |   `fun activeToolTitle(): String?` |
-| 218 |   `fun snapshot(): LiveTurnState` |
-| 245 |   `fun snapshotAsMessageTurn(): MessageTurn` |
-
-## feature/sessiondetail/SessionActions.kt
-
-| Line | Declaration |
-|---|---|
-| 56 | `@Composable fun SessionActionsMenu( ui: SessionDetailUiState, viewModel: SessionDetailViewModel, onDeleted: () -> Unit, )` |
-| 61 |   `val colors` |
-| 62 |   `val summary` |
-| 63 |   `var menu by remember` |
-| 64 |   `var showRename by remember` |
-| 65 |   `var showStatus by remember` |
-| 66 |   `var showDetails by remember` |
-| 67 |   `var showDelete by remember` |
-| 162 | `@Composable private fun DetailRow(label: String, value: String, valueColor: androidx.compose.ui.graphics.Color? = null)` |
-| 163 |   `val colors` |
-
-## feature/sessiondetail/SessionDetailScreen.kt
-
-| Line | Declaration |
-|---|---|
-| 96 | `@Composable fun SessionDetailScreen( onBack: () -> Unit, onOpenSession: (Int) -> Unit = {}, viewModel: SessionDetailViewModel = hiltViewModel(), )` |
-| 101 |   `val ui by viewModel.ui.collectAsStateWithLifecycle()` |
-| 102 |   `val streamStatus by viewModel.streamStatus.collectAsStateWithLifecycle()` |
-| 107 |   `val colors` |
-| 108 |   `var draft by remember` |
-| 109 |   `var showInsert by remember` |
-| 110 |   `var showOptions by remember` |
-| 111 |   `val listState` |
-| 112 |   `val scope` |
-| 113 |   `val context` |
-| 129 |   `val pickImages` |
-| 145 |   `val hideReattachDup` |
-| 146 |   `val persistedNodes` |
-| 149 |   `val nodes` |
-| 152 |   `val hasContent` |
-| 155 |   `val isAtBottom by remember` |
-| 162 |   `var stick by remember` |
-| 178 |   `val scrollToId: (String) -> Unit` |
-| 188 |   `val title` |
-| 370 | `@Composable private fun JumpToLatestButton(onClick: () -> Unit)` |
-| 371 |   `val colors` |
-| 391 | `@Composable private fun SendStatusLine(status: String)` |
-| 392 |   `val colors` |
-| 405 | `@Composable private fun NoticeBanner(message: String, onDismiss: () -> Unit)` |
-| 406 |   `val colors` |
-| 428 | `@Composable private fun AttachmentStrip(attachments: List<Attachment>, onRemove: (String) -> Unit)` |
-| 429 |   `val colors` |
-
-## feature/sessiondetail/SessionDetailViewModel.kt
-
-| Line | Declaration |
-|---|---|
-| 69 | `private const val REASON_CONNECTION_GONE` |
-| 72 | `private const val MODE_KEY` |
-| 76 | `private const val RECONCILE_ATTEMPTS` |
-| 81 | `private const val STATUS_THINKING` |
-| 92 | `class SessionDetailViewModel @Inject constructor( private val repository: ServerRepository, private val selectorPrefs: SelectorPrefsStore, savedStateHandle: SavedStateHandle, @ApplicationContext private val appContext: Context, ) : ViewModel()` |
-| 93 |   `private val repository: ServerRepository` |
-| 94 |   `private val selectorPrefs: SelectorPrefsStore` |
-| 99 |   `private val conversationIdArg: Int?` |
-| 101 |   `private val folderIdArg: Int?` |
-| 103 |   `private var profile: ServerProfile?` |
-| 104 |   `private var client: CodegClient?` |
-| 105 |   `private var conversationId: Int?` |
-| 106 |   `private var connectionId: String?` |
-| 107 |   `private var folder: FolderDetail?` |
-| 108 |   `private var allFolders: List<FolderDetail>` |
-| 109 |   `private var agent: AgentType` |
-| 110 |   `private var externalId: String?` |
-| 111 |   `private var lastSeq: Long` |
-| 113 |   `private var hasStartedFirstSend` |
-| 115 |   `private var currentBranch: String?` |
-| 117 |   `private val _streamStatus` |
-| 118 |   `val streamStatus: StateFlow<String?>` |
-| 119 |   `private var streamDisconnected` |
-| 120 |   `private var streamPaused` |
-| 121 |   `private var streamAuthFailed` |
-| 122 |   `private val connectivity` |
-| 123 |   `private val networkCallback` |
-| 124 |     `override fun onAvailable(network: Network)` |
-| 128 |   `private var networkCallbackRegistered` |
-| 129 |   `private var stream: EventStream?` |
-| 130 |   `private var consumerJob: Job?` |
-| 131 |   `private var sendJob: Job?` |
-| 132 |   `private var streamGeneration` |
-| 133 |   `private var reconnectJob: Job?` |
-| 136 |   `private var reconcileJob: Job?` |
-| 140 |   `private var pendingPlanFollowUp: ParkedPlanNotes?` |
-| 145 |   `private var optionsConnect: OptionsConnect?` |
-| 147 |   `private val subscriptionId` |
-| 149 |   `private var streamReconnects` |
-| 152 |   `private var pendingReattachSeed` |
-| 153 |   `private var liveBuilder: LiveTurnBuilder?` |
-| 154 |   `private var liveFlushScheduled` |
-| 155 |   `private var turnBaseline` |
-| 157 |   `private val _ui` |
-| 158 |   `val ui: StateFlow<SessionDetailUiState>` |
-| 168 |   `fun load()` |
-| 247 |   `fun send(text: String)` |
-| 256 |   `private fun send(text: String, withAttachments: Boolean)` |
-| 303 |   `private suspend fun runSend( text: String, userTurn: MessageTurn, attachments: List<Attachment>, createdConversation: Boolean, )` |
-| 343 |   `private suspend fun attemptSend( c: CodegClient, text: String, attachments: List<Attachment>, clientMessageId: String, freshConnection: Boolean, )` |
-| 368 |   `private suspend fun connectFresh(c: CodegClient): String` |
-| 378 |   `private suspend fun connectWithPreferences( c: CodegClient, connectAgent: AgentType = agent, connectFolder: FolderDetail? = folder, ): String` |
-| 393 |   `private suspend fun ensureConversationCreated(firstPrompt: String)` |
-| 402 |   `private suspend fun resolveConnection(c: CodegClient): String` |
-| 417 |   `private suspend fun openStream(conn: String, seedOnAttach: Boolean = false)` |
-| 431 |   `private suspend fun connectStream(conn: String, awaitAttach: Boolean, seedOnAttach: Boolean = false)` |
-| 517 |   `fun cancel()` |
-| 536 |   `private fun reattachIfLive()` |
-| 577 |   `private fun applyEvent(event: AcpEvent, seq: Long)` |
-| 654 |   `private fun clearInteractivePrompts()` |
-| 671 |   `private fun runningStatus(): String` |
-| 680 |   `private fun adoptLinkedConversation(id: Int)` |
-| 696 |   `fun respondPermission(optionId: String)` |
-| 706 |   `fun answerQuestion(answer: app.codeg.android.core.model.QuestionAnswer)` |
-| 716 |   `fun dismissQuestion()` |
-| 729 |   `fun answerPlanApproval(decision: PlanApprovalDecision, feedback: String?)` |
-| 766 |   `private fun seedLiveFromSnapshot(snap: app.codeg.android.core.model.LiveSessionSnapshot): Boolean` |
-| 787 |   `private fun abortIdleReattach()` |
-| 798 |   `private fun reconcileAfterMissedLive()` |
-| 810 |   `private fun restorePending(snap: app.codeg.android.core.model.LiveSessionSnapshot)` |
-| 830 |   `private fun finalizeTurn(stopReason: String)` |
-| 858 |   `private fun failLive(message: String)` |
-| 869 |   `private fun handleStreamEnded(gen: Int, reason: String?)` |
-| 890 |   `fun recoverStream()` |
-| 901 |   `fun dismissStreamStatus()` |
-| 905 |   `fun resumeStream()` |
-| 912 |   `fun pauseStream()` |
-| 916 |   `private fun stopForStreamAuth()` |
-| 922 |   `private fun reconnectStream(immediate: Boolean = false)` |
-| 952 |   `private fun reconcileAfterTurn()` |
-| 1005 |   `private fun promoteUnreconciled()` |
-| 1035 |   `private fun discardOptimistic( userTurn: MessageTurn, text: String, attachments: List<Attachment>, createdConversation: Boolean, createdConversationId: Int?, notice: String, )` |
-| 1085 |   `fun consumeRestoredDraft()` |
-| 1089 |   `fun dismissNotice()` |
-| 1095 |   `private fun scheduleLiveEmit()` |
-| 1105 |   `private fun emitLiveNow()` |
-| 1110 |   `private fun closeStream()` |
-| 1121 |   `override fun onCleared()` |
-| 1133 |   `val canManage: Boolean get()` |
-| 1134 |   `val isPinned: Boolean get()` |
-| 1136 |   `fun rename(title: String)` |
-| 1150 |   `fun togglePin()` |
-| 1165 |   `fun setStatus(status: ConversationStatus)` |
-| 1178 |   `fun deleteConversation(onDeleted: () -> Unit)` |
-| 1193 |   `val agentForInsert: AgentType get()` |
-| 1195 |   `suspend fun loadQuickMessages(): List<QuickMessage>` |
-| 1199 |   `suspend fun loadExpertsForInsert(): List<ExpertListItem>` |
-| 1207 |   `suspend fun loadSlashCommands(): List<AvailableCommandInfo>` |
-| 1215 |   `suspend fun knownExpertIds(): Set<String>` |
-| 1223 |   `fun addAttachments(uris: List<Uri>, resolver: ContentResolver)` |
-| 1242 |   `fun removeAttachment(id: String)` |
-| 1252 |   `fun selectAgent(newAgent: AgentType)` |
-| 1261 |   `fun selectFolder(newFolder: FolderDetail)` |
-| 1278 |   `suspend fun loadBranches(): GitBranchList?` |
-| 1297 |   `suspend fun switchBranch(branch: String, isRemote: Boolean): BranchSwitchOutcome` |
-| 1331 |   `private suspend fun checkoutInRoot(c: CodegClient, active: FolderDetail, root: FolderDetail, branch: String): BranchSwitchOutcome` |
-| 1354 |   `private suspend fun recoverFromWorktreeCheckout(c: CodegClient, branch: String, root: FolderDetail, error: Exception): BranchSwitchOutcome?` |
-| 1364 |   `private suspend fun openWorktreeSession(c: CodegClient, path: String, root: FolderDetail): BranchSwitchOutcome?` |
-| 1372 |   `private fun worktreePathFromError(message: String): String?` |
-| 1380 |   `suspend fun createBranch(name: String, from: String?): Boolean` |
-| 1404 |   `suspend fun loadAgentOptions(): AgentOptionsData` |
-| 1438 |   `private suspend fun optionsConnection(forAgent: AgentType, forFolder: FolderDetail?): String?` |
-| 1494 |   `suspend fun applyMode(modeId: String): String?` |
-| 1515 |   `suspend fun applyConfig(configId: String, valueId: String): String?` |
-| 1538 |   `private fun dropStaleOptionsConnection(conn: String)` |
-| 1546 |   `private suspend fun reconcileSelection(conn: String, key: String, desired: String): String` |
-| 1565 | `private class StreamAttachFailed(val reason: String?) : Exception("stream attach failed: ${reason ?: "closed"}")` |
-| 1569 | `private class OptionsConnect(val agent: AgentType, val folderId: Int?, val deferred: Deferred<String>)` |
-| 1573 | `data class AgentOptionsData( val modes: SessionModeState? = null, val configOptions: List<SessionConfigOption> = emptyList(), val initialModeId: String? = null, val initialConfig: Map<String, String> = emptyMap(), )` |
-| 1574 |   `val modes: SessionModeState?` |
-| 1575 |   `val configOptions: List<SessionConfigOption>` |
-| 1576 |   `val initialModeId: String?` |
-| 1577 |   `val initialConfig: Map<String, String>` |
-| 1581 | `private fun SessionSnapshot.selectionFor(key: String): String?` |
-| 1586 | `private fun List<SessionConfigOption>.currentValues(): Map<String, String>` |
-| 1591 | `private fun SessionConfigKind.allSelectValues(): List<String>` |
-| 1595 | `sealed interface BranchSwitchOutcome` |
-| 1597 |   `data object Noop : BranchSwitchOutcome` |
-| 1599 |   `data object SwitchedInPlace : BranchSwitchOutcome` |
-| 1601 |   `data class OpenSession(val folderId: Int) : BranchSwitchOutcome` |
-| 1603 |   `data object Failed : BranchSwitchOutcome` |
-| 1606 | `data class SessionDetailUiState( val isNew: Boolean, val loading: Boolean = false, val summary: ConversationSummary? = null, val folderName: String? = null, val folderPath: String? = null, val selectedFolderId: Int? = null, val currentBranch: String? = null, val isDraftEditable: Boolean = false, val availableFolders: List<FolderDetail> = emptyList(), val availableAgents: List<AgentType> = emptyList(), val turns: List<MessageTurn> = emptyList(), val pendingUserTurns: List<MessageTurn> = emptyList(), val live: LiveTurnState? = null, /** The live turn was rebuilt from a reattach snapshot (owns the in-flight reply). */ val liveFromReattach: Boolean = false, val sessionStats: SessionStats? = null, val agent: AgentType = AgentType.CLAUDE_CODE, val isInFlight: Boolean = false, val sendStatus: String? = null, val notice: String? = null, /** Set when a failed send returns the user's typed text to the composer (consumed once). */ val restoreDraft: String? = null, val error: String? = null, val pendingPermission: PendingPermissionUi? = null, val pendingQuestion: PendingQuestionUi? = null, val pendingPlanApproval: PendingPlanApprovalUi? = null, val attachments: List<Attachment> = emptyList(), )` |
-| 1607 |   `val isNew: Boolean` |
-| 1608 |   `val loading: Boolean` |
-| 1609 |   `val summary: ConversationSummary?` |
-| 1610 |   `val folderName: String?` |
-| 1611 |   `val folderPath: String?` |
-| 1612 |   `val selectedFolderId: Int?` |
-| 1613 |   `val currentBranch: String?` |
-| 1614 |   `val isDraftEditable: Boolean` |
-| 1615 |   `val availableFolders: List<FolderDetail>` |
-| 1616 |   `val availableAgents: List<AgentType>` |
-| 1617 |   `val turns: List<MessageTurn>` |
-| 1618 |   `val pendingUserTurns: List<MessageTurn>` |
-| 1619 |   `val live: LiveTurnState?` |
-| 1621 |   `val liveFromReattach: Boolean` |
-| 1622 |   `val sessionStats: SessionStats?` |
-| 1623 |   `val agent: AgentType` |
-| 1624 |   `val isInFlight: Boolean` |
-| 1625 |   `val sendStatus: String?` |
-| 1626 |   `val notice: String?` |
-| 1628 |   `val restoreDraft: String?` |
-| 1629 |   `val error: String?` |
-| 1630 |   `val pendingPermission: PendingPermissionUi?` |
-| 1631 |   `val pendingQuestion: PendingQuestionUi?` |
-| 1632 |   `val pendingPlanApproval: PendingPlanApprovalUi?` |
-| 1633 |   `val attachments: List<Attachment>` |
-| 1637 | `internal enum class PlanFollowUp` |
-| 1648 | `internal data class ParkedPlanNotes(val turnId: String, val notes: String)` |
-| 1650 |   `fun notesFor(turnId: String): String?` |
-| 1669 | `internal fun planFollowUpAction( sameTurn: Boolean, inFlight: Boolean, stopReason: String?, errorMessage: String?, ): PlanFollowUp` |
-| 1682 | `data class PendingPermissionUi( val requestId: String, val parsed: app.codeg.android.feature.sessiondetail.interactive.ParsedPermission, val options: List<app.codeg.android.core.model.PermissionOption>, )` |
-| 1683 |   `val requestId: String` |
-| 1684 |   `val parsed: app.codeg.android.feature.sessiondetail.interactive.ParsedPermission` |
-| 1685 |   `val options: List<app.codeg.android.core.model.PermissionOption>` |
-| 1689 | `data class PendingQuestionUi( val questionId: String, val questions: List<app.codeg.android.core.model.QuestionSpec>, )` |
-| 1690 |   `val questionId: String` |
-| 1691 |   `val questions: List<app.codeg.android.core.model.QuestionSpec>` |
-| 1700 | `data class PendingPlanApprovalUi( val approvalId: String, /** Grok's `toolCallId` for the `exit_plan_mode` call. Not used for the answer (which * keys on [approvalId]) — kept so the card can correlate with the in-stream call. */ val toolCallId: String, /** The plan, read from Grok's `plan.md`. May be empty — the card then shows an * empty-state notice rather than hiding, since the turn is blocked either way. */ val planMarkdown: String, )` |
-| 1701 |   `val approvalId: String` |
-| 1704 |   `val toolCallId: String` |
-| 1707 |   `val planMarkdown: String` |
-
-## feature/sessiondetail/StreamReconnectPolicy.kt
-
-| Line | Declaration |
-|---|---|
-| 3 | `internal const val MAX_STREAM_RECONNECTS` |
-| 5 | `internal fun streamReconnectDelay(attempt: Int): Long` |
-| 8 | `internal enum class StreamRecovery` |
-| 10 | `internal fun streamRecovery( inFlight: Boolean, authFailed: Boolean, connectionGone: Boolean, attempts: Int, immediate: Boolean, ): StreamRecovery` |
-
 ## feature/sessiondetail/interactive/AskQuestionCard.kt
 
 | Line | Declaration |
@@ -517,6 +231,59 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 71 |   `var feedback by remember(planMarkdown)` |
 | 72 |   `val notes` |
 | 74 |   `fun submit(decision: PlanApprovalDecision, text: String?)` |
+
+## feature/sessiondetail/LiveTurn.kt
+
+| Line | Declaration |
+|---|---|
+| 14 | `data class LiveToolCallState( val id: String, val title: String, val kind: String, val status: String, val rawInput: String?, val rawOutput: String, val content: String?, /** The agent's opaque ACP metadata for this call (context compaction, Grok's * `x.ai/tool` identity, …). Null for most tools and hosts. */ val meta: JsonObject? = null, )` |
+| 15 |   `val id: String` |
+| 16 |   `val title: String` |
+| 17 |   `val kind: String` |
+| 18 |   `val status: String` |
+| 19 |   `val rawInput: String?` |
+| 20 |   `val rawOutput: String` |
+| 21 |   `val content: String?` |
+| 24 |   `val meta: JsonObject?` |
+| 26 |   `val isFinished: Boolean` |
+| 28 |   `val isError: Boolean get()` |
+| 32 | `sealed interface LiveSegment` |
+| 33 |   `val key: String` |
+| 35 |   `data class Text(val id: String, val text: String) : LiveSegment` |
+| 38 |   `data class Thinking(val id: String, val text: String) : LiveSegment` |
+| 41 |   `data class Tool(val call: LiveToolCallState) : LiveSegment` |
+| 47 | `data class LiveTurnState( val id: String, val segments: List<LiveSegment>, val livePlan: List<PlanEntry>, val isStreaming: Boolean, val stopReason: String?, val errorMessage: String?, )` |
+| 48 |   `val id: String` |
+| 49 |   `val segments: List<LiveSegment>` |
+| 50 |   `val livePlan: List<PlanEntry>` |
+| 51 |   `val isStreaming: Boolean` |
+| 52 |   `val stopReason: String?` |
+| 53 |   `val errorMessage: String?` |
+| 55 |   `val isEmpty: Boolean get()` |
+| 64 | `class LiveTurnBuilder(val id: String = "live-${java.util.UUID.randomUUID()}")` |
+| 66 |   `private sealed class Seg` |
+| 67 |     `class Text(val id: String, val text: StringBuilder) : Seg()` |
+| 68 |     `class Thinking(val id: String, val text: StringBuilder) : Seg()` |
+| 69 |     `class Tool(val call: ToolBuilder) : Seg()` |
+| 72 |   `private class ToolBuilder( val id: String, var title: String, var kind: String, var status: String, var rawInput: String?, val rawOutput: StringBuilder, var content: String?, var meta: JsonObject?, )` |
+| 83 |   `private val segments` |
+| 84 |   `private val toolIndex` |
+| 85 |   `private var seq` |
+| 87 |   `var livePlan: List<PlanEntry>` |
+| 88 |   `var isStreaming: Boolean` |
+| 89 |   `var stopReason: String?` |
+| 90 |   `var errorMessage: String?` |
+| 92 |   `fun appendText(delta: String)` |
+| 98 |   `fun appendThinking(delta: String)` |
+| 104 |   `fun upsertToolCall( id: String, title: String, kind: String, status: String, rawInput: String?, rawOutput: String?, content: String?, meta: JsonObject? = null, )` |
+| 142 |   `fun updateToolCall( id: String, title: String?, status: String?, rawInput: String?, rawOutput: String?, content: String?, append: Boolean, meta: JsonObject? = null, )` |
+| 170 |   `fun updatePlan(entries: List<PlanEntry>)` |
+| 179 |   `fun seedFrom(snapshot: LiveSessionSnapshot)` |
+| 193 |   `private fun seedTool(call: ToolCallStateSnapshot)` |
+| 206 |   `val isEmpty: Boolean get()` |
+| 209 |   `fun activeToolTitle(): String?` |
+| 218 |   `fun snapshot(): LiveTurnState` |
+| 245 |   `fun snapshotAsMessageTurn(): MessageTurn` |
 
 ## feature/sessiondetail/rendering/ContextCompaction.kt
 
@@ -742,6 +509,240 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 467 | `@Composable fun ToolErrorOutput(output: String)` |
 | 468 |   `val colors` |
 | 469 |   `val fields` |
+
+## feature/sessiondetail/SessionActions.kt
+
+| Line | Declaration |
+|---|---|
+| 56 | `@Composable fun SessionActionsMenu( ui: SessionDetailUiState, viewModel: SessionDetailViewModel, onDeleted: () -> Unit, )` |
+| 61 |   `val colors` |
+| 62 |   `val summary` |
+| 63 |   `var menu by remember` |
+| 64 |   `var showRename by remember` |
+| 65 |   `var showStatus by remember` |
+| 66 |   `var showDetails by remember` |
+| 67 |   `var showDelete by remember` |
+| 162 | `@Composable private fun DetailRow(label: String, value: String, valueColor: androidx.compose.ui.graphics.Color? = null)` |
+| 163 |   `val colors` |
+
+## feature/sessiondetail/SessionDetailScreen.kt
+
+| Line | Declaration |
+|---|---|
+| 97 | `@Composable fun SessionDetailScreen( onBack: () -> Unit, onOpenSession: (Int) -> Unit = {}, onOpenServers: () -> Unit = {}, viewModel: SessionDetailViewModel = hiltViewModel(), )` |
+| 103 |   `val ui by viewModel.ui.collectAsStateWithLifecycle()` |
+| 104 |   `val streamStatus by viewModel.streamStatus.collectAsStateWithLifecycle()` |
+| 109 |   `val colors` |
+| 110 |   `var draft by remember` |
+| 111 |   `var showInsert by remember` |
+| 112 |   `var showOptions by remember` |
+| 113 |   `val listState` |
+| 114 |   `val scope` |
+| 115 |   `val context` |
+| 131 |   `val pickImages` |
+| 147 |   `val hideReattachDup` |
+| 148 |   `val persistedNodes` |
+| 151 |   `val nodes` |
+| 154 |   `val hasContent` |
+| 157 |   `val isAtBottom by remember` |
+| 164 |   `var stick by remember` |
+| 180 |   `val scrollToId: (String) -> Unit` |
+| 190 |   `val title` |
+| 377 | `@Composable private fun JumpToLatestButton(onClick: () -> Unit)` |
+| 378 |   `val colors` |
+| 398 | `@Composable private fun SendStatusLine(status: String)` |
+| 399 |   `val colors` |
+| 412 | `@Composable private fun NoticeBanner( message: String, onDismiss: () -> Unit, actionLabel: String? = null, onAction: () -> Unit = {}, )` |
+| 418 |   `val colors` |
+| 443 | `@Composable private fun AttachmentStrip(attachments: List<Attachment>, onRemove: (String) -> Unit)` |
+| 444 |   `val colors` |
+
+## feature/sessiondetail/SessionDetailViewModel.kt
+
+| Line | Declaration |
+|---|---|
+| 69 | `private const val REASON_CONNECTION_GONE` |
+| 72 | `private const val MODE_KEY` |
+| 76 | `private const val RECONCILE_ATTEMPTS` |
+| 81 | `private const val STATUS_THINKING` |
+| 92 | `class SessionDetailViewModel @Inject constructor( private val repository: ServerRepository, private val selectorPrefs: SelectorPrefsStore, savedStateHandle: SavedStateHandle, @ApplicationContext private val appContext: Context, ) : ViewModel()` |
+| 93 |   `private val repository: ServerRepository` |
+| 94 |   `private val selectorPrefs: SelectorPrefsStore` |
+| 99 |   `private val conversationIdArg: Int?` |
+| 101 |   `private val folderIdArg: Int?` |
+| 103 |   `private var profile: ServerProfile?` |
+| 104 |   `private var client: CodegClient?` |
+| 105 |   `private var conversationId: Int?` |
+| 106 |   `private var connectionId: String?` |
+| 107 |   `private var folder: FolderDetail?` |
+| 108 |   `private var allFolders: List<FolderDetail>` |
+| 109 |   `private var agent: AgentType` |
+| 110 |   `private var externalId: String?` |
+| 111 |   `private var lastSeq: Long` |
+| 113 |   `private var hasStartedFirstSend` |
+| 115 |   `private var currentBranch: String?` |
+| 117 |   `private val _streamStatus` |
+| 118 |   `val streamStatus: StateFlow<StreamNotice?>` |
+| 119 |   `private var streamDisconnected` |
+| 120 |   `private var streamPaused` |
+| 121 |   `private var streamAuthFailed` |
+| 122 |   `private val connectivity` |
+| 123 |   `private val networkCallback` |
+| 124 |     `override fun onAvailable(network: Network)` |
+| 128 |   `private var networkCallbackRegistered` |
+| 129 |   `private var stream: EventStream?` |
+| 130 |   `private var consumerJob: Job?` |
+| 131 |   `private var sendJob: Job?` |
+| 132 |   `private var streamGeneration` |
+| 133 |   `private var reconnectJob: Job?` |
+| 136 |   `private var reconcileJob: Job?` |
+| 140 |   `private var pendingPlanFollowUp: ParkedPlanNotes?` |
+| 145 |   `private var optionsConnect: OptionsConnect?` |
+| 147 |   `private val subscriptionId` |
+| 149 |   `private var streamReconnects` |
+| 152 |   `private var pendingReattachSeed` |
+| 153 |   `private var liveBuilder: LiveTurnBuilder?` |
+| 154 |   `private var liveFlushScheduled` |
+| 155 |   `private var turnBaseline` |
+| 157 |   `private val _ui` |
+| 158 |   `val ui: StateFlow<SessionDetailUiState>` |
+| 168 |   `fun load()` |
+| 247 |   `fun send(text: String)` |
+| 256 |   `private fun send(text: String, withAttachments: Boolean)` |
+| 303 |   `private suspend fun runSend( text: String, userTurn: MessageTurn, attachments: List<Attachment>, createdConversation: Boolean, )` |
+| 343 |   `private suspend fun attemptSend( c: CodegClient, text: String, attachments: List<Attachment>, clientMessageId: String, freshConnection: Boolean, )` |
+| 368 |   `private suspend fun connectFresh(c: CodegClient): String` |
+| 378 |   `private suspend fun connectWithPreferences( c: CodegClient, connectAgent: AgentType = agent, connectFolder: FolderDetail? = folder, ): String` |
+| 393 |   `private suspend fun ensureConversationCreated(firstPrompt: String)` |
+| 402 |   `private suspend fun resolveConnection(c: CodegClient): String` |
+| 417 |   `private suspend fun openStream(conn: String, seedOnAttach: Boolean = false)` |
+| 431 |   `private suspend fun connectStream(conn: String, awaitAttach: Boolean, seedOnAttach: Boolean = false)` |
+| 517 |   `fun cancel()` |
+| 536 |   `private fun reattachIfLive()` |
+| 577 |   `private fun applyEvent(event: AcpEvent, seq: Long)` |
+| 654 |   `private fun clearInteractivePrompts()` |
+| 671 |   `private fun runningStatus(): String` |
+| 680 |   `private fun adoptLinkedConversation(id: Int)` |
+| 696 |   `fun respondPermission(optionId: String)` |
+| 706 |   `fun answerQuestion(answer: app.codeg.android.core.model.QuestionAnswer)` |
+| 716 |   `fun dismissQuestion()` |
+| 729 |   `fun answerPlanApproval(decision: PlanApprovalDecision, feedback: String?)` |
+| 766 |   `private fun seedLiveFromSnapshot(snap: app.codeg.android.core.model.LiveSessionSnapshot): Boolean` |
+| 787 |   `private fun abortIdleReattach()` |
+| 798 |   `private fun reconcileAfterMissedLive()` |
+| 810 |   `private fun restorePending(snap: app.codeg.android.core.model.LiveSessionSnapshot)` |
+| 830 |   `private fun finalizeTurn(stopReason: String)` |
+| 858 |   `private fun failLive(message: String)` |
+| 869 |   `private fun handleStreamEnded(gen: Int, reason: String?)` |
+| 890 |   `fun recoverStream()` |
+| 901 |   `fun dismissStreamStatus()` |
+| 905 |   `fun resumeStream()` |
+| 912 |   `fun pauseStream()` |
+| 916 |   `private fun stopForStreamAuth()` |
+| 922 |   `private fun reconnectStream(immediate: Boolean = false)` |
+| 952 |   `private fun reconcileAfterTurn()` |
+| 1005 |   `private fun promoteUnreconciled()` |
+| 1035 |   `private fun discardOptimistic( userTurn: MessageTurn, text: String, attachments: List<Attachment>, createdConversation: Boolean, createdConversationId: Int?, notice: String, )` |
+| 1085 |   `fun consumeRestoredDraft()` |
+| 1089 |   `fun dismissNotice()` |
+| 1095 |   `private fun scheduleLiveEmit()` |
+| 1105 |   `private fun emitLiveNow()` |
+| 1110 |   `private fun closeStream()` |
+| 1121 |   `override fun onCleared()` |
+| 1133 |   `val canManage: Boolean get()` |
+| 1134 |   `val isPinned: Boolean get()` |
+| 1136 |   `fun rename(title: String)` |
+| 1150 |   `fun togglePin()` |
+| 1165 |   `fun setStatus(status: ConversationStatus)` |
+| 1178 |   `fun deleteConversation(onDeleted: () -> Unit)` |
+| 1193 |   `val agentForInsert: AgentType get()` |
+| 1195 |   `suspend fun loadQuickMessages(): List<QuickMessage>` |
+| 1199 |   `suspend fun loadExpertsForInsert(): List<ExpertListItem>` |
+| 1207 |   `suspend fun loadSlashCommands(): List<AvailableCommandInfo>` |
+| 1215 |   `suspend fun knownExpertIds(): Set<String>` |
+| 1223 |   `fun addAttachments(uris: List<Uri>, resolver: ContentResolver)` |
+| 1242 |   `fun removeAttachment(id: String)` |
+| 1252 |   `fun selectAgent(newAgent: AgentType)` |
+| 1261 |   `fun selectFolder(newFolder: FolderDetail)` |
+| 1278 |   `suspend fun loadBranches(): GitBranchList?` |
+| 1297 |   `suspend fun switchBranch(branch: String, isRemote: Boolean): BranchSwitchOutcome` |
+| 1331 |   `private suspend fun checkoutInRoot(c: CodegClient, active: FolderDetail, root: FolderDetail, branch: String): BranchSwitchOutcome` |
+| 1354 |   `private suspend fun recoverFromWorktreeCheckout(c: CodegClient, branch: String, root: FolderDetail, error: Exception): BranchSwitchOutcome?` |
+| 1364 |   `private suspend fun openWorktreeSession(c: CodegClient, path: String, root: FolderDetail): BranchSwitchOutcome?` |
+| 1372 |   `private fun worktreePathFromError(message: String): String?` |
+| 1380 |   `suspend fun createBranch(name: String, from: String?): Boolean` |
+| 1404 |   `suspend fun loadAgentOptions(): AgentOptionsData` |
+| 1438 |   `private suspend fun optionsConnection(forAgent: AgentType, forFolder: FolderDetail?): String?` |
+| 1494 |   `suspend fun applyMode(modeId: String): String?` |
+| 1515 |   `suspend fun applyConfig(configId: String, valueId: String): String?` |
+| 1538 |   `private fun dropStaleOptionsConnection(conn: String)` |
+| 1546 |   `private suspend fun reconcileSelection(conn: String, key: String, desired: String): String` |
+| 1565 | `private class StreamAttachFailed(val reason: String?) : Exception("stream attach failed: ${reason ?: "closed"}")` |
+| 1569 | `private class OptionsConnect(val agent: AgentType, val folderId: Int?, val deferred: Deferred<String>)` |
+| 1573 | `data class AgentOptionsData( val modes: SessionModeState? = null, val configOptions: List<SessionConfigOption> = emptyList(), val initialModeId: String? = null, val initialConfig: Map<String, String> = emptyMap(), )` |
+| 1574 |   `val modes: SessionModeState?` |
+| 1575 |   `val configOptions: List<SessionConfigOption>` |
+| 1576 |   `val initialModeId: String?` |
+| 1577 |   `val initialConfig: Map<String, String>` |
+| 1581 | `private fun SessionSnapshot.selectionFor(key: String): String?` |
+| 1586 | `private fun List<SessionConfigOption>.currentValues(): Map<String, String>` |
+| 1591 | `private fun SessionConfigKind.allSelectValues(): List<String>` |
+| 1595 | `sealed interface BranchSwitchOutcome` |
+| 1597 |   `data object Noop : BranchSwitchOutcome` |
+| 1599 |   `data object SwitchedInPlace : BranchSwitchOutcome` |
+| 1601 |   `data class OpenSession(val folderId: Int) : BranchSwitchOutcome` |
+| 1603 |   `data object Failed : BranchSwitchOutcome` |
+| 1606 | `data class SessionDetailUiState( val isNew: Boolean, val loading: Boolean = false, val summary: ConversationSummary? = null, val folderName: String? = null, val folderPath: String? = null, val selectedFolderId: Int? = null, val currentBranch: String? = null, val isDraftEditable: Boolean = false, val availableFolders: List<FolderDetail> = emptyList(), val availableAgents: List<AgentType> = emptyList(), val turns: List<MessageTurn> = emptyList(), val pendingUserTurns: List<MessageTurn> = emptyList(), val live: LiveTurnState? = null, /** The live turn was rebuilt from a reattach snapshot (owns the in-flight reply). */ val liveFromReattach: Boolean = false, val sessionStats: SessionStats? = null, val agent: AgentType = AgentType.CLAUDE_CODE, val isInFlight: Boolean = false, val sendStatus: String? = null, val notice: String? = null, /** Set when a failed send returns the user's typed text to the composer (consumed once). */ val restoreDraft: String? = null, val error: String? = null, val pendingPermission: PendingPermissionUi? = null, val pendingQuestion: PendingQuestionUi? = null, val pendingPlanApproval: PendingPlanApprovalUi? = null, val attachments: List<Attachment> = emptyList(), )` |
+| 1607 |   `val isNew: Boolean` |
+| 1608 |   `val loading: Boolean` |
+| 1609 |   `val summary: ConversationSummary?` |
+| 1610 |   `val folderName: String?` |
+| 1611 |   `val folderPath: String?` |
+| 1612 |   `val selectedFolderId: Int?` |
+| 1613 |   `val currentBranch: String?` |
+| 1614 |   `val isDraftEditable: Boolean` |
+| 1615 |   `val availableFolders: List<FolderDetail>` |
+| 1616 |   `val availableAgents: List<AgentType>` |
+| 1617 |   `val turns: List<MessageTurn>` |
+| 1618 |   `val pendingUserTurns: List<MessageTurn>` |
+| 1619 |   `val live: LiveTurnState?` |
+| 1621 |   `val liveFromReattach: Boolean` |
+| 1622 |   `val sessionStats: SessionStats?` |
+| 1623 |   `val agent: AgentType` |
+| 1624 |   `val isInFlight: Boolean` |
+| 1625 |   `val sendStatus: String?` |
+| 1626 |   `val notice: String?` |
+| 1628 |   `val restoreDraft: String?` |
+| 1629 |   `val error: String?` |
+| 1630 |   `val pendingPermission: PendingPermissionUi?` |
+| 1631 |   `val pendingQuestion: PendingQuestionUi?` |
+| 1632 |   `val pendingPlanApproval: PendingPlanApprovalUi?` |
+| 1633 |   `val attachments: List<Attachment>` |
+| 1637 | `internal enum class PlanFollowUp` |
+| 1648 | `internal data class ParkedPlanNotes(val turnId: String, val notes: String)` |
+| 1650 |   `fun notesFor(turnId: String): String?` |
+| 1669 | `internal fun planFollowUpAction( sameTurn: Boolean, inFlight: Boolean, stopReason: String?, errorMessage: String?, ): PlanFollowUp` |
+| 1682 | `data class PendingPermissionUi( val requestId: String, val parsed: app.codeg.android.feature.sessiondetail.interactive.ParsedPermission, val options: List<app.codeg.android.core.model.PermissionOption>, )` |
+| 1683 |   `val requestId: String` |
+| 1684 |   `val parsed: app.codeg.android.feature.sessiondetail.interactive.ParsedPermission` |
+| 1685 |   `val options: List<app.codeg.android.core.model.PermissionOption>` |
+| 1689 | `data class PendingQuestionUi( val questionId: String, val questions: List<app.codeg.android.core.model.QuestionSpec>, )` |
+| 1690 |   `val questionId: String` |
+| 1691 |   `val questions: List<app.codeg.android.core.model.QuestionSpec>` |
+| 1700 | `data class PendingPlanApprovalUi( val approvalId: String, /** Grok's `toolCallId` for the `exit_plan_mode` call. Not used for the answer (which * keys on [approvalId]) — kept so the card can correlate with the in-stream call. */ val toolCallId: String, /** The plan, read from Grok's `plan.md`. May be empty — the card then shows an * empty-state notice rather than hiding, since the turn is blocked either way. */ val planMarkdown: String, )` |
+| 1701 |   `val approvalId: String` |
+| 1704 |   `val toolCallId: String` |
+| 1707 |   `val planMarkdown: String` |
+
+## feature/sessiondetail/StreamReconnectPolicy.kt
+
+| Line | Declaration |
+|---|---|
+| 3 | `internal const val MAX_STREAM_RECONNECTS` |
+| 5 | `internal fun streamReconnectDelay(attempt: Int): Long` |
+| 8 | `internal enum class StreamRecovery` |
+| 10 | `internal fun streamRecovery( inFlight: Boolean, authFailed: Boolean, connectionGone: Boolean, attempts: Int, immediate: Boolean, ): StreamRecovery` |
+| 24 | `data class StreamNotice(val message: String, val openServers: Boolean = false)` |
 
 ## feature/sessiondetail/timeline/TimelineNode.kt
 

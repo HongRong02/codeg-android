@@ -19,3 +19,6 @@ internal fun streamRecovery(
     !immediate && attempts >= MAX_STREAM_RECONNECTS -> StreamRecovery.RECONCILE
     else -> StreamRecovery.RETRY
 }
+
+/** Stream connection status shown above the composer; [openServers] adds a jump to server settings. */
+data class StreamNotice(val message: String, val openServers: Boolean = false)

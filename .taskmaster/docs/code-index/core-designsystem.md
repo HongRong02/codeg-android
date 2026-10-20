@@ -111,6 +111,20 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 95 |   `val colors` |
 | 96 |   `val web` |
 
+## core/designsystem/component/TopBar.kt
+
+| Line | Declaration |
+|---|---|
+| 46 | `@Composable fun CodegTopBar( title: String, modifier: Modifier = Modifier, subtitle: String? = null, navigationIcon: @Composable () -> Unit = {}, actions: @Composable RowScope.() -> Unit = {}, scrollBehavior: TopAppBarScrollBehavior? = null, showDivider: Boolean = false, titleContent: (@Composable () -> Unit)? = null, )` |
+| 56 |   `val colors` |
+| 101 | `@Composable fun CodegIconButton( onClick: () -> Unit, modifier: Modifier = Modifier, enabled: Boolean = true, visualSize: Dp = 36.dp, content: @Composable () -> Unit, )` |
+| 108 |   `val colors` |
+| 109 |   `val interactionSource` |
+| 110 |   `val pressed by interactionSource.collectIsPressedAsState()` |
+| 111 |   `val hovered by interactionSource.collectIsHoveredAsState()` |
+| 112 |   `val focused by interactionSource.collectIsFocusedAsState()` |
+| 113 |   `val active` |
+
 ## core/designsystem/diff/DiffView.kt
 
 | Line | Declaration |

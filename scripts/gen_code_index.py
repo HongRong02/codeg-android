@@ -97,9 +97,9 @@ def main() -> None:
         for f in files:
             rel = f.relative_to(SRC).as_posix()
             body += [f"## {rel}", "", "| Line | Declaration |", "|---|---|", *index_file(f), ""]
-        (OUT / name).write_text("\n".join(body), encoding="utf-8")
+        (OUT / name).write_text("\n".join(body), encoding="utf-8", newline="\n")
         toc.append(f"| {key} | [{name}]({name}) | {len(files)} |")
-    (OUT / "README.md").write_text("\n".join(toc) + "\n", encoding="utf-8")
+    (OUT / "README.md").write_text("\n".join(toc) + "\n", encoding="utf-8", newline="\n")
 
 
 if __name__ == "__main__":

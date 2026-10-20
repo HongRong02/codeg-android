@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="stream_token_expired">Token 已失效，请到服务器设置中更新。</string>
+    <string name="stream_connection_lost">连接已断开，正在等待网络恢复…</string>
+    <string name="stream_reconnecting">正在重新连接…</string>
+    <string name="stream_open_servers">服务器设置</string>
+</resources>

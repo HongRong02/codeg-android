@@ -206,7 +206,7 @@ def main() -> None:
 
     if args.dump_baseline:
         sorted_routes = sorted(routes.keys())
-        args.dump_baseline.write_text("\n".join(sorted_routes) + "\n", encoding="utf-8")
+        args.dump_baseline.write_text("\n".join(sorted_routes) + "\n", encoding="utf-8", newline="\n")
         print(f"Dumped {len(sorted_routes)} routes to {args.dump_baseline}")
         return
 
@@ -261,7 +261,7 @@ def main() -> None:
         ]
         try:
             args.out.parent.mkdir(parents=True, exist_ok=True)
-            args.out.write_text("\n".join(out_lines), encoding="utf-8")
+            args.out.write_text("\n".join(out_lines), encoding="utf-8", newline="\n")
         except Exception as e:
             print(f"Warning: could not write doc to {args.out}: {e}", file=sys.stderr)
 
@@ -303,7 +303,7 @@ def main() -> None:
 
     if args.report:
         args.report.parent.mkdir(parents=True, exist_ok=True)
-        args.report.write_text(drift_report_text, encoding="utf-8")
+        args.report.write_text(drift_report_text, encoding="utf-8", newline="\n")
 
     # GitHub Actions Step Summary
     gh_step_summary = os.environ.get("GITHUB_STEP_SUMMARY")

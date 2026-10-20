@@ -42,6 +42,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -96,6 +97,7 @@ import kotlinx.coroutines.launch
 fun SessionDetailScreen(
     onBack: () -> Unit,
     onOpenSession: (Int) -> Unit = {},
+    onOpenServers: () -> Unit = {},
     viewModel: SessionDetailViewModel = hiltViewModel(),
 ) {
     val ui by viewModel.ui.collectAsStateWithLifecycle()
@@ -252,8 +254,13 @@ fun SessionDetailScreen(
                         modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
                     )
                 }
-                streamStatus?.let { message ->
-                    NoticeBanner(message, onDismiss = viewModel::dismissStreamStatus)
+                streamStatus?.let { notice ->
+                    NoticeBanner(
+                        notice.message,
+                        onDismiss = viewModel::dismissStreamStatus,
+                        actionLabel = if (notice.openServers) stringResource(R.string.stream_open_servers) else null,
+                        onAction = onOpenServers,
+                    )
                 }
                 // Keep the last shown message so the exit animation has content to fade.
                 var lastNotice by remember { mutableStateOf("") }
@@ -402,7 +409,12 @@ private fun SendStatusLine(status: String) {
 }
 
 @Composable
-private fun NoticeBanner(message: String, onDismiss: () -> Unit) {
+private fun NoticeBanner(
+    message: String,
+    onDismiss: () -> Unit,
+    actionLabel: String? = null,
+    onAction: () -> Unit = {},
+) {
     val colors = CodegTheme.colors
     Row(
         Modifier
@@ -417,6 +429,9 @@ private fun NoticeBanner(message: String, onDismiss: () -> Unit) {
             color = colors.textPrimary,
             modifier = Modifier.weight(1f),
         )
+        if (actionLabel != null) {
+            TextButton(onClick = onAction) { Text(actionLabel, color = colors.textPrimary) }
+        }
         IconButton(onClick = onDismiss) {
             Icon(Icons.Rounded.Close, contentDescription = stringResource(R.string.common_dismiss), tint = colors.textSecondary)
         }

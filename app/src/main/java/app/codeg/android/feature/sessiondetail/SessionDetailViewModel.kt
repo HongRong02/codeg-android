@@ -114,8 +114,8 @@ class SessionDetailViewModel @Inject constructor(
     /** The working tree's current branch, shown + checkmarked in the branch picker. */
     private var currentBranch: String? = null
 
-    private val _streamStatus = MutableStateFlow<String?>(null)
-    val streamStatus: StateFlow<String?> = _streamStatus.asStateFlow()
+    private val _streamStatus = MutableStateFlow<StreamNotice?>(null)
+    val streamStatus: StateFlow<StreamNotice?> = _streamStatus.asStateFlow()
     private var streamDisconnected = false
     private var streamPaused = false
     private var streamAuthFailed = false
@@ -916,7 +916,7 @@ class SessionDetailViewModel @Inject constructor(
     private fun stopForStreamAuth() {
         closeStream()
         streamAuthFailed = true
-        _streamStatus.value = "Token expired. Update it in server settings. / token 失效，请到服务器设置更新"
+        _streamStatus.value = StreamNotice(appContext.getString(R.string.stream_token_expired), openServers = true)
     }
 
     private fun reconnectStream(immediate: Boolean = false) {
@@ -925,7 +925,7 @@ class SessionDetailViewModel @Inject constructor(
             StreamRecovery.RECONCILE -> {
                 closeStream()
                 streamDisconnected = true
-                _streamStatus.value = "Connection lost. Waiting for network recovery…"
+                _streamStatus.value = StreamNotice(appContext.getString(R.string.stream_connection_lost))
                 reconcileAfterTurn()
                 return
             }
@@ -941,7 +941,7 @@ class SessionDetailViewModel @Inject constructor(
         stream = null
         val gen = streamGeneration
         reconnectJob?.cancel()
-        _streamStatus.value = "Reconnecting…"
+        _streamStatus.value = StreamNotice(appContext.getString(R.string.stream_reconnecting))
         reconnectJob = viewModelScope.launch {
             if (!immediate) delay(streamReconnectDelay(streamReconnects))
             if (gen != streamGeneration || !_ui.value.isInFlight) return@launch
