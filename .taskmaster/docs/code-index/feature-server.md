@@ -1,0 +1,48 @@
+# feature/server
+
+Source root: `app/src/main/java/app/codeg/android/`
+
+## feature/server/ServerEditorScreen.kt
+
+| Line | Declaration |
+|---|---|
+| 35 | `@Composable fun ServerEditorScreen( onDone: () -> Unit, viewModel: ServerEditorViewModel = hiltViewModel(), )` |
+| 39 |   `val colors` |
+| 120 | `@Composable private fun SectionHeader(text: String)` |
+
+## feature/server/ServerEditorViewModel.kt
+
+| Line | Declaration |
+|---|---|
+| 21 | `class ServerEditorViewModel @Inject constructor( private val repository: ServerRepository, savedStateHandle: SavedStateHandle, ) : ViewModel()` |
+| 22 |   `private val repository: ServerRepository` |
+| 26 |   `private val editingId: String?` |
+| 27 |   `val isEditing: Boolean` |
+| 29 |   `var name by mutableStateOf("")` |
+| 31 |   `var url by mutableStateOf("")` |
+| 33 |   `var token by mutableStateOf("")` |
+| 35 |   `var test by mutableStateOf<TestState>(TestState.Idle)` |
+| 42 |   `fun onNameChange(value: String)` |
+| 43 |   `fun onUrlChange(value: String)` |
+| 44 |   `fun onTokenChange(value: String)` |
+| 46 |   `val canSave: Boolean` |
+| 49 |   `private fun loadExisting(id: String)` |
+| 58 |   `fun testConnection()` |
+| 70 |   `fun save(onDone: () -> Unit)` |
+| 85 | `sealed interface TestState` |
+| 86 |   `data object Idle : TestState` |
+| 87 |   `data object Testing : TestState` |
+| 88 |   `data class Success(val version: String) : TestState` |
+| 89 |   `data class Failure(val message: String) : TestState` |
+
+## feature/server/ServerListScreen.kt
+
+| Line | Declaration |
+|---|---|
+| 52 | `@Composable fun ServerListScreen( servers: List<ServerProfile>, selectedId: String?, onSelect: (String) -> Unit, onDelete: (String) -> Unit, onAdd: () -> Unit, onEdit: (String) -> Unit, onBack: () -> Unit, )` |
+| 61 |   `val colors` |
+| 62 |   `var pendingDelete by remember` |
+| 118 |   `val toDelete` |
+| 139 | `@Composable private fun ServerRow( profile: ServerProfile, selected: Boolean, onClick: () -> Unit, onEdit: () -> Unit, onDelete: () -> Unit, )` |
+| 146 |   `val colors` |
+| 147 |   `var menuOpen by remember` |

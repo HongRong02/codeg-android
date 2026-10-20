@@ -1,0 +1,102 @@
+<context>
+# Overview
+codeg-android（个人 fork，applicationId app.codeg.android.mine）是自托管 codeg 服务端的原生 Android 远程客户端（Kotlin + Jetpack Compose，无 WebView 外壳）。
+基线是 xintaofei/codeg-android（最后上游提交 2026-07-27，针对服务端 0.21.9）；当前目标服务端为官方 spacering-net/codeg 0.38。
+目标用户只有一个：在手机上远程查看和驱动自己 codeg 服务端上 agent 会话的开发者本人。
+价值：离开电脑时也能跟进 agent 会话、批准权限、回答提问、看 diff、做简单 git 操作，且视觉与 codeg 网页端一致。
+
+硬性约束：
+- 服务端必须保持与官方上游兼容，不为 app 修改服务端；所有适配都在 app 内完成，app 必须能连官方原版 codeg。
+- 仓库两个分支：upstream = 官方镜像，main = 个人版；官方更新通过 sync-upstream.yml 合并进 main。app 改动尽量隔离，降低合并冲突。
+- 视觉风格对齐 codeg 网页端（shadcn radix-maia；token 来源 codeg/src/app/globals.css，12 套 data-theme 预设，默认 neutral）。
+- 构建只在 GitHub Actions 云端进行（本地无 JDK/SDK）；verify.yml 用仓库内 dev key 签名并上传 APK。
+- 调试设备：vivo V1824A，Android 11（minSdk 30）。
+
+# Core Features
+已完成（不需再做，作为背景）：
+- 多服务器配置、连接校验、Keystore 加密 token；会话列表、实时流、markdown/diff 渲染、工具时间线、附件、权限/提问/计划审批卡片；项目浏览、改动、提交历史、分支选择、clone、commit/push/pull/fetch；活动、搜索；设置页（agents、模型供应商、MCP、skills、experts、快捷消息、聊天频道、版本控制、语言、系统）。
+- 跟进服务端 0.38：新增 7 种 agent 类型与图标、mcp_scan_local 新响应格式、experts 按 agent 推导。
+- 网页风格：WebThemes.kt（scripts/gen_web_themes.py 生成）、主题预设选择、web 圆角刻度与 pill、Inter 字体、共享组件按 shadcn 重做、webSurface 卡片、会话页按 web MessageThread 布局、composer 按 web composer box 重建。
+
+待做功能：
+1. 视觉对齐收尾
+   - 顶栏（TopAppBar）尺寸、标题字号、图标按钮尺寸对齐网页端 header；统一为一个共享顶栏组件，替换各页面散落的 TopAppBar 用法（SessionList、SessionDetail、Search、Settings 及其子页、ServerList、ChatChannels 等）。
+   - 逐页打磨：会话列表、项目列表/详情、活动、搜索、服务器列表/编辑、设置各子页、onboarding，对照网页端逐项检查间距、字号、颜色 token、圆角、空状态/加载/错误态。
+   - 深色模式与 12 套主题预设全量检查（translucent token 一律用 Color.withOpacity()，不得对 --input/--border 用 Color.copy(alpha)）。
+2. 真实服务器验证
+   - 用户真实服务端上全流程冒烟：连接、会话列表、打开/续聊会话、实时流与断线重连、权限审批、提问、计划审批、附件上传、git 操作。
+   - 记录并修复与本地测试服务端（E:\claude\codeg-test-server，0.38）行为不同的问题。
+3. 服务端能力缺口（0.38 有、app 未接入，按价值排序）
+   - 会话 fork（acp_fork）、断开（acp_disconnect）、预检（acp_preflight）。
+   - 文件查看增强（已有文本浏览）：图片（read_file_base64）、查看某版本文件（git_show_file / git_show_file_base64）。
+   - Git 扩展：stash（push/pop/apply/list/show/drop/clear）、merge、rebase、reset、删除分支、remote 管理、git_init、按文件提交（git_commit_files）、worktree。
+   - Work tasks（work_task_list/get/diff）与 automation_get 只读查看。
+   - 服务端日志查看（list_log_files/read_log_file/get_recent_logs）与统计（get_stats）。
+   - 7 种新 agent（DeepSeek、Qoder、Antigravity、Kiro、ZCode、TRAE、Command Code）的设置页（当前留给网页端，需先确认各自 config 结构）。
+   - 暂不做：terminal_*、pet_*、computer_*、restart/rollback_app、open_in_code、backup_*（移动端价值低或有风险）。
+4. 上游跟踪自动化
+   - 服务端 API 差异检查脚本：解析 codeg/src-tauri/src/web/router.rs 与 handler 参数结构体，对比 app 已调用的接口与请求字段，输出新增/删除/改名；在 sync-upstream 时运行。
+   - 主题 token 同步：globals.css 变化时重新生成 WebThemes.kt 并在 CI 检查是否过期。
+
+# User Experience
+- 单一用户，手机竖屏为主，平板/宽屏走现有自适应导航。
+- 关键流程：打开 app → 选服务器 → 会话列表 → 进入会话看实时输出 → 审批权限/回答问题 → 发送新消息；以及项目 → 查看改动/diff → commit/push。
+- 体验要求：与网页端视觉一致；中英文资源齐全（新增字符串必须同时加 zh-CN）；弱网/断线时状态明确并能自动恢复。
+</context>
+<PRD>
+# Technical Architecture
+- 单模块 :app，按职责分层：core/network（CodegClient HTTP + EventStream WebSocket）、core/model（wire 模型，请求 camelCase、响应可能 snake_case）、core/data（仓库）、core/datastore、core/security、core/designsystem（主题、组件、markdown、diff）、feature/*（各页面 + ViewModel）、di（Hilt）。
+- 接口：大多为 POST /api/<name>；鉴权 Authorization: Bearer；事件流使用 codeg-events 子协议 + codeg-token.<base64url> 子协议，支持 snapshot/replay/live 帧，未知事件保留不中断。
+- 新接口接入模式：WireRequests.kt 加请求体 → CodegClient 加方法 → 仓库/ViewModel → Compose 页面；对服务端新旧响应格式做宽容解码（参照 mcp_scan_local 的做法）。
+- 能力探测：页面可用性取决于服务端暴露的能力，新功能在服务端不支持时应隐藏而不是报错。
+- 构建/发布：GitHub Actions（verify.yml 构建+单测+签名 APK；release.yml；sync-upstream.yml）。第三方许可清单需随依赖变化重新生成（:app:syncThirdPartyLicenseReport）。
+- 设备调试：adb 位于 E:\Agent\.tools\platform-tools\adb.exe；E:\claude\apk\install.sh 安装 APK；本地测试服务端端口 3081，经 adb reverse 访问。
+
+# Development Roadmap
+阶段 1：视觉对齐收尾
+- 共享顶栏组件并替换所有页面的 TopAppBar。
+- 逐页打磨（每个页面一个任务）：会话列表、会话详情剩余细节、项目列表、项目详情（文件/改动/提交三个视图）、活动、搜索、服务器列表与编辑、设置主页与各子页、onboarding。
+- 12 套主题 × 明暗模式的截图巡检与修正。
+
+阶段 2：真实服务器验证
+- 真实服务端冒烟测试清单与执行，修复发现的问题。
+- 事件流断线重连、后台恢复、token 失效时的表现检查与修复。
+
+阶段 3：会话与文件能力
+- 会话 fork / 断开 / 预检。
+- 项目文件树浏览 + 文件查看（文本高亮、图片预览）+ 查看历史版本文件。
+
+阶段 4：Git 能力扩展
+- stash 管理界面。
+- 分支删除、merge、rebase、reset（危险操作需二次确认）。
+- 按文件选择提交、remote 管理、git init、worktree。
+
+阶段 5：只读运维视图
+- Work tasks 列表/详情/diff、automation 查看。
+- 服务端日志与统计查看。
+
+阶段 6：新 agent 设置与上游跟踪
+- 7 种新 agent 的配置页（先逐一核对服务端 config 结构）。
+- 服务端 API 差异检查脚本，接入 sync-upstream 流程。
+- WebThemes.kt 过期检查接入 CI。
+
+# Logical Dependency Chain
+1. 共享顶栏组件是逐页打磨的前置。
+2. 逐页打磨可并行，互不依赖。
+3. 真实服务器验证尽早做（可与阶段 1 并行），它可能改变后续优先级。
+4. 文件查看（阶段 3）是 git_show_file、stash show、work task diff 等展示的基础组件，先于阶段 4/5。
+5. API 差异检查脚本可随时独立做，越早越能降低后续上游合并风险。
+
+# Risks and Mitigations
+- 上游服务端接口变化导致 app 静默失效 → API 差异检查脚本 + 宽容解码 + 能力探测隐藏不支持的功能。
+- 与上游 app 仓库合并冲突 → 改动隔离到新文件/新组件，少改上游原有文件的结构。
+- 无本地构建环境，迭代慢 → 每个任务保持小而可独立通过 CI；用 APK 安装脚本在真机快速验证。
+- 危险 git 操作误触 → 二次确认、明确展示目标分支/提交。
+- 新 agent 配置结构未知，写错会覆盖服务端配置 → 未确认结构前只读展示，不写入。
+
+# Appendix
+- 接口差异以 `.taskmaster/docs/api-diff.md` 为准（`python scripts/api_diff.py` 生成）：服务端 536 个路由，app 调用 121 个，未调用 415 个，app 调用但服务端不存在 0 个。表中给出每个接口的 handler 与请求结构体位置。
+- 本 PRD 未覆盖、待决定是否纳入的服务端模块（未调用接口数）：forge（20，PR/代码托管）、conversation_tags（8，会话标签）、folders 中的分组/别名/颜色（约 15）、会话导入 import/scan（约 4）、folder_commands（6）、folder_links（6）、custom_skills（10）、config_sync（12）、canvas（12）、office_tools（15）、science（8）、generative_ui（4）、assistants（5）、background（5）、mcp_service（3）。明确不做：terminal、pet、computer/computer_tools、browser_*、backup、app_update、web_server、cli_access。
+- 每个任务的需求文档在 `.taskmaster/docs/tasks/`，通用约定在 `.taskmaster/docs/CONVENTIONS.md`，代码签名索引在 `.taskmaster/docs/code-index/`（`python scripts/gen_code_index.py` 生成）。
+- 网页端参考：codeg/src/app/globals.css（主题 token）、codeg/src/app 下各页面（commit、merge、push、stash、workspace 等）。
+</PRD>
