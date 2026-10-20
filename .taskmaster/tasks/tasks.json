@@ -478,7 +478,7 @@
         "description": "work task 模板增删改、按项目的看板设置。",
         "details": "需求文档：.taskmaster/docs/tasks/T36-work-task-templates.md（先读 .taskmaster/docs/CONVENTIONS.md，再只读这一份需求文档及其中列出的代码位置；不要通读 PRD 或其它文件）。改动范围、代码定位、验收标准都在需求文档里。",
         "testStrategy": "",
-        "status": "in-progress",
+        "status": "review",
         "dependencies": [],
         "priority": "medium",
         "subtasks": []
@@ -489,7 +489,7 @@
         "description": "扫描服务端机器上各 agent 的本地会话并勾选导入。",
         "details": "需求文档：.taskmaster/docs/tasks/T37-import-sessions.md（先读 .taskmaster/docs/CONVENTIONS.md，再只读这一份需求文档及其中列出的代码位置；不要通读 PRD 或其它文件）。改动范围、代码定位、验收标准都在需求文档里。",
         "testStrategy": "",
-        "status": "in-progress",
+        "status": "review",
         "dependencies": [],
         "priority": "medium",
         "subtasks": []
@@ -500,7 +500,7 @@
         "description": "设置里新增助手页：列表、新建、编辑、删除、排序。",
         "details": "需求文档：.taskmaster/docs/tasks/T38-assistants.md（先读 .taskmaster/docs/CONVENTIONS.md，再只读这一份需求文档及其中列出的代码位置；不要通读 PRD 或其它文件）。改动范围、代码定位、验收标准都在需求文档里。",
         "testStrategy": "",
-        "status": "in-progress",
+        "status": "review",
         "dependencies": [],
         "priority": "medium",
         "subtasks": []
@@ -511,7 +511,7 @@
         "description": "MCP 页从市场搜索、查看详情、安装。",
         "details": "需求文档：.taskmaster/docs/tasks/T39-mcp-marketplace.md（先读 .taskmaster/docs/CONVENTIONS.md，再只读这一份需求文档及其中列出的代码位置；不要通读 PRD 或其它文件）。改动范围、代码定位、验收标准都在需求文档里。",
         "testStrategy": "",
-        "status": "in-progress",
+        "status": "review",
         "dependencies": [],
         "priority": "low",
         "subtasks": []
@@ -522,7 +522,7 @@
         "description": "中央技能库的增删改、复制、导入与 agent 关联。",
         "details": "需求文档：.taskmaster/docs/tasks/T40-custom-skills.md（先读 .taskmaster/docs/CONVENTIONS.md，再只读这一份需求文档及其中列出的代码位置；不要通读 PRD 或其它文件）。改动范围、代码定位、验收标准都在需求文档里。",
         "testStrategy": "",
-        "status": "in-progress",
+        "status": "review",
         "dependencies": [],
         "priority": "low",
         "subtasks": []
@@ -533,7 +533,7 @@
         "description": "main 合并后 CI 自动发布 dev 签名 APK 到 GitHub Release；App 检查、提示、下载、调起安装。",
         "details": "需求文档：.taskmaster/docs/tasks/T41-apk-auto-update.md（先读 .taskmaster/docs/CONVENTIONS.md，再只读这一份需求文档及其中列出的代码位置；不要通读 PRD 或其它文件）。改动范围、代码定位、验收标准都在需求文档里。",
         "testStrategy": "",
-        "status": "in-progress",
+        "status": "review",
         "dependencies": [],
         "priority": "high",
         "subtasks": []
