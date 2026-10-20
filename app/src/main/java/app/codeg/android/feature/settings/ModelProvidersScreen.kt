@@ -49,6 +49,8 @@ import app.codeg.android.core.designsystem.component.CodegTextField
 import app.codeg.android.core.designsystem.component.EmptyState
 import app.codeg.android.core.designsystem.component.LoadingView
 import app.codeg.android.core.designsystem.component.SecretField
+import app.codeg.android.core.designsystem.theme.CodegShapes
+import app.codeg.android.core.designsystem.theme.withOpacity
 import app.codeg.android.core.designsystem.theme.CodegTheme
 import app.codeg.android.core.model.AgentType
 import app.codeg.android.core.model.ModelProviderInfo
@@ -64,7 +66,7 @@ fun ModelProvidersContent(viewModel: ModelProvidersViewModel = hiltViewModel()) 
     Box(Modifier.fillMaxSize()) {
         when {
             ui.loading && ui.providers.isEmpty() -> Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { LoadingView(stringResource(R.string.common_loading)) }
-            else -> LazyColumn(Modifier.fillMaxSize(), contentPadding = androidx.compose.foundation.layout.PaddingValues(start = 12.dp, end = 12.dp, top = 8.dp, bottom = 88.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+            else -> LazyColumn(Modifier.fillMaxSize(), contentPadding = androidx.compose.foundation.layout.PaddingValues(start = 12.dp, end = 12.dp, top = 12.dp, bottom = 88.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 if (ui.providers.isEmpty() && !ui.loading) {
                     item("empty") { Box(Modifier.fillMaxWidth().padding(40.dp), contentAlignment = Alignment.Center) { EmptyState(Icons.Rounded.Memory, stringResource(R.string.providers_empty_title), stringResource(R.string.providers_empty_subtitle)) } }
                 }
@@ -72,7 +74,7 @@ fun ModelProvidersContent(viewModel: ModelProvidersViewModel = hiltViewModel()) 
                     val group = ui.providers.filter { it.agentType == agent }
                     if (group.isNotEmpty()) {
                         item("h-${agent.wire}") {
-                            Text(agent.displayName, fontSize = 12.sp, fontWeight = FontWeight.SemiBold, color = colors.textTertiary, modifier = Modifier.padding(start = 8.dp, top = 8.dp))
+                            Text(agent.displayName, fontSize = 12.sp, fontWeight = FontWeight.SemiBold, color = colors.web.mutedForeground, modifier = Modifier.padding(start = 8.dp, top = 8.dp))
                         }
                         items(group, key = { it.id }) { p -> ProviderRow(p, onEdit = { editor = ProviderEditorTarget(p) }, onDelete = { viewModel.delete(p) }) }
                     }
@@ -108,13 +110,13 @@ private fun ProviderRow(p: ModelProviderInfo, onEdit: () -> Unit, onDelete: () -
     var menu by remember { mutableStateOf(false) }
     Box {
         Column(
-            Modifier.fillMaxWidth().webSurface(RoundedCornerShape(CodegTheme.dimens.radiusMd))
-                .combinedClickable(onClick = onEdit, onLongClick = { menu = true }).padding(14.dp),
+            Modifier.fillMaxWidth().webSurface(CodegShapes.extraSmall)
+                .combinedClickable(onClick = onEdit, onLongClick = { menu = true }).padding(horizontal = 12.dp, vertical = 10.dp),
             verticalArrangement = Arrangement.spacedBy(2.dp),
         ) {
-            Text(p.name, fontSize = 15.sp, color = colors.textPrimary, maxLines = 1, overflow = TextOverflow.Ellipsis)
-            Text(p.apiUrl, fontFamily = FontFamily.Monospace, fontSize = 11.sp, color = colors.textTertiary, maxLines = 1, overflow = TextOverflow.Ellipsis)
-            if (p.apiKeyMasked.isNotEmpty()) Text(p.apiKeyMasked, fontFamily = FontFamily.Monospace, fontSize = 11.sp, color = colors.textTertiary)
+            Text(p.name, fontSize = 14.sp, fontWeight = FontWeight.Medium, color = colors.textPrimary, maxLines = 1, overflow = TextOverflow.Ellipsis)
+            Text(p.apiUrl, fontFamily = FontFamily.Monospace, fontSize = 12.sp, color = colors.web.mutedForeground, maxLines = 1, overflow = TextOverflow.Ellipsis)
+            if (p.apiKeyMasked.isNotEmpty()) Text(p.apiKeyMasked, fontFamily = FontFamily.Monospace, fontSize = 12.sp, color = colors.web.mutedForeground)
         }
         DropdownMenu(expanded = menu, onDismissRequest = { menu = false }) {
             DropdownMenuItem(text = { Text(stringResource(R.string.common_delete)) }, onClick = { menu = false; onDelete() })
@@ -157,11 +159,11 @@ private fun ProviderEditor(
                             focusedBorderColor = colors.accent,
                             unfocusedBorderColor = colors.surfaceStroke,
                             focusedLabelColor = colors.accent,
-                            unfocusedLabelColor = colors.textTertiary,
+                            unfocusedLabelColor = colors.web.mutedForeground,
                             focusedTextColor = colors.textPrimary,
                             unfocusedTextColor = colors.textPrimary,
-                            focusedTrailingIconColor = colors.textTertiary,
-                            unfocusedTrailingIconColor = colors.textTertiary,
+                            focusedTrailingIconColor = colors.web.mutedForeground,
+                            unfocusedTrailingIconColor = colors.web.mutedForeground,
                         ),
                         modifier = Modifier.menuAnchor(MenuAnchorType.PrimaryNotEditable).fillMaxWidth(),
                     )

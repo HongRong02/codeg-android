@@ -295,86 +295,86 @@ Source root: `app/src/main/java/app/codeg/android/`
 
 | Line | Declaration |
 |---|---|
-| 108 | `internal fun channelTint(type: ChannelType): Color` |
-| 114 | `internal fun channelIcon(type: ChannelType): ImageVector` |
-| 121 | `@Composable internal fun statusTint(status: ChannelConnectionStatus): Color` |
-| 129 | `@Composable internal fun ChannelTypeAvatar(type: ChannelType, size: Dp)` |
-| 130 |   `val tint` |
-| 137 | `@Composable internal fun ChannelStatusPill(status: ChannelConnectionStatus)` |
-| 138 |   `val tint` |
-| 147 | `private sealed interface ChannelEditorTarget` |
-| 148 |   `data object Add : ChannelEditorTarget` |
-| 149 |   `data class Edit(val channel: ChatChannelInfo) : ChannelEditorTarget` |
-| 154 | `@Composable fun ChatChannelsContent(viewModel: ChatChannelsViewModel = hiltViewModel())` |
-| 155 |   `val ui by viewModel.ui.collectAsStateWithLifecycle()` |
-| 156 |   `val colors` |
-| 157 |   `var editor by remember` |
-| 158 |   `var showGlobal by remember` |
-| 159 |   `var pendingDelete by remember` |
-| 276 | `@Composable private fun ChannelRow( channel: ChatChannelInfo, status: ChannelConnectionStatus, toggling: Boolean, onOpen: () -> Unit, onToggle: (Boolean) -> Unit, onDelete: () -> Unit, )` |
-| 284 |   `val colors` |
-| 285 |   `val summary` |
-| 312 | `@Composable private fun ChatRefreshBanner(message: String, onRetry: () -> Unit, onDismiss: () -> Unit)` |
-| 313 |   `val colors` |
-| 328 | `@Composable private fun ChatChannelDetailDialog( channel: ChatChannelInfo, detail: ChannelDetailState, viewModel: ChatChannelsViewModel, onEdit: () -> Unit, onDismiss: () -> Unit, )` |
-| 335 |   `val colors` |
-| 336 |   `var showQR by remember` |
-| 337 |   `var confirmRemoveToken by remember` |
-| 464 | `@Composable private fun MessageLogRow(message: ChatChannelMessageLog)` |
-| 465 |   `val colors` |
-| 476 | `@Composable private fun ActionButton(title: String, icon: ImageVector, tint: Color, enabled: Boolean, onClick: () -> Unit)` |
-| 494 | `@Composable private fun DetailSection(title: String, content: @Composable () -> Unit)` |
-| 495 |   `val colors` |
-| 503 | `@Composable private fun SettingRow(content: @Composable androidx.compose.foundation.layout.RowScope.() -> Unit)` |
-| 508 | `@Composable private fun Divider()` |
-| 516 | `private enum class QrPhase` |
-| 520 | `@Composable private fun WeixinQRDialog(channelId: Int, viewModel: ChatChannelsViewModel, onConnected: () -> Unit, onDismiss: () -> Unit)` |
-| 521 |   `val colors` |
-| 522 |   `val loadingQrText` |
-| 523 |   `val couldntLoadQrText` |
-| 524 |   `val scanWithWechatText` |
-| 525 |   `val connectedText` |
-| 526 |   `val qrExpiredText` |
-| 527 |   `val scannedConfirmText` |
-| 528 |   `var attempt by remember` |
-| 529 |   `var phase by remember` |
-| 530 |   `var statusText by remember` |
-| 531 |   `var image by remember` |
-| 591 | `private fun decodeQrImage(raw: String): androidx.compose.ui.graphics.ImageBitmap?` |
-| 592 |   `var b64` |
-| 593 |   `val comma` |
-| 605 | `private val lenientJson` |
-| 607 | `private fun normalizedObjectJson(raw: String): String?` |
-| 608 |   `val obj` |
-| 614 | `@Composable private fun ChatChannelEditorDialog(existing: ChatChannelInfo?, viewModel: ChatChannelsViewModel, onDismiss: () -> Unit)` |
-| 615 |   `val colors` |
-| 616 |   `val scope` |
-| 617 |   `val isEdit` |
-| 619 |   `var name by remember` |
-| 620 |   `var type by remember` |
-| 621 |   `val parsed` |
-| 622 |   `var chatId by remember` |
-| 623 |   `var appId by remember` |
-| 624 |   `var baseUrl by remember` |
-| 625 |   `var rawMode by remember` |
-| 626 |   `var rawText by remember` |
-| 627 |   `var token by remember` |
-| 628 |   `var hasToken by remember` |
-| 629 |   `var enabled by remember` |
-| 630 |   `var dailyEnabled by remember` |
-| 631 |   `var dailyTime by remember` |
-| 632 |   `var saving by remember` |
-| 633 |   `var error by remember` |
-| 634 |   `val couldntSaveText` |
-| 640 |   `fun currentConfig()` |
-| 641 |   `val configJson: String?` |
-| 642 |   `val configValid` |
-| 647 |   `val tokenRequired` |
-| 648 |   `val canSave` |
-| 650 |   `fun save()` |
-| 741 | `private fun buildUpdateBody(existing: ChatChannelInfo, name: String, enabled: Boolean, configJson: String, dailyEnabled: Boolean, timeString: String?): UpdateChatChannelBody` |
-| 742 |   `val configChanged` |
-| 743 |   `val timeEdit: FieldEdit` |
+| 111 | `internal fun channelTint(type: ChannelType): Color` |
+| 117 | `internal fun channelIcon(type: ChannelType): ImageVector` |
+| 124 | `@Composable internal fun statusTint(status: ChannelConnectionStatus): Color` |
+| 132 | `@Composable internal fun ChannelTypeAvatar(type: ChannelType, size: Dp)` |
+| 133 |   `val tint` |
+| 140 | `@Composable internal fun ChannelStatusPill(status: ChannelConnectionStatus)` |
+| 141 |   `val tint` |
+| 150 | `private sealed interface ChannelEditorTarget` |
+| 151 |   `data object Add : ChannelEditorTarget` |
+| 152 |   `data class Edit(val channel: ChatChannelInfo) : ChannelEditorTarget` |
+| 157 | `@Composable fun ChatChannelsContent(viewModel: ChatChannelsViewModel = hiltViewModel())` |
+| 158 |   `val ui by viewModel.ui.collectAsStateWithLifecycle()` |
+| 159 |   `val colors` |
+| 160 |   `var editor by remember` |
+| 161 |   `var showGlobal by remember` |
+| 162 |   `var pendingDelete by remember` |
+| 279 | `@Composable private fun ChannelRow( channel: ChatChannelInfo, status: ChannelConnectionStatus, toggling: Boolean, onOpen: () -> Unit, onToggle: (Boolean) -> Unit, onDelete: () -> Unit, )` |
+| 287 |   `val colors` |
+| 288 |   `val summary` |
+| 315 | `@Composable private fun ChatRefreshBanner(message: String, onRetry: () -> Unit, onDismiss: () -> Unit)` |
+| 316 |   `val colors` |
+| 331 | `@Composable private fun ChatChannelDetailDialog( channel: ChatChannelInfo, detail: ChannelDetailState, viewModel: ChatChannelsViewModel, onEdit: () -> Unit, onDismiss: () -> Unit, )` |
+| 338 |   `val colors` |
+| 339 |   `var showQR by remember` |
+| 340 |   `var confirmRemoveToken by remember` |
+| 467 | `@Composable private fun MessageLogRow(message: ChatChannelMessageLog)` |
+| 468 |   `val colors` |
+| 479 | `@Composable private fun ActionButton(title: String, icon: ImageVector, tint: Color, enabled: Boolean, onClick: () -> Unit)` |
+| 497 | `@Composable private fun DetailSection(title: String, content: @Composable () -> Unit)` |
+| 498 |   `val colors` |
+| 506 | `@Composable private fun SettingRow(content: @Composable androidx.compose.foundation.layout.RowScope.() -> Unit)` |
+| 511 | `@Composable private fun Divider()` |
+| 519 | `private enum class QrPhase` |
+| 523 | `@Composable private fun WeixinQRDialog(channelId: Int, viewModel: ChatChannelsViewModel, onConnected: () -> Unit, onDismiss: () -> Unit)` |
+| 524 |   `val colors` |
+| 525 |   `val loadingQrText` |
+| 526 |   `val couldntLoadQrText` |
+| 527 |   `val scanWithWechatText` |
+| 528 |   `val connectedText` |
+| 529 |   `val qrExpiredText` |
+| 530 |   `val scannedConfirmText` |
+| 531 |   `var attempt by remember` |
+| 532 |   `var phase by remember` |
+| 533 |   `var statusText by remember` |
+| 534 |   `var image by remember` |
+| 594 | `private fun decodeQrImage(raw: String): androidx.compose.ui.graphics.ImageBitmap?` |
+| 595 |   `var b64` |
+| 596 |   `val comma` |
+| 608 | `private val lenientJson` |
+| 610 | `private fun normalizedObjectJson(raw: String): String?` |
+| 611 |   `val obj` |
+| 617 | `@Composable private fun ChatChannelEditorDialog(existing: ChatChannelInfo?, viewModel: ChatChannelsViewModel, onDismiss: () -> Unit)` |
+| 618 |   `val colors` |
+| 619 |   `val scope` |
+| 620 |   `val isEdit` |
+| 622 |   `var name by remember` |
+| 623 |   `var type by remember` |
+| 624 |   `val parsed` |
+| 625 |   `var chatId by remember` |
+| 626 |   `var appId by remember` |
+| 627 |   `var baseUrl by remember` |
+| 628 |   `var rawMode by remember` |
+| 629 |   `var rawText by remember` |
+| 630 |   `var token by remember` |
+| 631 |   `var hasToken by remember` |
+| 632 |   `var enabled by remember` |
+| 633 |   `var dailyEnabled by remember` |
+| 634 |   `var dailyTime by remember` |
+| 635 |   `var saving by remember` |
+| 636 |   `var error by remember` |
+| 637 |   `val couldntSaveText` |
+| 643 |   `fun currentConfig()` |
+| 644 |   `val configJson: String?` |
+| 645 |   `val configValid` |
+| 650 |   `val tokenRequired` |
+| 651 |   `val canSave` |
+| 653 |   `fun save()` |
+| 744 | `private fun buildUpdateBody(existing: ChatChannelInfo, name: String, enabled: Boolean, configJson: String, dailyEnabled: Boolean, timeString: String?): UpdateChatChannelBody` |
+| 745 |   `val configChanged` |
+| 746 |   `val timeEdit: FieldEdit` |
 
 ## feature/settings/ChatChannelsViewModel.kt
 
@@ -435,13 +435,13 @@ Source root: `app/src/main/java/app/codeg/android/`
 
 | Line | Declaration |
 |---|---|
-| 71 | `@Composable fun ChatGlobalSettingsDialog(onDismiss: () -> Unit, viewModel: ChatGlobalSettingsViewModel = hiltViewModel())` |
-| 72 |   `val ui by viewModel.ui.collectAsStateWithLifecycle()` |
-| 73 |   `val colors` |
-| 74 |   `var newWebhook by remember` |
-| 75 |   `var prefixField by remember(ui.commandPrefix)` |
-| 166 | `@Composable private fun GlobalSection(title: String, subtitle: String, content: @Composable () -> Unit)` |
-| 167 |   `val colors` |
+| 73 | `@Composable fun ChatGlobalSettingsDialog(onDismiss: () -> Unit, viewModel: ChatGlobalSettingsViewModel = hiltViewModel())` |
+| 74 |   `val ui by viewModel.ui.collectAsStateWithLifecycle()` |
+| 75 |   `val colors` |
+| 76 |   `var newWebhook by remember` |
+| 77 |   `var prefixField by remember(ui.commandPrefix)` |
+| 168 | `@Composable private fun GlobalSection(title: String, subtitle: String, content: @Composable () -> Unit)` |
+| 169 |   `val colors` |
 
 ## feature/settings/ChatGlobalSettingsViewModel.kt
 
@@ -627,22 +627,22 @@ Source root: `app/src/main/java/app/codeg/android/`
 
 | Line | Declaration |
 |---|---|
-| 59 | `@Composable fun ModelProvidersContent(viewModel: ModelProvidersViewModel = hiltViewModel())` |
-| 60 |   `val ui by viewModel.ui.collectAsStateWithLifecycle()` |
-| 61 |   `val colors` |
-| 62 |   `var editor by remember` |
-| 102 | `private data class ProviderEditorTarget(val provider: ModelProviderInfo?)` |
-| 106 | `@Composable private fun ProviderRow(p: ModelProviderInfo, onEdit: () -> Unit, onDelete: () -> Unit)` |
-| 107 |   `val colors` |
-| 108 |   `var menu by remember` |
-| 127 | `@Composable private fun ProviderEditor( existing: ModelProviderInfo?, supportedAgents: List<AgentType>, onDismiss: () -> Unit, onSave: (String, String, String, AgentType, String?) -> Unit, )` |
-| 133 |   `val colors` |
-| 134 |   `var name by remember` |
-| 135 |   `var url by remember` |
-| 136 |   `var key by remember` |
-| 137 |   `var agent by remember` |
-| 138 |   `var model by remember` |
-| 139 |   `var agentMenu by remember` |
+| 61 | `@Composable fun ModelProvidersContent(viewModel: ModelProvidersViewModel = hiltViewModel())` |
+| 62 |   `val ui by viewModel.ui.collectAsStateWithLifecycle()` |
+| 63 |   `val colors` |
+| 64 |   `var editor by remember` |
+| 104 | `private data class ProviderEditorTarget(val provider: ModelProviderInfo?)` |
+| 108 | `@Composable private fun ProviderRow(p: ModelProviderInfo, onEdit: () -> Unit, onDelete: () -> Unit)` |
+| 109 |   `val colors` |
+| 110 |   `var menu by remember` |
+| 129 | `@Composable private fun ProviderEditor( existing: ModelProviderInfo?, supportedAgents: List<AgentType>, onDismiss: () -> Unit, onSave: (String, String, String, AgentType, String?) -> Unit, )` |
+| 135 |   `val colors` |
+| 136 |   `var name by remember` |
+| 137 |   `var url by remember` |
+| 138 |   `var key by remember` |
+| 139 |   `var agent by remember` |
+| 140 |   `var model by remember` |
+| 141 |   `var agentMenu by remember` |
 
 ## feature/settings/ModelProvidersViewModel.kt
 
@@ -677,17 +677,17 @@ Source root: `app/src/main/java/app/codeg/android/`
 
 | Line | Declaration |
 |---|---|
-| 49 | `@Composable fun QuickMessagesContent(viewModel: QuickMessagesViewModel = hiltViewModel())` |
-| 50 |   `val ui by viewModel.ui.collectAsStateWithLifecycle()` |
-| 51 |   `val colors` |
-| 52 |   `var editor by remember` |
-| 86 | `private data class EditorTarget(val message: QuickMessage?)` |
-| 90 | `@Composable private fun MessageRow(msg: QuickMessage, onEdit: () -> Unit, onDelete: () -> Unit)` |
-| 91 |   `val colors` |
-| 92 |   `var menu by remember` |
-| 109 | `@Composable private fun QuickMessageEditor(existing: QuickMessage?, onDismiss: () -> Unit, onSave: (String, String) -> Unit)` |
-| 110 |   `var title by remember` |
-| 111 |   `var content by remember` |
+| 52 | `@Composable fun QuickMessagesContent(viewModel: QuickMessagesViewModel = hiltViewModel())` |
+| 53 |   `val ui by viewModel.ui.collectAsStateWithLifecycle()` |
+| 54 |   `val colors` |
+| 55 |   `var editor by remember` |
+| 89 | `private data class EditorTarget(val message: QuickMessage?)` |
+| 93 | `@Composable private fun MessageRow(msg: QuickMessage, onEdit: () -> Unit, onDelete: () -> Unit)` |
+| 94 |   `val colors` |
+| 95 |   `var menu by remember` |
+| 112 | `@Composable private fun QuickMessageEditor(existing: QuickMessage?, onDismiss: () -> Unit, onSave: (String, String) -> Unit)` |
+| 113 |   `var title by remember` |
+| 114 |   `var content by remember` |
 
 ## feature/settings/QuickMessagesViewModel.kt
 
