@@ -192,11 +192,11 @@
         "description": "会话页事件流在弱网、切后台、token 失效时表现可预期：自动重连有上限和退避，回到前台立即恢复并补齐事件，token 失效时给出明确提示。",
         "details": "需求文档：.taskmaster/docs/tasks/T14-stream-resilience.md（先读 .taskmaster/docs/CONVENTIONS.md，再只读这一份需求文档及其中列出的代码位置；不要通读 PRD 或其它文件）。改动范围、代码定位、验收标准都在需求文档里。",
         "testStrategy": "",
-        "status": "review",
+        "status": "done",
         "dependencies": [],
         "priority": "high",
         "subtasks": [],
-        "updatedAt": "2026-10-20T02:12:08.226Z"
+        "updatedAt": "2026-10-20T07:04:11.498Z"
       },
       {
         "id": "15",
@@ -420,9 +420,9 @@
     ],
     "metadata": {
       "version": "1.0.0",
-      "lastModified": "2026-10-20T04:38:15.291Z",
+      "lastModified": "2026-10-20T07:04:11.499Z",
       "taskCount": 30,
-      "completedCount": 27,
+      "completedCount": 28,
       "tags": [
         "master"
       ]
