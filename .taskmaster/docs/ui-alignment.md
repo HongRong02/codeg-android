@@ -15,10 +15,17 @@
 | tabs | `CodegTabs`（分段样式，`TabsList` 背景 `--muted`，选中项 `--background` + 阴影）（`component/Tabs.kt`） | T46 | `SegmentedTabs`、`TabRow`、手写分段 |
 | badge / separator / skeleton / progress | `CodegBadge(variant)`（`component/Badges.kt` 扩展）、`CodegSeparator`、`CodegSkeleton`、`CodegProgress`（`component/Feedback.kt`） | T46 | `HorizontalDivider`、文字状态、`LinearProgressIndicator` |
 | sidebar 行 / row-more-button / 分区标题 | `CodegListRow(leading, title, subtitle, trailing, onClick, onLongClick)`、`CodegSectionHeader`、`CodegRowMoreButton`（`component/ListRows.kt`） | T46 | 各页手写行 |
+| lucide 图标 | `Lucide.Xxx`、`CodegIcon`（`designsystem/icon/`），Material→lucide 对照见 `icon-map.md` | T51 | `Icons.Default/Outlined/...` |
+| toast（sonner） | `CodegToaster`、`LocalCodegToaster`、`CodegToasterHost`（`component/Toasts.kt`） | T52 | `Snackbar`、页面内临时提示文字 |
+| collapsible / avatar / input-group / image-preview / command / folder-badge | `CodegCollapsible`、`CodegInstantCollapsible`、`CodegAvatar`、`CodegInputGroup`、`CodegImagePreviewDialog`、`CodegCommandList`、`CodegFolderBadge` | T53 | 手写折叠、搜索框、图片查看 |
+| title-bar / 空·加载·错误状态 | `CodegTopBar`、`CodegIconButton`、`EmptyState`、`LoadingView`、`InlineError`（内部对齐，签名不变） | T54 | — |
 | chip / 筛选 | `CodegFilterChip`（按 badge outline + 选中 secondary 样式）（`component/Badges.kt`） | T46 | `FilterChip` |
 
 ## 规则
 - 第一阶段（T43–T46）：**只新建/扩展 `A/core/designsystem/component/` 下自己那几个文件**，不改任何 feature 文件。每个组件写 `@Preview`（明/暗各一）和最少的单测（如可测的状态逻辑）。另在自己的文件里提供一个 `internal fun XxxGallery()` 汇总所有变体，供第二阶段做组件预览页。
 - 数值（圆角、内边距、字号、行高、边框、阴影、选中/hover/disabled 透明度）直接读对应 `WEB/components/ui/*.tsx` 的 Tailwind class 换算：1 单位 = 4dp，`text-sm` = 14sp，`rounded-md/lg/xl` 用 `CodegShapes` 对应级别；颜色只用 `CodegTheme.colors.web.*` token。
-- 第二阶段（T47–T50）：只改自己负责的 feature 目录，把上表右列的 M3 原件全部替换为左列组件，并按对应网页端页面调整布局（间距、分区、标题、空状态）。不新增设计系统组件；缺什么先回报。
+- 补充第一阶段（T51–T54）：同上规则，只新建/改自己列出的 designsystem 文件，与 T47–T50 并行。
+- 第二阶段（T47–T50）：只改自己负责的 feature 目录，把上表中 **T43–T46** 各行右列的 M3 原件全部替换为左列组件，并按对应网页端页面调整布局（间距、分区、标题、空状态）。T51–T54 与之并行开发，第二阶段**不要**替换图标、不要接 Toast；需要 T52/T53 组件的位置留 `// TODO(T52)`/`// TODO(T53): <组件名>` 注释。不新增设计系统组件；缺什么先回报。
+- 第三阶段（T55–T58，T51–T54 合入 sit 后派发，目录划分同 T47–T50）：按 `icon-map.md` 把 Material 图标换成 `Lucide.*`，把 Snackbar/临时提示换成 `CodegToaster`（T50 范围挂 `CodegToasterHost`），处理第二阶段留下的 `TODO(T5x)`。
+- 测试方式：T47 起全部为测试文档模式（见 CONVENTIONS），统一在 `sit` 上编译测试。
 - 不改业务逻辑、不改接口调用、不改字符串含义（可新增字符串）。
