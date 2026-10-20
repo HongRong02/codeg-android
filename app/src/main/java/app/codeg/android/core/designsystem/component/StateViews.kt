@@ -1,5 +1,17 @@
 package app.codeg.android.core.designsystem.component
 
+import app.codeg.android.core.designsystem.icon.Loader2
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
+import androidx.compose.ui.draw.rotate
+import androidx.compose.runtime.getValue
+import app.codeg.android.core.designsystem.icon.Lucide
+import app.codeg.android.core.designsystem.icon.Info
+import app.codeg.android.core.designsystem.icon.X
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -12,12 +24,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Close
-import androidx.compose.material.icons.rounded.Info
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
@@ -55,7 +63,6 @@ fun EmptyState(
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             Box(Modifier.size(48.dp).background(colors.muted, CodegShapes.small), contentAlignment = Alignment.Center) {
-                // TODO(T51): Lucide.Inbox (caller-supplied icons retain their page semantics).
                 Icon(icon, contentDescription = null, tint = colors.mutedForeground, modifier = Modifier.size(24.dp))
             }
             Text(title, fontSize = 14.sp, fontWeight = FontWeight.Medium, color = colors.foreground, textAlign = TextAlign.Center)
@@ -80,8 +87,12 @@ fun LoadingView(message: String, modifier: Modifier = Modifier) {
         horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        // TODO(T51): Lucide.Loader2; keep native indeterminate animation until icon migration.
-        CircularProgressIndicator(color = colors.mutedForeground, strokeWidth = 2.dp, modifier = Modifier.size(16.dp))
+        val rotation by rememberInfiniteTransition(label = "loadingIcon").animateFloat(
+            initialValue = 0f, targetValue = 360f,
+            animationSpec = infiniteRepeatable(tween(1000, easing = LinearEasing), RepeatMode.Restart),
+            label = "loadingRotation",
+        )
+        Icon(Lucide.Loader2, null, Modifier.size(16.dp).rotate(rotation), tint = colors.mutedForeground)
         Text(message, modifier = Modifier.weight(1f, fill = false), fontSize = 14.sp, color = colors.mutedForeground)
     }
 }
@@ -104,7 +115,6 @@ fun InlineError(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            // TODO(T51): Lucide.CircleAlert (caller-supplied icons retain their page semantics).
             Icon(icon, contentDescription = null, tint = colors.destructive, modifier = Modifier.size(24.dp))
             Text(title, fontSize = 14.sp, fontWeight = FontWeight.Medium, color = colors.destructive, textAlign = TextAlign.Center)
             Text(message, fontSize = 12.sp, color = colors.destructive, textAlign = TextAlign.Center)
@@ -127,21 +137,19 @@ internal fun T54Gallery() {
     Column(Modifier.background(CodegTheme.colors.web.background).verticalScroll(rememberScrollState())) {
         CodegTopBar(title = title, subtitle = message, navigationIcon = {
             CodegIconButton(onClick = {}) {
-                // TODO(T51): Lucide.X
-                Icon(Icons.Rounded.Close, stringResource(R.string.ds_states_close))
+                Icon(Lucide.X, stringResource(R.string.ds_states_close))
             }
         }, actions = {
             CodegIconButton(onClick = {}, enabled = false, visualSize = 32.dp) {
-                // TODO(T51): Lucide.Info
-                Icon(Icons.Rounded.Info, title)
+                Icon(Lucide.Info, title)
             }
         })
         CodegTopBar(title = title, showDivider = false)
-        EmptyState(Icons.Rounded.Info, title, message)
-        EmptyState(Icons.Rounded.Info, title, message, actionLabel = stringResource(R.string.ds_states_retry), onAction = {})
+        EmptyState(Lucide.Info, title, message)
+        EmptyState(Lucide.Info, title, message, actionLabel = stringResource(R.string.ds_states_retry), onAction = {})
         LoadingView(stringResource(R.string.ds_states_loading))
-        InlineError(Icons.Rounded.Info, title, message, onRetry = {})
-        InlineError(Icons.Rounded.Info, title, message, onRetry = {}, showRetry = false)
+        InlineError(Lucide.Info, title, message, onRetry = {})
+        InlineError(Lucide.Info, title, message, onRetry = {}, showRetry = false)
     }
 }
 

@@ -1,5 +1,9 @@
 package app.codeg.android.core.designsystem.component
 
+import app.codeg.android.core.designsystem.icon.Lucide
+import app.codeg.android.core.designsystem.icon.Check
+import app.codeg.android.core.designsystem.icon.ChevronRight
+import app.codeg.android.core.designsystem.icon.EllipsisVertical
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -28,10 +32,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.ProvideTextStyle
@@ -208,7 +208,7 @@ fun CodegMenuCheckboxItem(
         enabled = enabled,
         variant = CodegMenuItemVariant.Default,
         leadingIcon = leadingIcon,
-        trailingIcon = { if (checked) Icon(Icons.Default.Check, contentDescription = null) },
+        trailingIcon = { if (checked) Icon(Lucide.Check, contentDescription = null) },
         shortcut = null,
     )
 }
@@ -396,12 +396,12 @@ private fun GalleryItems() {
     CodegMenuLabel({ Text(stringResource(R.string.ds_menus_actions)) })
     CodegMenuItem(
         text = { Text(stringResource(R.string.ds_menus_open)) }, onClick = {},
-        leadingIcon = { Icon(Icons.Default.MoreVert, null) },
+        leadingIcon = { Icon(Lucide.EllipsisVertical, null) },
         shortcut = stringResource(R.string.ds_menus_shortcut),
     )
     CodegMenuItem(
         text = { Text(stringResource(R.string.ds_menus_more)) }, onClick = {},
-        trailingIcon = { Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, null) },
+        trailingIcon = { Icon(Lucide.ChevronRight, null) },
     )
     CodegMenuItem({ Text(stringResource(R.string.ds_menus_disabled)) }, {}, enabled = false)
     CodegMenuSeparator()

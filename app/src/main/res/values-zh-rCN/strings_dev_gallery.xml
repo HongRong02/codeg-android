@@ -1,0 +1,34 @@
+<resources>
+    <string name="dev_gallery_title">组件预览</string>
+    <string name="dev_gallery_back">返回</string>
+    <string name="dev_gallery_light">切换到明色</string>
+    <string name="dev_gallery_dark">切换到暗色</string>
+    <string name="dev_gallery_t60_note">T60 使用现有对话框、表单和反馈预览；合入后的更新自动包含。</string>
+    <string name="dev_gallery_t43">T43 · 菜单</string>
+    <string name="dev_gallery_t44">T44 · 对话框、抽屉和卡片</string>
+    <string name="dev_gallery_t45">T45 · 按钮和表单</string>
+    <string name="dev_gallery_t46">T46 · 标签、徽章、列表行和反馈</string>
+    <string name="dev_gallery_t51">T51 · 图标</string>
+    <string name="dev_gallery_t52">T52 · Toast</string>
+    <string name="dev_gallery_t53">T53 · 杂项</string>
+    <string name="dev_gallery_t54">T54 · 顶栏和状态</string>
+    <string name="dev_gallery_t60">T60 · 组件缺口补齐</string>
+    <string name="dev_gallery_sample_t43gallery">T43Gallery</string>
+    <string name="dev_gallery_sample_t44cardsgallery">T44CardsGallery</string>
+    <string name="dev_gallery_sample_t44gallery">T44Gallery</string>
+    <string name="dev_gallery_sample_t45gallery">T45Gallery</string>
+    <string name="dev_gallery_sample_t46badgesgallery">T46BadgesGallery</string>
+    <string name="dev_gallery_sample_t46feedbackgallery">T46FeedbackGallery</string>
+    <string name="dev_gallery_sample_t46gallery">T46Gallery</string>
+    <string name="dev_gallery_sample_t46rowsgallery">T46RowsGallery</string>
+    <string name="dev_gallery_sample_t46tabsgallery">T46TabsGallery</string>
+    <string name="dev_gallery_sample_t51gallery">T51Gallery</string>
+    <string name="dev_gallery_sample_t52gallery">T52Gallery</string>
+    <string name="dev_gallery_sample_t53avatargallery">T53AvatarGallery</string>
+    <string name="dev_gallery_sample_t53collapsiblegallery">T53CollapsibleGallery</string>
+    <string name="dev_gallery_sample_t53commandgallery">T53CommandGallery</string>
+    <string name="dev_gallery_sample_t53folderbadgegallery">T53FolderBadgeGallery</string>
+    <string name="dev_gallery_sample_t53imagepreviewgallery">T53ImagePreviewGallery</string>
+    <string name="dev_gallery_sample_t53inputgroupgallery">T53InputGroupGallery</string>
+    <string name="dev_gallery_sample_t54gallery">T54Gallery</string>
+</resources>
