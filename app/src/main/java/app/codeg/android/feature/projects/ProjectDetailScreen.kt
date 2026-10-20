@@ -1,5 +1,7 @@
 package app.codeg.android.feature.projects
 
+import app.codeg.android.core.designsystem.theme.PillShape
+import app.codeg.android.core.designsystem.theme.CodegShapes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -12,7 +14,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.FolderOpen
@@ -43,7 +44,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.codeg.android.feature.projects.git.GitActionsMenu
 import app.codeg.android.R
-import app.codeg.android.core.designsystem.component.CodegSegmented
+import app.codeg.android.core.designsystem.component.CodegTabs
 import app.codeg.android.core.designsystem.component.CountBadge
 import app.codeg.android.core.designsystem.component.InlineError
 import app.codeg.android.core.designsystem.component.LivePulse
@@ -134,7 +135,7 @@ fun ProjectDetailScreen(
                         sessions = ui.sessionCount,
                         onBranchClick = { showBranchPicker = true },
                     )
-                    SegmentedTabs(tab) { tab = it }
+                    ProjectTabs(tab) { tab = it }
                     Box(Modifier.fillMaxSize()) {
                         val client = ui.client
                         if (client != null) {
@@ -159,12 +160,12 @@ private fun Header(name: String, path: String, color: Color, branch: String?, ru
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(12.dp),
     ) {
-        Box(Modifier.size(48.dp).clip(RoundedCornerShape(14.dp)).background(color.withOpacity(0.22f)).border(1.dp, color.withOpacity(0.45f), RoundedCornerShape(14.dp)))
+        Box(Modifier.size(48.dp).clip(CodegShapes.small).background(color.withOpacity(0.22f)).border(1.dp, color.withOpacity(0.45f), CodegShapes.small))
         Column(Modifier.weight(1f)) {
             Text(name, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold, color = colors.textPrimary, maxLines = 1, overflow = TextOverflow.Ellipsis)
             Text(path, fontFamily = FontFamily.Monospace, fontSize = 12.sp, color = colors.textSecondary, maxLines = 1, overflow = TextOverflow.Ellipsis)
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.padding(top = 4.dp)) {
-                branch?.let { Box(Modifier.clip(RoundedCornerShape(50)).clickable { onBranchClick() }) { BranchPill(it) } }
+                branch?.let { Box(Modifier.clip(PillShape).clickable { onBranchClick() }) { BranchPill(it) } }
                 if (running > 0) {
                     Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(3.dp)) {
                         LivePulse(dotSize = 7.dp); Text("$running", fontSize = 12.sp, color = colors.accent)
@@ -177,11 +178,11 @@ private fun Header(name: String, path: String, color: Color, branch: String?, ru
 }
 
 @Composable
-private fun SegmentedTabs(selected: ProjectTab, onSelect: (ProjectTab) -> Unit) {
+private fun ProjectTabs(selected: ProjectTab, onSelect: (ProjectTab) -> Unit) {
     val entries = ProjectTab.entries
-    CodegSegmented(
-        options = entries.map { stringResource(it.labelRes) },
-        selectedIndex = entries.indexOf(selected),
+    CodegTabs(
+        tabs = entries.map { stringResource(it.labelRes) },
+        selected = entries.indexOf(selected),
         onSelect = { onSelect(entries[it]) },
         modifier = Modifier.padding(horizontal = 16.dp, vertical = 6.dp),
     )

@@ -2,9 +2,6 @@ package app.codeg.android.feature.projects
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,22 +13,18 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.Undo
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.CheckCircle
 import androidx.compose.material.icons.rounded.DeleteOutline
 import androidx.compose.material.icons.rounded.Difference
-import androidx.compose.material3.AlertDialog
+import app.codeg.android.core.designsystem.component.CodegConfirmDialog
+import app.codeg.android.core.designsystem.component.CodegSheet
+import app.codeg.android.core.designsystem.component.CodegListRow
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.ListItem
-import androidx.compose.material3.ListItemDefaults
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -40,14 +33,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.codeg.android.R
 import app.codeg.android.core.designsystem.component.EmptyState
@@ -143,7 +133,7 @@ fun FolderChangesView(
     // Long-press file actions.
     val target = actionEntry
     if (target != null) {
-        ModalBottomSheet(onDismissRequest = { actionEntry = null }, sheetState = rememberModalBottomSheetState()) {
+        CodegSheet(title = target.path, onDismiss = { actionEntry = null }) {
             FileActions(
                 entry = target,
                 onViewDiff = { actionEntry = null; diffFile = target.path },
@@ -157,17 +147,17 @@ fun FolderChangesView(
     // Destructive-action confirmation (discard / delete lose working-tree changes).
     confirm?.let { (entry, isDelete) ->
         val name = entry.path.substringAfterLast('/')
-        AlertDialog(
-            onDismissRequest = { confirm = null },
-            title = { Text(stringResource(if (isDelete) R.string.changes_delete_title else R.string.changes_discard_title)) },
-            text = { Text(stringResource(if (isDelete) R.string.changes_delete_message else R.string.changes_discard_message, name)) },
-            confirmButton = {
-                TextButton(onClick = {
-                    confirm = null
-                    if (isDelete) viewModel.deleteUntracked(entry.path, name) else viewModel.discard(entry.path, name)
-                }) { Text(stringResource(if (isDelete) R.string.changes_action_delete else R.string.changes_action_discard), color = CodegTheme.colors.danger) }
+        CodegConfirmDialog(
+            title = stringResource(if (isDelete) R.string.changes_delete_title else R.string.changes_discard_title),
+            message = stringResource(if (isDelete) R.string.changes_delete_message else R.string.changes_discard_message, name),
+            target = entry.path,
+            confirmLabel = stringResource(if (isDelete) R.string.changes_action_delete else R.string.changes_action_discard),
+            destructive = true,
+            onConfirm = {
+                confirm = null
+                if (isDelete) viewModel.deleteUntracked(entry.path, name) else viewModel.discard(entry.path, name)
             },
-            dismissButton = { TextButton(onClick = { confirm = null }) { Text(stringResource(R.string.common_cancel)) } },
+            onDismiss = { confirm = null },
         )
     }
 }
@@ -198,14 +188,11 @@ private fun FileActions(
 
 @Composable
 private fun ActionRow(icon: androidx.compose.ui.graphics.vector.ImageVector, label: String, tint: Color, onClick: () -> Unit) {
-    Row(
-        Modifier.fillMaxWidth().clickable { onClick() }.padding(horizontal = 20.dp, vertical = 14.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(14.dp),
-    ) {
-        Icon(icon, contentDescription = null, tint = tint, modifier = Modifier.size(20.dp))
-        Text(label, color = tint, fontSize = 15.sp)
-    }
+    CodegListRow(
+        title = label,
+        onClick = onClick,
+        leading = { Icon(icon, contentDescription = null, tint = tint, modifier = Modifier.size(20.dp)) },
+    )
 }
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -213,14 +200,12 @@ private fun ActionRow(icon: androidx.compose.ui.graphics.vector.ImageVector, lab
 private fun ChangeRow(entry: GitStatusEntry, onClick: () -> Unit, onLongClick: () -> Unit) {
     val colors = CodegTheme.colors
     val sub = entry.renamedFrom?.let { stringResource(R.string.changes_renamed_from, it) } ?: entry.path.substringBeforeLast('/', "")
-    ListItem(
-        headlineContent = { Text(entry.path.substringAfterLast('/'), fontSize = 14.sp, maxLines = 1, overflow = TextOverflow.Ellipsis) },
-        supportingContent = sub.takeIf { it.isNotEmpty() }?.let {
-            { Text(it, fontFamily = FontFamily.Monospace, fontSize = 12.sp, maxLines = 1, overflow = TextOverflow.Ellipsis) }
-        },
-        leadingContent = { GitChangeBadge(entry.change) },
-        colors = ListItemDefaults.colors(containerColor = Color.Transparent, headlineColor = colors.textPrimary, supportingColor = colors.textSecondary),
-        modifier = Modifier.clip(RoundedCornerShape(8.dp)).combinedClickable(onClick = onClick, onLongClick = onLongClick),
+    CodegListRow(
+        title = entry.path.substringAfterLast('/'),
+        subtitle = sub.takeIf { it.isNotEmpty() },
+        leading = { GitChangeBadge(entry.change) },
+        onClick = onClick,
+        onLongClick = onLongClick,
     )
 }
 
