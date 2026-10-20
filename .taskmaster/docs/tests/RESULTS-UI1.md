@@ -21,8 +21,19 @@
 | P-142 T43 菜单（明色视觉） | ✅ | | `shots/gal-T43Gallery-light.png`：标签、快捷键、子菜单箭头、复选项、禁用、destructive 均正确 |
 | P-146 T45 按钮（明色视觉） | ✅ | | `shots/gal-T45Gallery-light.png`：6 种样式、4 种尺寸、加载、禁用正确 |
 
+## 第 1 轮修复复测（sit `96d8ea3` 之后，含 B03、B04-designsystem、B01-app、B09-build）
+| 用例 | 结果 | 对应 bug | 说明 |
+|---|---|---|---|
+| P-003 首次配置 → 测试连接 | ✅ | B01-1 | Toast "已连接 · codeg 0.38.0" 显示在屏幕底部 |
+| P-137 debug 版自动更新横幅 | ✅ | B01-2 | 保存服务器进入主界面后无"有新版本"横幅 |
+| P-137 关于 → 检查更新（debug） | ✅ | B01-2 | Toast "此版本不支持应用内更新（调试版或非正式包名）。"，`shots/p137-debug-toast.png`；sonner 风格（popover 底、边框、info 图标） |
+| P-006 设置首页明色 | ✅ | B04-1 | `shots/r1-settings-light.png`：卡片紧凑，与 1.1.139 一致 |
+| P-006 设置首页暗色 | ✅ | B04-1 | `shots/r1-settings-dark.png`：行透明，不再出现深色方块 |
+| P-070 外观 → 主题分段标签暗色 | ✅ | B04-5 | `shots/r1-settings-dark.png`（外观页）：选中项只有一层底色加边框 |
+| P-070 外观 → 预览"主按钮" | ⚠️ | | 仍是胶囊形，网页端按钮为 `rounded-md`（第 2 轮处理） |
+
 ## 待归档的 bug（测试结束后按区域写成 bug 单）
-- B01 区域 app/main：首次配置流程缺少 Toast 宿主（`A/app/CodegApp.kt` 的 `OnboardingRoot`，或把宿主上移到 `CodegApp` 根部）。来源：T58。
+- ~~B01 区域 app/main~~ 已由 `fix/B01-app` 修复并复测通过；：首次配置流程缺少 Toast 宿主（`A/app/CodegApp.kt` 的 `OnboardingRoot`，或把宿主上移到 `CodegApp` 根部）。来源：T58。
 - B02 区域 misc（core/update）：debug 版不应检查/提示正式版更新（或按 applicationId 区分）。来源：T41。
 - B04 区域 designsystem（`ListRows.kt`，可能还有 `Cards.kt`）：`CodegListRow` 默认带实心背景，放进卡片后暗色下显示为深色方块；行应透明，按下/选中才显示 `--accent`。另外列表型卡片上下多余空白。网页端设置首页对应的是左侧紧凑导航列表（`localhost:3082/settings`），不是带内边距的卡片。修法二选一：`CodegCard` 增加无内边距的列表用法，或者在调用处去掉。来源：T44/T49/T57、T48/T56。
 
@@ -33,6 +44,8 @@
 - 文件夹页：未分组的项目显示在 "Mobile" 分组卡片内（1.1.139 同样如此）。
 
 ## 测试环境备注
+- 底栏在列表滚动时会自动收起（T58 的设计行为），自动化点击底栏前要先确认底栏可见，否则点击会落到下面的列表上。
+- 添加服务器页面只要有令牌输入框就禁止截屏（截图为 0 字节），属于有意的安全设置。
 - 每次 CI 构建的 debug APK 签名不同（各 runner 临时生成调试密钥），无法覆盖安装，只能卸载重装并重新添加测试服。已开 `fix/B09-build`：debug 版改用公开 dev 密钥签名。
 - vivo 的安全键盘（令牌输入框）弹出时 `screencap` 得到 0 字节图片，截图前先点空白处收起键盘。
 - 添加服务器页面按返回键会直接关闭整个页面、丢弃已填内容（是否需要确认待对照网页端）。
