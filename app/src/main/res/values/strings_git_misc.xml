@@ -1,0 +1,22 @@
+<resources>
+    <string name="git_misc_title">Git management</string>
+    <string name="git_misc_success">Operation completed</string>
+    <string name="git_misc_refresh">Refresh</string>
+    <string name="git_misc_init">Initialize repository</string>
+    <string name="git_misc_remotes">Remotes</string>
+    <string name="git_misc_edit">Edit</string>
+    <string name="git_misc_fetch">Fetch</string>
+    <string name="git_misc_remove">Remove</string>
+    <string name="git_misc_name">Remote name</string>
+    <string name="git_misc_url">Remote URL</string>
+    <string name="git_misc_save">Save URL</string>
+    <string name="git_misc_add">Add</string>
+    <string name="git_misc_credentials">Credentials for %1$s</string>
+    <string name="git_misc_username">Username</string>
+    <string name="git_misc_password">Password / token</string>
+    <string name="git_misc_worktrees">Worktrees</string>
+    <string name="git_misc_branch">Branch name</string>
+    <string name="git_misc_destination">Worktree absolute path</string>
+    <string name="git_misc_base">Base revision (optional)</string>
+    <string name="git_misc_confirm">Remove %1$s? The branch will be kept.</string>
+</resources>
