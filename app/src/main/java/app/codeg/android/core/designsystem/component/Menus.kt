@@ -51,6 +51,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.layout.layout
@@ -64,6 +65,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpOffset
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntRect
 import androidx.compose.ui.unit.IntSize
@@ -103,15 +105,17 @@ fun CodegDropdownMenu(
 private fun MenuSurface(
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(4.dp),
+    shape: Shape = MenuShape,
+    elevation: Dp = 6.dp,
     content: @Composable ColumnScope.() -> Unit,
 ) {
     val web = CodegTheme.colors.web
     Column(
         modifier.widthIn(min = 128.dp).width(IntrinsicSize.Max)
-            .shadow(6.dp, MenuShape)
-            .background(web.popover, MenuShape)
-            .border(1.dp, web.border, MenuShape)
-            .clip(MenuShape)
+            .shadow(elevation, shape)
+            .background(web.popover, shape)
+            .border(1.dp, web.border, shape)
+            .clip(shape)
             .verticalScroll(rememberScrollState())
             .padding(contentPadding),
     ) {
@@ -263,7 +267,10 @@ fun CodegPopover(
     content: @Composable ColumnScope.() -> Unit,
 ) {
     MenuPopup(expanded, onDismissRequest, offset, properties) {
-        MenuSurface(modifier.width(288.dp), PaddingValues(16.dp)) {
+        MenuSurface(
+            modifier.width(288.dp), PaddingValues(16.dp),
+            shape = CodegShapes.medium, elevation = 24.dp,
+        ) {
             Column(verticalArrangement = Arrangement.spacedBy(16.dp), content = content)
         }
     }
