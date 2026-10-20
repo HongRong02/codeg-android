@@ -107,57 +107,60 @@ Source root: `app/src/main/java/app/codeg/android/`
 
 | Line | Declaration |
 |---|---|
-| 80 | `private val MenuShape` |
-| 81 | `private val MenuTextStyle` |
-| 83 | `enum class CodegMenuItemVariant` |
-| 87 | `@Composable fun CodegDropdownMenu( expanded: Boolean, onDismissRequest: () -> Unit, modifier: Modifier = Modifier, offset: DpOffset = DpOffset(0.dp, 0.dp), properties: PopupProperties = PopupProperties(focusable = true), content: @Composable ColumnScope.() -> Unit, )` |
-| 101 | `@Composable private fun MenuSurface( modifier: Modifier = Modifier, contentPadding: PaddingValues = PaddingValues(4.dp), content: @Composable ColumnScope.() -> Unit, )` |
-| 106 |   `val web` |
-| 124 | `@Composable fun CodegMenuItem( text: @Composable () -> Unit, onClick: () -> Unit, modifier: Modifier = Modifier, leadingIcon: (@Composable () -> Unit)? = null, trailingIcon: (@Composable () -> Unit)? = null, shortcut: String? = null, enabled: Boolean = true, variant: CodegMenuItemVariant = CodegMenuItemVariant.Default, )` |
-| 134 |   `val interactions` |
-| 144 | `@Composable private fun MenuRow( text: @Composable () -> Unit, modifier: Modifier, interactions: MutableInteractionSource, enabled: Boolean, variant: CodegMenuItemVariant, leadingIcon: (@Composable () -> Unit)?, trailingIcon: (@Composable () -> Unit)?, shortcut: String?, )` |
-| 154 |   `val web` |
-| 155 |   `val pressed by interactions.collectIsPressedAsState()` |
-| 156 |   `val focused by interactions.collectIsFocusedAsState()` |
-| 157 |   `val hovered by interactions.collectIsHoveredAsState()` |
-| 158 |   `val active` |
-| 159 |   `val foreground` |
-| 186 | `@Composable fun CodegMenuCheckboxItem( checked: Boolean, onCheckedChange: (Boolean) -> Unit, text: @Composable () -> Unit, modifier: Modifier = Modifier, enabled: Boolean = true, leadingIcon: (@Composable () -> Unit)? = null, )` |
-| 194 |   `val interactions` |
-| 212 | `@Composable fun CodegMenuSeparator(modifier: Modifier = Modifier)` |
-| 213 |   `val bleed` |
-| 228 | `@Composable fun CodegMenuLabel(text: @Composable () -> Unit, modifier: Modifier = Modifier)` |
-| 238 | `@Composable fun CodegContextMenu( menu: @Composable ColumnScope.(() -> Unit) -> Unit, modifier: Modifier = Modifier, enabled: Boolean = true, content: @Composable () -> Unit, )` |
-| 244 |   `var expanded by remember` |
-| 245 |   `val dismiss` |
-| 255 | `@Composable fun CodegPopover( expanded: Boolean, onDismissRequest: () -> Unit, modifier: Modifier = Modifier, offset: DpOffset = DpOffset(0.dp, 0.dp), properties: PopupProperties = PopupProperties(focusable = true), content: @Composable ColumnScope.() -> Unit, )` |
-| 272 | `@Composable fun CodegTooltip( text: String, modifier: Modifier = Modifier, enabled: Boolean = true, content: @Composable () -> Unit, )` |
-| 278 |   `var expanded by remember` |
-| 279 |   `val accessibility` |
-| 303 | `private fun Modifier.longPressMenu(enabled: Boolean, onLongPress: () -> Unit): Modifier` |
-| 320 | `@Composable private fun MenuPopup( expanded: Boolean, onDismissRequest: () -> Unit, offset: DpOffset, properties: PopupProperties, content: @Composable () -> Unit, )` |
-| 327 |   `val density` |
-| 328 |   `val gap` |
-| 329 |   `val offsetPx` |
-| 330 |   `val provider` |
-| 331 |     `object : PopupPositionProvider` |
-| 346 | `internal fun menuPopupPosition( anchor: IntRect, window: IntSize, popup: IntSize, direction: LayoutDirection, gap: Int, ): IntOffset` |
-| 353 |   `val x` |
-| 354 |   `val below` |
-| 355 |   `val y` |
-| 364 | `private annotation class MenuPreviews` |
-| 367 | `@Composable private fun MenuPreviewTheme(content: @Composable () -> Unit)` |
-| 376 | `@Composable private fun GalleryItems()` |
-| 404 | `@Composable internal fun T43Gallery()` |
-| 428 | `@Composable private fun DropdownMenuPreview()` |
-| 434 | `@Composable private fun MenuItemPreview()` |
-| 438 | `@Composable private fun MenuSeparatorPreview()` |
-| 442 | `@Composable private fun MenuLabelPreview()` |
-| 448 | `@Composable private fun MenuCheckboxPreview()` |
-| 457 | `@Composable private fun ContextMenuPreview()` |
-| 465 | `@Composable private fun PopoverPreview()` |
-| 471 | `@Composable private fun TooltipPreview()` |
-| 477 | `@Composable private fun GalleryPreview()` |
+| 82 | `private val MenuShape` |
+| 83 | `private val MenuTextStyle` |
+| 85 | `enum class CodegMenuItemVariant` |
+| 89 | `@Composable fun CodegDropdownMenu( expanded: Boolean, onDismissRequest: () -> Unit, modifier: Modifier = Modifier, offset: DpOffset = DpOffset(0.dp, 0.dp), properties: PopupProperties = PopupProperties(focusable = true), content: @Composable ColumnScope.() -> Unit, )` |
+| 103 | `@Composable private fun MenuSurface( modifier: Modifier = Modifier, contentPadding: PaddingValues = PaddingValues(4.dp), content: @Composable ColumnScope.() -> Unit, )` |
+| 108 |   `val web` |
+| 126 | `@Composable fun CodegMenuItem( text: @Composable () -> Unit, onClick: () -> Unit, modifier: Modifier = Modifier, leadingIcon: (@Composable () -> Unit)? = null, trailingIcon: (@Composable () -> Unit)? = null, shortcut: String? = null, enabled: Boolean = true, variant: CodegMenuItemVariant = CodegMenuItemVariant.Default, )` |
+| 136 |   `val interactions` |
+| 146 | `@Composable private fun MenuRow( text: @Composable () -> Unit, modifier: Modifier, interactions: MutableInteractionSource, enabled: Boolean, variant: CodegMenuItemVariant, leadingIcon: (@Composable () -> Unit)?, trailingIcon: (@Composable () -> Unit)?, shortcut: String?, )` |
+| 156 |   `val web` |
+| 157 |   `val pressed by interactions.collectIsPressedAsState()` |
+| 158 |   `val focused by interactions.collectIsFocusedAsState()` |
+| 159 |   `val hovered by interactions.collectIsHoveredAsState()` |
+| 160 |   `val active` |
+| 161 |   `val foreground` |
+| 188 | `@Composable fun CodegMenuCheckboxItem( checked: Boolean, onCheckedChange: (Boolean) -> Unit, text: @Composable () -> Unit, modifier: Modifier = Modifier, enabled: Boolean = true, leadingIcon: (@Composable () -> Unit)? = null, )` |
+| 196 |   `val interactions` |
+| 214 | `@Composable fun CodegMenuSeparator(modifier: Modifier = Modifier)` |
+| 215 |   `val bleed` |
+| 230 | `@Composable fun CodegMenuLabel(text: @Composable () -> Unit, modifier: Modifier = Modifier)` |
+| 240 | `@Composable fun CodegContextMenu( menu: @Composable ColumnScope.(() -> Unit) -> Unit, modifier: Modifier = Modifier, enabled: Boolean = true, content: @Composable () -> Unit, )` |
+| 246 |   `var expanded by remember` |
+| 247 |   `val dismiss` |
+| 257 | `@Composable fun CodegPopover( expanded: Boolean, onDismissRequest: () -> Unit, modifier: Modifier = Modifier, offset: DpOffset = DpOffset(0.dp, 0.dp), properties: PopupProperties = PopupProperties(focusable = true), content: @Composable ColumnScope.() -> Unit, )` |
+| 274 | `@Composable fun CodegTooltip( text: String, modifier: Modifier = Modifier, enabled: Boolean = true, content: @Composable () -> Unit, )` |
+| 280 |   `var expanded by remember` |
+| 281 |   `val accessibility` |
+| 300 | `@Composable private fun TooltipSurface(text: String)` |
+| 301 |   `val web` |
+| 311 | `@Composable private fun Modifier.longPressMenu(enabled: Boolean, onLongPress: () -> Unit): Modifier` |
+| 313 |   `val currentOnLongPress by rememberUpdatedState(onLongPress)` |
+| 332 | `@Composable private fun MenuPopup( expanded: Boolean, onDismissRequest: () -> Unit, offset: DpOffset, properties: PopupProperties, content: @Composable () -> Unit, )` |
+| 339 |   `val density` |
+| 340 |   `val gap` |
+| 341 |   `val offsetPx` |
+| 342 |   `val provider` |
+| 343 |     `object : PopupPositionProvider` |
+| 358 | `internal fun menuPopupPosition( anchor: IntRect, window: IntSize, popup: IntSize, direction: LayoutDirection, gap: Int, ): IntOffset` |
+| 365 |   `val x` |
+| 366 |   `val below` |
+| 367 |   `val y` |
+| 376 | `private annotation class MenuPreviews` |
+| 379 | `@Composable private fun MenuPreviewTheme(content: @Composable () -> Unit)` |
+| 388 | `@Composable private fun GalleryItems()` |
+| 416 | `@Composable internal fun T43Gallery()` |
+| 440 | `@Composable private fun DropdownMenuPreview()` |
+| 446 | `@Composable private fun MenuItemPreview()` |
+| 450 | `@Composable private fun MenuSeparatorPreview()` |
+| 454 | `@Composable private fun MenuLabelPreview()` |
+| 460 | `@Composable private fun MenuCheckboxPreview()` |
+| 469 | `@Composable private fun ContextMenuPreview()` |
+| 477 | `@Composable private fun PopoverPreview()` |
+| 483 | `@Composable private fun TooltipPreview()` |
+| 492 | `@Composable private fun GalleryPreview()` |
 
 ## core/designsystem/component/StateViews.kt
 

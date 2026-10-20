@@ -43,6 +43,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -51,6 +52,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.layout.layout
 import androidx.compose.ui.platform.LocalAccessibilityManager
 import androidx.compose.ui.platform.LocalDensity
@@ -288,33 +290,43 @@ fun CodegTooltip(
     }
     Box(modifier.longPressMenu(enabled) { expanded = true }) {
         content()
-        MenuPopup(expanded && enabled, { expanded = false }, DpOffset.Zero, PopupProperties()) {
-            val web = CodegTheme.colors.web
-            Text(
-                text, modifier = Modifier.widthIn(max = 320.dp)
-                    .background(web.foreground, CodegShapes.medium)
-                    .padding(horizontal = 12.dp, vertical = 6.dp),
-                color = web.background, fontSize = 12.sp, lineHeight = 16.sp,
-            )
+        MenuPopup(expanded && enabled, { expanded = false }, DpOffset.Zero, PopupProperties(focusable = true)) {
+            TooltipSurface(text)
         }
     }
 }
 
-private fun Modifier.longPressMenu(enabled: Boolean, onLongPress: () -> Unit): Modifier =
-    if (!enabled) this else this
-        .semantics { onLongClick { onLongPress(); true } }
-        .pointerInput(onLongPress) {
+@Composable
+private fun TooltipSurface(text: String) {
+    val web = CodegTheme.colors.web
+    Text(
+        text, modifier = Modifier.widthIn(max = 320.dp)
+            .background(web.foreground, CodegShapes.medium)
+            .padding(horizontal = 12.dp, vertical = 6.dp),
+        color = web.background, fontSize = 12.sp, lineHeight = 16.sp,
+    )
+}
+
+@Composable
+private fun Modifier.longPressMenu(enabled: Boolean, onLongPress: () -> Unit): Modifier {
+    // Showing the popup recomposes the anchor; keep the active gesture alive across that change.
+    val currentOnLongPress by rememberUpdatedState(onLongPress)
+    return if (!enabled) this else this
+        .semantics { onLongClick { currentOnLongPress(); true } }
+        .pointerInput(Unit) {
             awaitEachGesture {
                 val down = awaitFirstDown(requireUnconsumed = false)
                 if (awaitLongPressOrCancellation(down.id) != null) {
-                    onLongPress()
+                    currentOnLongPress()
                     do {
-                        val event = awaitPointerEvent()
+                        // Consume before child click handlers see release, avoiding an accidental click.
+                        val event = awaitPointerEvent(PointerEventPass.Initial)
                         event.changes.forEach { it.consume() }
                     } while (event.changes.any { it.pressed })
                 }
             }
         }
+}
 
 @Composable
 private fun MenuPopup(
@@ -469,7 +481,10 @@ private fun PopoverPreview() = MenuPreviewTheme {
 @MenuPreviews
 @Composable
 private fun TooltipPreview() = MenuPreviewTheme {
-    CodegTooltip(stringResource(R.string.ds_menus_tooltip)) { Text(stringResource(R.string.ds_menus_tooltip)) }
+    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+        TooltipSurface(stringResource(R.string.ds_menus_tooltip))
+        CodegTooltip(stringResource(R.string.ds_menus_tooltip)) { Text(stringResource(R.string.ds_menus_context)) }
+    }
 }
 
 @MenuPreviews
