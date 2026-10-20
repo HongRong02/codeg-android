@@ -525,7 +525,7 @@ Source root: `app/src/main/java/app/codeg/android/`
 
 | Line | Declaration |
 |---|---|
-| 13 | `data class ConversationSummary( val id: Int, val folderId: Int, val title: String? = null, val agentType: AgentType, val status: ConversationStatus, val model: String? = null, val gitBranch: String? = null, val externalId: String? = null, val messageCount: Int = 0, @Serializable(with = InstantSerializer::class) val createdAt: Instant, @Serializable(with = InstantSerializer::class) val updatedAt: Instant, /** Server `pinned_at`, or null when not pinned. Pinning does NOT bump * `updated_at` — the "Pinned" group sorts by this instead. */ @Serializable(with = InstantSerializer::class) val pinnedAt: Instant? = null, )` |
+| 13 | `data class ConversationSummary( val id: Int, val folderId: Int, val title: String? = null, val agentType: AgentType, val status: ConversationStatus, val model: String? = null, val gitBranch: String? = null, val externalId: String? = null, val messageCount: Int = 0, @Serializable(with = InstantSerializer::class) val createdAt: Instant, @Serializable(with = InstantSerializer::class) val updatedAt: Instant, /** Server `pinned_at`, or null when not pinned. Pinning does NOT bump * `updated_at` — the "Pinned" group sorts by this instead. */ @Serializable(with = InstantSerializer::class) val pinnedAt: Instant? = null, val tagIds: List<Int>? = null, )` |
 | 14 |   `val id: Int` |
 | 15 |   `val folderId: Int` |
 | 16 |   `val title: String?` |
@@ -538,26 +538,27 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 24 |   `val createdAt: Instant` |
 | 26 |   `val updatedAt: Instant` |
 | 30 |   `val pinnedAt: Instant?` |
-| 35 |   `val trimmedTitle: String?` |
-| 38 |   `val isPinned: Boolean get()` |
-| 43 | `data class SessionStats( val totalUsage: TurnUsage? = null, val totalTokens: Int? = null, val totalDurationMs: Int = 0, val contextWindowUsedTokens: Int? = null, val contextWindowMaxTokens: Int? = null, val contextWindowUsagePercent: Double? = null, )` |
-| 44 |   `val totalUsage: TurnUsage?` |
-| 45 |   `val totalTokens: Int?` |
-| 46 |   `val totalDurationMs: Int` |
-| 47 |   `val contextWindowUsedTokens: Int?` |
-| 48 |   `val contextWindowMaxTokens: Int?` |
-| 49 |   `val contextWindowUsagePercent: Double?` |
-| 58 | `data class ConversationDetail( val summary: ConversationSummary, val turns: List<MessageTurn> = emptyList(), val sessionStats: SessionStats? = null, val inFlightUserTurnId: String? = null, )` |
-| 59 |   `val summary: ConversationSummary` |
-| 60 |   `val turns: List<MessageTurn>` |
-| 61 |   `val sessionStats: SessionStats?` |
-| 62 |   `val inFlightUserTurnId: String?` |
-| 68 | `data class ConversationConnectionInfo( val connectionId: String, val eventSeq: Long = 0, )` |
-| 69 |   `val connectionId: String` |
-| 70 |   `val eventSeq: Long` |
-| 75 | `data class HealthResponse( val status: String, val version: String, )` |
-| 76 |   `val status: String` |
-| 77 |   `val version: String` |
+| 31 |   `val tagIds: List<Int>?` |
+| 36 |   `val trimmedTitle: String?` |
+| 39 |   `val isPinned: Boolean get()` |
+| 44 | `data class SessionStats( val totalUsage: TurnUsage? = null, val totalTokens: Int? = null, val totalDurationMs: Int = 0, val contextWindowUsedTokens: Int? = null, val contextWindowMaxTokens: Int? = null, val contextWindowUsagePercent: Double? = null, )` |
+| 45 |   `val totalUsage: TurnUsage?` |
+| 46 |   `val totalTokens: Int?` |
+| 47 |   `val totalDurationMs: Int` |
+| 48 |   `val contextWindowUsedTokens: Int?` |
+| 49 |   `val contextWindowMaxTokens: Int?` |
+| 50 |   `val contextWindowUsagePercent: Double?` |
+| 59 | `data class ConversationDetail( val summary: ConversationSummary, val turns: List<MessageTurn> = emptyList(), val sessionStats: SessionStats? = null, val inFlightUserTurnId: String? = null, )` |
+| 60 |   `val summary: ConversationSummary` |
+| 61 |   `val turns: List<MessageTurn>` |
+| 62 |   `val sessionStats: SessionStats?` |
+| 63 |   `val inFlightUserTurnId: String?` |
+| 69 | `data class ConversationConnectionInfo( val connectionId: String, val eventSeq: Long = 0, )` |
+| 70 |   `val connectionId: String` |
+| 71 |   `val eventSeq: Long` |
+| 76 | `data class HealthResponse( val status: String, val version: String, )` |
+| 77 |   `val status: String` |
+| 78 |   `val version: String` |
 
 ## core/model/ConversationStatus.kt
 
@@ -570,6 +571,17 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 38 |   `object ConversationStatusSerializer : KSerializer<ConversationStatus>` |
 | 42 |     `override fun serialize(encoder: Encoder, value: ConversationStatus)` |
 | 45 |     `override fun deserialize(decoder: Decoder): ConversationStatus` |
+
+## core/model/ConversationTag.kt
+
+| Line | Declaration |
+|---|---|
+| 6 | `data class ConversationTag( val id: Int, val name: String, val color: String, val folderId: Int? = null, val sortOrder: Int = 0, )` |
+| 7 |   `val id: Int` |
+| 8 |   `val name: String` |
+| 9 |   `val color: String` |
+| 10 |   `val folderId: Int?` |
+| 11 |   `val sortOrder: Int` |
 
 ## core/model/FileViewer.kt
 
@@ -588,7 +600,7 @@ Source root: `app/src/main/java/app/codeg/android/`
 
 | Line | Declaration |
 |---|---|
-| 16 | `data class FolderDetail( val id: Int, val name: String, val path: String, val gitBranch: String? = null, val defaultAgentType: AgentType? = null, @Serializable(with = InstantSerializer::class) val lastOpenedAt: Instant? = null, val sortOrder: Int = 0, val color: String = "", val parentId: Int? = null, val isChat: Boolean = false, )` |
+| 16 | `data class FolderDetail( val id: Int, val name: String, val path: String, val gitBranch: String? = null, val defaultAgentType: AgentType? = null, @Serializable(with = InstantSerializer::class) val lastOpenedAt: Instant? = null, val sortOrder: Int = 0, val color: String = "", val parentId: Int? = null, val isChat: Boolean = false, val alias: String? = null, val groupId: Int? = null, )` |
 | 17 |   `val id: Int` |
 | 18 |   `val name: String` |
 | 19 |   `val path: String` |
@@ -599,6 +611,14 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 25 |   `val color: String` |
 | 26 |   `val parentId: Int?` |
 | 27 |   `val isChat: Boolean` |
+| 28 |   `val alias: String?` |
+| 29 |   `val groupId: Int?` |
+
+## core/model/FolderGroup.kt
+
+| Line | Declaration |
+|---|---|
+| 6 | `data class FolderGroup(val id: Int, val name: String, val color: String = "inherit", val sortOrder: Int = 0)` |
 
 ## core/model/FolderVisibility.kt
 
@@ -615,6 +635,28 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 54 |     `data class NavigateExternal(val path: String, val rootId: Int) : BranchSwitchPlan` |
 | 59 |     `data class CheckoutInRoot(val root: FolderDetail) : BranchSwitchPlan` |
 | 67 |   `fun planBranchSwitch( active: FolderDetail, resolution: WorktreeResolution?, allFolders: List<FolderDetail>, isRemote: Boolean, ): BranchSwitchPlan` |
+
+## core/model/Forge.kt
+
+| Line | Declaration |
+|---|---|
+| 8 | `data class ForgeRemote(val server_host: String, val owner_repo: String, val provider: String, val supported: Boolean = true)` |
+| 9 |   `fun sourceKey(row: ForgeIssueRow): String` |
+| 13 | `data class ForgeLabel(val name: String)` |
+| 15 | `data class ForgeLabelList(val labels: List<ForgeLabel> = emptyList(), val truncated: Boolean = false)` |
+| 17 | `data class ForgeIssueRow( val number: Long, val title: String, val body: String? = null, val state: String = "open", val draft: Boolean = false, val labels: List<ForgeLabel> = emptyList(), val author: String? = null, val updated_at: String? = null, val html_url: String = "", val is_pr: Boolean = false, )` |
+| 18 |   `val number: Long, val title: String, val body: String?` |
+| 19 |   `val draft: Boolean` |
+| 20 |   `val updated_at: String?` |
+| 23 | `data class ForgeIssueList(val rows: List<ForgeIssueRow> = emptyList(), val page: Int = 1, val has_next: Boolean = false, val total_count: Long? = null, val incomplete: Boolean = false)` |
+| 25 | `data class ForgeComment(val id: String, val body: String, val author: String? = null, val created_at: String? = null)` |
+| 27 | `data class ForgeCommentList(val comments: List<ForgeComment> = emptyList(), val page: Int = 1, val has_next: Boolean = false)` |
+| 29 | `data class ForgeChangeDetail(val number: Long, val base_ref: String, val head_ref: String, val head_sha: String? = null, val state: String, val draft: Boolean = false, val mergeable: Boolean? = null, val merge_state: String? = null)` |
+| 31 | `data class ForgeChangedFile(val path: String, val patch: String? = null, val binary: Boolean = false)` |
+| 33 | `data class ForgeChangedFileList(val files: List<ForgeChangedFile> = emptyList(), val page: Int = 1, val has_next: Boolean = false)` |
+| 35 | `data class ForgeMergeOptions(val methods: List<String> = emptyList(), val default_method: String = "merge", val merge_strategy: String = "merge_commit")` |
+| 37 | `data class ForgeTaskLink(val source_key: String, val task_id: Int)` |
+| 39 | `data class ForgeCreateResult(val outcome: String, val task: JsonObject? = null, val existing: JsonObject? = null)` |
 
 ## core/model/Git.kt
 
@@ -1019,6 +1061,162 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 9 |   `val message: String` |
 | 10 |   `val date: String` |
 
+## core/model/wire/AutomationRequests.kt
+
+| Line | Declaration |
+|---|---|
+| 6 | `data class GetAutomationBody( val id: Int, )` |
+| 7 |   `val id: Int` |
+| 11 | `data class ListRunsBody( val automationId: Int, val limit: Long = 100, )` |
+| 12 |   `val automationId: Int` |
+| 13 |   `val limit: Long` |
+| 17 | `data class SetEnabledBody( val id: Int, val enabled: Boolean, )` |
+| 18 |   `val id: Int` |
+| 19 |   `val enabled: Boolean` |
+| 23 | `data class AutomationDraft( val name: String, val enabled: Boolean = true, @kotlinx.serialization.SerialName("trigger_kind") val triggerKind: app.codeg.android.core.model.TriggerKind, val cron: String? = null, val timezone: String, @kotlinx.serialization.SerialName("agent_type") val agentType: app.codeg.android.core.model.AgentType, @kotlinx.serialization.SerialName("root_folder_id") val rootFolderId: Int, val isolation: app.codeg.android.core.model.IsolationMode, val branch: String? = null, @kotlinx.serialization.SerialName("is_remote_branch") val isRemoteBranch: Boolean = false, val config: kotlinx.serialization.json.JsonObject, )` |
+| 24 |   `val name: String` |
+| 25 |   `val enabled: Boolean` |
+| 27 |   `val cron: String?` |
+| 28 |   `val timezone: String` |
+| 31 |   `val isolation: app.codeg.android.core.model.IsolationMode` |
+| 32 |   `val branch: String?` |
+| 34 |   `val config: kotlinx.serialization.json.JsonObject` |
+
+## core/model/wire/BranchManageRequests.kt
+
+| Line | Declaration |
+|---|---|
+| 7 | `data class BranchManageListBody(val path: String)` |
+| 9 | `data class BranchDeleteBody(val path: String, val branchName: String, val force: Boolean)` |
+| 11 | `data class BranchRemoteDeleteBody(val path: String, val remote: String, val branch: String, val credentials: GitCredentials? = null)` |
+| 13 | `data class BranchUpdateBody(val path: String, val branch: String, val isRemote: Boolean, val credentials: GitCredentials? = null)` |
+| 15 | `data class BranchCompareBody(val path: String, val branch: String, val file: String? = null)` |
+
+## core/model/wire/ConversationTagRequests.kt
+
+| Line | Declaration |
+|---|---|
+| 6 | `data class CreateConversationTagRequest(val name: String, val color: String, val folderId: Int? = null)` |
+| 9 | `data class UpdateConversationTagRequest(val tagId: Int, val name: String, val color: String)` |
+| 12 | `data class ConversationTagIdRequest(val tagId: Int)` |
+| 15 | `data class UpdateConversationTagsRequest(val conversationId: Int, val add: List<Int>, val remove: List<Int>)` |
+
+## core/model/wire/FileViewerRequests.kt
+
+| Line | Declaration |
+|---|---|
+| 6 | `data class ReadFileBase64Request(val path: String, val maxBytes: Long)` |
+| 9 | `data class GitShowFileRequest(val path: String, val file: String, val refName: String, val maxBytes: Long? = null)` |
+
+## core/model/wire/FolderGroupRequests.kt
+
+| Line | Declaration |
+|---|---|
+| 6 | `data class CreateFolderGroupBody(val name: String)` |
+| 8 | `data class UpdateFolderGroupBody(val groupId: Int, val name: String)` |
+| 10 | `data class FolderGroupIdBody(val groupId: Int)` |
+| 12 | `data class SetFolderGroupBody(val folderId: Int, val groupId: Int?)` |
+| 14 | `data class UpdateFolderAliasBody(val folderId: Int, val alias: String?)` |
+| 16 | `data class UpdateFolderColorBody(val folderId: Int, val color: String)` |
+
+## core/model/wire/ForgeRequests.kt
+
+| Line | Declaration |
+|---|---|
+| 8 | `fun forgeRequest(folderId: Int, key: String? = null, value: JsonObject = buildJsonObject {}): JsonObject` |
+| 13 | `fun forgeTaskDraft(folderId: Int, remote: ForgeRemote, row: ForgeIssueRow): JsonObject` |
+
+## core/model/wire/GitMiscRequests.kt
+
+| Line | Declaration |
+|---|---|
+| 7 | `data class GitMiscRemoteRequest(val path: String, val name: String, val url: String? = null, val credentials: GitCredentials? = null)` |
+| 9 | `data class GitMiscWorktreeAddRequest(val path: String, val branchName: String, val worktreePath: String, val base: String? = null)` |
+| 11 | `data class GitMiscWorktreeRemoveRequest(val path: String, val branchName: String, val sourceFolderId: Int, val deleteBranch: Boolean = false, val force: Boolean = false)` |
+
+## core/model/wire/InstantSerializer.kt
+
+| Line | Declaration |
+|---|---|
+| 21 | `object Rfc3339` |
+| 22 |   `fun parse(raw: String): Instant?` |
+| 38 | `object InstantSerializer : KSerializer<Instant>` |
+| 39 |   `override val descriptor` |
+| 42 |   `override fun serialize(encoder: Encoder, value: Instant)` |
+| 46 |   `override fun deserialize(decoder: Decoder): Instant` |
+
+## core/model/wire/JsonExt.kt
+
+| Line | Declaration |
+|---|---|
+| 23 | `internal fun JsonObject.stringOrNull(key: String): String?` |
+| 24 |   `val p` |
+| 29 | `internal fun JsonObject.nonEmptyString(key: String): String?` |
+| 32 | `internal fun JsonObject.intOrNull(key: String): Int?` |
+| 35 | `internal fun JsonObject.longOrNull(key: String): Long?` |
+| 38 | `internal fun JsonObject.boolOrNull(key: String): Boolean?` |
+| 41 | `internal fun JsonObject.objectOrNull(key: String): JsonObject?` |
+| 44 | `internal fun JsonObject.arrayOrNull(key: String): JsonArray?` |
+| 47 | `internal fun JsonElement.asObjectOrNull(): JsonObject?` |
+
+## core/model/wire/MergeOpsRequests.kt
+
+| Line | Declaration |
+|---|---|
+
+## core/model/wire/ServerLogsRequests.kt
+
+| Line | Declaration |
+|---|---|
+| 6 | `data class RecentServerLogsBody(val limit: Int = 500, val minLevel: String? = null)` |
+| 9 | `data class ReadServerLogBody(val name: String, val maxBytes: Int = 262144)` |
+| 12 | `data class ServerTokenReportBody(val filter: ServerTokenFilter)` |
+| 15 | `data class ServerTokenFilter( val start: String? = null, val end: String, val bucket: String = "day", val tzOffsetMinutes: Int, )` |
+| 16 |   `val start: String?` |
+| 17 |   `val end: String` |
+| 18 |   `val bucket: String` |
+| 19 |   `val tzOffsetMinutes: Int` |
+
+## core/model/wire/SessionForkRequests.kt
+
+| Line | Declaration |
+|---|---|
+| 7 | `data class SessionForkRequest( val connectionId: String, val conversationId: Int?, val folderId: Int?, )` |
+| 8 |   `val connectionId: String` |
+| 9 |   `val conversationId: Int?` |
+| 10 |   `val folderId: Int?` |
+| 14 | `data class SessionDisconnectRequest(val connectionId: String)` |
+| 17 | `data class SessionPreflightRequest(val agentType: AgentType, val forceRefresh: Boolean = false)` |
+
+## core/model/wire/StashRequests.kt
+
+| Line | Declaration |
+|---|---|
+| 6 | `data class StashPathRequest(val path: String)` |
+| 8 | `data class StashPushRequest(val path: String, val message: String? = null, val keepIndex: Boolean = false)` |
+| 10 | `data class StashRefRequest(val path: String, val stashRef: String)` |
+
+## core/model/wire/WorkTaskRequests.kt
+
+| Line | Declaration |
+|---|---|
+| 6 | `data class WorkTaskListBody(val folderId: Int? = null)` |
+| 8 | `data class WorkTaskIdBody(val id: Int)` |
+| 10 | `data class WorkTaskEventsBody(val taskId: Int, val limit: Long = 500)` |
+| 12 | `data class WorkTaskDiffBody(val id: Int, val file: String? = null)` |
+| 15 | `data class WorkTaskDraft( @kotlinx.serialization.SerialName("folder_id") val folderId: Int, val title: String, val config: kotlinx.serialization.json.JsonObject, )` |
+| 17 |   `val title: String` |
+| 18 |   `val config: kotlinx.serialization.json.JsonObject` |
+| 21 | `data class WorkTaskSaveBody(val draft: WorkTaskDraft, val id: Int? = null)` |
+| 23 | `data class WorkTaskReorderBody(val folderId: Int, val orderedIds: List<Int>)` |
+| 25 | `data class WorkTaskActionBody( val id: Int, val deleteWorktree: Boolean, val feedback: String? = null, val scheduledAt: String? = null, val archived: Boolean? = null, val deferred: Boolean? = null, )` |
+| 26 |   `val id: Int` |
+| 27 |   `val deleteWorktree: Boolean` |
+| 28 |   `val feedback: String?` |
+| 29 |   `val scheduledAt: String?` |
+| 30 |   `val archived: Boolean?` |
+| 31 |   `val deferred: Boolean?` |
+
 ## core/model/WireRequests.kt
 
 | Line | Declaration |
@@ -1235,124 +1433,3 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 44 | `fun Throwable.isWorkTasksUnsupported(): Boolean` |
 | 50 | `data class WorkTaskTemplate(val id: Int, val name: String, val title: String, val config: kotlinx.serialization.json.JsonObject)` |
 | 51 |   `val config: kotlinx.serialization.json.JsonObject)` |
-
-## core/model/wire/AutomationRequests.kt
-
-| Line | Declaration |
-|---|---|
-| 6 | `data class GetAutomationBody( val id: Int, )` |
-| 7 |   `val id: Int` |
-| 11 | `data class ListRunsBody( val automationId: Int, val limit: Long = 100, )` |
-| 12 |   `val automationId: Int` |
-| 13 |   `val limit: Long` |
-| 17 | `data class SetEnabledBody( val id: Int, val enabled: Boolean, )` |
-| 18 |   `val id: Int` |
-| 19 |   `val enabled: Boolean` |
-
-## core/model/wire/BranchManageRequests.kt
-
-| Line | Declaration |
-|---|---|
-| 7 | `data class BranchManageListBody(val path: String)` |
-| 9 | `data class BranchDeleteBody(val path: String, val branchName: String, val force: Boolean)` |
-| 11 | `data class BranchRemoteDeleteBody(val path: String, val remote: String, val branch: String, val credentials: GitCredentials? = null)` |
-| 13 | `data class BranchUpdateBody(val path: String, val branch: String, val isRemote: Boolean, val credentials: GitCredentials? = null)` |
-| 15 | `data class BranchCompareBody(val path: String, val branch: String, val file: String? = null)` |
-
-## core/model/wire/FileViewerRequests.kt
-
-| Line | Declaration |
-|---|---|
-| 6 | `data class ReadFileBase64Request(val path: String, val maxBytes: Long)` |
-| 9 | `data class GitShowFileRequest(val path: String, val file: String, val refName: String, val maxBytes: Long? = null)` |
-
-## core/model/wire/GitMiscRequests.kt
-
-| Line | Declaration |
-|---|---|
-| 7 | `data class GitMiscRemoteRequest(val path: String, val name: String, val url: String? = null, val credentials: GitCredentials? = null)` |
-| 9 | `data class GitMiscWorktreeAddRequest(val path: String, val branchName: String, val worktreePath: String, val base: String? = null)` |
-| 11 | `data class GitMiscWorktreeRemoveRequest(val path: String, val branchName: String, val sourceFolderId: Int, val deleteBranch: Boolean = false, val force: Boolean = false)` |
-
-## core/model/wire/InstantSerializer.kt
-
-| Line | Declaration |
-|---|---|
-| 21 | `object Rfc3339` |
-| 22 |   `fun parse(raw: String): Instant?` |
-| 38 | `object InstantSerializer : KSerializer<Instant>` |
-| 39 |   `override val descriptor` |
-| 42 |   `override fun serialize(encoder: Encoder, value: Instant)` |
-| 46 |   `override fun deserialize(decoder: Decoder): Instant` |
-
-## core/model/wire/JsonExt.kt
-
-| Line | Declaration |
-|---|---|
-| 23 | `internal fun JsonObject.stringOrNull(key: String): String?` |
-| 24 |   `val p` |
-| 29 | `internal fun JsonObject.nonEmptyString(key: String): String?` |
-| 32 | `internal fun JsonObject.intOrNull(key: String): Int?` |
-| 35 | `internal fun JsonObject.longOrNull(key: String): Long?` |
-| 38 | `internal fun JsonObject.boolOrNull(key: String): Boolean?` |
-| 41 | `internal fun JsonObject.objectOrNull(key: String): JsonObject?` |
-| 44 | `internal fun JsonObject.arrayOrNull(key: String): JsonArray?` |
-| 47 | `internal fun JsonElement.asObjectOrNull(): JsonObject?` |
-
-## core/model/wire/MergeOpsRequests.kt
-
-| Line | Declaration |
-|---|---|
-
-## core/model/wire/ServerLogsRequests.kt
-
-| Line | Declaration |
-|---|---|
-| 6 | `data class RecentServerLogsBody(val limit: Int = 500, val minLevel: String? = null)` |
-| 9 | `data class ReadServerLogBody(val name: String, val maxBytes: Int = 262144)` |
-| 12 | `data class ServerTokenReportBody(val filter: ServerTokenFilter)` |
-| 15 | `data class ServerTokenFilter( val start: String? = null, val end: String, val bucket: String = "day", val tzOffsetMinutes: Int, )` |
-| 16 |   `val start: String?` |
-| 17 |   `val end: String` |
-| 18 |   `val bucket: String` |
-| 19 |   `val tzOffsetMinutes: Int` |
-
-## core/model/wire/SessionForkRequests.kt
-
-| Line | Declaration |
-|---|---|
-| 7 | `data class SessionForkRequest( val connectionId: String, val conversationId: Int?, val folderId: Int?, )` |
-| 8 |   `val connectionId: String` |
-| 9 |   `val conversationId: Int?` |
-| 10 |   `val folderId: Int?` |
-| 14 | `data class SessionDisconnectRequest(val connectionId: String)` |
-| 17 | `data class SessionPreflightRequest(val agentType: AgentType, val forceRefresh: Boolean = false)` |
-
-## core/model/wire/StashRequests.kt
-
-| Line | Declaration |
-|---|---|
-| 6 | `data class StashPathRequest(val path: String)` |
-| 8 | `data class StashPushRequest(val path: String, val message: String? = null, val keepIndex: Boolean = false)` |
-| 10 | `data class StashRefRequest(val path: String, val stashRef: String)` |
-
-## core/model/wire/WorkTaskRequests.kt
-
-| Line | Declaration |
-|---|---|
-| 6 | `data class WorkTaskListBody(val folderId: Int? = null)` |
-| 8 | `data class WorkTaskIdBody(val id: Int)` |
-| 10 | `data class WorkTaskEventsBody(val taskId: Int, val limit: Long = 500)` |
-| 12 | `data class WorkTaskDiffBody(val id: Int, val file: String? = null)` |
-| 15 | `data class WorkTaskDraft( @kotlinx.serialization.SerialName("folder_id") val folderId: Int, val title: String, val config: kotlinx.serialization.json.JsonObject, )` |
-| 17 |   `val title: String` |
-| 18 |   `val config: kotlinx.serialization.json.JsonObject` |
-| 21 | `data class WorkTaskSaveBody(val draft: WorkTaskDraft, val id: Int? = null)` |
-| 23 | `data class WorkTaskReorderBody(val folderId: Int, val orderedIds: List<Int>)` |
-| 25 | `data class WorkTaskActionBody( val id: Int, val deleteWorktree: Boolean, val feedback: String? = null, val scheduledAt: String? = null, val archived: Boolean? = null, val deferred: Boolean? = null, )` |
-| 26 |   `val id: Int` |
-| 27 |   `val deleteWorktree: Boolean` |
-| 28 |   `val feedback: String?` |
-| 29 |   `val scheduledAt: String?` |
-| 30 |   `val archived: Boolean?` |
-| 31 |   `val deferred: Boolean?` |

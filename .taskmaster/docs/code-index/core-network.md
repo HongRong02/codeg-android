@@ -181,37 +181,70 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 1060 |   `suspend fun automationGet(id: Int): Automation` |
 | 1063 |   `suspend fun automationRuns(automationId: Int, limit: Long = 100): List<AutomationRun>` |
 | 1066 |   `suspend fun automationSetEnabled(id: Int, enabled: Boolean): Automation` |
-| 1072 |   `suspend fun gitStashList(path: String): List<app.codeg.android.core.model.StashEntry>` |
-| 1075 |   `suspend fun gitStashShow(path: String, ref: String): List<GitStatusEntry>` |
-| 1078 |   `suspend fun gitStashPush(path: String, message: String?, keepIndex: Boolean): String` |
-| 1081 |   `suspend fun gitStashApply(path: String, ref: String): String` |
-| 1084 |   `suspend fun gitStashPop(path: String, ref: String): String` |
-| 1087 |   `suspend fun gitStashDrop(path: String, ref: String): String` |
-| 1090 |   `suspend fun gitStashClear(path: String): String` |
-| 1097 |   `suspend fun workTaskList(): List<app.codeg.android.core.model.WorkTask>` |
-| 1100 |   `suspend fun workTaskAttentionCount(): Long` |
-| 1103 |   `suspend fun workTaskGet(id: Int): app.codeg.android.core.model.WorkTask` |
-| 1106 |   `suspend fun workTaskEvents(id: Int): List<app.codeg.android.core.model.WorkTaskEvent>` |
-| 1109 |   `suspend fun workTaskChangedFiles(id: Int): List<app.codeg.android.core.model.WorkTaskChangedFile>` |
-| 1112 |   `suspend fun workTaskDiff(id: Int, file: String? = null): String` |
-| 1115 |   `suspend fun workTaskSave(body: app.codeg.android.core.model.wire.WorkTaskSaveBody): app.codeg.android.core.model.WorkTask` |
-| 1118 |   `suspend fun workTaskStartAll()` |
-| 1120 |   `suspend fun workTaskReorder(body: app.codeg.android.core.model.wire.WorkTaskReorderBody)` |
-| 1124 |   `suspend fun workTaskAction(action: String, body: app.codeg.android.core.model.wire.WorkTaskActionBody)` |
-| 1130 |   `suspend fun workTaskTemplates(): List<app.codeg.android.core.model.WorkTaskTemplate>` |
-| 1137 |   `suspend fun recentServerLogs(minLevel: String? = null): List<app.codeg.android.core.model.ServerLogRecord>` |
-| 1141 |   `suspend fun serverLogFiles(): List<app.codeg.android.core.model.ServerLogFile>` |
-| 1144 |   `suspend fun readServerLog(name: String): String` |
-| 1147 |   `suspend fun serverConversationStats(): app.codeg.android.core.model.ServerConversationStats` |
-| 1150 |   `suspend fun serverTokenReport(filter: app.codeg.android.core.model.wire.ServerTokenFilter): app.codeg.android.core.model.ServerTokenReport` |
-| 1162 |   `private suspend fun send(path: String, bodyJson: String): String` |
-| 1196 |   `private inline fun <reified T> encode(body: T): String` |
-| 1199 |   `private fun <T> decode(text: String, deserializer: DeserializationStrategy<T>): T` |
-| 1205 |   `companion object` |
-| 1207 |     `fun normalizeBaseUrl(raw: String): String` |
-| 1215 |     `fun decodeConnectionId(text: String): String` |
-| 1231 |     `fun decodeAgentList(text: String): List<AcpAgentInfo>` |
-| 1248 |     `fun isJsonNull(text: String): Boolean` |
+| 1069 |   `suspend fun automationCreate(draft: app.codeg.android.core.model.wire.AutomationDraft): Automation` |
+| 1071 |   `suspend fun automationUpdate(id: Int, draft: app.codeg.android.core.model.wire.AutomationDraft): Automation` |
+| 1073 |   `suspend fun automationDelete(id: Int)` |
+| 1074 |   `suspend fun automationMarkSeen()` |
+| 1075 |   `suspend fun automationComputeNextRun(cron: String, timezone: String): String` |
+| 1077 |   `suspend fun automationRunNow(id: Int)` |
+| 1078 |   `suspend fun automationCancelRun(id: Int)` |
+| 1083 |   `suspend fun gitStashList(path: String): List<app.codeg.android.core.model.StashEntry>` |
+| 1086 |   `suspend fun gitStashShow(path: String, ref: String): List<GitStatusEntry>` |
+| 1089 |   `suspend fun gitStashPush(path: String, message: String?, keepIndex: Boolean): String` |
+| 1092 |   `suspend fun gitStashApply(path: String, ref: String): String` |
+| 1095 |   `suspend fun gitStashPop(path: String, ref: String): String` |
+| 1098 |   `suspend fun gitStashDrop(path: String, ref: String): String` |
+| 1101 |   `suspend fun gitStashClear(path: String): String` |
+| 1108 |   `suspend fun workTaskList(): List<app.codeg.android.core.model.WorkTask>` |
+| 1111 |   `suspend fun workTaskAttentionCount(): Long` |
+| 1114 |   `suspend fun workTaskGet(id: Int): app.codeg.android.core.model.WorkTask` |
+| 1117 |   `suspend fun workTaskEvents(id: Int): List<app.codeg.android.core.model.WorkTaskEvent>` |
+| 1120 |   `suspend fun workTaskChangedFiles(id: Int): List<app.codeg.android.core.model.WorkTaskChangedFile>` |
+| 1123 |   `suspend fun workTaskDiff(id: Int, file: String? = null): String` |
+| 1126 |   `suspend fun workTaskSave(body: app.codeg.android.core.model.wire.WorkTaskSaveBody): app.codeg.android.core.model.WorkTask` |
+| 1129 |   `suspend fun workTaskStartAll()` |
+| 1131 |   `suspend fun workTaskReorder(body: app.codeg.android.core.model.wire.WorkTaskReorderBody)` |
+| 1135 |   `suspend fun workTaskAction(action: String, body: app.codeg.android.core.model.wire.WorkTaskActionBody)` |
+| 1141 |   `suspend fun workTaskTemplates(): List<app.codeg.android.core.model.WorkTaskTemplate>` |
+| 1148 |   `suspend fun recentServerLogs(minLevel: String? = null): List<app.codeg.android.core.model.ServerLogRecord>` |
+| 1152 |   `suspend fun serverLogFiles(): List<app.codeg.android.core.model.ServerLogFile>` |
+| 1155 |   `suspend fun readServerLog(name: String): String` |
+| 1158 |   `suspend fun serverConversationStats(): app.codeg.android.core.model.ServerConversationStats` |
+| 1161 |   `suspend fun serverTokenReport(filter: app.codeg.android.core.model.wire.ServerTokenFilter): app.codeg.android.core.model.ServerTokenReport` |
+| 1169 |   `suspend fun forgeRemote(body: kotlinx.serialization.json.JsonObject): app.codeg.android.core.model.ForgeRemote?` |
+| 1172 |   `suspend fun forgeIssues(body: kotlinx.serialization.json.JsonObject): app.codeg.android.core.model.ForgeIssueList` |
+| 1175 |   `suspend fun forgeLabels(body: kotlinx.serialization.json.JsonObject): app.codeg.android.core.model.ForgeLabelList` |
+| 1178 |   `suspend fun forgeComments(body: kotlinx.serialization.json.JsonObject): app.codeg.android.core.model.ForgeCommentList` |
+| 1181 |   `suspend fun forgeComment(body: kotlinx.serialization.json.JsonObject): app.codeg.android.core.model.ForgeComment` |
+| 1184 |   `suspend fun forgeState(body: kotlinx.serialization.json.JsonObject): app.codeg.android.core.model.ForgeIssueRow` |
+| 1187 |   `suspend fun forgeCreateIssue(body: kotlinx.serialization.json.JsonObject): app.codeg.android.core.model.ForgeIssueRow` |
+| 1190 |   `suspend fun forgeDetail(body: kotlinx.serialization.json.JsonObject): app.codeg.android.core.model.ForgeChangeDetail` |
+| 1193 |   `suspend fun forgeFiles(body: kotlinx.serialization.json.JsonObject): app.codeg.android.core.model.ForgeChangedFileList` |
+| 1196 |   `suspend fun forgeMergeOptions(body: kotlinx.serialization.json.JsonObject): app.codeg.android.core.model.ForgeMergeOptions` |
+| 1199 |   `suspend fun forgeMerge(body: kotlinx.serialization.json.JsonObject): app.codeg.android.core.model.ForgeIssueRow?` |
+| 1202 |   `suspend fun forgeCreateTask(body: kotlinx.serialization.json.JsonObject): app.codeg.android.core.model.ForgeCreateResult` |
+| 1205 |   `suspend fun forgeCount(body: kotlinx.serialization.json.JsonObject): Long?` |
+| 1208 |   `suspend fun forgeLookup(body: kotlinx.serialization.json.JsonObject): List<app.codeg.android.core.model.ForgeTaskLink>` |
+| 1215 |   `suspend fun listConversationTags(): List<app.codeg.android.core.model.ConversationTag>` |
+| 1219 |   `suspend fun createConversationTag(name: String, color: String): app.codeg.android.core.model.ConversationTag` |
+| 1224 |   `suspend fun updateConversationTag(id: Int, name: String, color: String): app.codeg.android.core.model.ConversationTag` |
+| 1229 |   `suspend fun deleteConversationTag(id: Int)` |
+| 1233 |   `suspend fun updateConversationTags(id: Int, add: List<Int>, remove: List<Int>): ConversationSummary` |
+| 1242 |   `suspend fun listFolderGroups(): List<app.codeg.android.core.model.FolderGroup>` |
+| 1245 |   `suspend fun createFolderGroup(name: String)` |
+| 1249 |   `suspend fun updateFolderGroup(groupId: Int, name: String)` |
+| 1253 |   `suspend fun deleteFolderGroup(groupId: Int)` |
+| 1257 |   `suspend fun setFolderGroup(folderId: Int, groupId: Int?)` |
+| 1261 |   `suspend fun updateFolderAlias(folderId: Int, alias: String?)` |
+| 1265 |   `suspend fun updateFolderColor(folderId: Int, color: String)` |
+| 1277 |   `private suspend fun send(path: String, bodyJson: String): String` |
+| 1311 |   `private inline fun <reified T> encode(body: T): String` |
+| 1314 |   `private fun <T> decode(text: String, deserializer: DeserializationStrategy<T>): T` |
+| 1320 |   `companion object` |
+| 1322 |     `fun normalizeBaseUrl(raw: String): String` |
+| 1330 |     `fun decodeConnectionId(text: String): String` |
+| 1346 |     `fun decodeAgentList(text: String): List<AcpAgentInfo>` |
+| 1363 |     `fun isJsonNull(text: String): Boolean` |
 
 ## core/network/CodegClientFactory.kt
 
