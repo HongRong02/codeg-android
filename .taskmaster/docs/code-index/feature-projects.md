@@ -277,20 +277,20 @@ Source root: `app/src/main/java/app/codeg/android/`
 
 | Line | Declaration |
 |---|---|
-| 66 | `@Composable fun ProjectListScreen( onOpenFolder: (Int) -> Unit, viewModel: ProjectsViewModel = hiltViewModel(), )` |
-| 70 |   `val ui by viewModel.ui.collectAsStateWithLifecycle()` |
-| 71 |   `val colors` |
-| 72 |   `var menuOpen by remember` |
-| 73 |   `var showBrowser by remember` |
-| 74 |   `var showClone by remember` |
-| 178 | `@Composable private fun FolderRow(folder: FolderDetail, running: Int, modifier: Modifier = Modifier, onClick: () -> Unit)` |
-| 179 |   `val colors` |
-| 180 |   `val tile` |
-| 205 | `@Composable private fun RunningPill(count: Int)` |
-| 206 |   `val colors` |
-| 218 | `@Composable fun BranchPill(branch: String)` |
-| 219 |   `val colors` |
-| 237 | `private fun sortedFolders(folders: List<FolderDetail>): List<FolderDetail>` |
+| 72 | `@Composable fun ProjectListScreen( onOpenFolder: (Int) -> Unit, viewModel: ProjectsViewModel = hiltViewModel(), )` |
+| 76 |   `val ui by viewModel.ui.collectAsStateWithLifecycle()` |
+| 77 |   `val colors` |
+| 78 |   `var menuOpen by remember` |
+| 79 |   `var showBrowser by remember` |
+| 80 |   `var showClone by remember` |
+| 285 | `@Composable private fun FolderRow( folder: FolderDetail, running: Int, modifier: Modifier = Modifier, onClick: () -> Unit, )` |
+| 291 |   `val colors` |
+| 292 |   `val tile` |
+| 349 | `@Composable private fun RunningPill(count: Int, modifier: Modifier = Modifier)` |
+| 350 |   `val colors` |
+| 371 | `@Composable fun BranchPill(branch: String, modifier: Modifier = Modifier)` |
+| 372 |   `val colors` |
+| 398 | `internal fun sortedFolders(folders: List<FolderDetail>): List<FolderDetail>` |
 
 ## feature/projects/ProjectsViewModel.kt
 

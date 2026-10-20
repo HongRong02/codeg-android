@@ -1,16 +1,20 @@
 package app.codeg.android.feature.projects
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -20,17 +24,16 @@ import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.CloudDownload
 import androidx.compose.material.icons.rounded.CreateNewFolder
 import androidx.compose.material.icons.rounded.FolderOpen
+import androidx.compose.material.icons.rounded.WarningAmber
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -51,13 +54,16 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.codeg.android.R
 import app.codeg.android.core.common.RelativeTime
+import app.codeg.android.core.designsystem.component.CodegIconButton
+import app.codeg.android.core.designsystem.component.CodegTopBar
 import app.codeg.android.core.designsystem.component.EmptyState
 import app.codeg.android.core.designsystem.component.FolderBadge
-import app.codeg.android.core.designsystem.component.GlassCard
 import app.codeg.android.core.designsystem.component.InlineError
 import app.codeg.android.core.designsystem.component.LivePulse
 import app.codeg.android.core.designsystem.component.LoadingView
+import app.codeg.android.core.designsystem.component.webSurface
 import app.codeg.android.core.designsystem.theme.CodegTheme
+import app.codeg.android.core.designsystem.theme.PillShape
 import app.codeg.android.core.designsystem.theme.colorFromHex
 import app.codeg.android.core.model.FolderDetail
 
@@ -77,67 +83,168 @@ fun ProjectListScreen(
         containerColor = Color.Transparent,
         contentWindowInsets = WindowInsets(0, 0, 0, 0),
         topBar = {
-            TopAppBar(
-                title = { Text(stringResource(R.string.tab_folders)) },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color.Transparent,
-                    titleContentColor = colors.textPrimary,
-                ),
+            CodegTopBar(
+                title = stringResource(R.string.tab_folders),
+                showDivider = true,
+                actions = {
+                    Box {
+                        CodegIconButton(
+                            onClick = { menuOpen = true },
+                            visualSize = 32.dp,
+                        ) {
+                            Icon(
+                                imageVector = Icons.Rounded.Add,
+                                contentDescription = stringResource(R.string.projects_add),
+                                tint = colors.textSecondary,
+                            )
+                        }
+                        DropdownMenu(
+                            expanded = menuOpen,
+                            onDismissRequest = { menuOpen = false },
+                        ) {
+                            DropdownMenuItem(
+                                text = { Text(stringResource(R.string.projects_open_folder)) },
+                                leadingIcon = {
+                                    Icon(
+                                        imageVector = Icons.Rounded.CreateNewFolder,
+                                        contentDescription = null,
+                                        tint = colors.textSecondary,
+                                    )
+                                },
+                                onClick = {
+                                    menuOpen = false
+                                    showBrowser = true
+                                },
+                            )
+                            DropdownMenuItem(
+                                text = { Text(stringResource(R.string.projects_clone_repo)) },
+                                leadingIcon = {
+                                    Icon(
+                                        imageVector = Icons.Rounded.CloudDownload,
+                                        contentDescription = null,
+                                        tint = colors.textSecondary,
+                                    )
+                                },
+                                onClick = {
+                                    menuOpen = false
+                                    showClone = true
+                                },
+                            )
+                        }
+                    }
+                },
             )
         },
-        floatingActionButton = {
-            Box {
-                FloatingActionButton(
-                    onClick = { menuOpen = true },
-                    containerColor = colors.accent,
-                    contentColor = colors.onAccent,
-                ) {
-                    Icon(Icons.Rounded.Add, contentDescription = stringResource(R.string.projects_add))
-                }
-                DropdownMenu(expanded = menuOpen, onDismissRequest = { menuOpen = false }) {
-                    DropdownMenuItem(
-                        text = { Text(stringResource(R.string.projects_open_folder)) },
-                        leadingIcon = { Icon(Icons.Rounded.CreateNewFolder, null) },
-                        onClick = { menuOpen = false; showBrowser = true },
-                    )
-                    DropdownMenuItem(
-                        text = { Text(stringResource(R.string.projects_clone_repo)) },
-                        leadingIcon = { Icon(Icons.Rounded.CloudDownload, null) },
-                        onClick = { menuOpen = false; showClone = true },
-                    )
-                }
-            }
-        },
     ) { padding ->
-        Box(Modifier.padding(padding).fillMaxSize()) {
+        Box(
+            modifier = Modifier
+                .padding(padding)
+                .fillMaxSize(),
+        ) {
             when {
-                ui.loading && !ui.hasLoaded ->
-                    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { LoadingView(stringResource(R.string.common_loading)) }
-                !ui.hasLoaded && ui.error != null ->
+                ui.loading && !ui.hasLoaded -> {
                     Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                        InlineError(Icons.Rounded.FolderOpen, stringResource(R.string.projects_load_failed), ui.error!!, viewModel::refresh)
+                        LoadingView(stringResource(R.string.common_loading))
                     }
-                ui.hasLoaded && ui.folders.isEmpty() ->
+                }
+                !ui.hasLoaded && ui.error != null -> {
                     Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                        EmptyState(Icons.Rounded.FolderOpen, stringResource(R.string.projects_empty_title), stringResource(R.string.projects_empty_message))
+                        InlineError(
+                            icon = Icons.Rounded.FolderOpen,
+                            title = stringResource(R.string.projects_load_failed),
+                            message = ui.error!!,
+                            onRetry = viewModel::refresh,
+                        )
                     }
-                else -> PullToRefreshBox(isRefreshing = ui.refreshing, onRefresh = viewModel::refresh, modifier = Modifier.fillMaxSize()) {
-                    LazyColumn(
-                        Modifier.fillMaxSize(),
-                        contentPadding = androidx.compose.foundation.layout.PaddingValues(start = 12.dp, end = 12.dp, top = 8.dp, bottom = 88.dp),
+                }
+                ui.hasLoaded && ui.folders.isEmpty() -> {
+                    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        EmptyState(
+                            icon = Icons.Rounded.FolderOpen,
+                            title = stringResource(R.string.projects_empty_title),
+                            message = stringResource(R.string.projects_empty_message),
+                            actionLabel = stringResource(R.string.projects_open_folder),
+                            onAction = { showBrowser = true },
+                        )
+                    }
+                }
+                else -> {
+                    PullToRefreshBox(
+                        isRefreshing = ui.refreshing,
+                        onRefresh = viewModel::refresh,
+                        modifier = Modifier.fillMaxSize(),
                     ) {
-                        // One continuous grouped surface holding every folder as a
-                        // borderless row split by inset hairlines — the iOS grouped-list
-                        // look, matching the Settings tab. Folder counts are small, so a
-                        // single card inside the lazy list is fine.
-                        item {
-                            GlassCard(padding = 0.dp) {
-                                val list = sortedFolders(ui.folders)
-                                list.forEachIndexed { index, folder ->
-                                    if (index > 0) {
-                                        HorizontalDivider(color = colors.hairline, modifier = Modifier.padding(start = 66.dp))
+                        LazyColumn(
+                            modifier = Modifier.fillMaxSize(),
+                            contentPadding = PaddingValues(
+                                start = 12.dp,
+                                end = 12.dp,
+                                top = 8.dp,
+                                bottom = 88.dp,
+                            ),
+                            verticalArrangement = Arrangement.spacedBy(8.dp),
+                        ) {
+                            if (ui.error != null) {
+                                item(key = "refresh-error") {
+                                    Row(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .clip(RoundedCornerShape(CodegTheme.dimens.radiusMd))
+                                            .background(colors.danger.copy(alpha = 0.12f))
+                                            .border(
+                                                CodegTheme.dimens.hairlineWidth,
+                                                colors.danger.copy(alpha = 0.35f),
+                                                RoundedCornerShape(CodegTheme.dimens.radiusMd),
+                                            )
+                                            .padding(horizontal = 12.dp, vertical = 6.dp),
+                                        verticalAlignment = Alignment.CenterVertically,
+                                    ) {
+                                        Icon(
+                                            Icons.Rounded.WarningAmber,
+                                            contentDescription = null,
+                                            tint = colors.danger,
+                                            modifier = Modifier.size(16.dp),
+                                        )
+                                        Spacer(Modifier.width(8.dp))
+                                        Text(
+                                            text = ui.error!!,
+                                            color = colors.danger,
+                                            style = MaterialTheme.typography.bodySmall,
+                                            maxLines = 2,
+                                            overflow = TextOverflow.Ellipsis,
+                                            modifier = Modifier.weight(1f),
+                                        )
+                                        TextButton(onClick = viewModel::refresh) {
+                                            Text(
+                                                stringResource(R.string.common_retry),
+                                                color = colors.danger,
+                                            )
+                                        }
                                     }
-                                    FolderRow(folder, ui.runningCount(folder.id)) { onOpenFolder(folder.id) }
+                                }
+                            }
+
+                            item(key = "folders-card") {
+                                Column(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .webSurface(RoundedCornerShape(CodegTheme.dimens.radiusLg)),
+                                ) {
+                                    val list = sortedFolders(ui.folders)
+                                    list.forEachIndexed { index, folder ->
+                                        if (index > 0) {
+                                            HorizontalDivider(
+                                                thickness = CodegTheme.dimens.hairlineWidth,
+                                                color = colors.hairline,
+                                                modifier = Modifier.padding(start = 66.dp),
+                                            )
+                                        }
+                                        FolderRow(
+                                            folder = folder,
+                                            running = ui.runningCount(folder.id),
+                                            onClick = { onOpenFolder(folder.id) },
+                                        )
+                                    }
                                 }
                             }
                         }
@@ -171,60 +278,114 @@ fun ProjectListScreen(
 /**
  * One folder as a borderless grouped row: a colored [FolderBadge] tile, the name
  * with its full path + branch underneath, a trailing running-count pill or
- * relative last-opened time, then a drill-in chevron. The enclosing [GlassCard]
- * draws the surface; rows are split by inset hairlines.
+ * relative last-opened time, then a drill-in chevron. The enclosing [webSurface]
+ * card draws the surface; rows are split by inset hairlines.
  */
 @Composable
-private fun FolderRow(folder: FolderDetail, running: Int, modifier: Modifier = Modifier, onClick: () -> Unit) {
+private fun FolderRow(
+    folder: FolderDetail,
+    running: Int,
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit,
+) {
     val colors = CodegTheme.colors
     val tile = colorFromHex(folder.color) ?: colors.accent
     Row(
-        modifier.fillMaxWidth().clickable { onClick() }.padding(horizontal = 14.dp, vertical = 12.dp),
+        modifier = modifier
+            .fillMaxWidth()
+            .clickable { onClick() }
+            .padding(horizontal = 14.dp, vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         FolderBadge(color = tile, size = 40.dp)
         Column(Modifier.weight(1f)) {
-            Text(folder.name, style = MaterialTheme.typography.bodyLarge, color = colors.textPrimary, maxLines = 1, overflow = TextOverflow.Ellipsis)
-            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                Text(folder.path, fontFamily = FontFamily.Monospace, fontSize = 11.sp, color = colors.textTertiary, maxLines = 1, overflow = TextOverflow.Ellipsis, modifier = Modifier.weight(1f, fill = false))
+            Text(
+                text = folder.name,
+                style = MaterialTheme.typography.bodyLarge,
+                color = colors.textPrimary,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(6.dp),
+                modifier = Modifier.padding(top = 2.dp),
+            ) {
+                Text(
+                    text = folder.path,
+                    fontFamily = FontFamily.Monospace,
+                    fontSize = 11.sp,
+                    color = colors.textSecondary,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.weight(1f, fill = false),
+                )
                 folder.gitBranch?.let { BranchPill(it) }
             }
         }
         if (running > 0) {
             RunningPill(running)
         } else {
-            folder.lastOpenedAt?.let { Text(RelativeTime.compact(it), fontSize = 11.sp, color = colors.textTertiary) }
+            folder.lastOpenedAt?.let {
+                Text(
+                    text = RelativeTime.compact(it),
+                    fontSize = 11.sp,
+                    color = colors.textSecondary,
+                )
+            }
         }
-        Icon(Icons.AutoMirrored.Rounded.KeyboardArrowRight, contentDescription = null, tint = colors.textTertiary, modifier = Modifier.size(18.dp))
+        Icon(
+            imageVector = Icons.AutoMirrored.Rounded.KeyboardArrowRight,
+            contentDescription = null,
+            tint = colors.textSecondary,
+            modifier = Modifier.size(18.dp),
+        )
     }
 }
 
-/** Active-task indicator: a pulsing dot + count in an accent capsule (iOS folder row). */
+/** Active-task indicator: a pulsing dot + count in an accent capsule. */
 @Composable
-private fun RunningPill(count: Int) {
+private fun RunningPill(count: Int, modifier: Modifier = Modifier) {
     val colors = CodegTheme.colors
     Row(
-        Modifier.clip(RoundedCornerShape(50)).background(colors.accentDim).padding(horizontal = 8.dp, vertical = 3.dp),
+        modifier = modifier
+            .clip(PillShape)
+            .background(colors.accentDim)
+            .padding(horizontal = 8.dp, vertical = 3.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(5.dp),
     ) {
         LivePulse(dotSize = 7.dp)
-        Text("$count", fontSize = 11.sp, fontWeight = FontWeight.Bold, color = colors.accent)
+        Text(
+            text = "$count",
+            fontSize = 11.sp,
+            fontWeight = FontWeight.SemiBold,
+            color = colors.accent,
+        )
     }
 }
 
+/** Git branch indicator capsule. */
 @Composable
-fun BranchPill(branch: String) {
+fun BranchPill(branch: String, modifier: Modifier = Modifier) {
     val colors = CodegTheme.colors
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(3.dp),
-        modifier = Modifier.clip(RoundedCornerShape(50)).background(colors.textPrimary.copy(alpha = 0.06f)).padding(horizontal = 7.dp, vertical = 2.dp),
+        modifier = modifier
+            .clip(PillShape)
+            .background(colors.web.secondary)
+            .padding(horizontal = 7.dp, vertical = 2.dp),
     ) {
-        Icon(Icons.AutoMirrored.Rounded.AltRoute, contentDescription = null, tint = colors.textTertiary, modifier = Modifier.size(11.dp))
+        Icon(
+            imageVector = Icons.AutoMirrored.Rounded.AltRoute,
+            contentDescription = null,
+            tint = colors.textSecondary,
+            modifier = Modifier.size(11.dp),
+        )
         Text(
-            branch,
+            text = branch,
             fontSize = 10.sp,
             fontWeight = FontWeight.Medium,
             color = colors.textSecondary,
@@ -234,5 +395,5 @@ fun BranchPill(branch: String) {
     }
 }
 
-private fun sortedFolders(folders: List<FolderDetail>): List<FolderDetail> =
+internal fun sortedFolders(folders: List<FolderDetail>): List<FolderDetail> =
     folders.sortedWith(compareBy({ it.sortOrder }, { it.name.lowercase() }))
