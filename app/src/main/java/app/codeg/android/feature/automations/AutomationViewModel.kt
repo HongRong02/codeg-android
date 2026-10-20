@@ -30,6 +30,7 @@ data class AutomationUiState(
     val busy: Boolean = false,
     val folders: List<app.codeg.android.core.model.FolderDetail> = emptyList(),
     val preview: String? = null,
+    val previewSchedule: Pair<String, String>? = null,
     val previewError: String? = null,
     val previewLoading: Boolean = false,
     val writesSupported: Boolean = true,
@@ -169,7 +170,7 @@ class AutomationViewModel @Inject constructor(
 
     fun preview(cron: String, timezone: String) {
         previewJob?.cancel()
-        _ui.update { it.copy(preview = null, previewError = null, previewLoading = true) }
+        _ui.update { it.copy(preview = null, previewSchedule = cron to timezone, previewError = null, previewLoading = true) }
         previewJob = viewModelScope.launch {
             try {
                 kotlinx.coroutines.delay(350)
@@ -205,7 +206,8 @@ class AutomationViewModel @Inject constructor(
 
     private fun unsupported(e: Exception): Boolean {
         val message = e.message.orEmpty().lowercase()
-        val unsupported = "404" in message || "unknown command" in message || "unknown endpoint" in message
+        val unsupported = (e as? app.codeg.android.core.network.ApiError.Server)?.status == 404 ||
+            "unknown command" in message || "unknown endpoint" in message
         if (unsupported) _ui.update { it.copy(writesSupported = false, editorOpen = false, error = null) }
         return unsupported
     }

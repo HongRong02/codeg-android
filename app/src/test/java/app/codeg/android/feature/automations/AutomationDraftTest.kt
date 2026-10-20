@@ -8,10 +8,24 @@ import org.junit.Assert.*
 import org.junit.Test
 
 class AutomationDraftTest {
+    @Test fun newDraftUsesSessionAction() {
+        val draft = automationDraft(null, "new", 1, AgentType.CODEX, "prompt", "0 * * * *", "UTC", true)
+        assertEquals("launch_session", draft.config["action"]?.jsonPrimitive?.content)
+    }
+
+    @Test fun unchangedPromptPreservesRichBlocks() {
+        val blocks = buildJsonArray { add(buildJsonObject { put("type", "resource_link"); put("uri", "file:///project/file") }) }
+        val original = Automation(1, "old", true, TriggerKind.MANUAL, timezone = "UTC",
+            agentType = AgentType.CODEX, isolation = IsolationMode.WORKTREE_PER_RUN,
+            config = buildJsonObject { put("display_text", "prompt"); put("prompt_blocks", blocks) })
+        val draft = automationDraft(original, "renamed", 1, AgentType.CODEX, "prompt", "", "UTC", false)
+        assertEquals(blocks, draft.config["prompt_blocks"])
+    }
+
     @Test fun preservesConfigurationAndEscapesPrompt() {
         val original = Automation(1, "old", false, TriggerKind.MANUAL, timezone = "UTC",
             agentType = AgentType.CODEX, rootFolderId = 2, isolation = IsolationMode.SHARED_IN_ROOT,
-            branch = "topic", config = buildJsonObject { put("mode_id", "plan"); put("action", "start_session") })
+            branch = "topic", config = buildJsonObject { put("mode_id", "plan"); put("action", "launch_session") })
         val draft = automationDraft(original, " renamed ", 3, AgentType.CODEX, "say \"hi\"\nnext", "0 * * * *", "UTC", true)
         assertEquals("renamed", draft.name)
         assertFalse(draft.enabled)

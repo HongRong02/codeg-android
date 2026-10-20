@@ -20,11 +20,14 @@ internal fun automationDraft(
     prompt: String, cron: String, timezone: String, scheduled: Boolean,
 ): AutomationDraft {
     val config = original?.config.orEmpty().toMutableMap()
-    if ("action" !in config) config["action"] = JsonPrimitive("start_session")
+    if ("action" !in config) config["action"] = JsonPrimitive("launch_session")
     config["display_text"] = JsonPrimitive(prompt.trim())
-    config["prompt_blocks"] = buildJsonArray { add(buildJsonObject {
-        put("type", "text"); put("text", prompt.trim())
-    }) }
+    val originalPrompt = (original?.config?.get("display_text") as? JsonPrimitive)?.content
+    if (prompt.trim() != originalPrompt?.trim() || "prompt_blocks" !in config) {
+        config["prompt_blocks"] = buildJsonArray { add(buildJsonObject {
+            put("type", "text"); put("text", prompt.trim())
+        }) }
+    }
     if (original != null && original.agentType != agent) {
         config.remove("mode_id")
         config.remove("config_values")
@@ -71,7 +74,7 @@ internal fun AutomationEditorSheet(ui: AutomationUiState, viewModel: AutomationV
             Button(onClick = {
                 viewModel.save(automationDraft(original, name, requireNotNull(folderId), agent, prompt, cron, timezone, scheduled))
             }, enabled = !ui.busy && name.isNotBlank() && prompt.isNotBlank() && folderId != null &&
-                (!scheduled || (!ui.previewLoading && ui.previewError == null && ui.preview != null && ui.preview != "null"))) {
+                (!scheduled || (!ui.previewLoading && ui.previewSchedule == (cron.trim() to timezone.trim()) && ui.previewError == null && ui.preview != null && ui.preview != "null"))) {
                 Text(stringResource(R.string.aw_save))
             }
         }
