@@ -3,6 +3,7 @@ package app.codeg.android.core.network
 import app.codeg.android.core.common.Base64Url
 import app.codeg.android.core.model.EventEnvelope
 import app.codeg.android.core.model.LiveSessionSnapshot
+import io.ktor.client.plugins.ResponseException
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.websocket.webSocket
 import io.ktor.client.request.header
@@ -89,11 +90,18 @@ class EventStream(
         } catch (e: CancellationException) {
             throw e
         } catch (e: Exception) {
-            producer.send(StreamFrame.Closed(e.message))
+            val status = (e as? ResponseException)?.response?.status?.value
+            val authFailed = e == ApiError.Unauthorized ||
+                (e is ApiError.Server && e.status in listOf(401, 403)) || status in listOf(401, 403) ||
+                Regex("expected status code 101 but was (401|403)", RegexOption.IGNORE_CASE)
+                    .containsMatchIn(e.message.orEmpty())
+            producer.send(StreamFrame.Closed(if (authFailed) AUTH_FAILURE else e.message))
         }
     }
 
     companion object {
+        const val AUTH_FAILURE = "codeg_token_expired"
+
         /**
          * Route one raw text frame into a [StreamFrame]. The socket multiplexes
          * the legacy firehose (`{channel,payload}`) with the attach protocol
