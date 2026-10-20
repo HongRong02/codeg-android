@@ -2,9 +2,11 @@ package app.codeg.android.shell
 
 import android.graphics.Bitmap
 import android.net.Uri
+import android.net.http.SslError
 import android.os.Message
 import android.webkit.PermissionRequest
 import android.webkit.RenderProcessGoneDetail
+import android.webkit.SslErrorHandler
 import android.webkit.ValueCallback
 import android.webkit.WebChromeClient
 import android.webkit.WebResourceError
@@ -39,6 +41,10 @@ internal class ShellWebViewClient(
 
     override fun onReceivedHttpError(view: WebView, request: WebResourceRequest, errorResponse: WebResourceResponse) {
         features.forEach { it.onReceivedHttpError(host, view, request, errorResponse) }
+    }
+
+    override fun onReceivedSslError(view: WebView, handler: SslErrorHandler, error: SslError) {
+        if (!features.any { it.onReceivedSslError(host, view, handler, error) }) handler.cancel()
     }
 
     override fun onRenderProcessGone(view: WebView, detail: RenderProcessGoneDetail): Boolean {

@@ -5,7 +5,9 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Message
 import android.webkit.PermissionRequest
+import android.net.http.SslError
 import android.webkit.RenderProcessGoneDetail
+import android.webkit.SslErrorHandler
 import android.webkit.ValueCallback
 import android.webkit.WebChromeClient
 import android.webkit.WebResourceError
@@ -74,6 +76,8 @@ interface ShellFeature {
     fun doUpdateVisitedHistory(host: ShellHost, view: WebView, url: String, isReload: Boolean) {}
     fun onReceivedError(host: ShellHost, view: WebView, request: WebResourceRequest, error: WebResourceError) {}
     fun onReceivedHttpError(host: ShellHost, view: WebView, request: WebResourceRequest, response: WebResourceResponse) {}
+    /** Certificate error on any request. Return true when handled; otherwise the request is cancelled. Never proceed() silently. */
+    fun onReceivedSslError(host: ShellHost, view: WebView, handler: SslErrorHandler, error: SslError): Boolean = false
     /** Return true when handled (the shell then must not crash). */
     fun onRenderProcessGone(host: ShellHost, view: WebView, detail: RenderProcessGoneDetail): Boolean = false
 
