@@ -97,6 +97,11 @@ fun ServerEditorScreen(
                     loading = viewModel.test is TestState.Testing,
                     enabled = viewModel.url.isNotBlank() && viewModel.token.isNotBlank(),
                 )
+                PrimaryButton(
+                    text = stringResource(R.string.server_save),
+                    onClick = { viewModel.save(onDone) },
+                    enabled = viewModel.canSave,
+                )
                 when (val test = viewModel.test) {
                     is TestState.Success -> Text(
                         stringResource(R.string.server_connection_ok, test.version),
@@ -111,12 +116,6 @@ fun ServerEditorScreen(
                     )
                     else -> Unit
                 }
-
-                PrimaryButton(
-                    text = stringResource(R.string.server_save),
-                    onClick = { viewModel.save(onDone) },
-                    enabled = viewModel.canSave,
-                )
             }
         }
     }
