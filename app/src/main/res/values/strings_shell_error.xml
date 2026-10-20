@@ -9,4 +9,9 @@
     <string name="shell_error_retry">Retry</string>
     <string name="shell_error_switch">Switch server</string>
     <string name="shell_error_reloaded">Page reloaded</string>
+    <string name="shell_error_webview_title">Update Android System WebView</string>
+    <string name="shell_error_webview_version">This WebView is too old to run this website. Current version: %1$s. Required major version: %2$d or later. Update Android System WebView and restart the app.</string>
+    <string name="shell_error_webview_store">Open app store</string>
+    <string name="shell_error_webview_continue">Continue anyway</string>
+    <string name="shell_error_store_unavailable">No app is available to open the store link.</string>
 </resources>
