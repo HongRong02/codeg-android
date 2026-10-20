@@ -33,5 +33,5 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 181 |     `fun toTab(it: HomeTab)` |
 | 203 |   `var bottomBarHeight by remember` |
 | 204 |   `val toastClearance` |
-| 388 | `@Composable private fun CodegNavRail(currentRoute: String?, onSelect: (HomeTab) -> Unit)` |
-| 403 | `@Composable private fun CodegBottomBar(currentRoute: String?, onSelect: (HomeTab) -> Unit, modifier: Modifier = Modifier)` |
+| 389 | `@Composable private fun CodegNavRail(currentRoute: String?, onSelect: (HomeTab) -> Unit)` |
+| 404 | `@Composable private fun CodegBottomBar(currentRoute: String?, onSelect: (HomeTab) -> Unit, modifier: Modifier = Modifier)` |

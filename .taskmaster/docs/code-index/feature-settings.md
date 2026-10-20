@@ -937,27 +937,27 @@ Source root: `app/src/main/java/app/codeg/android/`
 
 | Line | Declaration |
 |---|---|
-| 59 | `private enum class SettingsLeaf(@StringRes val titleRes: Int, val icon: ImageVector, @StringRes val groupRes: Int, val implemented: Boolean)` |
-| 82 | `@Composable fun SettingsScreen( onOpenAutomations: () -> Unit = {}, onOpenWorkTasks: () -> Unit = {}, onOpenServerLogs: () -> Unit = {}, logsViewModel: app.codeg.android.feature.serverlogs.ServerLogsViewModel = hiltViewModel(), viewModel: SettingsViewModel = hiltViewModel(), )` |
-| 89 |   `val logsUi by logsViewModel.ui.collectAsStateWithLifecycle()` |
-| 90 |   `var leaf by remember` |
-| 92 |   `var agentDetail by remember` |
-| 93 |   `val inAgentDetail` |
-| 156 | `@Composable private fun SettingsRoot( onSelect: (SettingsLeaf) -> Unit, onOpenAutomations: () -> Unit, onOpenWorkTasks: () -> Unit, showServerLogs: Boolean, )` |
-| 162 |   `val workTasks: app.codeg.android.feature.worktasks.WorkTaskViewModel` |
-| 163 |   `val workTaskUi by workTasks.ui.collectAsStateWithLifecycle()` |
-| 164 |   `val assistants: AssistantsViewModel` |
-| 165 |   `val assistantUi by assistants.ui.collectAsStateWithLifecycle()` |
-| 166 |   `val colors` |
-| 209 | `@Composable private fun AppearanceSettings(viewModel: SettingsViewModel)` |
-| 210 |   `val colors` |
-| 211 |   `val settings by viewModel.settings.collectAsStateWithLifecycle()` |
-| 261 | `@Composable private fun AboutScreen(viewModel: SettingsViewModel)` |
-| 262 |   `val colors` |
-| 263 |   `val about by viewModel.about.collectAsStateWithLifecycle()` |
-| 264 |   `val appVersion` |
-| 279 | `@Composable private fun ComingSoon(@StringRes title: Int)` |
-| 280 |   `val colors` |
+| 60 | `private enum class SettingsLeaf(@StringRes val titleRes: Int, val icon: ImageVector, @StringRes val groupRes: Int, val implemented: Boolean)` |
+| 83 | `@Composable fun SettingsScreen( onOpenAutomations: () -> Unit = {}, onOpenWorkTasks: () -> Unit = {}, onOpenServerLogs: () -> Unit = {}, logsViewModel: app.codeg.android.feature.serverlogs.ServerLogsViewModel = hiltViewModel(), viewModel: SettingsViewModel = hiltViewModel(), onPageChanged: () -> Unit = {}, )` |
+| 91 |   `val logsUi by logsViewModel.ui.collectAsStateWithLifecycle()` |
+| 92 |   `var leaf by remember` |
+| 94 |   `var agentDetail by remember` |
+| 95 |   `val inAgentDetail` |
+| 162 | `@Composable private fun SettingsRoot( onSelect: (SettingsLeaf) -> Unit, onOpenAutomations: () -> Unit, onOpenWorkTasks: () -> Unit, showServerLogs: Boolean, )` |
+| 168 |   `val workTasks: app.codeg.android.feature.worktasks.WorkTaskViewModel` |
+| 169 |   `val workTaskUi by workTasks.ui.collectAsStateWithLifecycle()` |
+| 170 |   `val assistants: AssistantsViewModel` |
+| 171 |   `val assistantUi by assistants.ui.collectAsStateWithLifecycle()` |
+| 172 |   `val colors` |
+| 215 | `@Composable private fun AppearanceSettings(viewModel: SettingsViewModel)` |
+| 216 |   `val colors` |
+| 217 |   `val settings by viewModel.settings.collectAsStateWithLifecycle()` |
+| 267 | `@Composable private fun AboutScreen(viewModel: SettingsViewModel)` |
+| 268 |   `val colors` |
+| 269 |   `val about by viewModel.about.collectAsStateWithLifecycle()` |
+| 270 |   `val appVersion` |
+| 285 | `@Composable private fun ComingSoon(@StringRes title: Int)` |
+| 286 |   `val colors` |
 
 ## feature/settings/SettingsViewModel.kt
 

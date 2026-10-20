@@ -52,24 +52,23 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 66 |   `val context` |
 | 67 |   `val toaster` |
 | 68 |   `val failureTitle` |
-| 69 |   `val doneTitle` |
-| 70 |   `val colors` |
-| 71 |   `val scope` |
-| 73 |   `var entries by remember` |
-| 74 |   `var selected by remember` |
-| 75 |   `var message by remember` |
-| 76 |   `var loadError by remember` |
-| 77 |   `var committing by remember` |
-| 78 |   `var commitError by remember` |
-| 83 |   `suspend fun load()` |
-| 96 |   `val all` |
-| 97 |   `val trimmedMessage` |
-| 98 |   `val canCommit` |
-| 100 |   `fun runCommit(push: Boolean)` |
-| 191 | `@Composable private fun SelectionHeader( selectedCount: Int, total: Int, allSelected: Boolean, enabled: Boolean, onToggleAll: () -> Unit, )` |
-| 198 |   `val colors` |
-| 219 | `@Composable private fun FileSection( title: String, entries: List<GitStatusEntry>, selected: Set<String>, enabled: Boolean, onToggle: (String) -> Unit, )` |
-| 226 |   `val colors` |
+| 69 |   `val colors` |
+| 70 |   `val scope` |
+| 72 |   `var entries by remember` |
+| 73 |   `var selected by remember` |
+| 74 |   `var message by remember` |
+| 75 |   `var loadError by remember` |
+| 76 |   `var committing by remember` |
+| 77 |   `var commitError by remember` |
+| 82 |   `suspend fun load()` |
+| 95 |   `val all` |
+| 96 |   `val trimmedMessage` |
+| 97 |   `val canCommit` |
+| 99 |   `fun runCommit(push: Boolean)` |
+| 189 | `@Composable private fun SelectionHeader( selectedCount: Int, total: Int, allSelected: Boolean, enabled: Boolean, onToggleAll: () -> Unit, )` |
+| 196 |   `val colors` |
+| 217 | `@Composable private fun FileSection( title: String, entries: List<GitStatusEntry>, selected: Set<String>, enabled: Boolean, onToggle: (String) -> Unit, )` |
+| 224 |   `val colors` |
 
 ## feature/projects/DirectoryBrowserSheet.kt
 
