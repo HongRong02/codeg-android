@@ -307,6 +307,7 @@ fun MainShell(appViewModel: AppViewModel, servers: List<ServerProfile>) {
                     onOpenAutomations = { nav.navigate(ROUTE_AUTOMATIONS) },
                     onOpenWorkTasks = { nav.navigate("work-tasks") },
                     onOpenServerLogs = { nav.navigate("server_logs") },
+                    onPageChanged = { barsVisible = true },
                 )
             }
 

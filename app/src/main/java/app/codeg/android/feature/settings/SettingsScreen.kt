@@ -36,6 +36,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -85,12 +86,17 @@ fun SettingsScreen(
     onOpenServerLogs: () -> Unit = {},
     logsViewModel: app.codeg.android.feature.serverlogs.ServerLogsViewModel = hiltViewModel(),
     viewModel: SettingsViewModel = hiltViewModel(),
+    onPageChanged: () -> Unit = {},
 ) {
     val logsUi by logsViewModel.ui.collectAsStateWithLifecycle()
     var leaf by remember { mutableStateOf<SettingsLeaf?>(null) }
     // A second level beneath the Agents leaf: the per-agent config editor.
     var agentDetail by remember { mutableStateOf<AgentType?>(null) }
     val inAgentDetail = leaf == SettingsLeaf.AGENTS && agentDetail != null
+    // Internal pages share one navigation entry, so notify the shell explicitly.
+    LaunchedEffect(leaf, agentDetail) {
+        onPageChanged()
+    }
     BackHandler(enabled = leaf != null) { if (inAgentDetail) agentDetail = null else leaf = null }
 
     Scaffold(
