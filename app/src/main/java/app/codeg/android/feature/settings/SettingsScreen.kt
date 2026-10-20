@@ -81,6 +81,7 @@ private enum class SettingsLeaf(@StringRes val titleRes: Int, val icon: ImageVec
     QUICK_MESSAGES(R.string.settings_leaf_quick_messages, Icons.AutoMirrored.Rounded.Chat, R.string.settings_group_personalization, true),
     AGENTS(R.string.settings_leaf_agents, Icons.Rounded.Person, R.string.settings_group_ai_agents, true),
     MODEL_PROVIDERS(R.string.settings_leaf_model_providers, Icons.Rounded.Memory, R.string.settings_group_ai_agents, true),
+    ASSISTANTS(R.string.assistants_title, Icons.Rounded.Person, R.string.settings_group_ai_agents, true),
     EXPERTS(R.string.settings_leaf_experts, Icons.Rounded.School, R.string.settings_group_ai_agents, true),
     SKILLS(R.string.settings_leaf_skills, Icons.Rounded.Extension, R.string.settings_group_ai_agents, true),
     MCP(R.string.settings_leaf_mcp, Icons.Rounded.Memory, R.string.settings_group_ai_agents, true),
@@ -160,6 +161,7 @@ fun SettingsScreen(
                     else AgentDetailContent(agentDetail!!, onClose = { agentDetail = null })
                 SettingsLeaf.SKILLS -> SkillsContent()
                 SettingsLeaf.EXPERTS -> ExpertsContent()
+                SettingsLeaf.ASSISTANTS -> AssistantsContent()
                 SettingsLeaf.CHAT_CHANNELS -> ChatChannelsContent()
                 SettingsLeaf.VERSION_CONTROL -> VersionControlContent()
                 else -> ComingSoon(leaf!!.titleRes)

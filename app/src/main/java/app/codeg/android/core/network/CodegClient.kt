@@ -1268,6 +1268,26 @@ class CodegClient(
 
     // endregion
 
+    // region assistants
+
+    suspend fun assistantList(): List<app.codeg.android.core.model.Assistant> =
+        decode(send("assistant_list", "{}"), ListSerializer(app.codeg.android.core.model.Assistant.serializer()))
+
+    suspend fun assistantCreate(draft: app.codeg.android.core.model.wire.AssistantDraft): app.codeg.android.core.model.Assistant =
+        decode(send("assistant_create", encode(app.codeg.android.core.model.wire.AssistantCreateRequest(draft))), app.codeg.android.core.model.Assistant.serializer())
+
+    suspend fun assistantUpdate(id: Int, patch: app.codeg.android.core.model.wire.AssistantDraft): app.codeg.android.core.model.Assistant =
+        decode(send("assistant_update", encode(app.codeg.android.core.model.wire.AssistantUpdateRequest(id, patch))), app.codeg.android.core.model.Assistant.serializer())
+
+    suspend fun assistantDelete(id: Int) {
+        send("assistant_delete", encode(app.codeg.android.core.model.wire.AssistantIdRequest(id)))
+    }
+
+    suspend fun assistantReorder(ids: List<Int>): List<app.codeg.android.core.model.Assistant> =
+        decode(send("assistant_reorder", encode(app.codeg.android.core.model.wire.AssistantReorderRequest(ids))), ListSerializer(app.codeg.android.core.model.Assistant.serializer()))
+
+    // endregion
+
     // region Transport
 
     /**

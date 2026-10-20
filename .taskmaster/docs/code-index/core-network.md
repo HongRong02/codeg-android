@@ -237,14 +237,19 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 1257 |   `suspend fun setFolderGroup(folderId: Int, groupId: Int?)` |
 | 1261 |   `suspend fun updateFolderAlias(folderId: Int, alias: String?)` |
 | 1265 |   `suspend fun updateFolderColor(folderId: Int, color: String)` |
-| 1277 |   `private suspend fun send(path: String, bodyJson: String): String` |
-| 1311 |   `private inline fun <reified T> encode(body: T): String` |
-| 1314 |   `private fun <T> decode(text: String, deserializer: DeserializationStrategy<T>): T` |
-| 1320 |   `companion object` |
-| 1322 |     `fun normalizeBaseUrl(raw: String): String` |
-| 1330 |     `fun decodeConnectionId(text: String): String` |
-| 1346 |     `fun decodeAgentList(text: String): List<AcpAgentInfo>` |
-| 1363 |     `fun isJsonNull(text: String): Boolean` |
+| 1273 |   `suspend fun assistantList(): List<app.codeg.android.core.model.Assistant>` |
+| 1276 |   `suspend fun assistantCreate(draft: app.codeg.android.core.model.wire.AssistantDraft): app.codeg.android.core.model.Assistant` |
+| 1279 |   `suspend fun assistantUpdate(id: Int, patch: app.codeg.android.core.model.wire.AssistantDraft): app.codeg.android.core.model.Assistant` |
+| 1282 |   `suspend fun assistantDelete(id: Int)` |
+| 1286 |   `suspend fun assistantReorder(ids: List<Int>): List<app.codeg.android.core.model.Assistant>` |
+| 1297 |   `private suspend fun send(path: String, bodyJson: String): String` |
+| 1331 |   `private inline fun <reified T> encode(body: T): String` |
+| 1334 |   `private fun <T> decode(text: String, deserializer: DeserializationStrategy<T>): T` |
+| 1340 |   `companion object` |
+| 1342 |     `fun normalizeBaseUrl(raw: String): String` |
+| 1350 |     `fun decodeConnectionId(text: String): String` |
+| 1366 |     `fun decodeAgentList(text: String): List<AcpAgentInfo>` |
+| 1383 |     `fun isJsonNull(text: String): Boolean` |
 
 ## core/network/CodegClientFactory.kt
 

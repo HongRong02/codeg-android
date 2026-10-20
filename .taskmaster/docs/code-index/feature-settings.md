@@ -337,6 +337,70 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 581 |   `val configError: String?` |
 | 584 |   `val provider: ModelProviderInfo? get()` |
 
+## feature/settings/AssistantsScreen.kt
+
+| Line | Declaration |
+|---|---|
+| 36 | `@Composable fun AssistantsContent(viewModel: AssistantsViewModel = hiltViewModel())` |
+| 37 |   `val ui by viewModel.ui.collectAsStateWithLifecycle()` |
+| 38 |   `val colors` |
+| 39 |   `var deleting by remember` |
+| 93 | `@Composable private fun AssistantEditor(ui: AssistantsUi, vm: AssistantsViewModel)` |
+| 94 |   `val old` |
+| 95 |   `val colors` |
+| 96 |   `var name by rememberSaveable` |
+| 97 |   `var description by rememberSaveable` |
+| 98 |   `var instructions by rememberSaveable` |
+| 99 |   `var enabled by rememberSaveable` |
+| 100 |   `var emoji by rememberSaveable` |
+| 101 |   `var color by rememberSaveable` |
+| 102 |   `var avatarTouched by rememberSaveable` |
+| 103 |   `var agent by rememberSaveable` |
+| 104 |   `var agentTouched by rememberSaveable` |
+| 105 |   `var mode by rememberSaveable` |
+| 106 |   `var values by remember` |
+| 107 |   `val snapshot` |
+| 108 |   `val agentLabel` |
+| 109 |   `val config` |
+| 110 |   `val valid` |
+| 174 | `@Composable private fun AssistantField(value: String, onChange: (String) -> Unit, label: Int, enabled: Boolean, singleLine: Boolean = true)` |
+| 179 | `@Composable private fun AssistantChoice(label: String, value: String, choices: List<Pair<String, String>>, enabled: Boolean, onPick: (String) -> Unit)` |
+| 180 |   `var expanded by remember` |
+
+## feature/settings/AssistantsViewModel.kt
+
+| Line | Declaration |
+|---|---|
+| 21 | `data class AssistantsUi( val rows: List<Assistant> = emptyList(), val agents: List<AcpAgentInfo> = emptyList(), val loading: Boolean = true, val busy: Boolean = false, val supported: Boolean = true, val error: String? = null, val editing: Boolean = false, val editor: Assistant? = null, val options: AgentOptionsSnapshot? = null, val probing: Boolean = false, val optionsError: String? = null, )` |
+| 22 |   `val rows: List<Assistant>` |
+| 23 |   `val agents: List<AcpAgentInfo>` |
+| 24 |   `val loading: Boolean` |
+| 25 |   `val busy: Boolean` |
+| 26 |   `val supported: Boolean` |
+| 27 |   `val error: String?` |
+| 28 |   `val editing: Boolean` |
+| 29 |   `val editor: Assistant?` |
+| 30 |   `val options: AgentOptionsSnapshot?` |
+| 31 |   `val probing: Boolean` |
+| 32 |   `val optionsError: String?` |
+| 36 | `class AssistantsViewModel @Inject constructor( private val repository: ServerRepository, @ApplicationContext private val context: Context, ) : ViewModel()` |
+| 37 |   `private val repository: ServerRepository` |
+| 40 |   `private val state` |
+| 41 |   `val ui` |
+| 42 |   `private var client: CodegClient?` |
+| 43 |   `private var operation: Job?` |
+| 44 |   `private var probe: Job?` |
+| 65 |   `private fun failure(e: Exception)` |
+| 70 |   `private suspend fun loadFrom(c: CodegClient)` |
+| 76 |   `fun load()` |
+| 85 |   `fun edit(row: Assistant?)` |
+| 91 |   `fun closeEditor()` |
+| 97 |   `fun probeAgent(agent: AgentType)` |
+| 110 |   `fun save(draft: AssistantDraft)` |
+| 116 |   `fun delete(row: Assistant)` |
+| 121 |   `fun move(row: Assistant, delta: Int)` |
+| 127 |   `private fun mutate(block: suspend CodegClient.() -> Unit)` |
+
 ## feature/settings/ChatChannelsScreen.kt
 
 | Line | Declaration |
@@ -757,25 +821,25 @@ Source root: `app/src/main/java/app/codeg/android/`
 | Line | Declaration |
 |---|---|
 | 77 | `private enum class SettingsLeaf(@StringRes val titleRes: Int, val icon: ImageVector, @StringRes val groupRes: Int, val implemented: Boolean)` |
-| 99 | `@Composable fun SettingsScreen( onOpenAutomations: () -> Unit = {}, onOpenWorkTasks: () -> Unit = {}, onOpenServerLogs: () -> Unit = {}, logsViewModel: app.codeg.android.feature.serverlogs.ServerLogsViewModel = hiltViewModel(), viewModel: SettingsViewModel = hiltViewModel(), )` |
-| 106 |   `val logsUi by logsViewModel.ui.collectAsStateWithLifecycle()` |
-| 107 |   `var leaf by remember` |
-| 109 |   `var agentDetail by remember` |
-| 110 |   `val inAgentDetail` |
-| 172 | `@Composable private fun SettingsRoot( onSelect: (SettingsLeaf) -> Unit, onOpenAutomations: () -> Unit, onOpenWorkTasks: () -> Unit, showServerLogs: Boolean, )` |
-| 178 |   `val workTasks: app.codeg.android.feature.worktasks.WorkTaskViewModel` |
-| 179 |   `val workTaskUi by workTasks.ui.collectAsStateWithLifecycle()` |
-| 180 |   `val colors` |
-| 229 | `@Composable private fun AppearanceSettings(viewModel: SettingsViewModel)` |
-| 230 |   `val colors` |
-| 231 |   `val settings by viewModel.settings.collectAsStateWithLifecycle()` |
-| 279 | `@Composable private fun AboutScreen(viewModel: SettingsViewModel)` |
-| 280 |   `val colors` |
-| 281 |   `val about by viewModel.about.collectAsStateWithLifecycle()` |
-| 282 |   `val context` |
-| 283 |   `val appVersion` |
-| 299 | `@Composable private fun ComingSoon(@StringRes title: Int)` |
-| 300 |   `val colors` |
+| 100 | `@Composable fun SettingsScreen( onOpenAutomations: () -> Unit = {}, onOpenWorkTasks: () -> Unit = {}, onOpenServerLogs: () -> Unit = {}, logsViewModel: app.codeg.android.feature.serverlogs.ServerLogsViewModel = hiltViewModel(), viewModel: SettingsViewModel = hiltViewModel(), )` |
+| 107 |   `val logsUi by logsViewModel.ui.collectAsStateWithLifecycle()` |
+| 108 |   `var leaf by remember` |
+| 110 |   `var agentDetail by remember` |
+| 111 |   `val inAgentDetail` |
+| 174 | `@Composable private fun SettingsRoot( onSelect: (SettingsLeaf) -> Unit, onOpenAutomations: () -> Unit, onOpenWorkTasks: () -> Unit, showServerLogs: Boolean, )` |
+| 180 |   `val workTasks: app.codeg.android.feature.worktasks.WorkTaskViewModel` |
+| 181 |   `val workTaskUi by workTasks.ui.collectAsStateWithLifecycle()` |
+| 182 |   `val colors` |
+| 231 | `@Composable private fun AppearanceSettings(viewModel: SettingsViewModel)` |
+| 232 |   `val colors` |
+| 233 |   `val settings by viewModel.settings.collectAsStateWithLifecycle()` |
+| 281 | `@Composable private fun AboutScreen(viewModel: SettingsViewModel)` |
+| 282 |   `val colors` |
+| 283 |   `val about by viewModel.about.collectAsStateWithLifecycle()` |
+| 284 |   `val context` |
+| 285 |   `val appVersion` |
+| 301 | `@Composable private fun ComingSoon(@StringRes title: Int)` |
+| 302 |   `val colors` |
 
 ## feature/settings/SettingsViewModel.kt
 
