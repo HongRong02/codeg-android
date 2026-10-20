@@ -36,7 +36,7 @@ import app.codeg.android.core.model.wire.AssistantDraft
 fun AssistantsContent(viewModel: AssistantsViewModel = hiltViewModel()) {
     val ui by viewModel.ui.collectAsStateWithLifecycle()
     val colors = CodegTheme.colors
-    var deleting by remember { mutableStateOf<Assistant?>(null) }
+    var deleting by remember(ui.generation) { mutableStateOf<Assistant?>(null) }
     Column(Modifier.fillMaxSize().padding(horizontal = 12.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
         if (ui.supported) {
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
@@ -86,7 +86,7 @@ fun AssistantsContent(viewModel: AssistantsViewModel = hiltViewModel()) {
             dismissButton = { TextButton(onClick = { deleting = null }) { Text(stringResource(R.string.assistants_cancel)) } },
         )
     }
-    if (ui.editing) key(ui.editor?.id) { AssistantEditor(ui, viewModel) }
+    if (ui.editing) key(ui.generation, ui.editor?.id) { AssistantEditor(ui, viewModel) }
 }
 
 @Composable
@@ -117,13 +117,14 @@ private fun AssistantEditor(ui: AssistantsUi, vm: AssistantsViewModel) {
                 AssistantField(name, { name = it }, R.string.assistants_name, !ui.busy)
                 AssistantField(description, { description = it }, R.string.assistants_description, !ui.busy)
                 AssistantField(emoji, { emoji = it; avatarTouched = true }, R.string.assistants_emoji, !ui.busy)
-                AssistantChoice(stringResource(R.string.assistants_color), color, listOf(
+                val colorChoices = listOf(
                     "slate" to stringResource(R.string.assistants_color_slate), "red" to stringResource(R.string.assistants_color_red),
                     "orange" to stringResource(R.string.assistants_color_orange), "amber" to stringResource(R.string.assistants_color_amber),
                     "green" to stringResource(R.string.assistants_color_green), "teal" to stringResource(R.string.assistants_color_teal),
                     "sky" to stringResource(R.string.assistants_color_sky), "blue" to stringResource(R.string.assistants_color_blue),
                     "violet" to stringResource(R.string.assistants_color_violet), "pink" to stringResource(R.string.assistants_color_pink),
-                ), !ui.busy) { color = it; avatarTouched = true }
+                )
+                AssistantChoice(stringResource(R.string.assistants_color), colorChoices.find { it.first == color }?.second.orEmpty(), colorChoices, !ui.busy) { color = it; avatarTouched = true }
                 AssistantChoice(stringResource(R.string.assistants_agent), agentLabel,
                     ui.agents.filter { it.enabled && it.available || it.agentType == old?.agentType }.map { it.agentType.wire to it.name }, !ui.busy) { wire ->
                     agent = AgentType.knownFromWire(wire)

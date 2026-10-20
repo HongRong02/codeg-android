@@ -344,7 +344,7 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 36 | `@Composable fun AssistantsContent(viewModel: AssistantsViewModel = hiltViewModel())` |
 | 37 |   `val ui by viewModel.ui.collectAsStateWithLifecycle()` |
 | 38 |   `val colors` |
-| 39 |   `var deleting by remember` |
+| 39 |   `var deleting by remember(ui.generation)` |
 | 93 | `@Composable private fun AssistantEditor(ui: AssistantsUi, vm: AssistantsViewModel)` |
 | 94 |   `val old` |
 | 95 |   `val colors` |
@@ -363,43 +363,44 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 108 |   `val agentLabel` |
 | 109 |   `val config` |
 | 110 |   `val valid` |
-| 174 | `@Composable private fun AssistantField(value: String, onChange: (String) -> Unit, label: Int, enabled: Boolean, singleLine: Boolean = true)` |
-| 179 | `@Composable private fun AssistantChoice(label: String, value: String, choices: List<Pair<String, String>>, enabled: Boolean, onPick: (String) -> Unit)` |
-| 180 |   `var expanded by remember` |
+| 175 | `@Composable private fun AssistantField(value: String, onChange: (String) -> Unit, label: Int, enabled: Boolean, singleLine: Boolean = true)` |
+| 180 | `@Composable private fun AssistantChoice(label: String, value: String, choices: List<Pair<String, String>>, enabled: Boolean, onPick: (String) -> Unit)` |
+| 181 |   `var expanded by remember` |
 
 ## feature/settings/AssistantsViewModel.kt
 
 | Line | Declaration |
 |---|---|
-| 21 | `data class AssistantsUi( val rows: List<Assistant> = emptyList(), val agents: List<AcpAgentInfo> = emptyList(), val loading: Boolean = true, val busy: Boolean = false, val supported: Boolean = true, val error: String? = null, val editing: Boolean = false, val editor: Assistant? = null, val options: AgentOptionsSnapshot? = null, val probing: Boolean = false, val optionsError: String? = null, )` |
-| 22 |   `val rows: List<Assistant>` |
-| 23 |   `val agents: List<AcpAgentInfo>` |
-| 24 |   `val loading: Boolean` |
-| 25 |   `val busy: Boolean` |
-| 26 |   `val supported: Boolean` |
-| 27 |   `val error: String?` |
-| 28 |   `val editing: Boolean` |
-| 29 |   `val editor: Assistant?` |
-| 30 |   `val options: AgentOptionsSnapshot?` |
-| 31 |   `val probing: Boolean` |
-| 32 |   `val optionsError: String?` |
-| 36 | `class AssistantsViewModel @Inject constructor( private val repository: ServerRepository, @ApplicationContext private val context: Context, ) : ViewModel()` |
-| 37 |   `private val repository: ServerRepository` |
-| 40 |   `private val state` |
-| 41 |   `val ui` |
-| 42 |   `private var client: CodegClient?` |
-| 43 |   `private var operation: Job?` |
-| 44 |   `private var probe: Job?` |
-| 65 |   `private fun failure(e: Exception)` |
-| 70 |   `private suspend fun loadFrom(c: CodegClient)` |
-| 76 |   `fun load()` |
-| 85 |   `fun edit(row: Assistant?)` |
-| 91 |   `fun closeEditor()` |
-| 97 |   `fun probeAgent(agent: AgentType)` |
-| 110 |   `fun save(draft: AssistantDraft)` |
-| 116 |   `fun delete(row: Assistant)` |
-| 121 |   `fun move(row: Assistant, delta: Int)` |
-| 127 |   `private fun mutate(block: suspend CodegClient.() -> Unit)` |
+| 21 | `data class AssistantsUi( val generation: Int = 0, val rows: List<Assistant> = emptyList(), val agents: List<AcpAgentInfo> = emptyList(), val loading: Boolean = true, val busy: Boolean = false, val supported: Boolean = true, val error: String? = null, val editing: Boolean = false, val editor: Assistant? = null, val options: AgentOptionsSnapshot? = null, val probing: Boolean = false, val optionsError: String? = null, )` |
+| 22 |   `val generation: Int` |
+| 23 |   `val rows: List<Assistant>` |
+| 24 |   `val agents: List<AcpAgentInfo>` |
+| 25 |   `val loading: Boolean` |
+| 26 |   `val busy: Boolean` |
+| 27 |   `val supported: Boolean` |
+| 28 |   `val error: String?` |
+| 29 |   `val editing: Boolean` |
+| 30 |   `val editor: Assistant?` |
+| 31 |   `val options: AgentOptionsSnapshot?` |
+| 32 |   `val probing: Boolean` |
+| 33 |   `val optionsError: String?` |
+| 37 | `class AssistantsViewModel @Inject constructor( private val repository: ServerRepository, @ApplicationContext private val context: Context, ) : ViewModel()` |
+| 38 |   `private val repository: ServerRepository` |
+| 41 |   `private val state` |
+| 42 |   `val ui` |
+| 43 |   `private var client: CodegClient?` |
+| 44 |   `private var operation: Job?` |
+| 45 |   `private var probe: Job?` |
+| 66 |   `private fun failure(e: Exception)` |
+| 71 |   `private suspend fun loadFrom(c: CodegClient)` |
+| 77 |   `fun load()` |
+| 86 |   `fun edit(row: Assistant?)` |
+| 92 |   `fun closeEditor()` |
+| 98 |   `fun probeAgent(agent: AgentType)` |
+| 111 |   `fun save(draft: AssistantDraft)` |
+| 117 |   `fun delete(row: Assistant)` |
+| 122 |   `fun move(row: Assistant, delta: Int)` |
+| 128 |   `private fun mutate(block: suspend CodegClient.() -> Unit)` |
 
 ## feature/settings/ChatChannelsScreen.kt
 

@@ -19,6 +19,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 data class AssistantsUi(
+    val generation: Int = 0,
     val rows: List<Assistant> = emptyList(),
     val agents: List<AcpAgentInfo> = emptyList(),
     val loading: Boolean = true,
@@ -49,7 +50,7 @@ class AssistantsViewModel @Inject constructor(
                 operation?.cancel()
                 probe?.cancel()
                 client = null
-                state.value = AssistantsUi()
+                state.value = AssistantsUi(generation = state.value.generation + 1)
                 try {
                     val c = profile?.let { repository.client(it) }
                     client = c
@@ -64,7 +65,7 @@ class AssistantsViewModel @Inject constructor(
 
     private fun failure(e: Exception) {
         val unsupported = e is ApiError.Server && (e.status == 404 || e.code in listOf("unknown_command", "unknown_method") || e.serverMessage.contains("unknown command", true))
-        state.update { it.copy(loading = false, busy = false, supported = !unsupported, editing = if (unsupported) false else it.editing, error = if (unsupported) null else e.displayMessage(context)) }
+        state.update { it.copy(loading = false, busy = false, rows = if (unsupported) emptyList() else it.rows, supported = !unsupported, editing = if (unsupported) false else it.editing, error = if (unsupported) null else e.displayMessage(context)) }
     }
 
     private suspend fun loadFrom(c: CodegClient) {
