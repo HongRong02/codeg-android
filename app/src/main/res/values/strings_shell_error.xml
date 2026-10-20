@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="shell_error_title">Unable to load page</string>
+    <string name="shell_error_dns">The server address could not be found. Check the address and network.</string>
+    <string name="shell_error_timeout">The server took too long to respond.</string>
+    <string name="shell_error_ssl">A secure connection could not be established.</string>
+    <string name="shell_error_connection">Unable to connect to the server. Check the network and server status.</string>
+    <string name="shell_error_http">The server is temporarily unavailable (HTTP %1$d).</string>
+    <string name="shell_error_retry">Retry</string>
+    <string name="shell_error_switch">Switch server</string>
+    <string name="shell_error_reloaded">Page reloaded</string>
+</resources>
