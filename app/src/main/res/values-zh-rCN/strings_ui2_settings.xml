@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_ui2_connect_requested">已请求连接</string>
+    <string name="settings_ui2_disconnected">已断开连接。</string>
+</resources>

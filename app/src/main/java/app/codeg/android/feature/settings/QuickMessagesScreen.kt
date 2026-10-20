@@ -1,5 +1,9 @@
 package app.codeg.android.feature.settings
 
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.getValue
+import androidx.compose.foundation.layout.size
+import app.codeg.android.core.designsystem.icon.*
 import app.codeg.android.core.designsystem.component.CodegButton
 import app.codeg.android.core.designsystem.component.CodegButtonVariant
 import app.codeg.android.core.designsystem.component.CodegConfirmDialog
@@ -19,16 +23,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.Chat
-import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -52,7 +51,7 @@ fun QuickMessagesContent(viewModel: QuickMessagesViewModel = hiltViewModel()) {
             Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { LoadingView(stringResource(R.string.common_loading)) }
             else -> LazyColumn(Modifier.fillMaxSize(), contentPadding = androidx.compose.foundation.layout.PaddingValues(start = 12.dp, end = 12.dp, top = 12.dp, bottom = 88.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 if (ui.messages.isEmpty() && !ui.loading) {
-                    item("empty") { Box(Modifier.fillMaxWidth().padding(40.dp), contentAlignment = Alignment.Center) { EmptyState(Icons.AutoMirrored.Rounded.Chat, stringResource(R.string.quickmsg_empty_title), stringResource(R.string.quickmsg_empty_subtitle)) } }
+                    item("empty") { Box(Modifier.fillMaxWidth().padding(40.dp), contentAlignment = Alignment.Center) { EmptyState(Lucide.MessageSquare, stringResource(R.string.quickmsg_empty_title), stringResource(R.string.quickmsg_empty_subtitle)) } }
                 }
                 items(ui.messages, key = { it.id }) { msg ->
                     MessageRow(msg, onEdit = { editor = EditorTarget(msg) }, onDelete = { viewModel.delete(msg) })
@@ -60,7 +59,7 @@ fun QuickMessagesContent(viewModel: QuickMessagesViewModel = hiltViewModel()) {
             }
         }
         if (!(ui.loading && ui.messages.isEmpty())) {
-            CodegButton(onClick = { editor = EditorTarget(null) }, modifier = Modifier.align(Alignment.BottomEnd).padding(16.dp), variant = CodegButtonVariant.Default) { Icon(Icons.Rounded.Add, contentDescription = stringResource(R.string.quickmsg_new_cd)) }
+            CodegButton(onClick = { editor = EditorTarget(null) }, modifier = Modifier.align(Alignment.BottomEnd).padding(16.dp), variant = CodegButtonVariant.Default) { Icon(Lucide.Plus, contentDescription = stringResource(R.string.quickmsg_new_cd), modifier = Modifier.size(16.dp)) }
         }
     }
 

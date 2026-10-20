@@ -1,5 +1,12 @@
 package app.codeg.android.feature.settings
 
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.getValue
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.combinedClickable
+import app.codeg.android.core.designsystem.component.webSurface
+import app.codeg.android.core.designsystem.component.CodegSpinner
+import app.codeg.android.core.designsystem.icon.*
 import app.codeg.android.core.designsystem.component.CodegSectionHeader
 import app.codeg.android.core.designsystem.component.CodegBadge
 import app.codeg.android.core.designsystem.component.CodegBadgeVariant
@@ -13,11 +20,9 @@ import app.codeg.android.core.designsystem.component.CodegTextField
 import app.codeg.android.core.designsystem.component.EmptyState
 import app.codeg.android.core.designsystem.component.InlineError
 import app.codeg.android.core.designsystem.component.LoadingView
-import app.codeg.android.core.designsystem.component.webSurface
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -32,25 +37,14 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowRight
-import androidx.compose.material.icons.rounded.Add
-import androidx.compose.material.icons.rounded.Close
-import androidx.compose.material.icons.rounded.Description
-import androidx.compose.material.icons.rounded.Folder
-import androidx.compose.material.icons.rounded.Lock
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -93,11 +87,11 @@ fun SkillsContent(viewModel: SkillsViewModel = hiltViewModel()) {
                 Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { LoadingView(stringResource(R.string.common_loading)) }
                 ui.phase == SkillsPhase.FAILED && ui.agents.isEmpty() ->
                 Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    InlineError(Icons.Rounded.Description, stringResource(R.string.skills_couldnt_load), ui.error ?: stringResource(R.string.skills_unknown_error), onRetry = { viewModel.load() })
+                    InlineError(Lucide.FileText, stringResource(R.string.skills_couldnt_load), ui.error ?: stringResource(R.string.skills_unknown_error), onRetry = { viewModel.load() })
                 }
                 ui.agents.isEmpty() ->
                 Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    EmptyState(Icons.Rounded.Description, stringResource(R.string.skills_no_agents), stringResource(R.string.skills_enable_agent_hint))
+                    EmptyState(Lucide.FileText, stringResource(R.string.skills_no_agents), stringResource(R.string.skills_enable_agent_hint))
                 }
                 else -> Column(Modifier.fillMaxSize()) {
                     AgentFilterBar(ui.agents, ui.selectedAgent) { viewModel.select(it) }
@@ -114,7 +108,7 @@ fun SkillsContent(viewModel: SkillsViewModel = hiltViewModel()) {
 
             // Floating "add" button — only when the agent supports skills.
             if (ui.selectedAgent != null && ui.result?.supported == true) {
-                CodegButton(onClick = { editor = SkillEditTarget.Add }, modifier = Modifier.align(Alignment.BottomEnd).padding(20.dp), variant = CodegButtonVariant.Default) { Icon(Icons.Rounded.Add, contentDescription = stringResource(R.string.skills_new_skill)) }
+                CodegButton(onClick = { editor = SkillEditTarget.Add }, modifier = Modifier.align(Alignment.BottomEnd).padding(20.dp), variant = CodegButtonVariant.Default) { Icon(Lucide.Plus, contentDescription = stringResource(R.string.skills_new_skill), modifier = Modifier.size(16.dp)) }
             }
         }
     }
@@ -177,15 +171,15 @@ private fun SkillsArea(
         Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { LoadingView(stringResource(R.string.skills_loading_skills)) }
         result == null && ui.refreshError != null ->
         Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            InlineError(Icons.Rounded.Description, stringResource(R.string.skills_couldnt_load), ui.refreshError, onRetry = onRetry)
+            InlineError(Lucide.FileText, stringResource(R.string.skills_couldnt_load), ui.refreshError, onRetry = onRetry)
         }
         result != null && !result.supported ->
         Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            EmptyState(Icons.Rounded.Description, stringResource(R.string.skills_not_supported), result.message ?: stringResource(R.string.skills_not_supported_message))
+            EmptyState(Lucide.FileText, stringResource(R.string.skills_not_supported), result.message ?: stringResource(R.string.skills_not_supported_message))
         }
         ui.grouped.isEmpty() ->
         Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            EmptyState(Icons.Rounded.Description, stringResource(R.string.skills_no_skills), stringResource(R.string.skills_create_hint), actionLabel = stringResource(R.string.skills_new_skill), onAction = onAdd)
+            EmptyState(Lucide.FileText, stringResource(R.string.skills_no_skills), stringResource(R.string.skills_create_hint), actionLabel = stringResource(R.string.skills_new_skill), onAction = onAdd)
         }
         else -> LazyColumn(
             Modifier.fillMaxSize(),
@@ -213,8 +207,8 @@ private fun SkillRow(skill: AgentSkillItem, onClick: () -> Unit, onDelete: () ->
     CodegListRow(title = skill.name.ifEmpty { skill.id },
         subtitle = listOfNotNull(skill.description?.takeIf { it.isNotEmpty() }, skill.path).joinToString(" · "),
         onClick = onClick, onLongClick = { if (!skill.readOnly) onDelete() },
-        leading = { Icon(if (skill.layout == "skill_directory") Icons.Rounded.Folder else Icons.Rounded.Description,
-            null, tint = colors.accent, modifier = Modifier.size(18.dp)) },
+        leading = { Icon(if (skill.layout == "skill_directory") Lucide.Folder else Lucide.FileText,
+            null, tint = colors.accent, modifier = Modifier.size(16.dp)) },
         trailing = { if (skill.readOnly) CodegBadge(text = stringResource(R.string.skills_read_only), variant = CodegBadgeVariant.Outline) },
         onMoreClick = if (skill.readOnly) null else onDelete)
 }
@@ -228,7 +222,7 @@ private fun RefreshErrorBanner(message: String, onRetry: () -> Unit, onDismiss: 
     ) {
         Text(message, fontSize = 12.sp, color = colors.danger, modifier = Modifier.weight(1f), maxLines = 2, overflow = TextOverflow.Ellipsis)
         Text(stringResource(R.string.common_retry), fontSize = 12.sp, fontWeight = FontWeight.SemiBold, color = colors.accent, modifier = Modifier.clickable { onRetry() })
-        Icon(Icons.Rounded.Close, stringResource(R.string.common_dismiss), tint = colors.web.mutedForeground, modifier = Modifier.size(16.dp).clickable { onDismiss() })
+        Icon(Lucide.X, stringResource(R.string.common_dismiss), tint = colors.web.mutedForeground, modifier = Modifier.clickable { onDismiss() }.padding(16.dp).size(16.dp))
     }
 }
 
@@ -293,7 +287,7 @@ private fun SkillEditorDialog(
             }
             when {
                 loadingContent -> Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    CircularProgressIndicator(color = colors.accent, modifier = Modifier.size(18.dp))
+                    CodegSpinner(size = 16.dp)
                     Text(stringResource(R.string.common_loading), fontSize = 13.sp, color = colors.textSecondary)
                 }
                 isReadOnly -> {

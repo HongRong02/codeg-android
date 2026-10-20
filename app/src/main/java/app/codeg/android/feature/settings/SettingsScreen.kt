@@ -1,5 +1,8 @@
 package app.codeg.android.feature.settings
 
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.getValue
+import app.codeg.android.core.designsystem.icon.*
 import app.codeg.android.core.designsystem.component.CodegCard
 import app.codeg.android.core.designsystem.component.CodegIconButton
 import app.codeg.android.core.designsystem.component.CodegListRow
@@ -27,30 +30,12 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.ArrowBack
-import androidx.compose.material.icons.automirrored.rounded.Chat
-import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowRight
-import androidx.compose.material.icons.rounded.Bolt
-import androidx.compose.material.icons.rounded.Brush
-import androidx.compose.material.icons.rounded.Difference
-import androidx.compose.material.icons.rounded.Extension
-import androidx.compose.material.icons.rounded.Info
-import androidx.compose.material.icons.rounded.Language
-import androidx.compose.material.icons.rounded.Memory
-import androidx.compose.material.icons.rounded.Person
-import androidx.compose.material.icons.rounded.Policy
-import androidx.compose.material.icons.rounded.School
-import androidx.compose.material.icons.rounded.Settings
-import androidx.compose.material.icons.rounded.Tune
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -70,27 +55,26 @@ import app.codeg.android.core.designsystem.theme.WebThemePreset
 import app.codeg.android.core.designsystem.theme.CodegTheme
 import app.codeg.android.core.datastore.ThemeMode
 import app.codeg.android.core.model.AgentType
-import androidx.compose.material.icons.rounded.Schedule
 
 private enum class SettingsLeaf(@StringRes val titleRes: Int, val icon: ImageVector, @StringRes val groupRes: Int, val implemented: Boolean) {
-    APPEARANCE(R.string.settings_leaf_appearance, Icons.Rounded.Brush, R.string.settings_group_personalization, true),
-    LANGUAGE(R.string.settings_leaf_language, Icons.Rounded.Language, R.string.settings_group_personalization, true),
-    GENERAL(R.string.settings_leaf_general, Icons.Rounded.Tune, R.string.settings_group_personalization, true),
-    QUICK_MESSAGES(R.string.settings_leaf_quick_messages, Icons.AutoMirrored.Rounded.Chat, R.string.settings_group_personalization, true),
-    AGENTS(R.string.settings_leaf_agents, Icons.Rounded.Person, R.string.settings_group_ai_agents, true),
-    MODEL_PROVIDERS(R.string.settings_leaf_model_providers, Icons.Rounded.Memory, R.string.settings_group_ai_agents, true),
-    ASSISTANTS(R.string.assistants_title, Icons.Rounded.Person, R.string.settings_group_ai_agents, true),
-    EXPERTS(R.string.settings_leaf_experts, Icons.Rounded.School, R.string.settings_group_ai_agents, true),
-    SKILLS(R.string.settings_leaf_skills, Icons.Rounded.Extension, R.string.settings_group_ai_agents, true),
-    MCP(R.string.settings_leaf_mcp, Icons.Rounded.Memory, R.string.settings_group_ai_agents, true),
-    VERSION_CONTROL(R.string.settings_leaf_version_control, Icons.Rounded.Difference, R.string.settings_group_integrations, true),
-    WORK_TASKS(R.string.work_tasks_title, Icons.Rounded.Schedule, R.string.settings_group_integrations, true),
-    SERVER_LOGS(R.string.logs_stats_title, Icons.Rounded.Info, R.string.settings_group_system, true),
-    AUTOMATIONS(R.string.automations_title, Icons.Rounded.Schedule, R.string.settings_group_integrations, true),
-    CHAT_CHANNELS(R.string.settings_leaf_chat_channels, Icons.AutoMirrored.Rounded.Chat, R.string.settings_group_integrations, true),
-    SYSTEM(R.string.settings_leaf_system, Icons.Rounded.Settings, R.string.settings_group_system, true),
-    OPEN_SOURCE_LICENSES(R.string.settings_leaf_open_source_licenses, Icons.Rounded.Policy, R.string.settings_group_system, true),
-    ABOUT(R.string.settings_leaf_about, Icons.Rounded.Info, R.string.settings_group_system, true),
+    APPEARANCE(R.string.settings_leaf_appearance, Lucide.Palette, R.string.settings_group_personalization, true),
+    LANGUAGE(R.string.settings_leaf_language, Lucide.Globe, R.string.settings_group_personalization, true),
+    GENERAL(R.string.settings_leaf_general, Lucide.SlidersHorizontal, R.string.settings_group_personalization, true),
+    QUICK_MESSAGES(R.string.settings_leaf_quick_messages, Lucide.MessageSquareText, R.string.settings_group_personalization, true),
+    AGENTS(R.string.settings_leaf_agents, Lucide.Bot, R.string.settings_group_ai_agents, true),
+    MODEL_PROVIDERS(R.string.settings_leaf_model_providers, Lucide.Server, R.string.settings_group_ai_agents, true),
+    ASSISTANTS(R.string.assistants_title, Lucide.User, R.string.settings_group_ai_agents, true),
+    EXPERTS(R.string.settings_leaf_experts, Lucide.GraduationCap, R.string.settings_group_ai_agents, true),
+    SKILLS(R.string.settings_leaf_skills, Lucide.BookOpenText, R.string.settings_group_ai_agents, true),
+    MCP(R.string.settings_leaf_mcp, Lucide.PlugZap, R.string.settings_group_ai_agents, true),
+    VERSION_CONTROL(R.string.settings_leaf_version_control, Lucide.GitBranch, R.string.settings_group_integrations, true),
+    WORK_TASKS(R.string.work_tasks_title, Lucide.Clock, R.string.settings_group_integrations, true),
+    SERVER_LOGS(R.string.logs_stats_title, Lucide.Info, R.string.settings_group_system, true),
+    AUTOMATIONS(R.string.automations_title, Lucide.Clock, R.string.settings_group_integrations, true),
+    CHAT_CHANNELS(R.string.settings_leaf_chat_channels, Lucide.SendHorizontal, R.string.settings_group_integrations, true),
+    SYSTEM(R.string.settings_leaf_system, Lucide.Settings, R.string.settings_group_system, true),
+    OPEN_SOURCE_LICENSES(R.string.settings_leaf_open_source_licenses, Lucide.Shield, R.string.settings_group_system, true),
+    ABOUT(R.string.settings_leaf_about, Lucide.Info, R.string.settings_group_system, true),
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -122,7 +106,7 @@ fun SettingsScreen(
                 showDivider = true,
                 navigationIcon = {
                     if (leaf != null) CodegIconButton(onClick = { if (inAgentDetail) agentDetail = null else leaf = null }) {
-                        Icon(Icons.AutoMirrored.Rounded.ArrowBack, contentDescription = stringResource(R.string.common_back))
+                        Icon(Lucide.ArrowLeft, contentDescription = stringResource(R.string.common_back), modifier = Modifier.size(16.dp))
                     }
                 },
             )
@@ -203,10 +187,10 @@ private fun SettingsRoot(
                                 }
                             }, modifier = Modifier, leading = { SettingsIconBadge(l.icon) }, trailing = {
                                 Icon(
-                                    Icons.AutoMirrored.Rounded.KeyboardArrowRight,
+                                    Lucide.ChevronRight,
                                     contentDescription = null,
                                     tint = colors.textSecondary,
-                                    modifier = Modifier.size(18.dp),
+                                    modifier = Modifier.size(16.dp),
                                 )
                             })
                             if (index < leaves.lastIndex) {
@@ -296,7 +280,7 @@ private fun ComingSoon(@StringRes title: Int) {
     val colors = CodegTheme.colors
     Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            Icon(Icons.Rounded.Bolt, contentDescription = null, tint = colors.textSecondary, modifier = Modifier.size(36.dp))
+            Icon(Lucide.Zap, contentDescription = null, tint = colors.textSecondary, modifier = Modifier.size(36.dp))
             Text(stringResource(title), color = colors.textPrimary, fontWeight = FontWeight.SemiBold)
             Text(stringResource(R.string.settings_coming_soon), fontSize = 13.sp, color = colors.textSecondary)
         }

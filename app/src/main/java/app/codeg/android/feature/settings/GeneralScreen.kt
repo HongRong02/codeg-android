@@ -1,5 +1,7 @@
 package app.codeg.android.feature.settings
 
+import androidx.compose.runtime.getValue
+import app.codeg.android.core.designsystem.icon.*
 import app.codeg.android.core.designsystem.component.CodegButton
 import app.codeg.android.core.designsystem.component.CodegButtonSize
 import app.codeg.android.core.designsystem.component.CodegButtonVariant
@@ -16,13 +18,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Add
-import androidx.compose.material.icons.rounded.Remove
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -77,9 +75,9 @@ private fun ToggleRow(title: String, subtitle: String, checked: Boolean, onChang
 private fun Stepper(value: Int, onDec: () -> Unit, onInc: () -> Unit) {
     val colors = CodegTheme.colors
     Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-        StepButton(Icons.Rounded.Remove, onDec)
+        StepButton(Lucide.Minus, onDec)
         Text("$value", fontSize = 16.sp, fontWeight = FontWeight.SemiBold, color = colors.textPrimary, modifier = Modifier.padding(horizontal = 8.dp))
-        StepButton(Icons.Rounded.Add, onInc)
+        StepButton(Lucide.Plus, onInc)
     }
 }
 
@@ -87,6 +85,6 @@ private fun Stepper(value: Int, onDec: () -> Unit, onInc: () -> Unit) {
 private fun StepButton(icon: androidx.compose.ui.graphics.vector.ImageVector, onClick: () -> Unit) {
     val colors = CodegTheme.colors
     CodegButton(onClick = onClick, modifier = Modifier.size(48.dp), variant = CodegButtonVariant.Secondary, size = CodegButtonSize.Icon) {
-        Icon(icon, contentDescription = stringResource(if (icon == Icons.Rounded.Remove) R.string.settings_core_decrease else R.string.settings_core_increase), modifier = Modifier.size(18.dp))
+        Icon(icon, contentDescription = stringResource(if (icon == Lucide.Minus) R.string.settings_core_decrease else R.string.settings_core_increase), modifier = Modifier.size(16.dp))
     }
 }

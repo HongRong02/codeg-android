@@ -1,5 +1,8 @@
 package app.codeg.android.feature.settings
 
+import androidx.compose.runtime.getValue
+import app.codeg.android.core.designsystem.component.CodegSpinner
+import app.codeg.android.core.designsystem.icon.*
 import app.codeg.android.core.designsystem.component.AgentIcon
 import app.codeg.android.core.designsystem.component.CodegCard
 import app.codeg.android.core.designsystem.component.CodegFullScreenSheet
@@ -25,16 +28,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.AutoAwesome
-import androidx.compose.material.icons.rounded.Close
-import androidx.compose.material.icons.rounded.School
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -68,8 +65,8 @@ fun ExpertsContent(viewModel: ExpertsViewModel = hiltViewModel()) {
             Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 when (ui.phase) {
                     ExpertsPhase.LOADING -> LoadingView(stringResource(R.string.experts_loading_experts))
-                    ExpertsPhase.FAILED -> InlineError(Icons.Rounded.School, stringResource(R.string.experts_couldnt_load), ui.error ?: stringResource(R.string.experts_unknown_error), onRetry = { viewModel.load() })
-                    ExpertsPhase.LOADED -> EmptyState(Icons.Rounded.School, stringResource(R.string.experts_no_experts), stringResource(R.string.experts_no_experts_message))
+                    ExpertsPhase.FAILED -> InlineError(Lucide.GraduationCap, stringResource(R.string.experts_couldnt_load), ui.error ?: stringResource(R.string.experts_unknown_error), onRetry = { viewModel.load() })
+                    ExpertsPhase.LOADED -> EmptyState(Lucide.GraduationCap, stringResource(R.string.experts_no_experts), stringResource(R.string.experts_no_experts_message))
                 }
             }
         } else {
@@ -120,7 +117,7 @@ private fun ExpertIconTile(size: androidx.compose.ui.unit.Dp) {
         Modifier.size(size).clip(RoundedCornerShape(size * 0.27f)).background(colors.accent.withOpacity(0.16f)),
         contentAlignment = Alignment.Center,
     ) {
-        Icon(Icons.Rounded.AutoAwesome, null, tint = colors.accent, modifier = Modifier.size(size * 0.44f))
+        Icon(Lucide.Sparkles, null, tint = colors.accent, modifier = Modifier.size(size * 0.44f))
     }
 }
 
@@ -133,7 +130,7 @@ private fun ExpertsRefreshBanner(message: String, onRetry: () -> Unit, onDismiss
     ) {
         Text(message, fontSize = 12.sp, color = colors.danger, modifier = Modifier.weight(1f), maxLines = 2, overflow = TextOverflow.Ellipsis)
         Text(stringResource(R.string.common_retry), fontSize = 12.sp, fontWeight = FontWeight.SemiBold, color = colors.accent, modifier = Modifier.clickable { onRetry() })
-        Icon(Icons.Rounded.Close, stringResource(R.string.common_dismiss), tint = colors.web.mutedForeground, modifier = Modifier.size(16.dp).clickable { onDismiss() })
+        Icon(Lucide.X, stringResource(R.string.common_dismiss), tint = colors.web.mutedForeground, modifier = Modifier.clickable { onDismiss() }.padding(16.dp).size(16.dp))
     }
 }
 
@@ -177,7 +174,7 @@ private fun ExpertDetailDialog(
                         when {
                             agents.isEmpty() -> Text(stringResource(R.string.experts_no_agents_available), fontSize = 13.sp, color = colors.web.mutedForeground, modifier = Modifier.padding(16.dp))
                             detail.loading -> Row(Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                                CircularProgressIndicator(color = colors.accent, modifier = Modifier.size(18.dp))
+                                CodegSpinner(size = 16.dp)
                                 Text(stringResource(R.string.experts_loading_status), fontSize = 13.sp, color = colors.textSecondary)
                             }
                             else -> agents.forEachIndexed { index, agent ->
@@ -226,7 +223,7 @@ private fun AgentLinkRow(agent: AgentType, status: ExpertInstallStatus?, togglin
             Text(agent.displayName, fontSize = 14.sp, color = colors.textPrimary)
             caption?.let { (text, color) -> Text(text, fontSize = 11.sp, color = color) }
         }
-        if (toggling) CircularProgressIndicator(color = colors.accent, modifier = Modifier.size(18.dp))
+        if (toggling) CodegSpinner(size = 16.dp)
         CodegSwitch(checked = isLinked, onCheckedChange = onToggle, enabled = !toggling && !(blocked && !isLinked))
     }
 }
