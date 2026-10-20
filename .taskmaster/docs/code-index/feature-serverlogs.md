@@ -6,13 +6,13 @@ Source root: `app/src/main/java/app/codeg/android/`
 
 | Line | Declaration |
 |---|---|
-| 29 | `@Composable fun ServerLogsScreen(onBack: () -> Unit, viewModel: ServerLogsViewModel = hiltViewModel())` |
-| 30 |   `val ui by viewModel.ui.collectAsStateWithLifecycle()` |
-| 31 |   `val colors` |
-| 32 |   `var tab by remember` |
-| 33 |   `var query by remember(ui.selectedFile, tab)` |
-| 34 |   `val tabs` |
-| 159 | `@Composable private fun StatRow(label: String, value: Long)` |
+| 24 | `@Composable fun ServerLogsScreen(onBack: () -> Unit, viewModel: ServerLogsViewModel = hiltViewModel())` |
+| 25 |   `val ui by viewModel.ui.collectAsStateWithLifecycle()` |
+| 26 |   `val colors` |
+| 27 |   `var tab by remember` |
+| 28 |   `var query by remember(ui.selectedFile, tab)` |
+| 29 |   `val tabs` |
+| 151 | `@Composable private fun StatRow(label: String, value: Long)` |
 
 ## feature/serverlogs/ServerLogsViewModel.kt
 

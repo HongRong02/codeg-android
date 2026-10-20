@@ -6,9 +6,8 @@ Source root: `app/src/main/java/app/codeg/android/`
 
 | Line | Declaration |
 |---|---|
-| 41 | `@Composable fun ServerEditorScreen( onDone: () -> Unit, viewModel: ServerEditorViewModel = hiltViewModel(), )` |
-| 45 |   `val colors` |
-| 125 | `@Composable private fun SectionHeader(text: String)` |
+| 35 | `@Composable fun ServerEditorScreen( onDone: () -> Unit, viewModel: ServerEditorViewModel = hiltViewModel(), )` |
+| 39 |   `val colors` |
 
 ## feature/server/ServerEditorViewModel.kt
 
@@ -39,10 +38,10 @@ Source root: `app/src/main/java/app/codeg/android/`
 
 | Line | Declaration |
 |---|---|
-| 54 | `@Composable fun ServerListScreen( servers: List<ServerProfile>, selectedId: String?, onSelect: (String) -> Unit, onDelete: (String) -> Unit, onAdd: () -> Unit, onEdit: (String) -> Unit, onBack: () -> Unit, )` |
-| 63 |   `val colors` |
-| 64 |   `var pendingDelete by remember` |
-| 121 |   `val toDelete` |
-| 142 | `@Composable private fun ServerRow( profile: ServerProfile, selected: Boolean, onClick: () -> Unit, onEdit: () -> Unit, onDelete: () -> Unit, )` |
-| 149 |   `val colors` |
-| 150 |   `var menuOpen by remember` |
+| 37 | `@Composable fun ServerListScreen( servers: List<ServerProfile>, selectedId: String?, onSelect: (String) -> Unit, onDelete: (String) -> Unit, onAdd: () -> Unit, onEdit: (String) -> Unit, onBack: () -> Unit, )` |
+| 46 |   `val colors` |
+| 47 |   `var pendingDelete by remember` |
+| 104 |   `val toDelete` |
+| 119 | `@Composable private fun ServerRow( profile: ServerProfile, selected: Boolean, onClick: () -> Unit, onEdit: () -> Unit, onDelete: () -> Unit, )` |
+| 126 |   `val colors` |
+| 127 |   `var menuOpen by remember` |

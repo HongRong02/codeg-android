@@ -21,21 +21,21 @@ Source root: `app/src/main/java/app/codeg/android/`
 
 | Line | Declaration |
 |---|---|
-| 18 | `fun actionLabel(action: String): Int` |
-| 36 | `@Composable fun WorkTaskActions(task: WorkTask, ui: WorkTaskUi, viewModel: WorkTaskViewModel, compact: Boolean = false)` |
-| 37 |   `var pending by remember(task.id)` |
-| 38 |   `var text by remember` |
-| 87 | `@Composable private fun Choice(label: String, value: String, choices: List<Pair<String, () -> Unit>>, enabled: Boolean)` |
-| 88 |   `var expanded by remember` |
-| 100 | `@Composable fun WorkTaskEditor(ui: WorkTaskUi, viewModel: WorkTaskViewModel)` |
-| 101 |   `val task` |
-| 102 |   `var title by remember` |
-| 103 |   `var original by remember` |
-| 104 |   `var description by remember` |
-| 105 |   `var folderId by remember` |
-| 106 |   `var agent by remember` |
-| 107 |   `var templateName by remember` |
-| 108 |   `val inherit` |
+| 17 | `fun actionLabel(action: String): Int` |
+| 35 | `@Composable fun WorkTaskActions(task: WorkTask, ui: WorkTaskUi, viewModel: WorkTaskViewModel, compact: Boolean = false)` |
+| 36 |   `var pending by remember(task.id)` |
+| 37 |   `var text by remember` |
+| 88 | `@Composable private fun Choice(label: String, value: String, choices: List<Pair<String, () -> Unit>>, enabled: Boolean)` |
+| 89 |   `var expanded by remember` |
+| 102 | `@Composable fun WorkTaskEditor(ui: WorkTaskUi, viewModel: WorkTaskViewModel)` |
+| 103 |   `val task` |
+| 104 |   `var title by remember` |
+| 105 |   `var original by remember` |
+| 106 |   `var description by remember` |
+| 107 |   `var folderId by remember` |
+| 108 |   `var agent by remember` |
+| 109 |   `var templateName by remember` |
+| 110 |   `val inherit` |
 
 ## feature/worktasks/WorkTaskLabels.kt
 
@@ -49,44 +49,44 @@ Source root: `app/src/main/java/app/codeg/android/`
 
 | Line | Declaration |
 |---|---|
-| 27 | `@Composable fun WorkTaskScreen(onBack: () -> Unit, viewModel: WorkTaskViewModel = hiltViewModel())` |
-| 28 |   `val ui by viewModel.ui.collectAsStateWithLifecycle()` |
-| 29 |   `var column by remember` |
-| 30 |   `var showCanceled by remember` |
-| 31 |   `val visible` |
-| 32 |   `val selected` |
-| 34 |   `val back` |
+| 26 | `@Composable fun WorkTaskScreen(onBack: () -> Unit, viewModel: WorkTaskViewModel = hiltViewModel())` |
+| 27 |   `val ui by viewModel.ui.collectAsStateWithLifecycle()` |
+| 28 |   `var column by remember` |
+| 29 |   `var showCanceled by remember` |
+| 30 |   `val visible` |
+| 31 |   `val selected` |
+| 33 |   `val back` |
 
 ## feature/worktasks/WorkTaskSettingsSheet.kt
 
 | Line | Declaration |
 |---|---|
-| 15 | `internal fun settingsValue(key: String, text: String): JsonElement?` |
-| 36 | `private val settingsLabels` |
-| 54 | `private val booleanSettings` |
-| 57 | `@Composable fun WorkTaskSettingsSheet(ui: WorkTaskUi, viewModel: WorkTaskViewModel)` |
-| 58 |   `var projectMenu by remember` |
-| 59 |   `var reset by remember` |
-| 60 |   `val source` |
-| 61 |   `var fields by remember(ui.settingsFolder, source)` |
-| 70 |   `val parsed` |
-| 75 |   `val enabled` |
-| 76 |   `val folder` |
-| 152 | `@Composable private fun SettingsSummary(settings: JsonObject)` |
+| 14 | `internal fun settingsValue(key: String, text: String): JsonElement?` |
+| 35 | `private val settingsLabels` |
+| 53 | `private val booleanSettings` |
+| 56 | `@Composable fun WorkTaskSettingsSheet(ui: WorkTaskUi, viewModel: WorkTaskViewModel)` |
+| 57 |   `var projectMenu by remember` |
+| 58 |   `var reset by remember` |
+| 59 |   `val source` |
+| 60 |   `var fields by remember(ui.settingsFolder, source)` |
+| 69 |   `val parsed` |
+| 74 |   `val enabled` |
+| 75 |   `val folder` |
+| 154 | `@Composable private fun SettingsSummary(settings: JsonObject)` |
 
 ## feature/worktasks/WorkTaskTemplates.kt
 
 | Line | Declaration |
 |---|---|
-| 21 | `@Composable fun WorkTaskManagementMenu(ui: WorkTaskUi, viewModel: WorkTaskViewModel)` |
-| 22 |   `var expanded by remember` |
-| 42 | `@Composable fun WorkTaskTemplates(ui: WorkTaskUi, viewModel: WorkTaskViewModel)` |
-| 43 |   `var editing by remember` |
-| 44 |   `var original by remember` |
-| 45 |   `var name by remember` |
-| 46 |   `var title by remember` |
-| 47 |   `var description by remember` |
-| 48 |   `var deleting by remember` |
+| 19 | `@Composable fun WorkTaskManagementMenu(ui: WorkTaskUi, viewModel: WorkTaskViewModel)` |
+| 20 |   `var expanded by remember` |
+| 40 | `@Composable fun WorkTaskTemplates(ui: WorkTaskUi, viewModel: WorkTaskViewModel)` |
+| 41 |   `var editing by remember` |
+| 42 |   `var original by remember` |
+| 43 |   `var name by remember` |
+| 44 |   `var title by remember` |
+| 45 |   `var description by remember` |
+| 46 |   `var deleting by remember` |
 
 ## feature/worktasks/WorkTaskViewModel.kt
 

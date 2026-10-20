@@ -21,6 +21,16 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 111 |   `val painter` |
 | 112 |   `val decorated` |
 
+## core/designsystem/component/Avatar.kt
+
+| Line | Declaration |
+|---|---|
+| 29 | `@Composable fun CodegAvatar( fallbackText: String, modifier: Modifier = Modifier, painter: Painter? = null, size: Dp = 32.dp, )` |
+| 35 |   `val web` |
+| 45 | `internal fun dsMiscInitial(text: String): String` |
+| 46 |   `val trimmed` |
+| 52 | `@Composable internal fun T53AvatarGallery()` |
+
 ## core/designsystem/component/Badges.kt
 
 | Line | Declaration |
@@ -111,6 +121,42 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 121 |   `val colors` |
 | 122 |   `var copied by remember` |
 
+## core/designsystem/component/Collapsible.kt
+
+| Line | Declaration |
+|---|---|
+| 29 | `@Composable fun CodegCollapsible( expanded: Boolean, onExpandedChange: (Boolean) -> Unit, header: @Composable () -> Unit, modifier: Modifier = Modifier, content: @Composable () -> Unit, )` |
+| 38 | `@Composable fun CodegInstantCollapsible( expanded: Boolean, onExpandedChange: (Boolean) -> Unit, header: @Composable () -> Unit, modifier: Modifier = Modifier, content: @Composable () -> Unit, )` |
+| 47 | `@Composable private fun CollapsibleBody( expanded: Boolean, onExpandedChange: (Boolean) -> Unit, header: @Composable () -> Unit, modifier: Modifier, instant: Boolean, content: @Composable () -> Unit, )` |
+| 52 |   `val rotation by animateFloatAsState(if (expanded) 180f else 0f, label = "collapsible-chevron")` |
+| 53 |   `val description` |
+| 68 | `@Composable internal fun T53CollapsibleGallery()` |
+| 69 |   `var expanded by remember` |
+
+## core/designsystem/component/Command.kt
+
+| Line | Declaration |
+|---|---|
+| 35 | `data class CodegCommandItem( val id: String, val label: String, val keywords: List<String> = emptyList(), val enabled: Boolean = true, )` |
+| 36 |   `val id: String` |
+| 37 |   `val label: String` |
+| 38 |   `val keywords: List<String>` |
+| 39 |   `val enabled: Boolean` |
+| 41 | `data class CodegCommandGroup(val heading: String, val items: List<CodegCommandItem>)` |
+| 43 | `internal fun filterCommandGroups(groups: List<CodegCommandGroup>, query: String): List<CodegCommandGroup>` |
+| 44 |   `val needle` |
+| 55 | `@Composable fun CodegCommandList( query: String, onQueryChange: (String) -> Unit, groups: List<CodegCommandGroup>, onSelect: (CodegCommandItem) -> Unit, modifier: Modifier = Modifier, empty: String = stringResource(R.string.ds_misc_no_results), placeholder: String = stringResource(R.string.ds_misc_search), )` |
+| 64 |   `val web` |
+| 65 |   `val filtered` |
+| 66 |   `val enabled` |
+| 67 |   `var selectedId by remember(query, groups)` |
+| 68 |   `val activeId` |
+| 69 |   `val listState` |
+| 70 |   `val rowIds` |
+| 132 |   `@Composable var query by remember` |
+| 133 |   `val heading` |
+| 134 |   `val label` |
+
 ## core/designsystem/component/Controls.kt
 
 | Line | Declaration |
@@ -189,6 +235,13 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 71 |   `var offset by remember(content)` |
 | 72 |   `val transform` |
 
+## core/designsystem/component/FolderBadge.kt
+
+| Line | Declaration |
+|---|---|
+| 22 | `@Composable fun CodegFolderBadge(name: String, modifier: Modifier = Modifier, color: Color? = null)` |
+| 23 |   `val web` |
+
 ## core/designsystem/component/Glass.kt
 
 | Line | Declaration |
@@ -204,6 +257,46 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 75 |   `val shape` |
 | 76 |   `val fill` |
 | 77 |   `val stroke` |
+
+## core/designsystem/component/ImagePreview.kt
+
+| Line | Declaration |
+|---|---|
+| 40 | `data class CodegPreviewImage(val painter: Painter, val description: String)` |
+| 42 | `internal fun boundedPreviewScale(scale: Float): Float` |
+| 43 | `internal fun boundedPreviewIndex(index: Int, count: Int): Int` |
+| 44 | `internal fun fittedPreviewSize(width: Float, height: Float, viewportWidth: Float, viewportHeight: Float): Pair<Float, Float>` |
+| 48 |   `val ratio` |
+| 51 | `internal fun boundedPreviewPan(pan: Float, extent: Float, scale: Float, imageExtent: Float = extent): Float` |
+| 53 |   `val limit` |
+| 58 | `@Composable fun CodegImagePreviewDialog(images: List<CodegPreviewImage>, initialIndex: Int = 0, onDismiss: () -> Unit)` |
+| 59 |   `var index by remember(images, initialIndex)` |
+| 60 |   `val current` |
+| 67 | `@Composable private fun ImagePreviewBody(images: List<CodegPreviewImage>, index: Int, onIndexChange: (Int) -> Unit, onDismiss: () -> Unit)` |
+| 68 |   `val web` |
+| 69 |   `val arrowRotation` |
+| 70 |   `val image` |
+| 71 |   `var scale by remember(image, index)` |
+| 72 |   `var offset by remember(image, index)` |
+| 73 |   `var viewport by remember` |
+| 74 |   `val intrinsic` |
+| 75 |   `val fitted` |
+| 121 |   `@Composable val web` |
+| 122 |   `val description` |
+| 123 |   `var index by remember` |
+
+## core/designsystem/component/InputGroup.kt
+
+| Line | Declaration |
+|---|---|
+| 38 | `@Composable fun CodegInputGroup( value: String, onValueChange: (String) -> Unit, modifier: Modifier = Modifier, leading: (@Composable () -> Unit)? = null, trailing: (@Composable () -> Unit)? = null, placeholder: String = "", enabled: Boolean = true, readOnly: Boolean = false, isError: Boolean = false, keyboardOptions: KeyboardOptions = KeyboardOptions.Default, keyboardActions: KeyboardActions = KeyboardActions.Default, )` |
+| 51 |   `val web` |
+| 52 |   `var focused by remember` |
+| 53 |   `val stroke` |
+| 54 |   `val ring` |
+| 55 |   `val shape` |
+| 56 |   `val outline` |
+| 80 |   `@Composable var text by remember` |
 
 ## core/designsystem/component/ListRows.kt
 
@@ -308,9 +401,17 @@ Source root: `app/src/main/java/app/codeg/android/`
 
 | Line | Declaration |
 |---|---|
-| 26 | `@Composable fun EmptyState( icon: ImageVector, title: String, message: String, modifier: Modifier = Modifier, actionLabel: String? = null, onAction: (() -> Unit)? = null, )` |
-| 61 | `@Composable fun LoadingView(message: String, modifier: Modifier = Modifier)` |
-| 74 | `@Composable fun InlineError( icon: ImageVector, title: String, message: String, onRetry: () -> Unit, modifier: Modifier = Modifier, retryLabel: String = "Retry", )` |
+| 42 | `@Composable fun EmptyState( icon: ImageVector, title: String, message: String, modifier: Modifier = Modifier, actionLabel: String? = null, onAction: (() -> Unit)? = null, )` |
+| 50 |   `val colors` |
+| 76 | `@Composable fun LoadingView(message: String, modifier: Modifier = Modifier)` |
+| 77 |   `val colors` |
+| 91 | `@Composable fun InlineError( icon: ImageVector, title: String, message: String, onRetry: () -> Unit, modifier: Modifier = Modifier, retryLabel: String = stringResource(R.string.ds_states_retry), showRetry: Boolean = true, )` |
+| 100 |   `val colors` |
+| 124 | `@Composable internal fun T54Gallery()` |
+| 125 |   `val title` |
+| 126 |   `val message` |
+| 150 | `@Composable private fun T54LightPreview()` |
+| 156 | `@Composable private fun T54DarkPreview()` |
 
 ## core/designsystem/component/Tabs.kt
 
@@ -342,19 +443,78 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 156 | `@Composable private fun FieldPreview()` |
 | 166 | `@Composable private fun SecretFieldPreview()` |
 
+## core/designsystem/component/Toasts.kt
+
+| Line | Declaration |
+|---|---|
+| 44 | `value class ToastId(val value: Long)` |
+| 45 | `enum class ToastType` |
+| 46 | `data class ToastAction(val label: String, val onClick: () -> Unit)` |
+| 48 | `internal data class ToastEntry( val id: ToastId, val type: ToastType, val title: String, val description: String? = null, val action: ToastAction? = null, val remainingMs: Long = 4000, )` |
+| 49 |   `val id: ToastId` |
+| 50 |   `val type: ToastType` |
+| 51 |   `val title: String` |
+| 52 |   `val description: String?` |
+| 53 |   `val action: ToastAction?` |
+| 54 |   `val remainingMs: Long` |
+| 61 | `internal class ToastQueue` |
+| 62 |   `private var nextId` |
+| 63 |   `private var entries` |
+| 64 |   `val visible: List<ToastEntry> get()` |
+| 66 |   `fun add(type: ToastType, title: String, description: String? = null, action: ToastAction? = null): ToastId` |
+| 72 |   `fun update(id: ToastId, type: ToastType, title: String, description: String?)` |
+| 78 |   `fun dismiss(id: ToastId)` |
+| 80 |   `fun advance(elapsedMs: Long)` |
+| 89 | `class CodegToaster internal constructor(private val silent: Boolean)` |
+| 91 |   `private val queue` |
+| 92 |   `private val mutableEntries` |
+| 93 |   `internal val entries` |
+| 96 |   `private fun add(type: ToastType, title: String, description: String?, action: ToastAction?): ToastId` |
+| 103 |   `fun success(title: String, description: String? = null, action: ToastAction? = null): ToastId` |
+| 104 |   `fun error(title: String, description: String? = null, action: ToastAction? = null): ToastId` |
+| 105 |   `fun info(title: String, description: String? = null, action: ToastAction? = null): ToastId` |
+| 106 |   `fun warning(title: String, description: String? = null, action: ToastAction? = null): ToastId` |
+| 107 |   `fun loading(title: String): ToastId` |
+| 110 |   `fun update(id: ToastId, type: ToastType, title: String, description: String? = null)` |
+| 115 |   `fun dismiss(id: ToastId)` |
+| 117 |   `internal fun advance(elapsedMs: Long)` |
+| 118 |   `private fun publish()` |
+| 121 | `val LocalCodegToaster` |
+| 124 | `@Composable fun CodegToasterHost( toaster: CodegToaster = remember { CodegToaster() }, content: @Composable () -> Unit, )` |
+| 128 |   `val entries by toaster.entries.collectAsState()` |
+| 130 |   `val rendered` |
+| 174 | `@Composable private fun ToastCard(entry: ToastEntry, dismiss: () -> Unit)` |
+| 175 |   `val web` |
+| 176 |   `val threshold` |
+| 177 |   `var dragOffset by remember(entry.id)` |
+| 225 | `@Composable internal fun T52Gallery()` |
+| 226 |   `val toaster` |
+| 227 |   `val success` |
+| 228 |   `val error` |
+| 229 |   `val info` |
+| 230 |   `val warning` |
+| 231 |   `val loading` |
+| 232 |   `val description` |
+| 233 |   `val action` |
+| 234 |   `val finish` |
+| 235 |   `var pending by remember` |
+| 249 | `@Composable private fun ToastPreviewContent()` |
+| 266 | `@Composable private fun ToastsLightPreview()` |
+| 269 | `@Composable private fun ToastsDarkPreview()` |
+
 ## core/designsystem/component/TopBar.kt
 
 | Line | Declaration |
 |---|---|
-| 46 | `@Composable fun CodegTopBar( title: String, modifier: Modifier = Modifier, subtitle: String? = null, navigationIcon: @Composable () -> Unit = {}, actions: @Composable RowScope.() -> Unit = {}, scrollBehavior: TopAppBarScrollBehavior? = null, showDivider: Boolean = false, titleContent: (@Composable () -> Unit)? = null, )` |
-| 56 |   `val colors` |
-| 101 | `@Composable fun CodegIconButton( onClick: () -> Unit, modifier: Modifier = Modifier, enabled: Boolean = true, visualSize: Dp = 36.dp, content: @Composable () -> Unit, )` |
-| 108 |   `val colors` |
-| 109 |   `val interactionSource` |
-| 110 |   `val pressed by interactionSource.collectIsPressedAsState()` |
-| 111 |   `val hovered by interactionSource.collectIsHoveredAsState()` |
-| 112 |   `val focused by interactionSource.collectIsFocusedAsState()` |
-| 113 |   `val active` |
+| 49 | `@Composable fun CodegTopBar( title: String, modifier: Modifier = Modifier, subtitle: String? = null, navigationIcon: @Composable () -> Unit = {}, actions: @Composable RowScope.() -> Unit = {}, scrollBehavior: TopAppBarScrollBehavior? = null, showDivider: Boolean = true, titleContent: (@Composable () -> Unit)? = null, )` |
+| 59 |   `val colors` |
+| 104 | `@Composable fun CodegIconButton( onClick: () -> Unit, modifier: Modifier = Modifier, enabled: Boolean = true, visualSize: Dp = 36.dp, content: @Composable () -> Unit, )` |
+| 111 |   `val colors` |
+| 112 |   `val interactionSource` |
+| 113 |   `val pressed by interactionSource.collectIsPressedAsState()` |
+| 114 |   `val hovered by interactionSource.collectIsHoveredAsState()` |
+| 115 |   `val focused by interactionSource.collectIsFocusedAsState()` |
+| 116 |   `val active` |
 
 ## core/designsystem/diff/DiffView.kt
 
@@ -416,6 +576,697 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 178 |     `fun flushFile()` |
 | 207 |   `private fun parseHunkHeader(line: String): Pair<Int, Int>?` |
 | 214 |   `private fun stripABPrefix(p: String): String` |
+
+## core/designsystem/icon/CodegIcon.kt
+
+| Line | Declaration |
+|---|---|
+| 29 | `@Composable fun CodegIcon( icon: ImageVector, contentDescription: String?, modifier: Modifier = Modifier, size: Dp = 16.dp, tint: Color = LocalContentColor.current, )` |
+| 46 | `@Composable internal fun T51Gallery()` |
+| 47 |   `val icons` |
+| 69 | `@Composable private fun LucideLightPreview()` |
+| 77 | `@Composable private fun LucideDarkPreview()` |
+
+## core/designsystem/icon/LucideIcons.kt
+
+| Line | Declaration |
+|---|---|
+| 45 | `object Lucide` |
+| 47 | `internal val lucideGallery: List<Pair<String, () -> ImageVector>>` |
+| 50 | `private fun galleryA_F(): List<Pair<String, () -> ImageVector>>` |
+| 179 | `private fun galleryG_L(): List<Pair<String, () -> ImageVector>>` |
+| 244 | `private fun galleryM_R(): List<Pair<String, () -> ImageVector>>` |
+| 315 | `private fun galleryS_Z(): List<Pair<String, () -> ImageVector>>` |
+
+## core/designsystem/icon/LucideIconsA_F.kt
+
+| Line | Declaration |
+|---|---|
+| 51 | `val Lucide.Activity: ImageVector get()` |
+| 52 | `private val iconActivity: ImageVector by lazy` |
+| 58 | `val Lucide.AlertCircle: ImageVector get()` |
+| 59 | `private val iconAlertCircle: ImageVector by lazy` |
+| 67 | `val Lucide.AlertTriangle: ImageVector get()` |
+| 68 | `private val iconAlertTriangle: ImageVector by lazy` |
+| 76 | `val Lucide.AlignLeft: ImageVector get()` |
+| 77 | `private val iconAlignLeft: ImageVector by lazy` |
+| 85 | `val Lucide.AppWindow: ImageVector get()` |
+| 86 | `private val iconAppWindow: ImageVector by lazy` |
+| 95 | `val Lucide.Archive: ImageVector get()` |
+| 96 | `private val iconArchive: ImageVector by lazy` |
+| 104 | `val Lucide.ArchiveRestore: ImageVector get()` |
+| 105 | `private val iconArchiveRestore: ImageVector by lazy` |
+| 115 | `val Lucide.ArrowDown: ImageVector get()` |
+| 116 | `private val iconArrowDown: ImageVector by lazy` |
+| 123 | `val Lucide.ArrowDownRight: ImageVector get()` |
+| 124 | `private val iconArrowDownRight: ImageVector by lazy` |
+| 131 | `val Lucide.ArrowLeft: ImageVector get()` |
+| 132 | `private val iconArrowLeft: ImageVector by lazy` |
+| 139 | `val Lucide.ArrowRight: ImageVector get()` |
+| 140 | `private val iconArrowRight: ImageVector by lazy` |
+| 147 | `val Lucide.ArrowUp: ImageVector get()` |
+| 148 | `private val iconArrowUp: ImageVector by lazy` |
+| 155 | `val Lucide.ArrowUpCircle: ImageVector get()` |
+| 156 | `private val iconArrowUpCircle: ImageVector by lazy` |
+| 164 | `val Lucide.ArrowUpRight: ImageVector get()` |
+| 165 | `private val iconArrowUpRight: ImageVector by lazy` |
+| 172 | `val Lucide.ArrowUpToLine: ImageVector get()` |
+| 173 | `private val iconArrowUpToLine: ImageVector by lazy` |
+| 181 | `val Lucide.AtSign: ImageVector get()` |
+| 182 | `private val iconAtSign: ImageVector by lazy` |
+| 189 | `val Lucide.AudioLines: ImageVector get()` |
+| 190 | `private val iconAudioLines: ImageVector by lazy` |
+| 201 | `val Lucide.BadgeCheck: ImageVector get()` |
+| 202 | `private val iconBadgeCheck: ImageVector by lazy` |
+| 209 | `val Lucide.Ban: ImageVector get()` |
+| 210 | `private val iconBan: ImageVector by lazy` |
+| 217 | `val Lucide.BarChart3: ImageVector get()` |
+| 218 | `private val iconBarChart3: ImageVector by lazy` |
+| 227 | `val Lucide.Bell: ImageVector get()` |
+| 228 | `private val iconBell: ImageVector by lazy` |
+| 235 | `val Lucide.BellOff: ImageVector get()` |
+| 236 | `private val iconBellOff: ImageVector by lazy` |
+| 245 | `val Lucide.BellRing: ImageVector get()` |
+| 246 | `private val iconBellRing: ImageVector by lazy` |
+| 255 | `val Lucide.BookOpen: ImageVector get()` |
+| 256 | `private val iconBookOpen: ImageVector by lazy` |
+| 263 | `val Lucide.BookOpenText: ImageVector get()` |
+| 264 | `private val iconBookOpenText: ImageVector by lazy` |
+| 275 | `val Lucide.BookmarkPlus: ImageVector get()` |
+| 276 | `private val iconBookmarkPlus: ImageVector by lazy` |
+| 284 | `val Lucide.Bot: ImageVector get()` |
+| 285 | `private val iconBot: ImageVector by lazy` |
+| 296 | `val Lucide.Box: ImageVector get()` |
+| 297 | `private val iconBox: ImageVector by lazy` |
+| 305 | `val Lucide.Boxes: ImageVector get()` |
+| 306 | `private val iconBoxes: ImageVector by lazy` |
+| 323 | `val Lucide.Braces: ImageVector get()` |
+| 324 | `private val iconBraces: ImageVector by lazy` |
+| 331 | `val Lucide.Brain: ImageVector get()` |
+| 332 | `private val iconBrain: ImageVector by lazy` |
+| 345 | `val Lucide.BrainCog: ImageVector get()` |
+| 346 | `private val iconBrainCog: ImageVector by lazy` |
+| 366 | `val Lucide.BrushCleaning: ImageVector get()` |
+| 367 | `private val iconBrushCleaning: ImageVector by lazy` |
+| 376 | `val Lucide.Bubbles: ImageVector get()` |
+| 377 | `private val iconBubbles: ImageVector by lazy` |
+| 386 | `val Lucide.Bug: ImageVector get()` |
+| 387 | `private val iconBug: ImageVector by lazy` |
+| 403 | `val Lucide.Calendar: ImageVector get()` |
+| 404 | `private val iconCalendar: ImageVector by lazy` |
+| 413 | `val Lucide.CalendarClock: ImageVector get()` |
+| 414 | `private val iconCalendarClock: ImageVector by lazy` |
+| 425 | `val Lucide.Camera: ImageVector get()` |
+| 426 | `private val iconCamera: ImageVector by lazy` |
+| 433 | `val Lucide.ChartNoAxesColumn: ImageVector get()` |
+| 434 | `private val iconChartNoAxesColumn: ImageVector by lazy` |
+| 442 | `val Lucide.Check: ImageVector get()` |
+| 443 | `private val iconCheck: ImageVector by lazy` |
+| 449 | `val Lucide.CheckCheck: ImageVector get()` |
+| 450 | `private val iconCheckCheck: ImageVector by lazy` |
+| 457 | `val Lucide.CheckCircle: ImageVector get()` |
+| 458 | `private val iconCheckCircle: ImageVector by lazy` |
+| 465 | `val Lucide.CheckCircle2: ImageVector get()` |
+| 466 | `private val iconCheckCircle2: ImageVector by lazy` |
+| 473 | `val Lucide.CheckSquare: ImageVector get()` |
+| 474 | `private val iconCheckSquare: ImageVector by lazy` |
+| 481 | `val Lucide.ChevronDown: ImageVector get()` |
+| 482 | `private val iconChevronDown: ImageVector by lazy` |
+| 488 | `val Lucide.ChevronLeft: ImageVector get()` |
+| 489 | `private val iconChevronLeft: ImageVector by lazy` |
+| 495 | `val Lucide.ChevronRight: ImageVector get()` |
+| 496 | `private val iconChevronRight: ImageVector by lazy` |
+| 502 | `val Lucide.ChevronUp: ImageVector get()` |
+| 503 | `private val iconChevronUp: ImageVector by lazy` |
+| 509 | `val Lucide.ChevronsDownUp: ImageVector get()` |
+| 510 | `private val iconChevronsDownUp: ImageVector by lazy` |
+| 517 | `val Lucide.ChevronsUp: ImageVector get()` |
+| 518 | `private val iconChevronsUp: ImageVector by lazy` |
+| 525 | `val Lucide.ChevronsUpDown: ImageVector get()` |
+| 526 | `private val iconChevronsUpDown: ImageVector by lazy` |
+| 533 | `val Lucide.Circle: ImageVector get()` |
+| 534 | `private val iconCircle: ImageVector by lazy` |
+| 540 | `val Lucide.CircleAlert: ImageVector get()` |
+| 541 | `private val iconCircleAlert: ImageVector by lazy` |
+| 549 | `val Lucide.CircleCheck: ImageVector get()` |
+| 550 | `private val iconCircleCheck: ImageVector by lazy` |
+| 557 | `val Lucide.CircleCheckBig: ImageVector get()` |
+| 558 | `private val iconCircleCheckBig: ImageVector by lazy` |
+| 565 | `val Lucide.CircleDashed: ImageVector get()` |
+| 566 | `private val iconCircleDashed: ImageVector by lazy` |
+| 579 | `val Lucide.CircleDot: ImageVector get()` |
+| 580 | `private val iconCircleDot: ImageVector by lazy` |
+| 587 | `val Lucide.CircleHelp: ImageVector get()` |
+| 588 | `private val iconCircleHelp: ImageVector by lazy` |
+| 596 | `val Lucide.CircleMinus: ImageVector get()` |
+| 597 | `private val iconCircleMinus: ImageVector by lazy` |
+| 604 | `val Lucide.CirclePlay: ImageVector get()` |
+| 605 | `private val iconCirclePlay: ImageVector by lazy` |
+| 612 | `val Lucide.CirclePlus: ImageVector get()` |
+| 613 | `private val iconCirclePlus: ImageVector by lazy` |
+| 621 | `val Lucide.CircleX: ImageVector get()` |
+| 622 | `private val iconCircleX: ImageVector by lazy` |
+| 630 | `val Lucide.Clapperboard: ImageVector get()` |
+| 631 | `private val iconClapperboard: ImageVector by lazy` |
+| 640 | `val Lucide.ClipboardList: ImageVector get()` |
+| 641 | `private val iconClipboardList: ImageVector by lazy` |
+| 652 | `val Lucide.ClipboardPaste: ImageVector get()` |
+| 653 | `private val iconClipboardPaste: ImageVector by lazy` |
+| 663 | `val Lucide.Clock: ImageVector get()` |
+| 664 | `private val iconClock: ImageVector by lazy` |
+| 671 | `val Lucide.Clock3: ImageVector get()` |
+| 672 | `private val iconClock3: ImageVector by lazy` |
+| 679 | `val Lucide.Cloud: ImageVector get()` |
+| 680 | `private val iconCloud: ImageVector by lazy` |
+| 686 | `val Lucide.CloudCheck: ImageVector get()` |
+| 687 | `private val iconCloudCheck: ImageVector by lazy` |
+| 694 | `val Lucide.CloudDownload: ImageVector get()` |
+| 695 | `private val iconCloudDownload: ImageVector by lazy` |
+| 703 | `val Lucide.CloudOff: ImageVector get()` |
+| 704 | `private val iconCloudOff: ImageVector by lazy` |
+| 712 | `val Lucide.CloudSync: ImageVector get()` |
+| 713 | `private val iconCloudSync: ImageVector by lazy` |
+| 723 | `val Lucide.CloudUpload: ImageVector get()` |
+| 724 | `private val iconCloudUpload: ImageVector by lazy` |
+| 732 | `val Lucide.Code: ImageVector get()` |
+| 733 | `private val iconCode: ImageVector by lazy` |
+| 740 | `val Lucide.Code2: ImageVector get()` |
+| 741 | `private val iconCode2: ImageVector by lazy` |
+| 749 | `val Lucide.Cog: ImageVector get()` |
+| 750 | `private val iconCog: ImageVector by lazy` |
+| 769 | `val Lucide.Coins: ImageVector get()` |
+| 770 | `private val iconCoins: ImageVector by lazy` |
+| 779 | `val Lucide.Columns2: ImageVector get()` |
+| 780 | `private val iconColumns2: ImageVector by lazy` |
+| 787 | `val Lucide.Command: ImageVector get()` |
+| 788 | `private val iconCommand: ImageVector by lazy` |
+| 794 | `val Lucide.Compass: ImageVector get()` |
+| 795 | `private val iconCompass: ImageVector by lazy` |
+| 802 | `val Lucide.Copy: ImageVector get()` |
+| 803 | `private val iconCopy: ImageVector by lazy` |
+| 810 | `val Lucide.Cpu: ImageVector get()` |
+| 811 | `private val iconCpu: ImageVector by lazy` |
+| 830 | `val Lucide.Crosshair: ImageVector get()` |
+| 831 | `private val iconCrosshair: ImageVector by lazy` |
+| 841 | `val Lucide.DatabaseBackup: ImageVector get()` |
+| 842 | `private val iconDatabaseBackup: ImageVector by lazy` |
+| 853 | `val Lucide.Download: ImageVector get()` |
+| 854 | `private val iconDownload: ImageVector by lazy` |
+| 862 | `val Lucide.Ellipsis: ImageVector get()` |
+| 863 | `private val iconEllipsis: ImageVector by lazy` |
+| 871 | `val Lucide.EllipsisVertical: ImageVector get()` |
+| 872 | `private val iconEllipsisVertical: ImageVector by lazy` |
+| 880 | `val Lucide.Eraser: ImageVector get()` |
+| 881 | `private val iconEraser: ImageVector by lazy` |
+| 888 | `val Lucide.Expand: ImageVector get()` |
+| 889 | `private val iconExpand: ImageVector by lazy` |
+| 902 | `val Lucide.ExternalLink: ImageVector get()` |
+| 903 | `private val iconExternalLink: ImageVector by lazy` |
+| 911 | `val Lucide.Eye: ImageVector get()` |
+| 912 | `private val iconEye: ImageVector by lazy` |
+| 919 | `val Lucide.EyeOff: ImageVector get()` |
+| 920 | `private val iconEyeOff: ImageVector by lazy` |
+| 929 | `val Lucide.File: ImageVector get()` |
+| 930 | `private val iconFile: ImageVector by lazy` |
+| 937 | `val Lucide.FileCode: ImageVector get()` |
+| 938 | `private val iconFileCode: ImageVector by lazy` |
+| 947 | `val Lucide.FileCode2: ImageVector get()` |
+| 948 | `private val iconFileCode2: ImageVector by lazy` |
+| 957 | `val Lucide.FileDiff: ImageVector get()` |
+| 958 | `private val iconFileDiff: ImageVector by lazy` |
+| 967 | `val Lucide.FileDown: ImageVector get()` |
+| 968 | `private val iconFileDown: ImageVector by lazy` |
+| 977 | `val Lucide.FileImage: ImageVector get()` |
+| 978 | `private val iconFileImage: ImageVector by lazy` |
+| 987 | `val Lucide.FileMinus2: ImageVector get()` |
+| 988 | `private val iconFileMinus2: ImageVector by lazy` |
+| 996 | `val Lucide.FilePen: ImageVector get()` |
+| 997 | `private val iconFilePen: ImageVector by lazy` |
+| 1005 | `val Lucide.FilePenLine: ImageVector get()` |
+| 1006 | `private val iconFilePenLine: ImageVector by lazy` |
+| 1014 | `val Lucide.FilePlus: ImageVector get()` |
+| 1015 | `private val iconFilePlus: ImageVector by lazy` |
+| 1024 | `val Lucide.FilePlus2: ImageVector get()` |
+| 1025 | `private val iconFilePlus2: ImageVector by lazy` |
+| 1034 | `val Lucide.FileSearch: ImageVector get()` |
+| 1035 | `private val iconFileSearch: ImageVector by lazy` |
+| 1044 | `val Lucide.FileSpreadsheet: ImageVector get()` |
+| 1045 | `private val iconFileSpreadsheet: ImageVector by lazy` |
+| 1056 | `val Lucide.FileStack: ImageVector get()` |
+| 1057 | `private val iconFileStack: ImageVector by lazy` |
+| 1065 | `val Lucide.FileText: ImageVector get()` |
+| 1066 | `private val iconFileText: ImageVector by lazy` |
+| 1076 | `val Lucide.FileUp: ImageVector get()` |
+| 1077 | `private val iconFileUp: ImageVector by lazy` |
+| 1086 | `val Lucide.FileWarning: ImageVector get()` |
+| 1087 | `private val iconFileWarning: ImageVector by lazy` |
+| 1095 | `val Lucide.Film: ImageVector get()` |
+| 1096 | `private val iconFilm: ImageVector by lazy` |
+| 1109 | `val Lucide.FlaskConical: ImageVector get()` |
+| 1110 | `private val iconFlaskConical: ImageVector by lazy` |
+| 1118 | `val Lucide.Folder: ImageVector get()` |
+| 1119 | `private val iconFolder: ImageVector by lazy` |
+| 1125 | `val Lucide.FolderClosed: ImageVector get()` |
+| 1126 | `private val iconFolderClosed: ImageVector by lazy` |
+| 1133 | `val Lucide.FolderCog: ImageVector get()` |
+| 1134 | `private val iconFolderCog: ImageVector by lazy` |
+| 1149 | `val Lucide.FolderGit2: ImageVector get()` |
+| 1150 | `private val iconFolderGit2: ImageVector by lazy` |
+| 1159 | `val Lucide.FolderInput: ImageVector get()` |
+| 1160 | `private val iconFolderInput: ImageVector by lazy` |
+| 1168 | `val Lucide.FolderOpen: ImageVector get()` |
+| 1169 | `private val iconFolderOpen: ImageVector by lazy` |
+| 1175 | `val Lucide.FolderOpenDot: ImageVector get()` |
+| 1176 | `private val iconFolderOpenDot: ImageVector by lazy` |
+| 1183 | `val Lucide.FolderPen: ImageVector get()` |
+| 1184 | `private val iconFolderPen: ImageVector by lazy` |
+| 1191 | `val Lucide.FolderPlus: ImageVector get()` |
+| 1192 | `private val iconFolderPlus: ImageVector by lazy` |
+| 1200 | `val Lucide.FolderRoot: ImageVector get()` |
+| 1201 | `private val iconFolderRoot: ImageVector by lazy` |
+| 1209 | `val Lucide.FolderSearch: ImageVector get()` |
+| 1210 | `private val iconFolderSearch: ImageVector by lazy` |
+| 1218 | `val Lucide.FolderTree: ImageVector get()` |
+| 1219 | `private val iconFolderTree: ImageVector by lazy` |
+| 1228 | `val Lucide.FolderX: ImageVector get()` |
+| 1229 | `private val iconFolderX: ImageVector by lazy` |
+| 1237 | `val Lucide.Frame: ImageVector get()` |
+| 1238 | `private val iconFrame: ImageVector by lazy` |
+| 1247 | `val Lucide.Funnel: ImageVector get()` |
+| 1248 | `private val iconFunnel: ImageVector by lazy` |
+
+## core/designsystem/icon/LucideIconsG_L.kt
+
+| Line | Declaration |
+|---|---|
+| 51 | `val Lucide.GamepadDirectional: ImageVector get()` |
+| 52 | `private val iconGamepadDirectional: ImageVector by lazy` |
+| 61 | `val Lucide.Gauge: ImageVector get()` |
+| 62 | `private val iconGauge: ImageVector by lazy` |
+| 69 | `val Lucide.GitBranch: ImageVector get()` |
+| 70 | `private val iconGitBranch: ImageVector by lazy` |
+| 78 | `val Lucide.GitBranchPlus: ImageVector get()` |
+| 79 | `private val iconGitBranchPlus: ImageVector by lazy` |
+| 90 | `val Lucide.GitCommit: ImageVector get()` |
+| 91 | `private val iconGitCommit: ImageVector by lazy` |
+| 99 | `val Lucide.GitCommitHorizontal: ImageVector get()` |
+| 100 | `private val iconGitCommitHorizontal: ImageVector by lazy` |
+| 108 | `val Lucide.GitCompare: ImageVector get()` |
+| 109 | `private val iconGitCompare: ImageVector by lazy` |
+| 118 | `val Lucide.GitFork: ImageVector get()` |
+| 119 | `private val iconGitFork: ImageVector by lazy` |
+| 129 | `val Lucide.GitMerge: ImageVector get()` |
+| 130 | `private val iconGitMerge: ImageVector by lazy` |
+| 138 | `val Lucide.GitPullRequest: ImageVector get()` |
+| 139 | `private val iconGitPullRequest: ImageVector by lazy` |
+| 148 | `val Lucide.GitPullRequestArrow: ImageVector get()` |
+| 149 | `private val iconGitPullRequestArrow: ImageVector by lazy` |
+| 159 | `val Lucide.GitPullRequestClosed: ImageVector get()` |
+| 160 | `private val iconGitPullRequestClosed: ImageVector by lazy` |
+| 171 | `val Lucide.GitPullRequestDraft: ImageVector get()` |
+| 172 | `private val iconGitPullRequestDraft: ImageVector by lazy` |
+| 182 | `val Lucide.Github: ImageVector get()` |
+| 183 | `private val iconGithub: ImageVector by lazy` |
+| 190 | `val Lucide.Gitlab: ImageVector get()` |
+| 191 | `private val iconGitlab: ImageVector by lazy` |
+| 197 | `val Lucide.Globe: ImageVector get()` |
+| 198 | `private val iconGlobe: ImageVector by lazy` |
+| 206 | `val Lucide.GraduationCap: ImageVector get()` |
+| 207 | `private val iconGraduationCap: ImageVector by lazy` |
+| 215 | `val Lucide.Grid2x2: ImageVector get()` |
+| 216 | `private val iconGrid2x2: ImageVector by lazy` |
+| 224 | `val Lucide.GripVertical: ImageVector get()` |
+| 225 | `private val iconGripVertical: ImageVector by lazy` |
+| 236 | `val Lucide.HardDrive: ImageVector get()` |
+| 237 | `private val iconHardDrive: ImageVector by lazy` |
+| 246 | `val Lucide.Hash: ImageVector get()` |
+| 247 | `private val iconHash: ImageVector by lazy` |
+| 256 | `val Lucide.Heart: ImageVector get()` |
+| 257 | `private val iconHeart: ImageVector by lazy` |
+| 263 | `val Lucide.HeartCrack: ImageVector get()` |
+| 264 | `private val iconHeartCrack: ImageVector by lazy` |
+| 271 | `val Lucide.HeartHandshake: ImageVector get()` |
+| 272 | `private val iconHeartHandshake: ImageVector by lazy` |
+| 278 | `val Lucide.HeartOff: ImageVector get()` |
+| 279 | `private val iconHeartOff: ImageVector by lazy` |
+| 287 | `val Lucide.HeartPulse: ImageVector get()` |
+| 288 | `private val iconHeartPulse: ImageVector by lazy` |
+| 295 | `val Lucide.History: ImageVector get()` |
+| 296 | `private val iconHistory: ImageVector by lazy` |
+| 304 | `val Lucide.Home: ImageVector get()` |
+| 305 | `private val iconHome: ImageVector by lazy` |
+| 312 | `val Lucide.Image: ImageVector get()` |
+| 313 | `private val iconImage: ImageVector by lazy` |
+| 321 | `val Lucide.ImageDown: ImageVector get()` |
+| 322 | `private val iconImageDown: ImageVector by lazy` |
+| 331 | `val Lucide.ImageOff: ImageVector get()` |
+| 332 | `private val iconImageOff: ImageVector by lazy` |
+| 343 | `val Lucide.ImagePlus: ImageVector get()` |
+| 344 | `private val iconImagePlus: ImageVector by lazy` |
+| 354 | `val Lucide.ImageUp: ImageVector get()` |
+| 355 | `private val iconImageUp: ImageVector by lazy` |
+| 364 | `val Lucide.Import: ImageVector get()` |
+| 365 | `private val iconImport: ImageVector by lazy` |
+| 373 | `val Lucide.Inbox: ImageVector get()` |
+| 374 | `private val iconInbox: ImageVector by lazy` |
+| 381 | `val Lucide.Info: ImageVector get()` |
+| 382 | `private val iconInfo: ImageVector by lazy` |
+| 390 | `val Lucide.Kanban: ImageVector get()` |
+| 391 | `private val iconKanban: ImageVector by lazy` |
+| 399 | `val Lucide.KeyRound: ImageVector get()` |
+| 400 | `private val iconKeyRound: ImageVector by lazy` |
+| 407 | `val Lucide.Keyboard: ImageVector get()` |
+| 408 | `private val iconKeyboard: ImageVector by lazy` |
+| 422 | `val Lucide.Languages: ImageVector get()` |
+| 423 | `private val iconLanguages: ImageVector by lazy` |
+| 434 | `val Lucide.Layers: ImageVector get()` |
+| 435 | `private val iconLayers: ImageVector by lazy` |
+| 443 | `val Lucide.LayersPlus: ImageVector get()` |
+| 444 | `private val iconLayersPlus: ImageVector by lazy` |
+| 454 | `val Lucide.LayoutDashboard: ImageVector get()` |
+| 455 | `private val iconLayoutDashboard: ImageVector by lazy` |
+| 464 | `val Lucide.LayoutGrid: ImageVector get()` |
+| 465 | `private val iconLayoutGrid: ImageVector by lazy` |
+| 474 | `val Lucide.LayoutTemplate: ImageVector get()` |
+| 475 | `private val iconLayoutTemplate: ImageVector by lazy` |
+| 483 | `val Lucide.Lightbulb: ImageVector get()` |
+| 484 | `private val iconLightbulb: ImageVector by lazy` |
+| 492 | `val Lucide.Link2: ImageVector get()` |
+| 493 | `private val iconLink2: ImageVector by lazy` |
+| 501 | `val Lucide.Link2Off: ImageVector get()` |
+| 502 | `private val iconLink2Off: ImageVector by lazy` |
+| 511 | `val Lucide.List: ImageVector get()` |
+| 512 | `private val iconList: ImageVector by lazy` |
+| 523 | `val Lucide.ListChecks: ImageVector get()` |
+| 524 | `private val iconListChecks: ImageVector by lazy` |
+| 534 | `val Lucide.ListChevronsDownUp: ImageVector get()` |
+| 535 | `private val iconListChevronsDownUp: ImageVector by lazy` |
+| 545 | `val Lucide.ListChevronsUpDown: ImageVector get()` |
+| 546 | `private val iconListChevronsUpDown: ImageVector by lazy` |
+| 556 | `val Lucide.ListFilter: ImageVector get()` |
+| 557 | `private val iconListFilter: ImageVector by lazy` |
+| 565 | `val Lucide.ListMusic: ImageVector get()` |
+| 566 | `private val iconListMusic: ImageVector by lazy` |
+| 576 | `val Lucide.ListTodo: ImageVector get()` |
+| 577 | `private val iconListTodo: ImageVector by lazy` |
+| 587 | `val Lucide.ListTree: ImageVector get()` |
+| 588 | `private val iconListTree: ImageVector by lazy` |
+| 598 | `val Lucide.ListX: ImageVector get()` |
+| 599 | `private val iconListX: ImageVector by lazy` |
+| 609 | `val Lucide.Loader2: ImageVector get()` |
+| 610 | `private val iconLoader2: ImageVector by lazy` |
+| 616 | `val Lucide.LoaderCircle: ImageVector get()` |
+| 617 | `private val iconLoaderCircle: ImageVector by lazy` |
+| 623 | `val Lucide.LocateFixed: ImageVector get()` |
+| 624 | `private val iconLocateFixed: ImageVector by lazy` |
+| 635 | `val Lucide.Lock: ImageVector get()` |
+| 636 | `private val iconLock: ImageVector by lazy` |
+| 643 | `val Lucide.LockKeyhole: ImageVector get()` |
+| 644 | `private val iconLockKeyhole: ImageVector by lazy` |
+
+## core/designsystem/icon/LucideIconsM_R.kt
+
+| Line | Declaration |
+|---|---|
+| 51 | `val Lucide.Mail: ImageVector get()` |
+| 52 | `private val iconMail: ImageVector by lazy` |
+| 59 | `val Lucide.Map: ImageVector get()` |
+| 60 | `private val iconMap: ImageVector by lazy` |
+| 68 | `val Lucide.Maximize: ImageVector get()` |
+| 69 | `private val iconMaximize: ImageVector by lazy` |
+| 78 | `val Lucide.Maximize2: ImageVector get()` |
+| 79 | `private val iconMaximize2: ImageVector by lazy` |
+| 88 | `val Lucide.Menu: ImageVector get()` |
+| 89 | `private val iconMenu: ImageVector by lazy` |
+| 97 | `val Lucide.Merge: ImageVector get()` |
+| 98 | `private val iconMerge: ImageVector by lazy` |
+| 106 | `val Lucide.MessageCircle: ImageVector get()` |
+| 107 | `private val iconMessageCircle: ImageVector by lazy` |
+| 113 | `val Lucide.MessageCircleQuestion: ImageVector get()` |
+| 114 | `private val iconMessageCircleQuestion: ImageVector by lazy` |
+| 122 | `val Lucide.MessageCircleQuestionMark: ImageVector get()` |
+| 123 | `private val iconMessageCircleQuestionMark: ImageVector by lazy` |
+| 131 | `val Lucide.MessageSquare: ImageVector get()` |
+| 132 | `private val iconMessageSquare: ImageVector by lazy` |
+| 138 | `val Lucide.MessageSquareMore: ImageVector get()` |
+| 139 | `private val iconMessageSquareMore: ImageVector by lazy` |
+| 148 | `val Lucide.MessageSquarePlus: ImageVector get()` |
+| 149 | `private val iconMessageSquarePlus: ImageVector by lazy` |
+| 157 | `val Lucide.MessageSquareQuote: ImageVector get()` |
+| 158 | `private val iconMessageSquareQuote: ImageVector by lazy` |
+| 166 | `val Lucide.MessageSquareReply: ImageVector get()` |
+| 167 | `private val iconMessageSquareReply: ImageVector by lazy` |
+| 175 | `val Lucide.MessageSquareText: ImageVector get()` |
+| 176 | `private val iconMessageSquareText: ImageVector by lazy` |
+| 185 | `val Lucide.MessagesSquare: ImageVector get()` |
+| 186 | `private val iconMessagesSquare: ImageVector by lazy` |
+| 193 | `val Lucide.Minimize2: ImageVector get()` |
+| 194 | `private val iconMinimize2: ImageVector by lazy` |
+| 203 | `val Lucide.Minus: ImageVector get()` |
+| 204 | `private val iconMinus: ImageVector by lazy` |
+| 210 | `val Lucide.Monitor: ImageVector get()` |
+| 211 | `private val iconMonitor: ImageVector by lazy` |
+| 219 | `val Lucide.MonitorCloud: ImageVector get()` |
+| 220 | `private val iconMonitorCloud: ImageVector by lazy` |
+| 229 | `val Lucide.MonitorCog: ImageVector get()` |
+| 230 | `private val iconMonitorCog: ImageVector by lazy` |
+| 247 | `val Lucide.MonitorDot: ImageVector get()` |
+| 248 | `private val iconMonitorDot: ImageVector by lazy` |
+| 257 | `val Lucide.Moon: ImageVector get()` |
+| 258 | `private val iconMoon: ImageVector by lazy` |
+| 264 | `val Lucide.MoonStar: ImageVector get()` |
+| 265 | `private val iconMoonStar: ImageVector by lazy` |
+| 273 | `val Lucide.MoreHorizontal: ImageVector get()` |
+| 274 | `private val iconMoreHorizontal: ImageVector by lazy` |
+| 282 | `val Lucide.MoreVertical: ImageVector get()` |
+| 283 | `private val iconMoreVertical: ImageVector by lazy` |
+| 291 | `val Lucide.MousePointer2: ImageVector get()` |
+| 292 | `private val iconMousePointer2: ImageVector by lazy` |
+| 298 | `val Lucide.MousePointerClick: ImageVector get()` |
+| 299 | `private val iconMousePointerClick: ImageVector by lazy` |
+| 309 | `val Lucide.MoveHorizontal: ImageVector get()` |
+| 310 | `private val iconMoveHorizontal: ImageVector by lazy` |
+| 318 | `val Lucide.MoveUpRight: ImageVector get()` |
+| 319 | `private val iconMoveUpRight: ImageVector by lazy` |
+| 326 | `val Lucide.Network: ImageVector get()` |
+| 327 | `private val iconNetwork: ImageVector by lazy` |
+| 337 | `val Lucide.OctagonX: ImageVector get()` |
+| 338 | `private val iconOctagonX: ImageVector by lazy` |
+| 346 | `val Lucide.Package: ImageVector get()` |
+| 347 | `private val iconPackage: ImageVector by lazy` |
+| 356 | `val Lucide.PackagePlus: ImageVector get()` |
+| 357 | `private val iconPackagePlus: ImageVector by lazy` |
+| 368 | `val Lucide.Palette: ImageVector get()` |
+| 369 | `private val iconPalette: ImageVector by lazy` |
+| 379 | `val Lucide.PanelBottom: ImageVector get()` |
+| 380 | `private val iconPanelBottom: ImageVector by lazy` |
+| 387 | `val Lucide.PanelBottomClose: ImageVector get()` |
+| 388 | `private val iconPanelBottomClose: ImageVector by lazy` |
+| 396 | `val Lucide.PanelLeft: ImageVector get()` |
+| 397 | `private val iconPanelLeft: ImageVector by lazy` |
+| 404 | `val Lucide.PanelRight: ImageVector get()` |
+| 405 | `private val iconPanelRight: ImageVector by lazy` |
+| 412 | `val Lucide.PanelRightOpen: ImageVector get()` |
+| 413 | `private val iconPanelRightOpen: ImageVector by lazy` |
+| 421 | `val Lucide.PanelTop: ImageVector get()` |
+| 422 | `private val iconPanelTop: ImageVector by lazy` |
+| 429 | `val Lucide.Paperclip: ImageVector get()` |
+| 430 | `private val iconPaperclip: ImageVector by lazy` |
+| 436 | `val Lucide.Pause: ImageVector get()` |
+| 437 | `private val iconPause: ImageVector by lazy` |
+| 444 | `val Lucide.PauseCircle: ImageVector get()` |
+| 445 | `private val iconPauseCircle: ImageVector by lazy` |
+| 453 | `val Lucide.PawPrint: ImageVector get()` |
+| 454 | `private val iconPawPrint: ImageVector by lazy` |
+| 463 | `val Lucide.Pencil: ImageVector get()` |
+| 464 | `private val iconPencil: ImageVector by lazy` |
+| 471 | `val Lucide.PencilLine: ImageVector get()` |
+| 472 | `private val iconPencilLine: ImageVector by lazy` |
+| 480 | `val Lucide.Phone: ImageVector get()` |
+| 481 | `private val iconPhone: ImageVector by lazy` |
+| 487 | `val Lucide.Pin: ImageVector get()` |
+| 488 | `private val iconPin: ImageVector by lazy` |
+| 495 | `val Lucide.PinOff: ImageVector get()` |
+| 496 | `private val iconPinOff: ImageVector by lazy` |
+| 505 | `val Lucide.Plane: ImageVector get()` |
+| 506 | `private val iconPlane: ImageVector by lazy` |
+| 512 | `val Lucide.Play: ImageVector get()` |
+| 513 | `private val iconPlay: ImageVector by lazy` |
+| 519 | `val Lucide.PlayCircle: ImageVector get()` |
+| 520 | `private val iconPlayCircle: ImageVector by lazy` |
+| 527 | `val Lucide.Plug: ImageVector get()` |
+| 528 | `private val iconPlug: ImageVector by lazy` |
+| 537 | `val Lucide.PlugZap: ImageVector get()` |
+| 538 | `private val iconPlugZap: ImageVector by lazy` |
+| 548 | `val Lucide.Plus: ImageVector get()` |
+| 549 | `private val iconPlus: ImageVector by lazy` |
+| 556 | `val Lucide.PlusCircle: ImageVector get()` |
+| 557 | `private val iconPlusCircle: ImageVector by lazy` |
+| 565 | `val Lucide.Power: ImageVector get()` |
+| 566 | `private val iconPower: ImageVector by lazy` |
+| 573 | `val Lucide.PowerOff: ImageVector get()` |
+| 574 | `private val iconPowerOff: ImageVector by lazy` |
+| 583 | `val Lucide.Presentation: ImageVector get()` |
+| 584 | `private val iconPresentation: ImageVector by lazy` |
+| 592 | `val Lucide.QrCode: ImageVector get()` |
+| 593 | `private val iconQrCode: ImageVector by lazy` |
+| 610 | `val Lucide.ReceiptText: ImageVector get()` |
+| 611 | `private val iconReceiptText: ImageVector by lazy` |
+| 620 | `val Lucide.RefreshCw: ImageVector get()` |
+| 621 | `private val iconRefreshCw: ImageVector by lazy` |
+| 630 | `val Lucide.Rocket: ImageVector get()` |
+| 631 | `private val iconRocket: ImageVector by lazy` |
+| 640 | `val Lucide.RotateCcw: ImageVector get()` |
+| 641 | `private val iconRotateCcw: ImageVector by lazy` |
+| 648 | `val Lucide.RotateCw: ImageVector get()` |
+| 649 | `private val iconRotateCw: ImageVector by lazy` |
+| 656 | `val Lucide.Rows3: ImageVector get()` |
+| 657 | `private val iconRows3: ImageVector by lazy` |
+| 665 | `val Lucide.RulerDimensionLine: ImageVector get()` |
+| 666 | `private val iconRulerDimensionLine: ImageVector by lazy` |
+
+## core/designsystem/icon/LucideIconsS_Z.kt
+
+| Line | Declaration |
+|---|---|
+| 51 | `val Lucide.Save: ImageVector get()` |
+| 52 | `private val iconSave: ImageVector by lazy` |
+| 60 | `val Lucide.Scissors: ImageVector get()` |
+| 61 | `private val iconScissors: ImageVector by lazy` |
+| 71 | `val Lucide.ScreenShare: ImageVector get()` |
+| 72 | `private val iconScreenShare: ImageVector by lazy` |
+| 82 | `val Lucide.ScrollText: ImageVector get()` |
+| 83 | `private val iconScrollText: ImageVector by lazy` |
+| 92 | `val Lucide.Search: ImageVector get()` |
+| 93 | `private val iconSearch: ImageVector by lazy` |
+| 100 | `val Lucide.SearchX: ImageVector get()` |
+| 101 | `private val iconSearchX: ImageVector by lazy` |
+| 110 | `val Lucide.Send: ImageVector get()` |
+| 111 | `private val iconSend: ImageVector by lazy` |
+| 118 | `val Lucide.SendHorizonal: ImageVector get()` |
+| 119 | `private val iconSendHorizonal: ImageVector by lazy` |
+| 126 | `val Lucide.SendHorizontal: ImageVector get()` |
+| 127 | `private val iconSendHorizontal: ImageVector by lazy` |
+| 134 | `val Lucide.Server: ImageVector get()` |
+| 135 | `private val iconServer: ImageVector by lazy` |
+| 144 | `val Lucide.ServerCog: ImageVector get()` |
+| 145 | `private val iconServerCog: ImageVector by lazy` |
+| 162 | `val Lucide.Settings: ImageVector get()` |
+| 163 | `private val iconSettings: ImageVector by lazy` |
+| 170 | `val Lucide.Settings2: ImageVector get()` |
+| 171 | `private val iconSettings2: ImageVector by lazy` |
+| 180 | `val Lucide.Share2: ImageVector get()` |
+| 181 | `private val iconShare2: ImageVector by lazy` |
+| 191 | `val Lucide.Shield: ImageVector get()` |
+| 192 | `private val iconShield: ImageVector by lazy` |
+| 198 | `val Lucide.ShieldAlert: ImageVector get()` |
+| 199 | `private val iconShieldAlert: ImageVector by lazy` |
+| 207 | `val Lucide.ShieldCheck: ImageVector get()` |
+| 208 | `private val iconShieldCheck: ImageVector by lazy` |
+| 215 | `val Lucide.ShieldOff: ImageVector get()` |
+| 216 | `private val iconShieldOff: ImageVector by lazy` |
+| 224 | `val Lucide.Shrink: ImageVector get()` |
+| 225 | `private val iconShrink: ImageVector by lazy` |
+| 234 | `val Lucide.Signpost: ImageVector get()` |
+| 235 | `private val iconSignpost: ImageVector by lazy` |
+| 243 | `val Lucide.SlidersHorizontal: ImageVector get()` |
+| 244 | `private val iconSlidersHorizontal: ImageVector by lazy` |
+| 258 | `val Lucide.Smartphone: ImageVector get()` |
+| 259 | `private val iconSmartphone: ImageVector by lazy` |
+| 266 | `val Lucide.Sparkles: ImageVector get()` |
+| 267 | `private val iconSparkles: ImageVector by lazy` |
+| 276 | `val Lucide.Split: ImageVector get()` |
+| 277 | `private val iconSplit: ImageVector by lazy` |
+| 286 | `val Lucide.Square: ImageVector get()` |
+| 287 | `private val iconSquare: ImageVector by lazy` |
+| 293 | `val Lucide.SquareArrowOutUpRight: ImageVector get()` |
+| 294 | `private val iconSquareArrowOutUpRight: ImageVector by lazy` |
+| 302 | `val Lucide.SquareDashedMousePointer: ImageVector get()` |
+| 303 | `private val iconSquareDashedMousePointer: ImageVector by lazy` |
+| 318 | `val Lucide.SquareKanban: ImageVector get()` |
+| 319 | `private val iconSquareKanban: ImageVector by lazy` |
+| 328 | `val Lucide.SquarePen: ImageVector get()` |
+| 329 | `private val iconSquarePen: ImageVector by lazy` |
+| 336 | `val Lucide.SquareSlash: ImageVector get()` |
+| 337 | `private val iconSquareSlash: ImageVector by lazy` |
+| 344 | `val Lucide.SquareTerminal: ImageVector get()` |
+| 345 | `private val iconSquareTerminal: ImageVector by lazy` |
+| 353 | `val Lucide.Star: ImageVector get()` |
+| 354 | `private val iconStar: ImageVector by lazy` |
+| 360 | `val Lucide.Stethoscope: ImageVector get()` |
+| 361 | `private val iconStethoscope: ImageVector by lazy` |
+| 371 | `val Lucide.StickyNote: ImageVector get()` |
+| 372 | `private val iconStickyNote: ImageVector by lazy` |
+| 379 | `val Lucide.Store: ImageVector get()` |
+| 380 | `private val iconStore: ImageVector by lazy` |
+| 388 | `val Lucide.Sun: ImageVector get()` |
+| 389 | `private val iconSun: ImageVector by lazy` |
+| 403 | `val Lucide.Tablet: ImageVector get()` |
+| 404 | `private val iconTablet: ImageVector by lazy` |
+| 411 | `val Lucide.Tag: ImageVector get()` |
+| 412 | `private val iconTag: ImageVector by lazy` |
+| 419 | `val Lucide.Tags: ImageVector get()` |
+| 420 | `private val iconTags: ImageVector by lazy` |
+| 428 | `val Lucide.Terminal: ImageVector get()` |
+| 429 | `private val iconTerminal: ImageVector by lazy` |
+| 436 | `val Lucide.TerminalSquare: ImageVector get()` |
+| 437 | `private val iconTerminalSquare: ImageVector by lazy` |
+| 445 | `val Lucide.TextCursor: ImageVector get()` |
+| 446 | `private val iconTextCursor: ImageVector by lazy` |
+| 454 | `val Lucide.TextQuote: ImageVector get()` |
+| 455 | `private val iconTextQuote: ImageVector by lazy` |
+| 464 | `val Lucide.TextSelect: ImageVector get()` |
+| 465 | `private val iconTextSelect: ImageVector by lazy` |
+| 485 | `val Lucide.Timer: ImageVector get()` |
+| 486 | `private val iconTimer: ImageVector by lazy` |
+| 494 | `val Lucide.Trash2: ImageVector get()` |
+| 495 | `private val iconTrash2: ImageVector by lazy` |
+| 505 | `val Lucide.TrendingUp: ImageVector get()` |
+| 506 | `private val iconTrendingUp: ImageVector by lazy` |
+| 513 | `val Lucide.TriangleAlert: ImageVector get()` |
+| 514 | `private val iconTriangleAlert: ImageVector by lazy` |
+| 522 | `val Lucide.Type: ImageVector get()` |
+| 523 | `private val iconType: ImageVector by lazy` |
+| 531 | `val Lucide.Undo2: ImageVector get()` |
+| 532 | `private val iconUndo2: ImageVector by lazy` |
+| 539 | `val Lucide.UndoDot: ImageVector get()` |
+| 540 | `private val iconUndoDot: ImageVector by lazy` |
+| 548 | `val Lucide.Unlink: ImageVector get()` |
+| 549 | `private val iconUnlink: ImageVector by lazy` |
+| 560 | `val Lucide.Unplug: ImageVector get()` |
+| 561 | `private val iconUnplug: ImageVector by lazy` |
+| 572 | `val Lucide.Upload: ImageVector get()` |
+| 573 | `private val iconUpload: ImageVector by lazy` |
+| 581 | `val Lucide.User: ImageVector get()` |
+| 582 | `private val iconUser: ImageVector by lazy` |
+| 589 | `val Lucide.UserRound: ImageVector get()` |
+| 590 | `private val iconUserRound: ImageVector by lazy` |
+| 597 | `val Lucide.Users: ImageVector get()` |
+| 598 | `private val iconUsers: ImageVector by lazy` |
+| 607 | `val Lucide.Volume2: ImageVector get()` |
+| 608 | `private val iconVolume2: ImageVector by lazy` |
+| 616 | `val Lucide.Wand2: ImageVector get()` |
+| 617 | `private val iconWand2: ImageVector by lazy` |
+| 630 | `val Lucide.Webhook: ImageVector get()` |
+| 631 | `private val iconWebhook: ImageVector by lazy` |
+| 639 | `val Lucide.Wifi: ImageVector get()` |
+| 640 | `private val iconWifi: ImageVector by lazy` |
+| 649 | `val Lucide.WifiOff: ImageVector get()` |
+| 650 | `private val iconWifiOff: ImageVector by lazy` |
+| 662 | `val Lucide.Workflow: ImageVector get()` |
+| 663 | `private val iconWorkflow: ImageVector by lazy` |
+| 671 | `val Lucide.Wrench: ImageVector get()` |
+| 672 | `private val iconWrench: ImageVector by lazy` |
+| 678 | `val Lucide.X: ImageVector get()` |
+| 679 | `private val iconX: ImageVector by lazy` |
+| 686 | `val Lucide.XCircle: ImageVector get()` |
+| 687 | `private val iconXCircle: ImageVector by lazy` |
+| 695 | `val Lucide.Zap: ImageVector get()` |
+| 696 | `private val iconZap: ImageVector by lazy` |
+| 702 | `val Lucide.ZoomIn: ImageVector get()` |
+| 703 | `private val iconZoomIn: ImageVector by lazy` |
+| 712 | `val Lucide.ZoomOut: ImageVector get()` |
+| 713 | `private val iconZoomOut: ImageVector by lazy` |
 
 ## core/designsystem/markdown/InlineMarkdown.kt
 

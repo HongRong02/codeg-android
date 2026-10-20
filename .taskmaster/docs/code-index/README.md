@@ -10,7 +10,7 @@ Paths are relative to `app/src/main/java/app/codeg/android/`.
 | core/common | [core-common.md](core-common.md) | 5 |
 | core/data | [core-data.md](core-data.md) | 1 |
 | core/datastore | [core-datastore.md](core-datastore.md) | 5 |
-| core/designsystem | [core-designsystem.md](core-designsystem.md) | 32 |
+| core/designsystem | [core-designsystem.md](core-designsystem.md) | 45 |
 | core/model | [core-model.md](core-model.md) | 52 |
 | core/network | [core-network.md](core-network.md) | 7 |
 | core/security | [core-security.md](core-security.md) | 2 |
@@ -26,5 +26,5 @@ Paths are relative to `app/src/main/java/app/codeg/android/`.
 | feature/serverlogs | [feature-serverlogs.md](feature-serverlogs.md) | 2 |
 | feature/sessiondetail | [feature-sessiondetail.md](feature-sessiondetail.md) | 25 |
 | feature/sessions | [feature-sessions.md](feature-sessions.md) | 7 |
-| feature/settings | [feature-settings.md](feature-settings.md) | 44 |
+| feature/settings | [feature-settings.md](feature-settings.md) | 45 |
 | feature/worktasks | [feature-worktasks.md](feature-worktasks.md) | 7 |

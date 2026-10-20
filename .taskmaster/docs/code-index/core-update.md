@@ -6,20 +6,20 @@ Source root: `app/src/main/java/app/codeg/android/`
 
 | Line | Declaration |
 |---|---|
-| 31 | `@Composable fun UpdateBanner(viewModel: UpdateViewModel = hiltViewModel())` |
-| 32 |   `val state by viewModel.ui.collectAsStateWithLifecycle()` |
-| 33 |   `val context` |
-| 34 |   `var showNotes by remember` |
-| 35 |   `var pendingPermission by rememberSaveable` |
-| 36 |   `fun install(file: File)` |
-| 44 |   `val permission` |
-| 66 |   `val colors` |
-| 91 | `@Composable fun UpdateAbout(viewModel: UpdateViewModel = hiltViewModel())` |
-| 92 |   `val state by viewModel.ui.collectAsStateWithLifecycle()` |
-| 93 |   `var showNotes by remember` |
-| 94 |   `var manual by remember` |
-| 107 | `@Composable private fun UpdateNotes(state: UpdateUi, dismiss: () -> Unit, download: () -> Unit)` |
-| 108 |   `val update` |
+| 30 | `@Composable fun UpdateBanner(viewModel: UpdateViewModel = hiltViewModel())` |
+| 31 |   `val state by viewModel.ui.collectAsStateWithLifecycle()` |
+| 32 |   `val context` |
+| 33 |   `var showNotes by remember` |
+| 34 |   `var pendingPermission by rememberSaveable` |
+| 35 |   `fun install(file: File)` |
+| 43 |   `val permission` |
+| 65 |   `val colors` |
+| 92 | `@Composable fun UpdateAbout(viewModel: UpdateViewModel = hiltViewModel())` |
+| 93 |   `val state by viewModel.ui.collectAsStateWithLifecycle()` |
+| 94 |   `var showNotes by remember` |
+| 95 |   `var manual by remember` |
+| 109 | `@Composable private fun UpdateNotes(state: UpdateUi, dismiss: () -> Unit, download: () -> Unit)` |
+| 110 |   `val update` |
 
 ## core/update/UpdateChecker.kt
 
