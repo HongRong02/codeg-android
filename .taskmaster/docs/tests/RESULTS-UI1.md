@@ -62,6 +62,20 @@
 | P-045 提交 | ⚠️ | B17 | 提交成功（服务端 `97b91fb Append app-test line`），"更改"页变为"工作区干净" ✅；但同时弹出"操作完成"和"已提交 1 个文件"两条 Toast，`shots/git-commit-toast.png` |
 | P-005 从子页面返回恢复底栏 | ❌ | B16→B18 | B16 修复后仍不恢复：设置的子页面是 `SettingsScreen` 内部状态切换，不经过 `MainShell` 的导航，B16 的导航监听不触发。已开 B18 |
 
+## 第 3 轮修复复测（sit 合入 B17、B18、B19 之后）
+| 用例 | 结果 | 对应 bug | 说明 |
+|---|---|---|---|
+| P-005 设置子页面进入/返回底栏 | ✅ | B18 | 进入"助手"时底栏恢复，返回后保持显示 |
+| P-041 抽屉打开时的错误 Toast | ✅ | B19 | 切换到被占用分支，"操作失败 · git checkout failed"显示在抽屉上方，`shots/b19-sheet-toast.png` |
+| P-045 提交只弹一条 Toast | ✅ | B17 | 只显示"已提交 1 个文件"，`shots/b17-toast.png` |
+| P-041 新建分支 | ✅ | | `ui1-test-branch` 创建并自动切换，头部分支名更新 |
+| P-051 删除分支确认 | ✅ | | 确认框写明"删除本地分支 ui1-test-branch？"，带"强制删除"复选框；删除成功，Toast 在抽屉上方 |
+| P-051 当前分支的"删除"按钮 | ⚠️ | | master（当前分支）的删除按钮可点，应禁用（P2） |
+| P-047/P-053/P-055/P-059 Git 面板样式 | ✅ | | 切换分支、暂存、分支管理、合并/变基/重置、Git 管理 5 个面板，`shots/git-*.png` |
+| P-021/P-023/P-025 问题/权限/计划卡片 | 阻塞 | | 需要智能体主动发出对应事件，无法稳定触发；UI1 只替换了组件 |
+| P-019 断网发送消息 | ❌ | B20 | 停掉测试服后发送：debug 版无用户气泡、无错误提示，消息留在输入框；正式版 1.1.139 会出现用户气泡和错误卡片"unexpected end of stream…"。ComposeBar 只改了图标，原因待在 `SessionDetailScreen.kt`/`SessionDetailViewModel.kt` 的 T47/T55 改动里找 |
+| P-009/P-031 断网时列表刷新、连接状态 | 待测 | | 注意：`adb reverse --remove` 不会切断已建立的 WebSocket，必须停掉测试服（`systemctl --user stop codeg-t13`）才算真正断网 |
+
 ## 撤回的判断
 - B12（输入框/搜索框胶囊形）、外观页预览"主按钮"胶囊形：核对网页端源码后确认与 radix-maia 一致（`input.tsx`、`button.tsx` 均为 `rounded-4xl`），不是 bug。
 - "Toast 挡住底栏点击"：实际是底栏滚动收起所致，不是 Toast 的问题。
@@ -78,6 +92,7 @@
 - B06 区域 designsystem（`Menus.kt`）：下拉菜单贴屏幕边缘，缺少碰撞边距（网页端 radix `collisionPadding`）。来源：T43。
 
 ## 已有问题（非 UI1 回归，记录备查）
+- Codex 的 `request_user_input_async` 被画成普通工具卡片，而不是可作答的问题卡片（1.1.139 同样如此）。
 - 文件夹页：未分组的项目显示在 "Mobile" 分组卡片内（1.1.139 同样如此）。
 
 ## 测试环境备注
