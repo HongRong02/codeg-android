@@ -120,7 +120,12 @@ fun MainShell(appViewModel: AppViewModel, servers: List<ServerProfile>) {
     // scrolling back down slides it in and restores the label. The bar lives in this
     // shared Scaffold while the scroll happens in each tab's LazyColumn, so a
     // NestedScrollConnection on the content picks up every tab's scroll for free.
-    var barsVisible by remember(backStackEntry) { mutableStateOf(true) }
+    var barsVisible by remember { mutableStateOf(true) }
+    // Returning to an existing entry must reveal the bar even if that tab was
+    // collapsed before opening a child destination.
+    LaunchedEffect(backStackEntry) {
+        barsVisible = true
+    }
     val density = LocalDensity.current
     // 0 = fully shown, 1 = fully hidden. Collapsing the bar's *reported* height (not
     // just translating it) is what lets the Scaffold hand the freed strip back to the
