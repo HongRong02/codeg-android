@@ -2,7 +2,7 @@
   "master": {
     "tasks": [
       {
-        "id": "1",
+        "id": 1,
         "title": "T01 共享顶栏组件 CodegTopBar",
         "description": "把散落在各页面的 Material `TopAppBar` 统一成一个按网页端 header 样式实现的共享组件，作为后续逐页打磨的前置。",
         "details": "需求文档：.taskmaster/docs/tasks/T01-topbar.md（先读 .taskmaster/docs/CONVENTIONS.md，再只读这一份需求文档及其中列出的代码位置；不要通读 PRD 或其它文件）。改动范围、代码定位、验收标准都在需求文档里。",
@@ -14,7 +14,7 @@
         "updatedAt": "2026-10-20T02:12:01.695Z"
       },
       {
-        "id": "2",
+        "id": 2,
         "title": "T02 打磨：会话列表页",
         "description": "对照网页端逐项打磨会话列表页，并把顶栏换成 `CodegTopBar`。",
         "details": "需求文档：.taskmaster/docs/tasks/T02-sessions-list.md（先读 .taskmaster/docs/CONVENTIONS.md，再只读这一份需求文档及其中列出的代码位置；不要通读 PRD 或其它文件）。改动范围、代码定位、验收标准都在需求文档里。",
@@ -28,7 +28,7 @@
         "updatedAt": "2026-10-20T02:59:01.901Z"
       },
       {
-        "id": "3",
+        "id": 3,
         "title": "T03 打磨：会话详情页剩余细节",
         "description": "对照网页端逐项打磨会话详情页剩余细节，并把顶栏换成 `CodegTopBar`。输入栏（`ComposeBar`）已在 1859b0a 完成，不要重做。",
         "details": "需求文档：.taskmaster/docs/tasks/T03-session-detail.md（先读 .taskmaster/docs/CONVENTIONS.md，再只读这一份需求文档及其中列出的代码位置；不要通读 PRD 或其它文件）。改动范围、代码定位、验收标准都在需求文档里。",
@@ -42,7 +42,7 @@
         "updatedAt": "2026-10-20T02:59:04.641Z"
       },
       {
-        "id": "4",
+        "id": 4,
         "title": "T04 打磨：项目列表页",
         "description": "对照网页端逐项打磨项目列表页，并把顶栏换成 `CodegTopBar`。",
         "details": "需求文档：.taskmaster/docs/tasks/T04-projects-list.md（先读 .taskmaster/docs/CONVENTIONS.md，再只读这一份需求文档及其中列出的代码位置；不要通读 PRD 或其它文件）。改动范围、代码定位、验收标准都在需求文档里。",
@@ -56,7 +56,7 @@
         "updatedAt": "2026-10-20T02:59:06.920Z"
       },
       {
-        "id": "5",
+        "id": 5,
         "title": "T05 打磨：项目详情页（文件/改动/提交及各 Sheet）",
         "description": "对照网页端逐项打磨项目详情页（文件/改动/提交及各 Sheet），并把顶栏换成 `CodegTopBar`。",
         "details": "需求文档：.taskmaster/docs/tasks/T05-project-detail.md（先读 .taskmaster/docs/CONVENTIONS.md，再只读这一份需求文档及其中列出的代码位置；不要通读 PRD 或其它文件）。改动范围、代码定位、验收标准都在需求文档里。",
@@ -70,7 +70,7 @@
         "updatedAt": "2026-10-20T02:59:09.138Z"
       },
       {
-        "id": "6",
+        "id": 6,
         "title": "T06 打磨：活动页",
         "description": "对照网页端逐项打磨活动页，并把顶栏换成 `CodegTopBar`。",
         "details": "需求文档：.taskmaster/docs/tasks/T06-activity.md（先读 .taskmaster/docs/CONVENTIONS.md，再只读这一份需求文档及其中列出的代码位置；不要通读 PRD 或其它文件）。改动范围、代码定位、验收标准都在需求文档里。",
@@ -84,7 +84,7 @@
         "updatedAt": "2026-10-20T02:59:11.351Z"
       },
       {
-        "id": "7",
+        "id": 7,
         "title": "T07 打磨：搜索页",
         "description": "对照网页端逐项打磨搜索页，并把顶栏换成 `CodegTopBar`。",
         "details": "需求文档：.taskmaster/docs/tasks/T07-search.md（先读 .taskmaster/docs/CONVENTIONS.md，再只读这一份需求文档及其中列出的代码位置；不要通读 PRD 或其它文件）。改动范围、代码定位、验收标准都在需求文档里。",
@@ -98,7 +98,7 @@
         "updatedAt": "2026-10-20T02:59:13.538Z"
       },
       {
-        "id": "8",
+        "id": 8,
         "title": "T08 打磨：服务器列表/编辑与引导页",
         "description": "对照网页端逐项打磨服务器列表/编辑与引导页，并把顶栏换成 `CodegTopBar`。",
         "details": "需求文档：.taskmaster/docs/tasks/T08-servers-onboarding.md（先读 .taskmaster/docs/CONVENTIONS.md，再只读这一份需求文档及其中列出的代码位置；不要通读 PRD 或其它文件）。改动范围、代码定位、验收标准都在需求文档里。",
@@ -112,7 +112,7 @@
         "updatedAt": "2026-10-20T03:07:48.360Z"
       },
       {
-        "id": "9",
+        "id": 9,
         "title": "T09 打磨：设置主页与通用类子页",
         "description": "对照网页端逐项打磨设置主页与通用类子页，并把顶栏换成 `CodegTopBar`。设置子页由 `SettingsScreen` 统一承载顶栏，故顶栏替换在本任务完成。",
         "details": "需求文档：.taskmaster/docs/tasks/T09-settings-core.md（先读 .taskmaster/docs/CONVENTIONS.md，再只读这一份需求文档及其中列出的代码位置；不要通读 PRD 或其它文件）。改动范围、代码定位、验收标准都在需求文档里。",
@@ -126,7 +126,7 @@
         "updatedAt": "2026-10-20T03:07:50.566Z"
       },
       {
-        "id": "10",
+        "id": 10,
         "title": "T10 打磨：设置 - Agents/Experts/Skills/MCP",
         "description": "对照网页端逐项打磨设置 - Agents/Experts/Skills/MCP，并把顶栏换成 `CodegTopBar`。",
         "details": "需求文档：.taskmaster/docs/tasks/T10-settings-agents.md（先读 .taskmaster/docs/CONVENTIONS.md，再只读这一份需求文档及其中列出的代码位置；不要通读 PRD 或其它文件）。改动范围、代码定位、验收标准都在需求文档里。",
@@ -140,7 +140,7 @@
         "updatedAt": "2026-10-20T02:59:15.756Z"
       },
       {
-        "id": "11",
+        "id": 11,
         "title": "T11 打磨：设置 - 模型供应商/快捷消息/聊天频道",
         "description": "对照网页端逐项打磨设置 - 模型供应商/快捷消息/聊天频道，并把顶栏换成 `CodegTopBar`。",
         "details": "需求文档：.taskmaster/docs/tasks/T11-settings-misc.md（先读 .taskmaster/docs/CONVENTIONS.md，再只读这一份需求文档及其中列出的代码位置；不要通读 PRD 或其它文件）。改动范围、代码定位、验收标准都在需求文档里。",
@@ -154,7 +154,7 @@
         "updatedAt": "2026-10-20T02:59:17.952Z"
       },
       {
-        "id": "12",
+        "id": 12,
         "title": "T12 12 套主题 × 明暗模式巡检",
         "description": "在所有页面打磨完成后，按 12 套 web 主题预设 × 明/暗模式做一轮截图巡检并修正问题。",
         "details": "需求文档：.taskmaster/docs/tasks/T12-theme-audit.md（先读 .taskmaster/docs/CONVENTIONS.md，再只读这一份需求文档及其中列出的代码位置；不要通读 PRD 或其它文件）。改动范围、代码定位、验收标准都在需求文档里。",
@@ -176,7 +176,7 @@
         "subtasks": []
       },
       {
-        "id": "13",
+        "id": 13,
         "title": "T13 真实服务器冒烟测试",
         "description": "在用户的真实 codeg 服务端上走完核心流程，记录与本地测试服务端（0.38）不一致的问题，并按问题拆出修复任务。",
         "details": "需求文档：.taskmaster/docs/tasks/T13-real-server-smoke.md（先读 .taskmaster/docs/CONVENTIONS.md，再只读这一份需求文档及其中列出的代码位置；不要通读 PRD 或其它文件）。改动范围、代码定位、验收标准都在需求文档里。",
@@ -187,7 +187,7 @@
         "subtasks": []
       },
       {
-        "id": "14",
+        "id": 14,
         "title": "T14 事件流断线重连与后台恢复",
         "description": "会话页事件流在弱网、切后台、token 失效时表现可预期：自动重连有上限和退避，回到前台立即恢复并补齐事件，token 失效时给出明确提示。",
         "details": "需求文档：.taskmaster/docs/tasks/T14-stream-resilience.md（先读 .taskmaster/docs/CONVENTIONS.md，再只读这一份需求文档及其中列出的代码位置；不要通读 PRD 或其它文件）。改动范围、代码定位、验收标准都在需求文档里。",
@@ -199,7 +199,7 @@
         "updatedAt": "2026-10-20T02:12:08.226Z"
       },
       {
-        "id": "15",
+        "id": 15,
         "title": "T15 会话 fork / 断开 / 预检",
         "description": "接入服务端 `acp_fork`、`acp_disconnect`、`acp_preflight`：在会话菜单中支持从当前会话 fork 新会话、手动断开 agent 连接；新建会话前做预检并展示问题。",
         "details": "需求文档：.taskmaster/docs/tasks/T15-session-fork.md（先读 .taskmaster/docs/CONVENTIONS.md，再只读这一份需求文档及其中列出的代码位置；不要通读 PRD 或其它文件）。改动范围、代码定位、验收标准都在需求文档里。",
@@ -214,7 +214,7 @@
         "updatedAt": "2026-10-20T03:44:00.838Z"
       },
       {
-        "id": "16",
+        "id": 16,
         "title": "T16 文件查看增强：图片预览、历史版本、大文件",
         "description": "在现有项目文件浏览（`FolderFilesView`，已支持文本预览）基础上，增加图片预览、查看某提交版本的文件，并抽出可复用的 `FileViewer` 组件供 git 相关任务使用。",
         "details": "需求文档：.taskmaster/docs/tasks/T16-file-viewer.md（先读 .taskmaster/docs/CONVENTIONS.md，再只读这一份需求文档及其中列出的代码位置；不要通读 PRD 或其它文件）。改动范围、代码定位、验收标准都在需求文档里。",
@@ -228,7 +228,7 @@
         "updatedAt": "2026-10-20T03:44:03.035Z"
       },
       {
-        "id": "17",
+        "id": 17,
         "title": "T17 Git stash 管理",
         "description": "在项目详情中提供 stash 管理：保存、列表、查看、应用、弹出、删除、清空。",
         "details": "需求文档：.taskmaster/docs/tasks/T17-git-stash.md（先读 .taskmaster/docs/CONVENTIONS.md，再只读这一份需求文档及其中列出的代码位置；不要通读 PRD 或其它文件）。改动范围、代码定位、验收标准都在需求文档里。",
@@ -242,7 +242,7 @@
         "updatedAt": "2026-10-20T04:00:47.263Z"
       },
       {
-        "id": "18",
+        "id": 18,
         "title": "T18 Git 分支管理",
         "description": "在现有分支选择（`BranchPickerSheet`，支持切换/新建）之外，增加分支管理：删除本地/远程分支、更新分支、与某分支比较。",
         "details": "需求文档：.taskmaster/docs/tasks/T18-git-branches.md（先读 .taskmaster/docs/CONVENTIONS.md，再只读这一份需求文档及其中列出的代码位置；不要通读 PRD 或其它文件）。改动范围、代码定位、验收标准都在需求文档里。",
@@ -256,7 +256,7 @@
         "updatedAt": "2026-10-20T03:44:05.274Z"
       },
       {
-        "id": "19",
+        "id": 19,
         "title": "T19 Git merge / rebase / reset 与冲突处理",
         "description": "支持 merge、rebase、reset，以及操作产生冲突时的处理：列出冲突、按文件选择 ours/theirs 或查看三方版本、继续或中止。",
         "details": "需求文档：.taskmaster/docs/tasks/T19-git-merge-rebase.md（先读 .taskmaster/docs/CONVENTIONS.md，再只读这一份需求文档及其中列出的代码位置；不要通读 PRD 或其它文件）。改动范围、代码定位、验收标准都在需求文档里。",
@@ -270,7 +270,7 @@
         "updatedAt": "2026-10-20T03:44:07.494Z"
       },
       {
-        "id": "20",
+        "id": 20,
         "title": "T20 Git：按文件提交、remote 管理、init、worktree",
         "description": "补齐剩余常用 git 操作：按文件选择提交（如现有 CommitSheet 尚未支持）、remote 增删改、对非仓库目录 git init、worktree 添加/移除。",
         "details": "需求文档：.taskmaster/docs/tasks/T20-git-misc.md（先读 .taskmaster/docs/CONVENTIONS.md，再只读这一份需求文档及其中列出的代码位置；不要通读 PRD 或其它文件）。改动范围、代码定位、验收标准都在需求文档里。",
@@ -284,7 +284,7 @@
         "updatedAt": "2026-10-20T03:44:09.709Z"
       },
       {
-        "id": "21",
+        "id": 21,
         "title": "T21 Work tasks 只读视图",
         "description": "在 app 中查看服务端的 work tasks：列表、详情、事件时间线、改动文件与 diff。只读，不做创建/调度/合并。",
         "details": "需求文档：.taskmaster/docs/tasks/T21-work-tasks.md（先读 .taskmaster/docs/CONVENTIONS.md，再只读这一份需求文档及其中列出的代码位置；不要通读 PRD 或其它文件）。改动范围、代码定位、验收标准都在需求文档里。",
@@ -298,7 +298,7 @@
         "updatedAt": "2026-10-20T04:00:49.825Z"
       },
       {
-        "id": "22",
+        "id": 22,
         "title": "T22 Automations 只读视图",
         "description": "查看服务端的自动化任务：列表、详情、运行记录。只读，可选支持启用/停用开关。",
         "details": "需求文档：.taskmaster/docs/tasks/T22-automations.md（先读 .taskmaster/docs/CONVENTIONS.md，再只读这一份需求文档及其中列出的代码位置；不要通读 PRD 或其它文件）。改动范围、代码定位、验收标准都在需求文档里。",
@@ -312,7 +312,7 @@
         "updatedAt": "2026-10-20T03:44:11.956Z"
       },
       {
-        "id": "23",
+        "id": 23,
         "title": "T23 服务端日志与用量统计",
         "description": "在设置中查看服务端日志与用量：最近日志、日志文件列表与内容；会话统计与 token 用量报表。",
         "details": "需求文档：.taskmaster/docs/tasks/T23-logs-stats.md（先读 .taskmaster/docs/CONVENTIONS.md，再只读这一份需求文档及其中列出的代码位置；不要通读 PRD 或其它文件）。改动范围、代码定位、验收标准都在需求文档里。",
@@ -326,7 +326,7 @@
         "updatedAt": "2026-10-20T04:00:52.050Z"
       },
       {
-        "id": "24",
+        "id": 24,
         "title": "T24 7 种新 agent 的设置页（先调研，未确认结构前只读）",
         "description": "为 DeepSeek、Qoder、Antigravity、Kiro、ZCode、TRAE、Command Code 提供设置页。前提是逐个确认服务端配置结构，避免写坏配置。",
         "details": "需求文档：.taskmaster/docs/tasks/T24-new-agent-settings.md（先读 .taskmaster/docs/CONVENTIONS.md，再只读这一份需求文档及其中列出的代码位置；不要通读 PRD 或其它文件）。改动范围、代码定位、验收标准都在需求文档里。",
@@ -340,7 +340,7 @@
         "updatedAt": "2026-10-20T03:44:14.167Z"
       },
       {
-        "id": "25",
+        "id": 25,
         "title": "T25 服务端 API 差异检查接入 CI",
         "description": "`scripts/api_diff.py` 已能对比服务端路由与 app 调用。把它接入 GitHub Actions：定期拉官方 codeg 最新 release，若出现“app 调用但服务端已删除”的接口或新增接口，自动开 issue。",
         "details": "需求文档：.taskmaster/docs/tasks/T25-api-diff-ci.md（先读 .taskmaster/docs/CONVENTIONS.md，再只读这一份需求文档及其中列出的代码位置；不要通读 PRD 或其它文件）。改动范围、代码定位、验收标准都在需求文档里。",
@@ -352,7 +352,7 @@
         "updatedAt": "2026-10-20T02:12:03.867Z"
       },
       {
-        "id": "26",
+        "id": 26,
         "title": "T26 WebThemes.kt 过期检查接入 CI",
         "description": "`WebThemes.kt` 由 `scripts/gen_web_themes.py` 从网页端 `globals.css` 生成。在 CI 中检查官方最新 `globals.css` 生成结果是否与仓库中的一致，不一致时开 issue。",
         "details": "需求文档：.taskmaster/docs/tasks/T26-theme-ci.md（先读 .taskmaster/docs/CONVENTIONS.md，再只读这一份需求文档及其中列出的代码位置；不要通读 PRD 或其它文件）。改动范围、代码定位、验收标准都在需求文档里。",
@@ -364,7 +364,7 @@
         "updatedAt": "2026-10-20T02:12:06.062Z"
       },
       {
-        "id": "27",
+        "id": 27,
         "title": "T27 错误提示本地化与认证失败去重",
         "description": "displayMessage() 文案本地化；token 失效时不重复弹英文通知。",
         "details": "需求文档：.taskmaster/docs/tasks/T27-error-messages.md（先读 .taskmaster/docs/CONVENTIONS.md，再只读这一份需求文档及其中列出的代码位置；不要通读 PRD 或其它文件）。改动范围、代码定位、验收标准都在需求文档里。",
@@ -378,21 +378,21 @@
         "updatedAt": "2026-10-20T04:00:54.255Z"
       },
       {
-        "id": "28",
+        "id": 28,
         "title": "T28 服务端中断的回合给出明确提示",
         "description": "服务端重启/回收连接导致回合中断时，在回答末尾显示中断提示。",
         "details": "需求文档：.taskmaster/docs/tasks/T28-interrupted-turn.md（先读 .taskmaster/docs/CONVENTIONS.md，再只读这一份需求文档及其中列出的代码位置；不要通读 PRD 或其它文件）。改动范围、代码定位、验收标准都在需求文档里。",
         "testStrategy": "",
-        "status": "in-progress",
+        "status": "done",
         "dependencies": [
           "13"
         ],
         "priority": "medium",
         "subtasks": [],
-        "updatedAt": "2026-10-20T03:45:57.433Z"
+        "updatedAt": "2026-10-20T04:12:47.099Z"
       },
       {
-        "id": "29",
+        "id": 29,
         "title": "T29 服务器编辑页布局与列表选中反馈",
         "description": "测试连接结果不挤动保存按钮；服务器列表显示当前选中。",
         "details": "需求文档：.taskmaster/docs/tasks/T29-server-editor-layout.md（先读 .taskmaster/docs/CONVENTIONS.md，再只读这一份需求文档及其中列出的代码位置；不要通读 PRD 或其它文件）。改动范围、代码定位、验收标准都在需求文档里。",
@@ -404,16 +404,30 @@
         "priority": "low",
         "subtasks": [],
         "updatedAt": "2026-10-20T04:00:56.500Z"
+      },
+      {
+        "id": 30,
+        "title": "T30 键盘弹出时表单和底部按钮不被遮挡",
+        "description": "给带输入框的 Sheet/表单加 imePadding，键盘弹出时底部按钮可见。",
+        "details": "需求文档：.taskmaster/docs/tasks/T30-ime-insets.md（先读 .taskmaster/docs/CONVENTIONS.md，再只读这一份需求文档及其中列出的代码位置；不要通读 PRD 或其它文件）。改动范围、代码定位、验收标准都在需求文档里。",
+        "testStrategy": "",
+        "status": "pending",
+        "dependencies": [],
+        "priority": "high",
+        "subtasks": []
       }
     ],
     "metadata": {
       "version": "1.0.0",
-      "lastModified": "2026-10-20T04:00:56.501Z",
+      "lastModified": "2026-10-20T04:12:47.100Z",
       "taskCount": 29,
-      "completedCount": 25,
+      "completedCount": 26,
       "tags": [
         "master"
-      ]
+      ],
+      "created": "2026-10-20T04:23:07.801Z",
+      "description": "Tasks for master context",
+      "updated": "2026-10-20T04:23:07.803Z"
     }
   }
 }
