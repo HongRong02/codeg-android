@@ -3,22 +3,28 @@ package app.codeg.android.core.designsystem.component
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
-import androidx.compose.animation.core.tween
 import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Icon
-import androidx.compose.material3.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Folder
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -26,11 +32,18 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import app.codeg.android.R
+import app.codeg.android.core.datastore.ThemeMode
+import app.codeg.android.core.designsystem.theme.CodegShapes
 import app.codeg.android.core.designsystem.theme.CodegTheme
+import app.codeg.android.core.designsystem.theme.withOpacity
 import app.codeg.android.core.model.AgentType
 import app.codeg.android.core.model.ConversationStatus
 
@@ -230,3 +243,64 @@ fun LivePulse(modifier: Modifier = Modifier, dotSize: Dp = 8.dp) {
         Box(Modifier.size(dotSize).clip(CircleShape).background(accent))
     }
 }
+
+enum class CodegBadgeVariant { Default, Secondary, Destructive, Outline }
+
+@Composable
+fun CodegBadge(
+    text: String,
+    variant: CodegBadgeVariant = CodegBadgeVariant.Default,
+    modifier: Modifier = Modifier,
+) {
+    val colors = CodegTheme.colors
+    val web = colors.web
+    val fill = when (variant) {
+        CodegBadgeVariant.Default -> web.primary
+        CodegBadgeVariant.Secondary -> web.secondary
+        CodegBadgeVariant.Destructive -> web.destructive.withOpacity(if (colors.isDark) 0.2f else 0.1f)
+        CodegBadgeVariant.Outline -> web.input.withOpacity(0.3f)
+    }
+    val foreground = when (variant) {
+        CodegBadgeVariant.Default -> web.primaryForeground
+        CodegBadgeVariant.Secondary -> web.secondaryForeground
+        CodegBadgeVariant.Destructive -> web.destructive
+        CodegBadgeVariant.Outline -> web.foreground
+    }
+    Text(text, color = foreground, fontSize = 12.sp, lineHeight = 16.sp, fontWeight = FontWeight.Medium,
+        maxLines = 1, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
+        modifier = modifier.clip(CodegShapes.extraSmall).background(fill)
+            .border(1.dp, if (variant == CodegBadgeVariant.Outline) web.border else Color.Transparent,
+                CodegShapes.extraSmall)
+            .padding(horizontal = 8.dp, vertical = 2.dp))
+}
+
+/** Compact badge-style overload; the legacy label-first icon/enabled API remains available. */
+@Composable
+fun CodegFilterChip(
+    selected: Boolean,
+    label: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    CodegBadge(label, if (selected) CodegBadgeVariant.Secondary else CodegBadgeVariant.Outline,
+        modifier.clip(CodegShapes.extraSmall).toggleable(selected, role = Role.Checkbox, onValueChange = { onClick() }))
+}
+
+@Composable
+internal fun T46BadgesGallery() {
+    Column(Modifier.background(CodegTheme.colors.web.background).padding(8.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        CodegBadgeVariant.entries.forEach { CodegBadge(stringResource(R.string.ds_rows_sample), it) }
+        var selected by remember { mutableStateOf(false) }
+        CodegFilterChip(selected, stringResource(R.string.ds_rows_all), { selected = !selected })
+        CodegFilterChip(true, stringResource(R.string.ds_rows_recent), {})
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun BadgesLightPreview() { CodegTheme(themeMode = ThemeMode.LIGHT) { T46BadgesGallery() } }
+
+@Preview(showBackground = true)
+@Composable
+private fun BadgesDarkPreview() { CodegTheme(themeMode = ThemeMode.DARK) { T46BadgesGallery() } }
