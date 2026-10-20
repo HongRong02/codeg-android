@@ -1,0 +1,84 @@
+name: API Drift Check
+
+on:
+  schedule:
+    - cron: "0 3 * * 1"
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Upstream codeg release tag to check (leave empty for latest release)"
+        required: false
+        default: ""
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: api-drift
+  cancel-in-progress: false
+
+jobs:
+  check-drift:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check out codeg-android
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+
+      - name: Determine codeg release tag
+        id: codeg_release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          INPUT_TAG: ${{ inputs.tag }}
+        run: |
+          if [ -n "$INPUT_TAG" ]; then
+            tag="$INPUT_TAG"
+          else
+            tag=$(gh release view -R spacering-net/codeg --json tagName -q .tagName)
+          fi
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"
+          echo "Target codeg tag: $tag"
+
+      - name: Check out upstream codeg web sources
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          repository: spacering-net/codeg
+          ref: ${{ steps.codeg_release.outputs.tag }}
+          path: codeg-upstream
+          sparse-checkout: |
+            src-tauri/src/web
+
+      - name: Run API diff check
+        id: diff
+        run: |
+          python3 scripts/api_diff.py codeg-upstream/src-tauri/src/web/router.rs \
+            --baseline scripts/api_baseline.txt \
+            --report /tmp/api-drift-report.md \
+            --tag "${{ steps.codeg_release.outputs.tag }}" \
+            --no-doc
+
+      - name: Open or update drift issue
+        if: steps.diff.outputs.has_drift == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          title="Upstream API drift detected"
+          if issue=$(gh issue list --state open --search "in:title \"$title\"" --json number --jq '.[0].number // empty') && [[ -n "$issue" ]]; then
+            echo "Updating existing issue #$issue with new comment"
+            gh issue comment "$issue" --body-file /tmp/api-drift-report.md
+          else
+            echo "Creating new issue"
+            gh issue create --title "$title" --body-file /tmp/api-drift-report.md
+          fi
+
+      - name: Close resolved drift issue
+        if: steps.diff.outputs.has_drift == 'false'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          title="Upstream API drift detected"
+          for issue in $(gh issue list --state open --search "in:title \"$title\"" --json number --jq '.[0].number // empty'); do
+            echo "Closing resolved issue #$issue"
+            gh issue close "$issue" --comment "Resolved: No API drift detected against upstream tag ${{ steps.codeg_release.outputs.tag }}."
+          done
