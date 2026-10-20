@@ -89,6 +89,7 @@ fun AssistantsContent(viewModel: AssistantsViewModel = hiltViewModel()) {
     if (ui.editing) key(ui.generation, ui.editor?.id) { AssistantEditor(ui, viewModel) }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun AssistantEditor(ui: AssistantsUi, vm: AssistantsViewModel) {
     val old = ui.editor

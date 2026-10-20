@@ -345,27 +345,27 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 37 |   `val ui by viewModel.ui.collectAsStateWithLifecycle()` |
 | 38 |   `val colors` |
 | 39 |   `var deleting by remember(ui.generation)` |
-| 93 | `@Composable private fun AssistantEditor(ui: AssistantsUi, vm: AssistantsViewModel)` |
-| 94 |   `val old` |
-| 95 |   `val colors` |
-| 96 |   `var name by rememberSaveable` |
-| 97 |   `var description by rememberSaveable` |
-| 98 |   `var instructions by rememberSaveable` |
-| 99 |   `var enabled by rememberSaveable` |
-| 100 |   `var emoji by rememberSaveable` |
-| 101 |   `var color by rememberSaveable` |
-| 102 |   `var avatarTouched by rememberSaveable` |
-| 103 |   `var agent by rememberSaveable` |
-| 104 |   `var agentTouched by rememberSaveable` |
-| 105 |   `var mode by rememberSaveable` |
-| 106 |   `var values by remember` |
-| 107 |   `val snapshot` |
-| 108 |   `val agentLabel` |
-| 109 |   `val config` |
-| 110 |   `val valid` |
-| 175 | `@Composable private fun AssistantField(value: String, onChange: (String) -> Unit, label: Int, enabled: Boolean, singleLine: Boolean = true)` |
-| 180 | `@Composable private fun AssistantChoice(label: String, value: String, choices: List<Pair<String, String>>, enabled: Boolean, onPick: (String) -> Unit)` |
-| 181 |   `var expanded by remember` |
+| 94 | `@Composable private fun AssistantEditor(ui: AssistantsUi, vm: AssistantsViewModel)` |
+| 95 |   `val old` |
+| 96 |   `val colors` |
+| 97 |   `var name by rememberSaveable` |
+| 98 |   `var description by rememberSaveable` |
+| 99 |   `var instructions by rememberSaveable` |
+| 100 |   `var enabled by rememberSaveable` |
+| 101 |   `var emoji by rememberSaveable` |
+| 102 |   `var color by rememberSaveable` |
+| 103 |   `var avatarTouched by rememberSaveable` |
+| 104 |   `var agent by rememberSaveable` |
+| 105 |   `var agentTouched by rememberSaveable` |
+| 106 |   `var mode by rememberSaveable` |
+| 107 |   `var values by remember` |
+| 108 |   `val snapshot` |
+| 109 |   `val agentLabel` |
+| 110 |   `val config` |
+| 111 |   `val valid` |
+| 176 | `@Composable private fun AssistantField(value: String, onChange: (String) -> Unit, label: Int, enabled: Boolean, singleLine: Boolean = true)` |
+| 181 | `@Composable private fun AssistantChoice(label: String, value: String, choices: List<Pair<String, String>>, enabled: Boolean, onPick: (String) -> Unit)` |
+| 182 |   `var expanded by remember` |
 
 ## feature/settings/AssistantsViewModel.kt
 
