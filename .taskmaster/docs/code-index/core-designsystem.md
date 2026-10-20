@@ -96,13 +96,13 @@ Source root: `app/src/main/java/app/codeg/android/`
 
 | Line | Declaration |
 |---|---|
-| 22 | `@Composable fun CodegCard(modifier: Modifier = Modifier, content: @Composable ColumnScope.() -> Unit)` |
-| 34 | `@Composable fun CodegCardHeader( title: String, description: String? = null, action: @Composable RowScope.() -> Unit = {}, )` |
-| 49 | `@Composable fun CodegCardContent(modifier: Modifier = Modifier, content: @Composable ColumnScope.() -> Unit)` |
-| 54 | `@Composable fun CodegCardFooter(modifier: Modifier = Modifier, content: @Composable RowScope.() -> Unit)` |
-| 59 | `@Composable internal fun T44CardsGallery()` |
-| 71 | `@Composable private fun CardsLightPreview()` |
-| 75 | `@Composable private fun CardsDarkPreview()` |
+| 22 | `@Composable fun CodegCard( modifier: Modifier = Modifier, contentPadding: PaddingValues = PaddingValues(0.dp), content: @Composable ColumnScope.() -> Unit, )` |
+| 38 | `@Composable fun CodegCardHeader( title: String, description: String? = null, action: @Composable RowScope.() -> Unit = {}, )` |
+| 53 | `@Composable fun CodegCardContent( modifier: Modifier = Modifier, contentPadding: PaddingValues = PaddingValues(horizontal = 24.dp), content: @Composable ColumnScope.() -> Unit, )` |
+| 62 | `@Composable fun CodegCardFooter(modifier: Modifier = Modifier, content: @Composable RowScope.() -> Unit)` |
+| 67 | `@Composable internal fun T44CardsGallery()` |
+| 79 | `@Composable private fun CardsLightPreview()` |
+| 83 | `@Composable private fun CardsDarkPreview()` |
 
 ## core/designsystem/component/CodeBlock.kt
 
@@ -195,20 +195,20 @@ Source root: `app/src/main/java/app/codeg/android/`
 | Line | Declaration |
 |---|---|
 | 31 | `@Composable fun CodegDialog( title: String, description: String? = null, onDismiss: () -> Unit, footer: @Composable RowScope.() -> Unit = {}, content: @Composable ColumnScope.() -> Unit = {}, )` |
-| 69 | `@Composable internal fun T44PanelHeading(title: String, description: String?)` |
-| 78 | `@Composable fun CodegConfirmDialog( title: String, message: String, target: String, confirmLabel: String, destructive: Boolean = false, onConfirm: () -> Unit, onDismiss: () -> Unit, confirmEnabled: Boolean = true, busy: Boolean = false, content: (@Composable ColumnScope.() -> Unit)? = null, )` |
-| 90 |   `val web` |
-| 105 | `@Composable internal fun T44Gallery()` |
-| 106 |   `var panel by remember` |
-| 107 |   `val title` |
-| 108 |   `val description` |
-| 109 |   `val confirm` |
-| 119 |   `val dismiss` |
-| 140 | `@Composable private fun DialogLightPreview()` |
-| 146 | `@Composable private fun DialogDarkPreview()` |
-| 152 | `@Composable private fun ConfirmLightPreview()` |
-| 155 | `@Composable private fun ConfirmDarkPreview()` |
-| 157 | `@Composable private fun T44ConfirmPreview()` |
+| 70 | `@Composable internal fun T44PanelHeading(title: String, description: String?)` |
+| 79 | `@Composable fun CodegConfirmDialog( title: String, message: String, target: String, confirmLabel: String, destructive: Boolean = false, onConfirm: () -> Unit, onDismiss: () -> Unit, confirmEnabled: Boolean = true, busy: Boolean = false, content: (@Composable ColumnScope.() -> Unit)? = null, )` |
+| 91 |   `val web` |
+| 106 | `@Composable internal fun T44Gallery()` |
+| 107 |   `var panel by remember` |
+| 108 |   `val title` |
+| 109 |   `val description` |
+| 110 |   `val confirm` |
+| 120 |   `val dismiss` |
+| 141 | `@Composable private fun DialogLightPreview()` |
+| 147 | `@Composable private fun DialogDarkPreview()` |
+| 153 | `@Composable private fun ConfirmLightPreview()` |
+| 156 | `@Composable private fun ConfirmDarkPreview()` |
+| 158 | `@Composable private fun T44ConfirmPreview()` |
 
 ## core/designsystem/component/Feedback.kt
 
@@ -370,26 +370,29 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 339 | `@Composable private fun MenuPopup( expanded: Boolean, onDismissRequest: () -> Unit, offset: DpOffset, properties: PopupProperties, content: @Composable () -> Unit, )` |
 | 346 |   `val density` |
 | 347 |   `val gap` |
-| 348 |   `val offsetPx` |
-| 349 |   `val provider` |
-| 350 |     `object : PopupPositionProvider` |
-| 365 | `internal fun menuPopupPosition( anchor: IntRect, window: IntSize, popup: IntSize, direction: LayoutDirection, gap: Int, ): IntOffset` |
-| 372 |   `val x` |
-| 373 |   `val below` |
-| 374 |   `val y` |
-| 383 | `private annotation class MenuPreviews` |
-| 386 | `@Composable private fun MenuPreviewTheme(content: @Composable () -> Unit)` |
-| 395 | `@Composable private fun GalleryItems()` |
-| 423 | `@Composable internal fun T43Gallery()` |
-| 447 | `@Composable private fun DropdownMenuPreview()` |
-| 453 | `@Composable private fun MenuItemPreview()` |
-| 457 | `@Composable private fun MenuSeparatorPreview()` |
-| 461 | `@Composable private fun MenuLabelPreview()` |
-| 467 | `@Composable private fun MenuCheckboxPreview()` |
-| 476 | `@Composable private fun ContextMenuPreview()` |
-| 484 | `@Composable private fun PopoverPreview()` |
-| 490 | `@Composable private fun TooltipPreview()` |
-| 499 | `@Composable private fun GalleryPreview()` |
+| 348 |   `val collisionPadding` |
+| 349 |   `val offsetPx` |
+| 350 |   `val provider` |
+| 351 |     `object : PopupPositionProvider` |
+| 377 | `internal fun menuPopupPosition( anchor: IntRect, window: IntSize, popup: IntSize, direction: LayoutDirection, gap: Int, collisionPadding: Int = 8, ): IntOffset` |
+| 385 |   `val x` |
+| 386 |   `val below` |
+| 387 |   `val y` |
+| 388 |   `val marginX` |
+| 389 |   `val marginY` |
+| 398 | `private annotation class MenuPreviews` |
+| 401 | `@Composable private fun MenuPreviewTheme(content: @Composable () -> Unit)` |
+| 410 | `@Composable private fun GalleryItems()` |
+| 438 | `@Composable internal fun T43Gallery()` |
+| 462 | `@Composable private fun DropdownMenuPreview()` |
+| 468 | `@Composable private fun MenuItemPreview()` |
+| 472 | `@Composable private fun MenuSeparatorPreview()` |
+| 476 | `@Composable private fun MenuLabelPreview()` |
+| 482 | `@Composable private fun MenuCheckboxPreview()` |
+| 491 | `@Composable private fun ContextMenuPreview()` |
+| 499 | `@Composable private fun PopoverPreview()` |
+| 505 | `@Composable private fun TooltipPreview()` |
+| 514 | `@Composable private fun GalleryPreview()` |
 
 ## core/designsystem/component/Sheets.kt
 

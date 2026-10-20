@@ -18,8 +18,8 @@ Source root: `app/src/main/java/app/codeg/android/`
 
 | Line | Declaration |
 |---|---|
-| 30 | `@Composable fun CodegApp(appViewModel: AppViewModel = hiltViewModel())` |
-| 31 |   `val settings by appViewModel.settings.collectAsStateWithLifecycle()` |
-| 46 | `@Composable private fun OnboardingRoot()` |
-| 47 |   `val nav` |
-| 59 | `@Composable private fun Splash()` |
+| 31 | `@Composable fun CodegApp(appViewModel: AppViewModel = hiltViewModel())` |
+| 32 |   `val settings by appViewModel.settings.collectAsStateWithLifecycle()` |
+| 49 | `@Composable private fun OnboardingRoot()` |
+| 50 |   `val nav` |
+| 62 | `@Composable private fun Splash()` |

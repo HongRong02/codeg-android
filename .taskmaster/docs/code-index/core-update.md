@@ -7,23 +7,23 @@ Source root: `app/src/main/java/app/codeg/android/`
 | Line | Declaration |
 |---|---|
 | 30 | `@Composable fun UpdateBanner(viewModel: UpdateViewModel = hiltViewModel())` |
-| 31 |   `val state by viewModel.ui.collectAsStateWithLifecycle()` |
-| 32 |   `val context` |
-| 33 |   `var showNotes by remember` |
-| 34 |   `var pendingPermission by rememberSaveable` |
-| 35 |   `fun install(file: File)` |
-| 43 |   `val permission` |
-| 65 |   `val toaster` |
-| 66 |   `val failureMessage` |
-| 70 |   `val colors` |
-| 96 | `@Composable fun UpdateAbout(viewModel: UpdateViewModel = hiltViewModel())` |
-| 97 |   `val state by viewModel.ui.collectAsStateWithLifecycle()` |
-| 98 |   `var showNotes by remember` |
-| 99 |   `var manual by remember` |
-| 107 |   `val toaster` |
-| 108 |   `val message` |
-| 120 | `@Composable private fun UpdateNotes(state: UpdateUi, dismiss: () -> Unit, download: () -> Unit)` |
-| 121 |   `val update` |
+| 32 |   `val state by viewModel.ui.collectAsStateWithLifecycle()` |
+| 33 |   `val context` |
+| 34 |   `var showNotes by remember` |
+| 35 |   `var pendingPermission by rememberSaveable` |
+| 36 |   `fun install(file: File)` |
+| 44 |   `val permission` |
+| 66 |   `val toaster` |
+| 67 |   `val failureMessage` |
+| 71 |   `val colors` |
+| 97 | `@Composable fun UpdateAbout(viewModel: UpdateViewModel = hiltViewModel())` |
+| 98 |   `val state by viewModel.ui.collectAsStateWithLifecycle()` |
+| 99 |   `var showNotes by remember` |
+| 100 |   `var manual by remember` |
+| 108 |   `val toaster` |
+| 109 |   `val message` |
+| 121 | `@Composable private fun UpdateNotes(state: UpdateUi, dismiss: () -> Unit, download: () -> Unit)` |
+| 122 |   `val update` |
 
 ## core/update/UpdateChecker.kt
 
@@ -62,29 +62,30 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 30 |   `val progress: Float?` |
 | 31 |   `val message: Int?` |
 | 32 |   `val installer: File?` |
-| 35 | `val UpdateUi.showBanner: Boolean` |
-| 40 | `class UpdateRepository @Inject constructor( private val preferences: DataStore<Preferences>, private val downloader: UpdateDownloader, )` |
-| 41 |   `private val preferences: DataStore<Preferences>` |
-| 42 |   `private val downloader: UpdateDownloader` |
-| 44 |   `private val mutable` |
-| 45 |   `val state` |
-| 46 |   `private val checker` |
-| 47 |   `private val scope` |
-| 48 |   `private var started` |
-| 49 |   `private var checkMessageRevision` |
-| 50 |   `private val lastCheck` |
-| 52 |   `suspend fun check(manual: Boolean)` |
-| 74 |   `fun clearCheckMessage()` |
-| 79 |   `fun dismiss()` |
-| 80 |   `fun installerHandled()` |
-| 81 |   `fun installFailed()` |
-| 83 |   `fun download()` |
-| 87 |   `private suspend fun downloadInBackground()` |
-| 105 | `class UpdateViewModel @Inject constructor(private val repository: UpdateRepository) : ViewModel()` |
-| 106 |   `val ui` |
-| 107 |   `fun check(manual: Boolean = false)` |
-| 108 |   `fun clearCheckMessage()` |
-| 109 |   `fun download()` |
-| 110 |   `fun dismiss()` |
-| 111 |   `fun installerHandled()` |
-| 112 |   `fun installFailed()` |
+| 35 | `internal val supportsInAppUpdates: Boolean` |
+| 38 | `val UpdateUi.showBanner: Boolean` |
+| 43 | `class UpdateRepository @Inject constructor( private val preferences: DataStore<Preferences>, private val downloader: UpdateDownloader, )` |
+| 44 |   `private val preferences: DataStore<Preferences>` |
+| 45 |   `private val downloader: UpdateDownloader` |
+| 47 |   `private val mutable` |
+| 48 |   `val state` |
+| 49 |   `private val checker` |
+| 50 |   `private val scope` |
+| 51 |   `private var started` |
+| 52 |   `private var checkMessageRevision` |
+| 53 |   `private val lastCheck` |
+| 55 |   `suspend fun check(manual: Boolean)` |
+| 81 |   `fun clearCheckMessage()` |
+| 86 |   `fun dismiss()` |
+| 87 |   `fun installerHandled()` |
+| 88 |   `fun installFailed()` |
+| 90 |   `fun download()` |
+| 95 |   `private suspend fun downloadInBackground()` |
+| 113 | `class UpdateViewModel @Inject constructor(private val repository: UpdateRepository) : ViewModel()` |
+| 114 |   `val ui` |
+| 115 |   `fun check(manual: Boolean = false)` |
+| 116 |   `fun clearCheckMessage()` |
+| 117 |   `fun download()` |
+| 118 |   `fun dismiss()` |
+| 119 |   `fun installerHandled()` |
+| 120 |   `fun installFailed()` |

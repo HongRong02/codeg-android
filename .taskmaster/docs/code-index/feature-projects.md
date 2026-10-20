@@ -508,8 +508,8 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 75 |   `val commitFolder` |
 | 154 | `@Composable private fun Header(name: String, path: String, color: Color, branch: String?, running: Int, sessions: Int, onBranchClick: () -> Unit = {})` |
 | 155 |   `val colors` |
-| 179 | `@Composable private fun ProjectTabs(selected: ProjectTab, onSelect: (ProjectTab) -> Unit)` |
-| 180 |   `val entries` |
+| 185 | `@Composable private fun ProjectTabs(selected: ProjectTab, onSelect: (ProjectTab) -> Unit)` |
+| 186 |   `val entries` |
 
 ## feature/projects/ProjectDetailViewModel.kt
 
