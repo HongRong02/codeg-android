@@ -19,12 +19,13 @@
         "description": "对照网页端逐项打磨会话列表页，并把顶栏换成 `CodegTopBar`。",
         "details": "需求文档：.taskmaster/docs/tasks/T02-sessions-list.md（先读 .taskmaster/docs/CONVENTIONS.md，再只读这一份需求文档及其中列出的代码位置；不要通读 PRD 或其它文件）。改动范围、代码定位、验收标准都在需求文档里。",
         "testStrategy": "",
-        "status": "pending",
+        "status": "in-progress",
         "dependencies": [
           "1"
         ],
         "priority": "medium",
-        "subtasks": []
+        "subtasks": [],
+        "updatedAt": "2026-10-20T02:14:30.689Z"
       },
       {
         "id": "3",
@@ -32,12 +33,13 @@
         "description": "对照网页端逐项打磨会话详情页剩余细节，并把顶栏换成 `CodegTopBar`。输入栏（`ComposeBar`）已在 1859b0a 完成，不要重做。",
         "details": "需求文档：.taskmaster/docs/tasks/T03-session-detail.md（先读 .taskmaster/docs/CONVENTIONS.md，再只读这一份需求文档及其中列出的代码位置；不要通读 PRD 或其它文件）。改动范围、代码定位、验收标准都在需求文档里。",
         "testStrategy": "",
-        "status": "pending",
+        "status": "in-progress",
         "dependencies": [
           "1"
         ],
         "priority": "medium",
-        "subtasks": []
+        "subtasks": [],
+        "updatedAt": "2026-10-20T02:14:33.073Z"
       },
       {
         "id": "4",
@@ -45,12 +47,13 @@
         "description": "对照网页端逐项打磨项目列表页，并把顶栏换成 `CodegTopBar`。",
         "details": "需求文档：.taskmaster/docs/tasks/T04-projects-list.md（先读 .taskmaster/docs/CONVENTIONS.md，再只读这一份需求文档及其中列出的代码位置；不要通读 PRD 或其它文件）。改动范围、代码定位、验收标准都在需求文档里。",
         "testStrategy": "",
-        "status": "pending",
+        "status": "in-progress",
         "dependencies": [
           "1"
         ],
         "priority": "medium",
-        "subtasks": []
+        "subtasks": [],
+        "updatedAt": "2026-10-20T02:14:35.338Z"
       },
       {
         "id": "5",
@@ -58,12 +61,13 @@
         "description": "对照网页端逐项打磨项目详情页（文件/改动/提交及各 Sheet），并把顶栏换成 `CodegTopBar`。",
         "details": "需求文档：.taskmaster/docs/tasks/T05-project-detail.md（先读 .taskmaster/docs/CONVENTIONS.md，再只读这一份需求文档及其中列出的代码位置；不要通读 PRD 或其它文件）。改动范围、代码定位、验收标准都在需求文档里。",
         "testStrategy": "",
-        "status": "pending",
+        "status": "in-progress",
         "dependencies": [
           "1"
         ],
         "priority": "medium",
-        "subtasks": []
+        "subtasks": [],
+        "updatedAt": "2026-10-20T02:14:37.642Z"
       },
       {
         "id": "6",
@@ -71,12 +75,13 @@
         "description": "对照网页端逐项打磨活动页，并把顶栏换成 `CodegTopBar`。",
         "details": "需求文档：.taskmaster/docs/tasks/T06-activity.md（先读 .taskmaster/docs/CONVENTIONS.md，再只读这一份需求文档及其中列出的代码位置；不要通读 PRD 或其它文件）。改动范围、代码定位、验收标准都在需求文档里。",
         "testStrategy": "",
-        "status": "pending",
+        "status": "in-progress",
         "dependencies": [
           "1"
         ],
         "priority": "medium",
-        "subtasks": []
+        "subtasks": [],
+        "updatedAt": "2026-10-20T02:14:39.956Z"
       },
       {
         "id": "7",
@@ -84,12 +89,13 @@
         "description": "对照网页端逐项打磨搜索页，并把顶栏换成 `CodegTopBar`。",
         "details": "需求文档：.taskmaster/docs/tasks/T07-search.md（先读 .taskmaster/docs/CONVENTIONS.md，再只读这一份需求文档及其中列出的代码位置；不要通读 PRD 或其它文件）。改动范围、代码定位、验收标准都在需求文档里。",
         "testStrategy": "",
-        "status": "pending",
+        "status": "in-progress",
         "dependencies": [
           "1"
         ],
         "priority": "medium",
-        "subtasks": []
+        "subtasks": [],
+        "updatedAt": "2026-10-20T02:14:42.278Z"
       },
       {
         "id": "8",
@@ -97,12 +103,13 @@
         "description": "对照网页端逐项打磨服务器列表/编辑与引导页，并把顶栏换成 `CodegTopBar`。",
         "details": "需求文档：.taskmaster/docs/tasks/T08-servers-onboarding.md（先读 .taskmaster/docs/CONVENTIONS.md，再只读这一份需求文档及其中列出的代码位置；不要通读 PRD 或其它文件）。改动范围、代码定位、验收标准都在需求文档里。",
         "testStrategy": "",
-        "status": "pending",
+        "status": "in-progress",
         "dependencies": [
           "1"
         ],
         "priority": "medium",
-        "subtasks": []
+        "subtasks": [],
+        "updatedAt": "2026-10-20T02:14:44.581Z"
       },
       {
         "id": "9",
@@ -110,12 +117,13 @@
         "description": "对照网页端逐项打磨设置主页与通用类子页，并把顶栏换成 `CodegTopBar`。设置子页由 `SettingsScreen` 统一承载顶栏，故顶栏替换在本任务完成。",
         "details": "需求文档：.taskmaster/docs/tasks/T09-settings-core.md（先读 .taskmaster/docs/CONVENTIONS.md，再只读这一份需求文档及其中列出的代码位置；不要通读 PRD 或其它文件）。改动范围、代码定位、验收标准都在需求文档里。",
         "testStrategy": "",
-        "status": "pending",
+        "status": "in-progress",
         "dependencies": [
           "1"
         ],
         "priority": "medium",
-        "subtasks": []
+        "subtasks": [],
+        "updatedAt": "2026-10-20T02:14:47.003Z"
       },
       {
         "id": "10",
@@ -123,12 +131,13 @@
         "description": "对照网页端逐项打磨设置 - Agents/Experts/Skills/MCP，并把顶栏换成 `CodegTopBar`。",
         "details": "需求文档：.taskmaster/docs/tasks/T10-settings-agents.md（先读 .taskmaster/docs/CONVENTIONS.md，再只读这一份需求文档及其中列出的代码位置；不要通读 PRD 或其它文件）。改动范围、代码定位、验收标准都在需求文档里。",
         "testStrategy": "",
-        "status": "pending",
+        "status": "in-progress",
         "dependencies": [
           "1"
         ],
         "priority": "medium",
-        "subtasks": []
+        "subtasks": [],
+        "updatedAt": "2026-10-20T02:14:49.412Z"
       },
       {
         "id": "11",
@@ -136,12 +145,13 @@
         "description": "对照网页端逐项打磨设置 - 模型供应商/快捷消息/聊天频道，并把顶栏换成 `CodegTopBar`。",
         "details": "需求文档：.taskmaster/docs/tasks/T11-settings-misc.md（先读 .taskmaster/docs/CONVENTIONS.md，再只读这一份需求文档及其中列出的代码位置；不要通读 PRD 或其它文件）。改动范围、代码定位、验收标准都在需求文档里。",
         "testStrategy": "",
-        "status": "pending",
+        "status": "in-progress",
         "dependencies": [
           "1"
         ],
         "priority": "medium",
-        "subtasks": []
+        "subtasks": [],
+        "updatedAt": "2026-10-20T02:14:51.821Z"
       },
       {
         "id": "12",
@@ -346,7 +356,7 @@
     ],
     "metadata": {
       "version": "1.0.0",
-      "lastModified": "2026-10-20T02:12:08.227Z",
+      "lastModified": "2026-10-20T02:14:51.823Z",
       "taskCount": 26,
       "completedCount": 3,
       "tags": [
