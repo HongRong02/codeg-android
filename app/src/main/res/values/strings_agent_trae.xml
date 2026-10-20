@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="agent_trae_title">TRAE CLI</string>
+    <string name="agent_trae_hint">Read-only. Token presence does not verify login. Interactive sign-in on the server: traecli login. Choose model and mode in the session.</string>
+    <string name="agent_trae_host">Enterprise API URL</string>
+    <string name="agent_trae_token">Personal access token</string>
+</resources>

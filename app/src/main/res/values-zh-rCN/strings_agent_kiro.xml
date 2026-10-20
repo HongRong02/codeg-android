@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="agent_kiro_title">Kiro</string>
+    <string name="agent_kiro_hint">只读。仅 1 或 true 开启信任所有工具；未设置时请求权限。模型与推理强度在会话中选择。</string>
+    <string name="agent_kiro_key">API 密钥</string>
+    <string name="agent_kiro_trust">信任所有工具（启动覆盖值）</string>
+</resources>

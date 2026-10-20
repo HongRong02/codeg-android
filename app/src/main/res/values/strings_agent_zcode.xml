@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="agent_zcode_title">ZCode</string>
+    <string name="agent_zcode_hint">Read-only. Install and sign in to the official ZCode runtime on the server. The ACP bridge reuses its configuration; configuration presence does not verify login.</string>
+    <string name="agent_zcode_config">Native configuration returned by server</string>
+</resources>

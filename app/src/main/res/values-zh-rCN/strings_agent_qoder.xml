@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="agent_qoder_title">Qoder</string>
+    <string name="agent_qoder_hint">只读。令牌存在不代表登录已验证；原生设置由 Qoder 与 MCP 配置共享。</string>
+    <string name="agent_qoder_token">个人访问令牌</string>
+    <string name="agent_qoder_config">原生设置文档</string>
+</resources>
