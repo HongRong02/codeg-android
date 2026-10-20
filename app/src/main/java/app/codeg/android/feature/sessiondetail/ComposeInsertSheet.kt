@@ -1,22 +1,16 @@
 package app.codeg.android.feature.sessiondetail
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -25,16 +19,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.codeg.android.R
-import app.codeg.android.core.designsystem.component.CodegSegmented
+import app.codeg.android.core.designsystem.component.CodegListRow
+import app.codeg.android.core.designsystem.component.CodegSheet
+import app.codeg.android.core.designsystem.component.CodegTabs
 import app.codeg.android.core.designsystem.theme.CodegTheme
 import app.codeg.android.core.model.AgentType
 import app.codeg.android.core.model.AvailableCommandInfo
@@ -68,7 +59,6 @@ fun ComposeInsertSheet(
     onDismiss: () -> Unit,
 ) {
     val colors = CodegTheme.colors
-    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     var source by remember { mutableStateOf(InsertSource.QUICK) }
     var loading by remember { mutableStateOf(true) }
     var quick by remember { mutableStateOf<List<QuickMessage>>(emptyList()) }
@@ -86,7 +76,11 @@ fun ComposeInsertSheet(
         loading = false
     }
 
-    ModalBottomSheet(onDismissRequest = onDismiss, sheetState = sheetState, containerColor = colors.bgElevated) {
+    CodegSheet(title = stringResource(when (source) {
+        InsertSource.QUICK -> R.string.insert_quick_messages
+        InsertSource.EXPERTS -> R.string.insert_experts
+        InsertSource.COMMANDS -> R.string.insert_commands
+    }), onDismiss = onDismiss) {
         Column(Modifier.fillMaxWidth().padding(horizontal = 16.dp).padding(bottom = 24.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
             // Segmented selector.
             val sources = InsertSource.entries
@@ -95,9 +89,9 @@ fun ComposeInsertSheet(
                 stringResource(R.string.insert_experts),
                 stringResource(R.string.insert_commands),
             )
-            CodegSegmented(
-                options = sourceLabels,
-                selectedIndex = sources.indexOf(source),
+            CodegTabs(
+                tabs = sourceLabels,
+                selected = sources.indexOf(source),
                 onSelect = { source = sources[it] },
             )
 
@@ -120,7 +114,7 @@ fun ComposeInsertSheet(
                     }
                     else -> InsertList(commands.isEmpty(), stringResource(R.string.insert_empty_commands)) {
                         items(commands, key = { it.name }) { cmd ->
-                            InsertRow("/${cmd.name}", cmd.description ?: "", mono = true) {
+                            InsertRow("/${cmd.name}", cmd.description ?: "") {
                                 onInsert { draft -> ComposeInsert.appendCommand(cmd.name, draft) }; onDismiss()
                             }
                         }
@@ -142,10 +136,7 @@ private fun InsertList(empty: Boolean, emptyText: String, content: androidx.comp
 }
 
 @Composable
-private fun InsertRow(title: String, subtitle: String, mono: Boolean = false, onClick: () -> Unit) {
-    val colors = CodegTheme.colors
-    Column(Modifier.fillMaxWidth().clip(RoundedCornerShape(8.dp)).clickable { onClick() }.padding(horizontal = 10.dp, vertical = 11.dp), verticalArrangement = Arrangement.spacedBy(2.dp)) {
-        Text(title, fontSize = 15.sp, fontWeight = FontWeight.Medium, color = colors.textPrimary, fontFamily = if (mono) FontFamily.Monospace else FontFamily.Default, maxLines = 1, overflow = TextOverflow.Ellipsis)
-        if (subtitle.isNotEmpty()) Text(subtitle, fontSize = 12.sp, color = colors.textTertiary, maxLines = 2, overflow = TextOverflow.Ellipsis)
-    }
+private fun InsertRow(title: String, subtitle: String, onClick: () -> Unit) {
+    // TODO(T53): CodegCommandList for slash commands and expert search.
+    CodegListRow(title = title, subtitle = subtitle.takeIf { it.isNotEmpty() }, onClick = onClick)
 }

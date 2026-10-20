@@ -15,6 +15,15 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import app.codeg.android.R
+import app.codeg.android.core.designsystem.component.CodegButton
+import app.codeg.android.core.designsystem.component.CodegButtonVariant
+import app.codeg.android.core.designsystem.component.CodegCheckbox
+import app.codeg.android.core.designsystem.component.CodegConfirmDialog
+import app.codeg.android.core.designsystem.component.CodegDialog
+import app.codeg.android.core.designsystem.component.CodegFilterChip
+import app.codeg.android.core.designsystem.component.CodegListRow
+import app.codeg.android.core.designsystem.component.CodegSheet
+import app.codeg.android.core.designsystem.component.CodegTextField
 import app.codeg.android.core.designsystem.theme.CodegTheme
 import app.codeg.android.core.designsystem.theme.PillShape
 import app.codeg.android.core.designsystem.theme.colorFromHex
@@ -39,17 +48,17 @@ fun ConversationTagChip(tag: ConversationTag) {
 fun ConversationTagFilter(ui: SessionListUiState, viewModel: SessionListViewModel, onManage: () -> Unit) {
     Column {
         Row(Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()), verticalAlignment = Alignment.CenterVertically) {
-            TextButton(onClick = onManage) { Text(stringResource(R.string.ct_manage)) }
+            CodegButton(variant = CodegButtonVariant.Ghost, onClick = onManage) { Text(stringResource(R.string.ct_manage)) }
             ui.tags.forEach { tag ->
-                FilterChip(selected = tag.id in ui.selectedTags, onClick = { viewModel.toggleTagFilter(tag.id) },
-                    label = { ConversationTagChip(tag) }, modifier = Modifier.padding(end = 4.dp))
+                CodegFilterChip(tag.id in ui.selectedTags, tag.name, { viewModel.toggleTagFilter(tag.id) },
+                    modifier = Modifier.padding(end = 4.dp))
             }
         }
         if (ui.selectedTags.isNotEmpty()) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Checkbox(checked = ui.matchAllTags, onCheckedChange = viewModel::setMatchAllTags)
+                CodegCheckbox(checked = ui.matchAllTags, onCheckedChange = viewModel::setMatchAllTags)
                 Text(stringResource(R.string.ct_match_all), modifier = Modifier.weight(1f))
-                TextButton(onClick = viewModel::clearTagFilter) { Text(stringResource(R.string.ct_clear)) }
+                CodegButton(variant = CodegButtonVariant.Ghost, onClick = viewModel::clearTagFilter) { Text(stringResource(R.string.ct_clear)) }
             }
         }
     }
@@ -63,6 +72,7 @@ fun ConversationTagSheet(
     viewModel: SessionListViewModel,
     onDismiss: () -> Unit,
 ) {
+    // TODO(T52): CodegToaster for tag errors.
     var selected by remember(conversation?.id) { mutableStateOf(conversation?.tagIds.orEmpty().toSet()) }
     var editing by remember { mutableStateOf<ConversationTag?>(null) }
     var formOpen by remember { mutableStateOf(false) }
@@ -71,32 +81,41 @@ fun ConversationTagSheet(
     val folder = ui.folders.firstOrNull { it.id == conversation?.folderId }
     val rootId = folder?.parentId ?: conversation?.folderId
     val visible = ui.tags.filter { conversation == null || it.folderId == null || it.folderId == rootId || it.id in conversation.tagIds.orEmpty() }
-    ModalBottomSheet(onDismissRequest = { if (!ui.tagsBusy) onDismiss() }) {
+    CodegSheet(
+        title = stringResource(R.string.ct_title),
+        onDismiss = { if (!ui.tagsBusy) onDismiss() },
+        footer = {
+            if (conversation != null) CodegButton(enabled = !ui.tagsBusy, onClick = {
+                viewModel.saveConversationTags(conversation.id, selected.intersect(ui.tags.map { it.id }.toSet()), onDismiss)
+            }, modifier = Modifier.fillMaxWidth()) { Text(stringResource(R.string.ct_save)) }
+        },
+    ) {
         Column(Modifier.fillMaxWidth().padding(horizontal = 16.dp)) {
-            Text(stringResource(R.string.ct_title), style = MaterialTheme.typography.titleLarge)
             if (ui.error != null) Text(ui.error, color = CodegTheme.colors.danger)
-            TextButton(enabled = !ui.tagsBusy, onClick = { editing = null; formOpen = true }) {
+            CodegButton(variant = CodegButtonVariant.Ghost, enabled = !ui.tagsBusy, onClick = { editing = null; formOpen = true }) {
                 Text(stringResource(R.string.ct_create))
             }
             if (visible.isEmpty()) Text(stringResource(R.string.ct_empty))
-            LazyColumn(Modifier.weight(1f, fill = false).heightIn(max = 400.dp)) {
+            LazyColumn(Modifier.heightIn(max = 400.dp)) {
                 items(visible, key = { it.id }) { tag ->
-                    Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                        if (conversation != null) Checkbox(checked = tag.id in selected, enabled = !ui.tagsBusy,
+                    CodegListRow(title = tag.name, selected = conversation != null && tag.id in selected, onClick = {
+                        if (conversation != null && !ui.tagsBusy) selected = if (tag.id in selected) selected - tag.id else selected + tag.id
+                    }, leading = {
+                        if (conversation != null) CodegCheckbox(checked = tag.id in selected, enabled = !ui.tagsBusy,
                             onCheckedChange = { selected = if (it) selected + tag.id else selected - tag.id })
-                        Box(Modifier.weight(1f)) { ConversationTagChip(tag) }
-                        TextButton(enabled = !ui.tagsBusy, onClick = { editing = tag; formOpen = true }) {
-                            Text(stringResource(R.string.ct_edit))
+                    }, trailing = {
+                        Row {
+                            CodegButton(variant = CodegButtonVariant.Ghost, enabled = !ui.tagsBusy, onClick = { editing = tag; formOpen = true }) {
+                                Text(stringResource(R.string.ct_edit))
+                            }
+                            CodegButton(variant = CodegButtonVariant.Ghost, enabled = !ui.tagsBusy, onClick = { deleting = tag }) {
+                                Text(stringResource(R.string.ct_delete))
+                            }
                         }
-                        TextButton(enabled = !ui.tagsBusy, onClick = { deleting = tag }) {
-                            Text(stringResource(R.string.ct_delete))
-                        }
-                    }
+                    })
                 }
             }
-            if (conversation != null) Button(enabled = !ui.tagsBusy, onClick = {
-                viewModel.saveConversationTags(conversation.id, selected.intersect(ui.tags.map { it.id }.toSet()), onDismiss)
-            }, modifier = Modifier.fillMaxWidth()) { Text(stringResource(R.string.ct_save)) }
+
             Spacer(Modifier.height(24.dp))
         }
     }
@@ -104,13 +123,17 @@ fun ConversationTagSheet(
         viewModel.saveTag(editing, name, color) { formOpen = false }
     })
     deleting?.let { tag ->
-        AlertDialog(onDismissRequest = { if (!ui.tagsBusy) deleting = null },
-            title = { Text(stringResource(R.string.ct_delete)) },
-            text = { Text(stringResource(R.string.ct_delete_confirm, tag.name)) },
-            confirmButton = { TextButton(enabled = !ui.tagsBusy, onClick = {
-                viewModel.deleteTag(tag) { selected = selected - tag.id; deleting = null }
-            }) { Text(stringResource(R.string.ct_delete)) } },
-            dismissButton = { TextButton(enabled = !ui.tagsBusy, onClick = { deleting = null }) { Text(stringResource(R.string.ct_cancel)) } })
+        CodegConfirmDialog(
+            title = stringResource(R.string.ct_delete),
+            message = stringResource(R.string.ct_delete_confirm, tag.name),
+            target = tag.name,
+            confirmLabel = stringResource(R.string.ct_delete),
+            destructive = true,
+            onConfirm = {
+                if (!ui.tagsBusy) viewModel.deleteTag(tag) { selected = selected - tag.id; deleting = null }
+            },
+            onDismiss = { if (!ui.tagsBusy) deleting = null },
+        )
     }
 }
 
@@ -119,14 +142,15 @@ private fun TagForm(tag: ConversationTag?, busy: Boolean, onDismiss: () -> Unit,
     var name by remember(tag?.id) { mutableStateOf(tag?.name.orEmpty()) }
     var color by remember(tag?.id) { mutableStateOf(tag?.color ?: "#3b82f6") }
     val valid = name.isNotBlank() && Regex("#[0-9a-fA-F]{6}").matches(color)
-    AlertDialog(onDismissRequest = { if (!busy) onDismiss() },
-        title = { Text(stringResource(if (tag == null) R.string.ct_create else R.string.ct_edit)) },
-        text = { Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            OutlinedTextField(value = name, onValueChange = { name = it }, enabled = !busy, singleLine = true,
-                label = { Text(stringResource(R.string.ct_name)) })
-            OutlinedTextField(value = color, onValueChange = { color = it }, enabled = !busy, singleLine = true,
-                label = { Text(stringResource(R.string.ct_color)) })
-        } },
-        confirmButton = { TextButton(enabled = valid && !busy, onClick = { onSave(name, color) }) { Text(stringResource(R.string.ct_save)) } },
-        dismissButton = { TextButton(enabled = !busy, onClick = onDismiss) { Text(stringResource(R.string.ct_cancel)) } })
+    CodegDialog(
+        title = stringResource(if (tag == null) R.string.ct_create else R.string.ct_edit),
+        onDismiss = { if (!busy) onDismiss() },
+        footer = {
+            CodegButton(variant = CodegButtonVariant.Ghost, enabled = !busy, onClick = onDismiss) { Text(stringResource(R.string.ct_cancel)) }
+            CodegButton(enabled = valid && !busy, onClick = { onSave(name, color) }) { Text(stringResource(R.string.ct_save)) }
+        },
+    ) {
+        CodegTextField(value = name, onValueChange = { if (!busy) name = it }, label = stringResource(R.string.ct_name))
+        CodegTextField(value = color, onValueChange = { if (!busy) color = it }, label = stringResource(R.string.ct_color), isError = !Regex("#[0-9a-fA-F]{6}").matches(color))
+    }
 }

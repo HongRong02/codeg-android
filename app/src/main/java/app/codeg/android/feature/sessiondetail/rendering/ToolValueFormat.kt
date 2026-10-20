@@ -15,7 +15,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ErrorOutline
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -34,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.codeg.android.R
 import app.codeg.android.core.designsystem.component.CodeBlock
+import app.codeg.android.core.designsystem.component.CodegSeparator
 import app.codeg.android.core.designsystem.component.CopyButton
 import app.codeg.android.core.designsystem.theme.CodegTheme
 import kotlinx.serialization.json.Json
@@ -426,7 +426,7 @@ fun FileBodyView(file: ReadOutputFormat.File, collapsedLineLimit: Int = 60) {
             Row(Modifier.weight(1f)) {}
             CopyButton(content)
         }
-        HorizontalDivider(thickness = 0.5.dp, color = colors.hairline)
+        CodegSeparator()
         Column(Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()).padding(vertical = 8.dp)) {
             shown.forEachIndexed { idx, line ->
                 Row(Modifier.padding(vertical = 1.dp)) {

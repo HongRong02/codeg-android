@@ -1,7 +1,5 @@
 package app.codeg.android.feature.sessiondetail
 
-import androidx.compose.foundation.layout.safeDrawing
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -18,9 +16,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.AltRoute
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
@@ -29,28 +25,20 @@ import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material.icons.rounded.Folder
 import androidx.compose.material.icons.rounded.Lock
-import androidx.compose.material.icons.rounded.UnfoldMore
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledIconButton
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
-import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.ModalBottomSheetProperties
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.material3.rememberModalBottomSheetState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -65,8 +53,15 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.codeg.android.R
 import app.codeg.android.core.designsystem.component.AgentAvatar
 import app.codeg.android.core.designsystem.component.AgentVisuals
+import app.codeg.android.core.designsystem.component.CodegButton
+import app.codeg.android.core.designsystem.component.CodegButtonVariant
+import app.codeg.android.core.designsystem.component.CodegCard
+import app.codeg.android.core.designsystem.component.CodegFullScreenSheet
+import app.codeg.android.core.designsystem.component.CodegListRow
+import app.codeg.android.core.designsystem.component.CodegSectionHeader
+import app.codeg.android.core.designsystem.component.CodegSelect
+import app.codeg.android.core.designsystem.component.CodegSeparator
 import app.codeg.android.core.designsystem.component.CodegTextField
-import app.codeg.android.core.designsystem.component.webSurface
 import app.codeg.android.core.designsystem.theme.CodegShapes
 import app.codeg.android.core.designsystem.theme.CodegTheme
 import app.codeg.android.core.designsystem.theme.withOpacity
@@ -100,7 +95,6 @@ fun AgentOptionsSheet(
 ) {
     val ui by viewModel.ui.collectAsStateWithLifecycle()
     val colors = CodegTheme.colors
-    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val scope = rememberCoroutineScope()
     var page by remember { mutableStateOf(SheetPage.Main) }
 
@@ -108,6 +102,7 @@ fun AgentOptionsSheet(
     var data by remember { mutableStateOf(AgentOptionsData()) }
     var currentMode by remember { mutableStateOf<String?>(null) }
     var currentValues by remember { mutableStateOf<Map<String, String>>(emptyMap()) }
+    // TODO(T52): CodegToaster for apply failures.
     var note by remember { mutableStateOf<String?>(null) }
     // Keyed by the LOGICAL selector ("mode" / config-option id), as a set — several config
     // options can be applying at once, and each must clear only its own lock (iOS Set<String>).
@@ -128,14 +123,9 @@ fun AgentOptionsSheet(
         loading = false
     }
 
-    ModalBottomSheet(
-        contentWindowInsets = { WindowInsets.safeDrawing },
-        onDismissRequest = onDismiss,
-        sheetState = sheetState,
-        containerColor = colors.bgElevated,
-        // Disable the sheet's own back-to-dismiss so our handler can route back:
-        // the branch page returns to the main page, the main page dismisses.
-        properties = ModalBottomSheetProperties(shouldDismissOnBackPress = false),
+    CodegFullScreenSheet(
+        title = stringResource(if (ui.isDraftEditable) R.string.agentopts_new_session_title else R.string.agentopts_title),
+        onDismiss = { if (page == SheetPage.Branch) page = SheetPage.Main else onDismiss() },
     ) {
         BackHandler { if (page == SheetPage.Branch) page = SheetPage.Main else onDismiss() }
         when (page) {
@@ -151,16 +141,10 @@ fun AgentOptionsSheet(
                 Column(
                     Modifier
                         .fillMaxWidth()
-                        .heightIn(max = 560.dp)
-                        .verticalScroll(rememberScrollState())
                         .padding(horizontal = 16.dp)
                         .padding(bottom = 28.dp),
                     verticalArrangement = Arrangement.spacedBy(14.dp),
                 ) {
-                    Text(
-                        stringResource(if (ui.isDraftEditable) R.string.agentopts_new_session_title else R.string.agentopts_title),
-                        fontSize = 18.sp, fontWeight = FontWeight.SemiBold, color = colors.textPrimary,
-                    )
 
                     if (ui.isDraftEditable) AgentPickerSection(ui.availableAgents, ui.agent) { viewModel.selectAgent(it) }
 
@@ -183,7 +167,7 @@ fun AgentOptionsSheet(
                             CircularProgressIndicator(color = colors.accent)
                         }
                         showModes -> {
-                            Text(stringResource(R.string.agentopts_mode), fontSize = 11.sp, fontWeight = FontWeight.SemiBold, color = colors.web.mutedForeground)
+                            CodegSectionHeader(title = stringResource(R.string.agentopts_mode))
                             val modeApplying = MODE_APPLY in applying
                             OptionGroup {
                                 data.modes!!.availableModes.forEachIndexed { i, mode ->
@@ -245,7 +229,8 @@ fun AgentOptionsSheet(
 private fun AgentPickerSection(agents: List<AgentType>, selected: AgentType, onSelect: (AgentType) -> Unit) {
     val colors = CodegTheme.colors
     Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-        Text(stringResource(R.string.agentopts_agent_section), fontSize = 11.sp, fontWeight = FontWeight.SemiBold, color = colors.web.mutedForeground)
+        CodegSectionHeader(title = stringResource(R.string.agentopts_agent_section))
+        // TODO(T53): CodegAvatar for the agent picker.
         LazyRow(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
             items(agents, key = { it.wire }) { agent ->
                 val isSelected = agent == selected
@@ -290,7 +275,7 @@ private fun WorkspaceSection(
 ) {
     val colors = CodegTheme.colors
     Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-        Text(stringResource(R.string.agentopts_workspace), fontSize = 11.sp, fontWeight = FontWeight.SemiBold, color = colors.web.mutedForeground)
+        CodegSectionHeader(title = stringResource(R.string.agentopts_workspace))
         OptionGroup {
             if (ui.isDraftEditable) FolderMenuRow(ui, onSelectFolder) else FolderReadOnlyRow(ui)
             GroupDivider()
@@ -301,35 +286,12 @@ private fun WorkspaceSection(
 
 @Composable
 private fun FolderMenuRow(ui: SessionDetailUiState, onSelectFolder: (FolderDetail) -> Unit) {
-    val colors = CodegTheme.colors
-    var expanded by remember { mutableStateOf(false) }
-    Box {
-        Row(
-            Modifier.fillMaxWidth().clickable { expanded = true }.padding(horizontal = 14.dp, vertical = 11.dp),
-            verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp),
-        ) {
-            Icon(Icons.Rounded.Folder, null, tint = colors.accent, modifier = Modifier.size(18.dp))
-            Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(1.dp)) {
-                Text(ui.folderName ?: stringResource(R.string.agentopts_choose_folder), fontSize = 14.sp, fontWeight = FontWeight.Medium, color = colors.textPrimary, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                ui.folderPath?.let { PathLine(it) }
-            }
-            Icon(Icons.Rounded.UnfoldMore, null, tint = colors.web.mutedForeground, modifier = Modifier.size(16.dp))
-        }
-        DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
-            ui.availableFolders.forEach { f ->
-                DropdownMenuItem(
-                    text = {
-                        Column {
-                            Text(f.name, fontSize = 14.sp, color = colors.textPrimary, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                            Text(f.path, fontSize = 12.sp, fontFamily = FontFamily.Monospace, color = colors.web.mutedForeground, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                        }
-                    },
-                    leadingIcon = { Icon(Icons.Rounded.Folder, null, tint = if (f.id == ui.selectedFolderId) colors.accent else colors.web.mutedForeground, modifier = Modifier.size(18.dp)) },
-                    onClick = { onSelectFolder(f); expanded = false },
-                )
-            }
-        }
-    }
+    CodegSelect(
+        label = stringResource(R.string.agentopts_choose_folder),
+        value = ui.folderPath.orEmpty(),
+        options = ui.availableFolders.map { it.path },
+        onSelect = { path -> ui.availableFolders.firstOrNull { it.path == path }?.let(onSelectFolder) },
+    )
 }
 
 @Composable
@@ -351,24 +313,14 @@ private fun FolderReadOnlyRow(ui: SessionDetailUiState) {
 @Composable
 private fun BranchRow(current: String?, isBusy: Boolean, onClick: () -> Unit) {
     val colors = CodegTheme.colors
-    Row(
-        Modifier
-            .fillMaxWidth()
-            .clickable(enabled = !isBusy) { onClick() }
-            .alpha(if (isBusy) 0.5f else 1f)
-            .padding(horizontal = 14.dp, vertical = 11.dp),
-        verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp),
-    ) {
-        Icon(Icons.AutoMirrored.Rounded.AltRoute, null, tint = if (isBusy) colors.web.mutedForeground else colors.accent, modifier = Modifier.size(18.dp))
-        Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(1.dp)) {
-            Text(stringResource(R.string.agentopts_branch), fontSize = 14.sp, fontWeight = FontWeight.Medium, color = colors.textPrimary)
-            Text(
-                current ?: stringResource(R.string.agentopts_select_branch),
-                fontSize = 12.sp, fontFamily = FontFamily.Monospace, color = colors.web.mutedForeground, maxLines = 1, overflow = TextOverflow.Ellipsis,
-            )
-        }
-        Icon(Icons.AutoMirrored.Rounded.KeyboardArrowRight, null, tint = colors.web.mutedForeground, modifier = Modifier.size(18.dp))
-    }
+    CodegListRow(
+        title = stringResource(R.string.agentopts_branch),
+        subtitle = current ?: stringResource(R.string.agentopts_select_branch),
+        onClick = { if (!isBusy) onClick() },
+        modifier = Modifier.alpha(if (isBusy) 0.5f else 1f),
+        leading = { Icon(Icons.AutoMirrored.Rounded.AltRoute, null, tint = colors.accent, modifier = Modifier.size(18.dp)) },
+        trailing = { Icon(Icons.AutoMirrored.Rounded.KeyboardArrowRight, null, tint = colors.web.mutedForeground, modifier = Modifier.size(18.dp)) },
+    )
 }
 
 @Composable
@@ -391,6 +343,7 @@ private fun BranchPickerContent(
     val scope = rememberCoroutineScope()
     var loading by remember { mutableStateOf(true) }
     var list by remember { mutableStateOf<GitBranchList?>(null) }
+    // TODO(T53): CodegCommandList for branch search.
     var query by remember { mutableStateOf("") }
     var switching by remember { mutableStateOf<String?>(null) }
     var showNew by remember { mutableStateOf(false) }
@@ -505,10 +458,7 @@ private fun NewBranchInline(
 ) {
     val colors = CodegTheme.colors
     if (!show) {
-        Row(
-            Modifier.fillMaxWidth().clip(CodegShapes.small).clickable { onShow() }.padding(horizontal = 14.dp, vertical = 12.dp),
-            verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp),
-        ) {
+        CodegButton(variant = CodegButtonVariant.Ghost, onClick = onShow, modifier = Modifier.fillMaxWidth()) {
             Icon(Icons.Rounded.Add, null, tint = colors.accent, modifier = Modifier.size(18.dp))
             Text(stringResource(R.string.branch_new_branch), fontSize = 14.sp, fontWeight = FontWeight.Medium, color = colors.textPrimary)
         }
@@ -529,7 +479,7 @@ private fun NewBranchInline(
             }
             Row(verticalAlignment = Alignment.CenterVertically) {
                 current?.let { Text(stringResource(R.string.branch_from, it), fontSize = 11.sp, color = colors.web.mutedForeground, modifier = Modifier.weight(1f), maxLines = 1, overflow = TextOverflow.Ellipsis) } ?: Box(Modifier.weight(1f))
-                TextButton(onClick = onCancel) { Text(stringResource(R.string.common_cancel), color = colors.textSecondary) }
+                CodegButton(variant = CodegButtonVariant.Ghost, onClick = onCancel) { Text(stringResource(R.string.common_cancel), color = colors.textSecondary) }
             }
         }
     }
@@ -547,30 +497,25 @@ private fun BranchRowItem(
     onClick: () -> Unit,
 ) {
     val colors = CodegTheme.colors
-    Row(
-        Modifier
-            .fillMaxWidth()
-            .clip(CodegShapes.extraSmall)
-            .clickable(enabled = enabled && !occupied && !isCurrent) { onClick() }
-            .alpha(if (occupied) 0.5f else 1f)
-            .padding(horizontal = 12.dp, vertical = 10.dp),
-        verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp),
-    ) {
-        Icon(Icons.AutoMirrored.Rounded.AltRoute, null, tint = if (occupied) colors.web.mutedForeground else colors.accent, modifier = Modifier.size(16.dp))
-        Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(1.dp)) {
-            Text(display, fontSize = 13.sp, fontFamily = FontFamily.Monospace, color = colors.textPrimary, maxLines = 1, overflow = TextOverflow.Ellipsis)
-            if (occupied) Text(stringResource(R.string.branch_occupied), fontSize = 11.sp, color = colors.web.mutedForeground)
-        }
-        when {
-            switching -> CircularProgressIndicator(color = colors.accent, modifier = Modifier.size(16.dp))
-            isCurrent -> Icon(Icons.Rounded.Check, null, tint = colors.accent, modifier = Modifier.size(18.dp))
-        }
-    }
+    CodegListRow(
+        title = display,
+        subtitle = if (occupied) stringResource(R.string.branch_occupied) else null,
+        selected = isCurrent,
+        onClick = { if (enabled && !occupied && !isCurrent) onClick() },
+        modifier = Modifier.alpha(if (occupied) 0.5f else 1f),
+        leading = { Icon(Icons.AutoMirrored.Rounded.AltRoute, null, tint = colors.accent, modifier = Modifier.size(16.dp)) },
+        trailing = {
+            when {
+                switching -> CircularProgressIndicator(color = colors.accent, modifier = Modifier.size(16.dp))
+                isCurrent -> Icon(Icons.Rounded.Check, null, tint = colors.accent, modifier = Modifier.size(18.dp))
+            }
+        },
+    )
 }
 
 @Composable
 private fun BranchSectionLabel(text: String) {
-    Text(text, fontSize = 11.sp, fontWeight = FontWeight.SemiBold, color = CodegTheme.colors.web.mutedForeground, modifier = Modifier.padding(top = 6.dp, start = 4.dp, bottom = 2.dp))
+    CodegSectionHeader(title = text)
 }
 
 // endregion
@@ -582,7 +527,7 @@ private fun ConfigOptionSection(option: SessionConfigOption, currentValue: Strin
     val colors = CodegTheme.colors
     val flat: List<SessionConfigSelectOption> = if (option.kind.groups.isNotEmpty()) option.kind.groups.flatMap { it.options } else option.kind.options
     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-        Text(option.name.uppercase().ifEmpty { option.id.uppercase() }, fontSize = 11.sp, fontWeight = FontWeight.SemiBold, color = colors.web.mutedForeground)
+        CodegSectionHeader(title = option.name.uppercase().ifEmpty { option.id.uppercase() })
         OptionGroup {
             flat.forEachIndexed { i, opt ->
                 if (i > 0) GroupDivider()
@@ -596,28 +541,28 @@ private fun ConfigOptionSection(option: SessionConfigOption, currentValue: Strin
 
 @Composable
 private fun OptionGroup(content: @Composable () -> Unit) {
-    Column(Modifier.fillMaxWidth().webSurface(CodegShapes.small)) { content() }
+    CodegCard(Modifier.fillMaxWidth()) { Column { content() } }
 }
 
 @Composable
 private fun GroupDivider() {
-    HorizontalDivider(modifier = Modifier.padding(start = 14.dp), thickness = CodegTheme.dimens.hairlineWidth, color = CodegTheme.colors.web.border)
+    CodegSeparator(modifier = Modifier.padding(start = 14.dp))
 }
 
 @Composable
 private fun OptionRow(title: String, description: String?, selected: Boolean, busy: Boolean, enabled: Boolean, onClick: () -> Unit) {
     val colors = CodegTheme.colors
-    Row(
-        Modifier.fillMaxWidth().clickable(enabled = enabled) { onClick() }.padding(horizontal = 14.dp, vertical = 12.dp),
-        verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp),
-    ) {
-        Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
-            Text(title, fontSize = 14.sp, color = colors.textPrimary)
-            description?.takeIf { it.isNotEmpty() }?.let { Text(it, fontSize = 12.sp, color = colors.web.mutedForeground) }
-        }
-        if (busy) CircularProgressIndicator(color = colors.accent, modifier = Modifier.size(16.dp))
-        else if (selected) Icon(Icons.Rounded.Check, null, tint = colors.accent, modifier = Modifier.size(18.dp))
-    }
+    CodegListRow(
+        title = title,
+        subtitle = description?.takeIf { it.isNotEmpty() },
+        selected = selected,
+        onClick = { if (enabled) onClick() },
+        modifier = Modifier.alpha(if (enabled) 1f else 0.5f),
+        trailing = {
+            if (busy) CircularProgressIndicator(color = colors.accent, modifier = Modifier.size(16.dp))
+            else if (selected) Icon(Icons.Rounded.Check, null, tint = colors.accent, modifier = Modifier.size(18.dp))
+        },
+    )
 }
 
 // endregion
