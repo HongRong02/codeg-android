@@ -30,3 +30,12 @@ data class WorkTaskActionBody(
     val archived: Boolean? = null,
     val deferred: Boolean? = null,
 )
+
+@Serializable
+data class WorkTaskTemplateDraft(val name: String, val title: String, val config: kotlinx.serialization.json.JsonObject)
+@Serializable
+data class WorkTaskTemplateSaveBody(val draft: WorkTaskTemplateDraft)
+@Serializable
+data class WorkTaskFolderBody(val folderId: Int)
+@Serializable
+data class WorkTaskSettingsBody(val folderId: Int, val settings: kotlinx.serialization.json.JsonObject)

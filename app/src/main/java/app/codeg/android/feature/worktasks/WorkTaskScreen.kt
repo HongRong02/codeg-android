@@ -44,6 +44,7 @@ fun WorkTaskScreen(onBack: () -> Unit, viewModel: WorkTaskViewModel = hiltViewMo
                     }
                 },
                 actions = {
+                    WorkTaskManagementMenu(ui, viewModel)
                     CodegIconButton(onClick = { if (selected != null) viewModel.select(selected) else viewModel.load() }) {
                         Icon(Icons.Rounded.Refresh, stringResource(R.string.work_tasks_refresh))
                     }

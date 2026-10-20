@@ -206,45 +206,50 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 1131 |   `suspend fun workTaskReorder(body: app.codeg.android.core.model.wire.WorkTaskReorderBody)` |
 | 1135 |   `suspend fun workTaskAction(action: String, body: app.codeg.android.core.model.wire.WorkTaskActionBody)` |
 | 1141 |   `suspend fun workTaskTemplates(): List<app.codeg.android.core.model.WorkTaskTemplate>` |
-| 1148 |   `suspend fun recentServerLogs(minLevel: String? = null): List<app.codeg.android.core.model.ServerLogRecord>` |
-| 1152 |   `suspend fun serverLogFiles(): List<app.codeg.android.core.model.ServerLogFile>` |
-| 1155 |   `suspend fun readServerLog(name: String): String` |
-| 1158 |   `suspend fun serverConversationStats(): app.codeg.android.core.model.ServerConversationStats` |
-| 1161 |   `suspend fun serverTokenReport(filter: app.codeg.android.core.model.wire.ServerTokenFilter): app.codeg.android.core.model.ServerTokenReport` |
-| 1169 |   `suspend fun forgeRemote(body: kotlinx.serialization.json.JsonObject): app.codeg.android.core.model.ForgeRemote?` |
-| 1172 |   `suspend fun forgeIssues(body: kotlinx.serialization.json.JsonObject): app.codeg.android.core.model.ForgeIssueList` |
-| 1175 |   `suspend fun forgeLabels(body: kotlinx.serialization.json.JsonObject): app.codeg.android.core.model.ForgeLabelList` |
-| 1178 |   `suspend fun forgeComments(body: kotlinx.serialization.json.JsonObject): app.codeg.android.core.model.ForgeCommentList` |
-| 1181 |   `suspend fun forgeComment(body: kotlinx.serialization.json.JsonObject): app.codeg.android.core.model.ForgeComment` |
-| 1184 |   `suspend fun forgeState(body: kotlinx.serialization.json.JsonObject): app.codeg.android.core.model.ForgeIssueRow` |
-| 1187 |   `suspend fun forgeCreateIssue(body: kotlinx.serialization.json.JsonObject): app.codeg.android.core.model.ForgeIssueRow` |
-| 1190 |   `suspend fun forgeDetail(body: kotlinx.serialization.json.JsonObject): app.codeg.android.core.model.ForgeChangeDetail` |
-| 1193 |   `suspend fun forgeFiles(body: kotlinx.serialization.json.JsonObject): app.codeg.android.core.model.ForgeChangedFileList` |
-| 1196 |   `suspend fun forgeMergeOptions(body: kotlinx.serialization.json.JsonObject): app.codeg.android.core.model.ForgeMergeOptions` |
-| 1199 |   `suspend fun forgeMerge(body: kotlinx.serialization.json.JsonObject): app.codeg.android.core.model.ForgeIssueRow?` |
-| 1202 |   `suspend fun forgeCreateTask(body: kotlinx.serialization.json.JsonObject): app.codeg.android.core.model.ForgeCreateResult` |
-| 1205 |   `suspend fun forgeCount(body: kotlinx.serialization.json.JsonObject): Long?` |
-| 1208 |   `suspend fun forgeLookup(body: kotlinx.serialization.json.JsonObject): List<app.codeg.android.core.model.ForgeTaskLink>` |
-| 1215 |   `suspend fun listConversationTags(): List<app.codeg.android.core.model.ConversationTag>` |
-| 1219 |   `suspend fun createConversationTag(name: String, color: String): app.codeg.android.core.model.ConversationTag` |
-| 1224 |   `suspend fun updateConversationTag(id: Int, name: String, color: String): app.codeg.android.core.model.ConversationTag` |
-| 1229 |   `suspend fun deleteConversationTag(id: Int)` |
-| 1233 |   `suspend fun updateConversationTags(id: Int, add: List<Int>, remove: List<Int>): ConversationSummary` |
-| 1242 |   `suspend fun listFolderGroups(): List<app.codeg.android.core.model.FolderGroup>` |
-| 1245 |   `suspend fun createFolderGroup(name: String)` |
-| 1249 |   `suspend fun updateFolderGroup(groupId: Int, name: String)` |
-| 1253 |   `suspend fun deleteFolderGroup(groupId: Int)` |
-| 1257 |   `suspend fun setFolderGroup(folderId: Int, groupId: Int?)` |
-| 1261 |   `suspend fun updateFolderAlias(folderId: Int, alias: String?)` |
-| 1265 |   `suspend fun updateFolderColor(folderId: Int, color: String)` |
-| 1277 |   `private suspend fun send(path: String, bodyJson: String): String` |
-| 1311 |   `private inline fun <reified T> encode(body: T): String` |
-| 1314 |   `private fun <T> decode(text: String, deserializer: DeserializationStrategy<T>): T` |
-| 1320 |   `companion object` |
-| 1322 |     `fun normalizeBaseUrl(raw: String): String` |
-| 1330 |     `fun decodeConnectionId(text: String): String` |
-| 1346 |     `fun decodeAgentList(text: String): List<AcpAgentInfo>` |
-| 1363 |     `fun isJsonNull(text: String): Boolean` |
+| 1144 |   `suspend fun workTaskTemplateSave(body: app.codeg.android.core.model.wire.WorkTaskTemplateSaveBody)` |
+| 1148 |   `suspend fun workTaskTemplateDelete(id: Int)` |
+| 1152 |   `suspend fun workTaskSettings(folderId: Int, own: Boolean = false): kotlinx.serialization.json.JsonObject?` |
+| 1158 |   `suspend fun workTaskSettingsSet(body: app.codeg.android.core.model.wire.WorkTaskSettingsBody)` |
+| 1162 |   `suspend fun workTaskSettingsDelete(folderId: Int)` |
+| 1170 |   `suspend fun recentServerLogs(minLevel: String? = null): List<app.codeg.android.core.model.ServerLogRecord>` |
+| 1174 |   `suspend fun serverLogFiles(): List<app.codeg.android.core.model.ServerLogFile>` |
+| 1177 |   `suspend fun readServerLog(name: String): String` |
+| 1180 |   `suspend fun serverConversationStats(): app.codeg.android.core.model.ServerConversationStats` |
+| 1183 |   `suspend fun serverTokenReport(filter: app.codeg.android.core.model.wire.ServerTokenFilter): app.codeg.android.core.model.ServerTokenReport` |
+| 1191 |   `suspend fun forgeRemote(body: kotlinx.serialization.json.JsonObject): app.codeg.android.core.model.ForgeRemote?` |
+| 1194 |   `suspend fun forgeIssues(body: kotlinx.serialization.json.JsonObject): app.codeg.android.core.model.ForgeIssueList` |
+| 1197 |   `suspend fun forgeLabels(body: kotlinx.serialization.json.JsonObject): app.codeg.android.core.model.ForgeLabelList` |
+| 1200 |   `suspend fun forgeComments(body: kotlinx.serialization.json.JsonObject): app.codeg.android.core.model.ForgeCommentList` |
+| 1203 |   `suspend fun forgeComment(body: kotlinx.serialization.json.JsonObject): app.codeg.android.core.model.ForgeComment` |
+| 1206 |   `suspend fun forgeState(body: kotlinx.serialization.json.JsonObject): app.codeg.android.core.model.ForgeIssueRow` |
+| 1209 |   `suspend fun forgeCreateIssue(body: kotlinx.serialization.json.JsonObject): app.codeg.android.core.model.ForgeIssueRow` |
+| 1212 |   `suspend fun forgeDetail(body: kotlinx.serialization.json.JsonObject): app.codeg.android.core.model.ForgeChangeDetail` |
+| 1215 |   `suspend fun forgeFiles(body: kotlinx.serialization.json.JsonObject): app.codeg.android.core.model.ForgeChangedFileList` |
+| 1218 |   `suspend fun forgeMergeOptions(body: kotlinx.serialization.json.JsonObject): app.codeg.android.core.model.ForgeMergeOptions` |
+| 1221 |   `suspend fun forgeMerge(body: kotlinx.serialization.json.JsonObject): app.codeg.android.core.model.ForgeIssueRow?` |
+| 1224 |   `suspend fun forgeCreateTask(body: kotlinx.serialization.json.JsonObject): app.codeg.android.core.model.ForgeCreateResult` |
+| 1227 |   `suspend fun forgeCount(body: kotlinx.serialization.json.JsonObject): Long?` |
+| 1230 |   `suspend fun forgeLookup(body: kotlinx.serialization.json.JsonObject): List<app.codeg.android.core.model.ForgeTaskLink>` |
+| 1237 |   `suspend fun listConversationTags(): List<app.codeg.android.core.model.ConversationTag>` |
+| 1241 |   `suspend fun createConversationTag(name: String, color: String): app.codeg.android.core.model.ConversationTag` |
+| 1246 |   `suspend fun updateConversationTag(id: Int, name: String, color: String): app.codeg.android.core.model.ConversationTag` |
+| 1251 |   `suspend fun deleteConversationTag(id: Int)` |
+| 1255 |   `suspend fun updateConversationTags(id: Int, add: List<Int>, remove: List<Int>): ConversationSummary` |
+| 1264 |   `suspend fun listFolderGroups(): List<app.codeg.android.core.model.FolderGroup>` |
+| 1267 |   `suspend fun createFolderGroup(name: String)` |
+| 1271 |   `suspend fun updateFolderGroup(groupId: Int, name: String)` |
+| 1275 |   `suspend fun deleteFolderGroup(groupId: Int)` |
+| 1279 |   `suspend fun setFolderGroup(folderId: Int, groupId: Int?)` |
+| 1283 |   `suspend fun updateFolderAlias(folderId: Int, alias: String?)` |
+| 1287 |   `suspend fun updateFolderColor(folderId: Int, color: String)` |
+| 1299 |   `private suspend fun send(path: String, bodyJson: String): String` |
+| 1333 |   `private inline fun <reified T> encode(body: T): String` |
+| 1336 |   `private fun <T> decode(text: String, deserializer: DeserializationStrategy<T>): T` |
+| 1342 |   `companion object` |
+| 1344 |     `fun normalizeBaseUrl(raw: String): String` |
+| 1352 |     `fun decodeConnectionId(text: String): String` |
+| 1368 |     `fun decodeAgentList(text: String): List<AcpAgentInfo>` |
+| 1385 |     `fun isJsonNull(text: String): Boolean` |
 
 ## core/network/CodegClientFactory.kt
 
