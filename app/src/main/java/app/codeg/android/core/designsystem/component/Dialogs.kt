@@ -36,30 +36,32 @@ fun CodegDialog(
     content: @Composable ColumnScope.() -> Unit = {},
 ) {
     Dialog(onDismissRequest = onDismiss, properties = DialogProperties(usePlatformDefaultWidth = false)) {
-        // Own the scrim so opacity is identical across Android versions.
-        val view = androidx.compose.ui.platform.LocalView.current
-        SideEffect {
-            (view.parent as? androidx.compose.ui.window.DialogWindowProvider)?.window?.setDimAmount(0f)
-        }
-        Box(
-            Modifier.fillMaxSize().background(Color.Black.withOpacity(0.5f))
-                .clickable(remember { MutableInteractionSource() }, indication = null, onClick = onDismiss)
-                .safeDrawingPadding().imePadding().padding(16.dp),
-            contentAlignment = Alignment.Center,
-        ) {
-            Surface(
-                modifier = Modifier.widthIn(max = 448.dp).fillMaxWidth()
-                    .clickable(remember { MutableInteractionSource() }, indication = null) {},
-                shape = CodegShapes.extraLarge,
-                color = CodegTheme.colors.web.background,
-                contentColor = CodegTheme.colors.web.foreground,
-                border = androidx.compose.foundation.BorderStroke(1.dp, CodegTheme.colors.web.border),
+        CodegModalToaster {
+            // Own the scrim so opacity is identical across Android versions.
+            val view = androidx.compose.ui.platform.LocalView.current
+            SideEffect {
+                (view.parent as? androidx.compose.ui.window.DialogWindowProvider)?.window?.setDimAmount(0f)
+            }
+            Box(
+                Modifier.fillMaxSize().background(Color.Black.withOpacity(0.5f))
+                    .clickable(remember { MutableInteractionSource() }, indication = null, onClick = onDismiss)
+                    .safeDrawingPadding().imePadding().padding(16.dp),
+                contentAlignment = Alignment.Center,
             ) {
-                Column(Modifier.verticalScroll(rememberScrollState()).padding(24.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
-                    T44PanelHeading(title, description)
-                    content()
-                    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.End),
-                        verticalAlignment = Alignment.CenterVertically, content = footer)
+                Surface(
+                    modifier = Modifier.widthIn(max = 448.dp).fillMaxWidth()
+                        .clickable(remember { MutableInteractionSource() }, indication = null) {},
+                    shape = CodegShapes.extraLarge,
+                    color = CodegTheme.colors.web.background,
+                    contentColor = CodegTheme.colors.web.foreground,
+                    border = androidx.compose.foundation.BorderStroke(1.dp, CodegTheme.colors.web.border),
+                ) {
+                    Column(Modifier.verticalScroll(rememberScrollState()).padding(24.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                        T44PanelHeading(title, description)
+                        content()
+                        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.End),
+                            verticalAlignment = Alignment.CenterVertically, content = footer)
+                    }
                 }
             }
         }
