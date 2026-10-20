@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="gm_title">Merge, rebase and reset</string>
+    <string name="gm_current">Current branch: %1$s</string>
+    <string name="gm_done">Operation completed. Check remaining conflicts below.</string>
+    <string name="gm_refresh">Refresh conflicts</string>
+    <string name="gm_commit">Target commit</string>
+    <string name="gm_merge">Merge</string>
+    <string name="gm_rebase">Rebase</string>
+    <string name="gm_reset">Reset</string>
+    <string name="gm_confirm_merge">Merge %1$s into current branch %2$s?</string>
+    <string name="gm_confirm_rebase">Rebase current branch %2$s onto %1$s?</string>
+    <string name="gm_confirm_reset">Reset branch %2$s to %1$s using %3$s?</string>
+    <string name="gm_hard">This discards working tree and index changes. Type branch name %1$s to confirm.</string>
+    <string name="gm_confirm">Confirm</string>
+    <string name="gm_cancel">Cancel</string>
+    <string name="gm_conflicts">Conflicts</string>
+    <string name="gm_operation_hint">Select the operation in progress before continuing or aborting.</string>
+    <string name="gm_resolved">All conflicts resolved. You can continue the operation.</string>
+    <string name="gm_base">Base</string>
+    <string name="gm_ours">Ours (index stage 2)</string>
+    <string name="gm_theirs">Theirs (index stage 3)</string>
+    <string name="gm_rebase_sides">During rebase, ours is the upstream side; theirs is the commit being replayed. Preview content before choosing.</string>
+    <string name="gm_choose_ours">Use entire ours file</string>
+    <string name="gm_choose_theirs">Use entire theirs file</string>
+    <string name="gm_continue">Continue</string>
+    <string name="gm_abort">Abort</string>
+    <string name="gm_resolve_confirm">Replace and stage %1$s using the entire %2$s version?</string>
+    <string name="gm_abort_confirm">Abort %1$s on branch %2$s and discard conflict resolutions?</string>
+    <string name="gm_continue_confirm">Continue %1$s on branch %2$s?</string>
+</resources>
