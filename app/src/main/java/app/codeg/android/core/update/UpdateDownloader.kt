@@ -15,7 +15,7 @@ import kotlin.coroutines.coroutineContext
 class UpdateDownloader @Inject constructor(@ApplicationContext private val context: Context) {
     private val client = OkHttpClient()
 
-    suspend fun download(update: AppUpdate, progress: (Float?) -> Unit): File = withContext(Dispatchers.IO) {
+    suspend fun download(update: AppUpdate, progress: suspend (Float?) -> Unit): File = withContext(Dispatchers.IO) {
         val directory = File(context.cacheDir, "updates").apply { mkdirs() }
         val target = File(directory, "build-${update.versionCode}.apk")
         val partial = File(directory, "build-${update.versionCode}.part")
