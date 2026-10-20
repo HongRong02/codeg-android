@@ -38,8 +38,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -60,6 +58,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.codeg.android.R
 import app.codeg.android.core.datastore.ServerProfile
+import app.codeg.android.core.designsystem.component.CodegIconButton
+import app.codeg.android.core.designsystem.component.CodegTopBar
 import app.codeg.android.core.designsystem.component.EmptyState
 import app.codeg.android.core.designsystem.component.InlineError
 import app.codeg.android.core.designsystem.component.LoadingView
@@ -102,8 +102,13 @@ fun SessionListScreen(
         containerColor = Color.Transparent,
         contentWindowInsets = WindowInsets(0, 0, 0, 0),
         topBar = {
-            TopAppBar(
-                title = {
+            CodegTopBar(
+                title = selectedName,
+                showDivider = true,
+                titleContent = {
+                    MaterialTheme(typography = MaterialTheme.typography.copy(
+                        titleLarge = MaterialTheme.typography.labelLarge,
+                    )) {
                     ServerSwitcher(
                         name = selectedName,
                         servers = servers,
@@ -111,9 +116,10 @@ fun SessionListScreen(
                         onSelect = onSelectServer,
                         onManageServers = onManageServers,
                     )
+                    }
                 },
                 actions = {
-                    IconButton(onClick = onManageServers) {
+                    CodegIconButton(onClick = onManageServers, visualSize = 32.dp) {
                         Icon(
                             Icons.Rounded.Dns,
                             contentDescription = stringResource(R.string.home_manage_servers),
@@ -121,10 +127,6 @@ fun SessionListScreen(
                         )
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color.Transparent,
-                    titleContentColor = colors.textPrimary,
-                ),
             )
         },
         floatingActionButton = {
