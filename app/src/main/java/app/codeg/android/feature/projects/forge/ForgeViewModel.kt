@@ -35,7 +35,7 @@ class ForgeViewModel(private val client: CodegClient, private val folderId: Int)
         }
     }
     fun refresh(tab: String = state.value.tab, filter: String = state.value.filter, page: Int = 1) = run {
-        state.value = state.value.copy(tab = tab, filter = filter, selected = null)
+        state.value = state.value.copy(tab = tab, filter = filter, selected = null, list = ForgeIssueList(page = page), counts = emptyMap())
         val result = client.forgeIssues(forgeRequest(folderId, "query", buildJsonObject {
             put("tab", tab); put("state", filter); put("page", page); put("perPage", 20)
         }))
@@ -63,7 +63,7 @@ class ForgeViewModel(private val client: CodegClient, private val folderId: Int)
             state.value = state.value.copy(taskId = links.firstOrNull()?.task_id)
         }
     }
-    fun back() { if (!state.value.busy) state.value = state.value.copy(selected = null, error = null) }
+    fun back() { if (!state.value.busy) refresh() }
     fun moreComments() = run {
         val row = state.value.selected ?: return@run
         val old = state.value.comments
