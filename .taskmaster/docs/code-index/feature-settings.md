@@ -542,17 +542,17 @@ Source root: `app/src/main/java/app/codeg/android/`
 
 | Line | Declaration |
 |---|---|
-| 41 | `@Composable fun GeneralContent(viewModel: GeneralViewModel = hiltViewModel())` |
-| 42 |   `val ui by viewModel.ui.collectAsStateWithLifecycle()` |
-| 43 |   `val colors` |
-| 73 | `@Composable private fun Section(title: String, content: @Composable () -> Unit)` |
-| 74 |   `val colors` |
-| 82 | `@Composable private fun ToggleRow(title: String, subtitle: String, checked: Boolean, onChange: (Boolean) -> Unit)` |
-| 83 |   `val colors` |
-| 104 | `@Composable private fun Stepper(value: Int, onDec: () -> Unit, onInc: () -> Unit)` |
-| 105 |   `val colors` |
-| 114 | `@Composable private fun StepButton(icon: androidx.compose.ui.graphics.vector.ImageVector, onClick: () -> Unit)` |
-| 115 |   `val colors` |
+| 42 | `@Composable fun GeneralContent(viewModel: GeneralViewModel = hiltViewModel())` |
+| 43 |   `val ui by viewModel.ui.collectAsStateWithLifecycle()` |
+| 44 |   `val colors` |
+| 74 | `@Composable private fun Section(title: String, content: @Composable () -> Unit)` |
+| 75 |   `val colors` |
+| 83 | `@Composable private fun ToggleRow(title: String, subtitle: String, checked: Boolean, onChange: (Boolean) -> Unit)` |
+| 84 |   `val colors` |
+| 105 | `@Composable private fun Stepper(value: Int, onDec: () -> Unit, onInc: () -> Unit)` |
+| 106 |   `val colors` |
+| 115 | `@Composable private fun StepButton(icon: androidx.compose.ui.graphics.vector.ImageVector, onClick: () -> Unit)` |
+| 116 |   `val colors` |
 
 ## feature/settings/GeneralViewModel.kt
 
@@ -583,11 +583,11 @@ Source root: `app/src/main/java/app/codeg/android/`
 
 | Line | Declaration |
 |---|---|
-| 47 | `@Composable fun LanguageContent()` |
-| 48 |   `val context` |
-| 49 |   `val colors` |
-| 50 |   `var selected by remember` |
-| 96 | `private tailrec fun Context.findActivity(): Activity?` |
+| 49 | `@Composable fun LanguageContent()` |
+| 50 |   `val context` |
+| 51 |   `val colors` |
+| 52 |   `var selected by remember` |
+| 98 | `private tailrec fun Context.findActivity(): Activity?` |
 
 ## feature/settings/McpScreen.kt
 
@@ -714,23 +714,23 @@ Source root: `app/src/main/java/app/codeg/android/`
 
 | Line | Declaration |
 |---|---|
-| 73 | `private enum class SettingsLeaf(@StringRes val titleRes: Int, val icon: ImageVector, @StringRes val groupRes: Int, val implemented: Boolean)` |
-| 92 | `@Composable fun SettingsScreen(viewModel: SettingsViewModel = hiltViewModel())` |
-| 93 |   `var leaf by remember` |
-| 95 |   `var agentDetail by remember` |
-| 96 |   `val inAgentDetail` |
-| 144 | `@Composable private fun SettingsRoot(onSelect: (SettingsLeaf) -> Unit)` |
-| 145 |   `val colors` |
-| 182 | `@Composable private fun AppearanceSettings(viewModel: SettingsViewModel)` |
-| 183 |   `val colors` |
-| 184 |   `val settings by viewModel.settings.collectAsStateWithLifecycle()` |
-| 232 | `@Composable private fun AboutScreen(viewModel: SettingsViewModel)` |
-| 233 |   `val colors` |
-| 234 |   `val about by viewModel.about.collectAsStateWithLifecycle()` |
-| 235 |   `val context` |
-| 236 |   `val appVersion` |
-| 252 | `@Composable private fun ComingSoon(@StringRes title: Int)` |
-| 253 |   `val colors` |
+| 75 | `private enum class SettingsLeaf(@StringRes val titleRes: Int, val icon: ImageVector, @StringRes val groupRes: Int, val implemented: Boolean)` |
+| 94 | `@Composable fun SettingsScreen(viewModel: SettingsViewModel = hiltViewModel())` |
+| 95 |   `var leaf by remember` |
+| 97 |   `var agentDetail by remember` |
+| 98 |   `val inAgentDetail` |
+| 146 | `@Composable private fun SettingsRoot(onSelect: (SettingsLeaf) -> Unit)` |
+| 147 |   `val colors` |
+| 184 | `@Composable private fun AppearanceSettings(viewModel: SettingsViewModel)` |
+| 185 |   `val colors` |
+| 186 |   `val settings by viewModel.settings.collectAsStateWithLifecycle()` |
+| 234 | `@Composable private fun AboutScreen(viewModel: SettingsViewModel)` |
+| 235 |   `val colors` |
+| 236 |   `val about by viewModel.about.collectAsStateWithLifecycle()` |
+| 237 |   `val context` |
+| 238 |   `val appVersion` |
+| 254 | `@Composable private fun ComingSoon(@StringRes title: Int)` |
+| 255 |   `val colors` |
 
 ## feature/settings/SettingsViewModel.kt
 
@@ -818,11 +818,11 @@ Source root: `app/src/main/java/app/codeg/android/`
 
 | Line | Declaration |
 |---|---|
-| 34 | `@Composable fun SystemContent(viewModel: SystemViewModel = hiltViewModel())` |
-| 35 |   `val ui by viewModel.ui.collectAsStateWithLifecycle()` |
-| 36 |   `val colors` |
-| 74 | `@Composable private fun PillButton(label: String, loading: Boolean, onClick: () -> Unit)` |
-| 75 |   `val colors` |
+| 35 | `@Composable fun SystemContent(viewModel: SystemViewModel = hiltViewModel())` |
+| 36 |   `val ui by viewModel.ui.collectAsStateWithLifecycle()` |
+| 37 |   `val colors` |
+| 75 | `@Composable private fun PillButton(label: String, loading: Boolean, onClick: () -> Unit)` |
+| 76 |   `val colors` |
 
 ## feature/settings/SystemViewModel.kt
 
@@ -851,11 +851,11 @@ Source root: `app/src/main/java/app/codeg/android/`
 
 | Line | Declaration |
 |---|---|
-| 38 | `@Composable fun VersionControlContent(viewModel: VersionControlViewModel = hiltViewModel())` |
-| 39 |   `val ui by viewModel.ui.collectAsStateWithLifecycle()` |
-| 40 |   `val colors` |
-| 93 | `@Composable private fun Pill(label: String, loading: Boolean, onClick: () -> Unit, filled: Boolean)` |
-| 94 |   `val colors` |
+| 39 | `@Composable fun VersionControlContent(viewModel: VersionControlViewModel = hiltViewModel())` |
+| 40 |   `val ui by viewModel.ui.collectAsStateWithLifecycle()` |
+| 41 |   `val colors` |
+| 94 | `@Composable private fun Pill(label: String, loading: Boolean, onClick: () -> Unit, filled: Boolean)` |
+| 95 |   `val colors` |
 
 ## feature/settings/VersionControlViewModel.kt
 
