@@ -150,14 +150,17 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 927 |   `suspend fun describeAgentOptions(agentType: AgentType, workingDir: String?): AgentOptionsSnapshot` |
 | 930 |   `suspend fun acpSetMode(connectionId: String, modeId: String)` |
 | 934 |   `suspend fun acpSetConfigOption(connectionId: String, configId: String, valueId: String)` |
-| 948 |   `private suspend fun send(path: String, bodyJson: String): String` |
-| 982 |   `private inline fun <reified T> encode(body: T): String` |
-| 985 |   `private fun <T> decode(text: String, deserializer: DeserializationStrategy<T>): T` |
-| 991 |   `companion object` |
-| 993 |     `fun normalizeBaseUrl(raw: String): String` |
-| 1001 |     `fun decodeConnectionId(text: String): String` |
-| 1017 |     `fun decodeAgentList(text: String): List<AcpAgentInfo>` |
-| 1034 |     `fun isJsonNull(text: String): Boolean` |
+| 944 |   `suspend fun forkSession(connectionId: String, conversationId: Int?, folderId: Int?): app.codeg.android.core.model.SessionForkResult` |
+| 948 |   `suspend fun disconnectSession(connectionId: String)` |
+| 952 |   `suspend fun preflightSession(agentType: AgentType): app.codeg.android.core.model.SessionPreflightResult` |
+| 964 |   `private suspend fun send(path: String, bodyJson: String): String` |
+| 998 |   `private inline fun <reified T> encode(body: T): String` |
+| 1001 |   `private fun <T> decode(text: String, deserializer: DeserializationStrategy<T>): T` |
+| 1007 |   `companion object` |
+| 1009 |     `fun normalizeBaseUrl(raw: String): String` |
+| 1017 |     `fun decodeConnectionId(text: String): String` |
+| 1033 |     `fun decodeAgentList(text: String): List<AcpAgentInfo>` |
+| 1050 |     `fun isJsonNull(text: String): Boolean` |
 
 ## core/network/CodegClientFactory.kt
 
