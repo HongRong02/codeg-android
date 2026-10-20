@@ -22,6 +22,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -40,7 +41,7 @@ import app.codeg.android.R
 import app.codeg.android.core.designsystem.theme.CodegTheme
 import kotlinx.coroutines.delay
 
-private val SuccessGreen = Color(0xFF85D18F)
+private val SuccessGreen: Color @Composable @ReadOnlyComposable get() = CodegTheme.colors.success
 
 /**
  * A fenced code block: a header (language label + copy button) over a

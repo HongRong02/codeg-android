@@ -1,5 +1,6 @@
 package app.codeg.android.feature.sessiondetail.rendering
 
+import android.content.Context
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandVertically
@@ -20,9 +21,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Adjust
 import androidx.compose.material.icons.rounded.Build
-import androidx.compose.material.icons.rounded.Checklist
 import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material.icons.rounded.CheckCircle
+import androidx.compose.material.icons.rounded.Checklist
 import androidx.compose.material.icons.rounded.Description
 import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material.icons.rounded.ErrorOutline
@@ -38,6 +39,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -47,14 +49,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import android.content.Context
-import androidx.compose.ui.platform.LocalContext
 import app.codeg.android.R
 import app.codeg.android.core.designsystem.component.CodeBlock
 import app.codeg.android.core.designsystem.component.LivePulse
@@ -68,8 +69,8 @@ import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
 
 // Web tool status colours (Tailwind green-600 / red-600).
-private val SuccessGreen = Color(0xFF16A34A)
-private val ErrorRed = Color(0xFFDC2626)
+private val SuccessGreen: Color @Composable @ReadOnlyComposable get() = CodegTheme.colors.success
+private val ErrorRed: Color @Composable @ReadOnlyComposable get() = CodegTheme.colors.diffDeleted
 
 /**
  * A collapsible card for a single tool call, after the web `Tool`: rounded-md,

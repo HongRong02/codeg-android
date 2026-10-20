@@ -17,6 +17,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -29,7 +30,7 @@ import app.codeg.android.R
 import app.codeg.android.core.designsystem.theme.CodegTheme
 import app.codeg.android.core.model.PlanEntry
 
-private val SuccessGreen = androidx.compose.ui.graphics.Color(0xFF85D18F)
+private val SuccessGreen: androidx.compose.ui.graphics.Color @Composable @ReadOnlyComposable get() = CodegTheme.colors.success
 
 /** The agent's live plan/TODO checklist (display-only). Port of iOS `LivePlanView`. */
 @Composable
