@@ -787,6 +787,28 @@ Source root: `app/src/main/java/app/codeg/android/`
 |---|---|
 | 4 | `data class GitMiscWorktree(val branch: String, val path: String)` |
 
+## core/model/ImportSessions.kt
+
+| Line | Declaration |
+|---|---|
+| 7 | `data class ImportScanSession( val externalId: String, val agentType: String, val title: String? = null, val startedAt: String, val status: String, )` |
+| 8 |   `val externalId: String` |
+| 9 |   `val agentType: String` |
+| 10 |   `val title: String?` |
+| 11 |   `val startedAt: String` |
+| 12 |   `val status: String` |
+| 14 |   `val key: ImportSessionKey get()` |
+| 18 | `data class ImportScanFolder(val path: String, val sessions: List<ImportScanSession>)` |
+| 21 | `data class ImportScanResult(val folders: List<ImportScanFolder>, val noFolderCount: Int = 0)` |
+| 24 | `data class ImportSessionsResult( val imported: Int, val updated: Int = 0, val skipped: Int = 0, val notFound: Int = 0, val failed: Int = 0, val errors: List<String> = emptyList(), )` |
+| 25 |   `val imported: Int` |
+| 26 |   `val updated: Int` |
+| 27 |   `val skipped: Int` |
+| 28 |   `val notFound: Int` |
+| 29 |   `val failed: Int` |
+| 30 |   `val errors: List<String>` |
+| 33 | `fun List<ImportScanSession>.importableKeys(): List<ImportSessionKey>` |
+
 ## core/model/Interactive.kt
 
 | Line | Declaration |
@@ -1226,6 +1248,13 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 7 | `data class GitMiscRemoteRequest(val path: String, val name: String, val url: String? = null, val credentials: GitCredentials? = null)` |
 | 9 | `data class GitMiscWorktreeAddRequest(val path: String, val branchName: String, val worktreePath: String, val base: String? = null)` |
 | 11 | `data class GitMiscWorktreeRemoveRequest(val path: String, val branchName: String, val sourceFolderId: Int, val deleteBranch: Boolean = false, val force: Boolean = false)` |
+
+## core/model/wire/ImportSessionsRequests.kt
+
+| Line | Declaration |
+|---|---|
+| 6 | `data class ImportSessionKey(val agentType: String, val externalId: String)` |
+| 9 | `data class ImportSelectedSessionsBody(val selections: List<ImportSessionKey>)` |
 
 ## core/model/wire/InstantSerializer.kt
 
