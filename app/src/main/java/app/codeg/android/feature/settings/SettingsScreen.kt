@@ -71,6 +71,7 @@ import app.codeg.android.core.designsystem.theme.CodegTheme
 import app.codeg.android.core.datastore.ThemeMode
 import app.codeg.android.core.model.AgentType
 import app.codeg.android.core.designsystem.component.webSurface
+import androidx.compose.material.icons.rounded.Schedule
 
 private enum class SettingsLeaf(@StringRes val titleRes: Int, val icon: ImageVector, @StringRes val groupRes: Int, val implemented: Boolean) {
     APPEARANCE(R.string.settings_leaf_appearance, Icons.Rounded.Brush, R.string.settings_group_personalization, true),
@@ -83,6 +84,7 @@ private enum class SettingsLeaf(@StringRes val titleRes: Int, val icon: ImageVec
     SKILLS(R.string.settings_leaf_skills, Icons.Rounded.Extension, R.string.settings_group_ai_agents, true),
     MCP(R.string.settings_leaf_mcp, Icons.Rounded.Memory, R.string.settings_group_ai_agents, true),
     VERSION_CONTROL(R.string.settings_leaf_version_control, Icons.Rounded.Difference, R.string.settings_group_integrations, true),
+    AUTOMATIONS(R.string.automations_title, Icons.Rounded.Schedule, R.string.settings_group_integrations, true),
     CHAT_CHANNELS(R.string.settings_leaf_chat_channels, Icons.AutoMirrored.Rounded.Chat, R.string.settings_group_integrations, true),
     SYSTEM(R.string.settings_leaf_system, Icons.Rounded.Settings, R.string.settings_group_system, true),
     OPEN_SOURCE_LICENSES(R.string.settings_leaf_open_source_licenses, Icons.Rounded.Policy, R.string.settings_group_system, true),
@@ -91,7 +93,10 @@ private enum class SettingsLeaf(@StringRes val titleRes: Int, val icon: ImageVec
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SettingsScreen(viewModel: SettingsViewModel = hiltViewModel()) {
+fun SettingsScreen(
+    onOpenAutomations: () -> Unit = {},
+    viewModel: SettingsViewModel = hiltViewModel(),
+) {
     var leaf by remember { mutableStateOf<SettingsLeaf?>(null) }
     // A second level beneath the Agents leaf: the per-agent config editor.
     var agentDetail by remember { mutableStateOf<AgentType?>(null) }
@@ -119,7 +124,17 @@ fun SettingsScreen(viewModel: SettingsViewModel = hiltViewModel()) {
     ) { padding ->
         Box(Modifier.padding(padding).fillMaxSize()) {
             when (leaf) {
-                null -> SettingsRoot(onSelect = { leaf = it; agentDetail = null })
+                null -> SettingsRoot(
+                    onSelect = {
+                        if (it == SettingsLeaf.AUTOMATIONS) {
+                            onOpenAutomations()
+                        } else {
+                            leaf = it
+                            agentDetail = null
+                        }
+                    },
+                    onOpenAutomations = onOpenAutomations,
+                )
                 SettingsLeaf.APPEARANCE -> AppearanceSettings(viewModel)
                 SettingsLeaf.LANGUAGE -> LanguageContent()
                 SettingsLeaf.ABOUT -> AboutScreen(viewModel)
@@ -143,7 +158,7 @@ fun SettingsScreen(viewModel: SettingsViewModel = hiltViewModel()) {
 }
 
 @Composable
-private fun SettingsRoot(onSelect: (SettingsLeaf) -> Unit) {
+private fun SettingsRoot(onSelect: (SettingsLeaf) -> Unit, onOpenAutomations: () -> Unit) {
     val colors = CodegTheme.colors
     Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(horizontal = 12.dp, vertical = 8.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
         for (group in SettingsLeaf.entries.map { it.groupRes }.distinct()) {
@@ -167,7 +182,13 @@ private fun SettingsRoot(onSelect: (SettingsLeaf) -> Unit) {
                                 containerColor = Color.Transparent,
                                 headlineColor = colors.textPrimary,
                             ),
-                            modifier = Modifier.clickable { onSelect(l) },
+                            modifier = Modifier.clickable {
+                                if (l == SettingsLeaf.AUTOMATIONS) {
+                                    onOpenAutomations()
+                                } else {
+                                    onSelect(l)
+                                }
+                            },
                         )
                         if (index < leaves.lastIndex) {
                             HorizontalDivider(color = colors.hairline, modifier = Modifier.padding(start = 60.dp))

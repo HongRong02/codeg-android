@@ -5,17 +5,18 @@ Paths are relative to `app/src/main/java/app/codeg/android/`.
 
 | Area | Index file | Files |
 |---|---|---|
-| app | [app.md](app.md) | 2 |
 | root | [root.md](root.md) | 2 |
+| app | [app.md](app.md) | 2 |
 | core/common | [core-common.md](core-common.md) | 5 |
 | core/data | [core-data.md](core-data.md) | 1 |
 | core/datastore | [core-datastore.md](core-datastore.md) | 5 |
 | core/designsystem | [core-designsystem.md](core-designsystem.md) | 23 |
-| core/model | [core-model.md](core-model.md) | 20 |
+| core/model | [core-model.md](core-model.md) | 22 |
 | core/network | [core-network.md](core-network.md) | 7 |
 | core/security | [core-security.md](core-security.md) | 2 |
 | di | [di.md](di.md) | 3 |
 | feature/activity | [feature-activity.md](feature-activity.md) | 2 |
+| feature/automations | [feature-automations.md](feature-automations.md) | 2 |
 | feature/main | [feature-main.md](feature-main.md) | 1 |
 | feature/onboarding | [feature-onboarding.md](feature-onboarding.md) | 1 |
 | feature/projects | [feature-projects.md](feature-projects.md) | 15 |

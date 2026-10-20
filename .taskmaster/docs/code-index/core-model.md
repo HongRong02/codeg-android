@@ -406,6 +406,49 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 120 |     `override fun serialize(encoder: Encoder, value: AgentType)` |
 | 123 |     `override fun deserialize(decoder: Decoder): AgentType` |
 
+## core/model/Automation.kt
+
+| Line | Declaration |
+|---|---|
+| 10 | `enum class TriggerKind` |
+| 18 | `enum class IsolationMode` |
+| 26 | `enum class AutomationRunStatus` |
+| 40 | `data class Automation( val id: Int, val name: String, val enabled: Boolean, @SerialName("trigger_kind") val triggerKind: TriggerKind, val cron: String? = null, val timezone: String, @Serializable(with = InstantSerializer::class) @SerialName("next_run_at") val nextRunAt: Instant? = null, @SerialName("agent_type") val agentType: AgentType, @SerialName("root_folder_id") val rootFolderId: Int? = null, val isolation: IsolationMode, val branch: String? = null, @SerialName("is_remote_branch") val isRemoteBranch: Boolean = false, val config: JsonObject? = null, @Serializable(with = InstantSerializer::class) @SerialName("last_run_at") val lastRunAt: Instant? = null, @SerialName("last_run_status") val lastRunStatus: String? = null, @SerialName("last_run_conversation_id") val lastRunConversationId: Int? = null, @SerialName("unseen_failures") val unseenFailures: Int = 0, @Serializable(with = InstantSerializer::class) @SerialName("created_at") val createdAt: Instant? = null, @Serializable(with = InstantSerializer::class) @SerialName("updated_at") val updatedAt: Instant? = null, )` |
+| 41 |   `val id: Int` |
+| 42 |   `val name: String` |
+| 43 |   `val enabled: Boolean` |
+| 45 |   `val triggerKind: TriggerKind` |
+| 46 |   `val cron: String?` |
+| 47 |   `val timezone: String` |
+| 50 |   `val nextRunAt: Instant?` |
+| 52 |   `val agentType: AgentType` |
+| 54 |   `val rootFolderId: Int?` |
+| 55 |   `val isolation: IsolationMode` |
+| 56 |   `val branch: String?` |
+| 58 |   `val isRemoteBranch: Boolean` |
+| 59 |   `val config: JsonObject?` |
+| 62 |   `val lastRunAt: Instant?` |
+| 64 |   `val lastRunStatus: String?` |
+| 66 |   `val lastRunConversationId: Int?` |
+| 68 |   `val unseenFailures: Int` |
+| 71 |   `val createdAt: Instant?` |
+| 74 |   `val updatedAt: Instant?` |
+| 76 |   `val promptText: String` |
+| 81 | `data class AutomationRun( val id: Int, @SerialName("automation_id") val automationId: Int, val status: AutomationRunStatus, val trigger: String, @Serializable(with = InstantSerializer::class) @SerialName("scheduled_for") val scheduledFor: Instant? = null, @Serializable(with = InstantSerializer::class) @SerialName("started_at") val startedAt: Instant? = null, @Serializable(with = InstantSerializer::class) @SerialName("ended_at") val endedAt: Instant? = null, @SerialName("conversation_id") val conversationId: Int? = null, @SerialName("worktree_folder_id") val worktreeFolderId: Int? = null, @SerialName("stop_reason") val stopReason: String? = null, val error: String? = null, val summary: String? = null, @Serializable(with = InstantSerializer::class) @SerialName("created_at") val createdAt: Instant? = null, )` |
+| 82 |   `val id: Int` |
+| 84 |   `val automationId: Int` |
+| 85 |   `val status: AutomationRunStatus` |
+| 86 |   `val trigger: String` |
+| 89 |   `val scheduledFor: Instant?` |
+| 92 |   `val startedAt: Instant?` |
+| 95 |   `val endedAt: Instant?` |
+| 97 |   `val conversationId: Int?` |
+| 99 |   `val worktreeFolderId: Int?` |
+| 101 |   `val stopReason: String?` |
+| 102 |   `val error: String?` |
+| 103 |   `val summary: String?` |
+| 106 |   `val createdAt: Instant?` |
+
 ## core/model/ChatChannel.kt
 
 | Line | Declaration |
@@ -882,31 +925,6 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 300 |   `val defaultModel: String?` |
 | 301 |   `val error: String?` |
 
-## core/model/wire/InstantSerializer.kt
-
-| Line | Declaration |
-|---|---|
-| 21 | `object Rfc3339` |
-| 22 |   `fun parse(raw: String): Instant?` |
-| 38 | `object InstantSerializer : KSerializer<Instant>` |
-| 39 |   `override val descriptor` |
-| 42 |   `override fun serialize(encoder: Encoder, value: Instant)` |
-| 46 |   `override fun deserialize(decoder: Decoder): Instant` |
-
-## core/model/wire/JsonExt.kt
-
-| Line | Declaration |
-|---|---|
-| 23 | `internal fun JsonObject.stringOrNull(key: String): String?` |
-| 24 |   `val p` |
-| 29 | `internal fun JsonObject.nonEmptyString(key: String): String?` |
-| 32 | `internal fun JsonObject.intOrNull(key: String): Int?` |
-| 35 | `internal fun JsonObject.longOrNull(key: String): Long?` |
-| 38 | `internal fun JsonObject.boolOrNull(key: String): Boolean?` |
-| 41 | `internal fun JsonObject.objectOrNull(key: String): JsonObject?` |
-| 44 | `internal fun JsonObject.arrayOrNull(key: String): JsonArray?` |
-| 47 | `internal fun JsonElement.asObjectOrNull(): JsonObject?` |
-
 ## core/model/WireRequests.kt
 
 | Line | Declaration |
@@ -1086,3 +1104,41 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 430 |   `val sandboxMode: String?` |
 | 431 |   `val permissionsAllow: List<String>?` |
 | 432 |   `val permissionsDeny: List<String>?` |
+
+## core/model/wire/AutomationRequests.kt
+
+| Line | Declaration |
+|---|---|
+| 6 | `data class GetAutomationBody( val id: Int, )` |
+| 7 |   `val id: Int` |
+| 11 | `data class ListRunsBody( val automationId: Int, val limit: Long = 100, )` |
+| 12 |   `val automationId: Int` |
+| 13 |   `val limit: Long` |
+| 17 | `data class SetEnabledBody( val id: Int, val enabled: Boolean, )` |
+| 18 |   `val id: Int` |
+| 19 |   `val enabled: Boolean` |
+
+## core/model/wire/InstantSerializer.kt
+
+| Line | Declaration |
+|---|---|
+| 21 | `object Rfc3339` |
+| 22 |   `fun parse(raw: String): Instant?` |
+| 38 | `object InstantSerializer : KSerializer<Instant>` |
+| 39 |   `override val descriptor` |
+| 42 |   `override fun serialize(encoder: Encoder, value: Instant)` |
+| 46 |   `override fun deserialize(decoder: Decoder): Instant` |
+
+## core/model/wire/JsonExt.kt
+
+| Line | Declaration |
+|---|---|
+| 23 | `internal fun JsonObject.stringOrNull(key: String): String?` |
+| 24 |   `val p` |
+| 29 | `internal fun JsonObject.nonEmptyString(key: String): String?` |
+| 32 | `internal fun JsonObject.intOrNull(key: String): Int?` |
+| 35 | `internal fun JsonObject.longOrNull(key: String): Long?` |
+| 38 | `internal fun JsonObject.boolOrNull(key: String): Boolean?` |
+| 41 | `internal fun JsonObject.objectOrNull(key: String): JsonObject?` |
+| 44 | `internal fun JsonObject.arrayOrNull(key: String): JsonArray?` |
+| 47 | `internal fun JsonElement.asObjectOrNull(): JsonObject?` |

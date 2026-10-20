@@ -22,142 +22,146 @@ Source root: `app/src/main/java/app/codeg/android/`
 
 | Line | Declaration |
 |---|---|
-| 155 | `class CodegClient( rawBaseUrl: String, private val token: String, private val http: HttpClient, )` |
-| 157 |   `private val token: String` |
-| 158 |   `private val http: HttpClient` |
-| 161 |   `val baseUrl: String` |
-| 166 |   `suspend fun health(): HealthResponse` |
-| 170 |   `suspend fun listFolders(): List<FolderDetail>` |
-| 174 |   `suspend fun listOpenFolders(): List<FolderDetail>` |
-| 178 |   `suspend fun listConversations( folderIds: List<Int>? = null, status: String? = null, search: String? = null, sortBy: String? = null, ): List<ConversationSummary>` |
-| 200 |   `suspend fun conversationDetail(id: Int): ConversationDetail` |
-| 207 |   `suspend fun createConversation(folderId: Int, agentType: AgentType, title: String?): Int` |
-| 217 |   `suspend fun connect( agentType: AgentType, workingDir: String?, sessionId: String?, preferredModeId: String? = null, preferredConfigValues: Map<String, String>? = null, ): String` |
-| 232 |   `suspend fun findConnection( conversationId: Int, sessionId: String?, agentType: AgentType, ): ConversationConnectionInfo?` |
-| 246 |   `suspend fun prompt( connectionId: String, blocks: List<PromptInputBlock>, folderId: Int?, conversationId: Int?, clientMessageId: String?, )` |
-| 257 |   `suspend fun cancel(connectionId: String)` |
-| 262 |   `suspend fun respondPermission(connectionId: String, requestId: String, optionId: String)` |
-| 267 |   `suspend fun answerQuestion(connectionId: String, questionId: String, answer: QuestionAnswer)` |
-| 276 |   `suspend fun answerPlanApproval( connectionId: String, approvalId: String, decision: PlanApprovalDecision, feedback: String?, )` |
-| 289 |   `suspend fun setPinned(conversationId: Int, pinned: Boolean)` |
-| 294 |   `suspend fun renameConversation(conversationId: Int, title: String)` |
-| 299 |   `suspend fun setStatus(conversationId: Int, status: String)` |
-| 304 |   `suspend fun deleteConversation(conversationId: Int)` |
-| 313 |   `suspend fun openFolder(path: String): FolderDetail` |
-| 317 |   `suspend fun getHomeDirectory(): String` |
-| 321 |   `suspend fun listDirectoryEntries(path: String): List<DirectoryEntry>` |
-| 325 |   `suspend fun listDirectoryWithFiles(path: String): List<DirectoryItem>` |
-| 329 |   `suspend fun readFilePreview(rootPath: String, path: String): FilePreviewContent` |
-| 333 |   `suspend fun gitStatus(path: String, showAllUntracked: Boolean = true): List<GitStatusEntry>` |
-| 337 |   `suspend fun gitLog(path: String, limit: Int? = null): GitLogResult` |
-| 341 |   `suspend fun gitDiff(path: String, file: String? = null): String` |
-| 345 |   `suspend fun gitShowDiff(path: String, commit: String, file: String? = null): String` |
-| 349 |   `suspend fun cloneRepository(url: String, targetDir: String, credentials: GitCredentials?)` |
-| 354 |   `suspend fun gitListAllBranches(path: String): GitBranchList` |
-| 358 |   `suspend fun getGitBranch(path: String): String?` |
-| 365 |   `suspend fun gitCheckout(path: String, branchName: String)` |
-| 370 |   `suspend fun gitNewBranch(path: String, branchName: String, startPoint: String? = null)` |
-| 375 |   `suspend fun resolveWorktreeFolder(repoPath: String, branch: String): WorktreeResolution` |
-| 379 |   `suspend fun openWorktreeFolder(path: String, sourceFolderId: Int): FolderDetail` |
-| 387 |   `suspend fun gitCommit(path: String, message: String, files: List<String>, folderId: Int? = null): GitCommitResult` |
-| 395 |   `suspend fun gitPush(path: String, remote: String? = null, credentials: GitCredentials? = null, folderId: Int? = null): GitPushResult` |
-| 399 |   `suspend fun gitPull(path: String, credentials: GitCredentials? = null): GitPullResult` |
-| 403 |   `suspend fun gitFetch(path: String, credentials: GitCredentials? = null): String` |
-| 407 |   `suspend fun gitPushInfo(path: String): GitPushInfo` |
-| 411 |   `suspend fun gitListRemotes(path: String): List<GitRemote>` |
-| 415 |   `suspend fun gitAddFiles(path: String, files: List<String>)` |
-| 420 |   `suspend fun gitRollbackFile(path: String, file: String)` |
-| 429 |   `suspend fun deleteFileTreeEntry(rootPath: String, path: String)` |
-| 434 |   `private fun decodeBareString(text: String): String` |
-| 440 |   `private fun <T> decodeCamel(text: String, deserializer: DeserializationStrategy<T>): T` |
-| 449 |   `suspend fun quickMessagesList(): List<QuickMessage>` |
-| 452 |   `suspend fun quickMessageCreate(title: String, content: String): QuickMessage` |
-| 455 |   `suspend fun quickMessageUpdate(id: Int, title: String, content: String): QuickMessage` |
-| 458 |   `suspend fun quickMessageDelete(id: Int)` |
-| 462 |   `suspend fun quickMessagesReorder(ids: List<Int>)` |
-| 467 |   `suspend fun getFeedbackEnabled(): Boolean` |
-| 470 |   `suspend fun setFeedbackEnabled(enabled: Boolean)` |
-| 475 |   `suspend fun getQuestionEnabled(): Boolean` |
-| 478 |   `suspend fun setQuestionEnabled(enabled: Boolean)` |
-| 483 |   `suspend fun getDelegationSettings(): JsonObject` |
-| 487 |   `suspend fun setDelegationSettings(settings: JsonObject)` |
-| 493 |   `suspend fun listModelProviders(): List<ModelProviderInfo>` |
-| 496 |   `suspend fun createModelProvider(name: String, apiUrl: String, apiKey: String, agentType: AgentType, model: String?)` |
-| 500 |   `suspend fun updateModelProvider(id: Int, name: String?, apiUrl: String?, apiKey: String?, agentType: AgentType?, model: String?)` |
-| 504 |   `suspend fun deleteModelProvider(id: Int)` |
-| 509 |   `suspend fun getSystemProxySettings(): SystemProxySettings` |
-| 512 |   `suspend fun updateSystemProxySettings(enabled: Boolean, proxyUrl: String?)` |
-| 523 |   `suspend fun checkAppUpdate(): AppUpdateCheckResult` |
-| 527 |   `suspend fun mcpScanLocal(): List<LocalMcpServer>` |
-| 535 |   `suspend fun mcpUpsertLocalServer(serverId: String, spec: JsonElement, apps: List<String>)` |
-| 544 |   `suspend fun mcpRemoveServer(serverId: String, apps: List<String>? = null)` |
-| 561 |   `suspend fun acpListAgents(): List<AcpAgentInfo>` |
-| 572 |   `suspend fun acpUpdateAgentEnv(agentType: AgentType, enabled: Boolean, env: Map<String, String>, modelProviderId: Int?)` |
-| 595 |   `suspend fun acpUpdateAgentConfig( agentType: AgentType, configJson: String?, opencodeAuthJson: String?, codexAuthJson: String?, codexConfigToml: String?, grokConfigToml: String? = null, cursorCliConfigJson: String? = null, cursorStructured: CursorStructuredConfig? = null, )` |
-| 637 |   `suspend fun acpCursorAuthStatus(apiKey: String): CursorAuthStatus` |
-| 646 |   `suspend fun acpCursorListModels(apiKey: String): CursorModelsResult` |
-| 657 |   `suspend fun acpUpdateHermesConfig( provider: String, model: String?, apiKey: FieldEdit, baseUrl: FieldEdit, rawConfigYaml: String? = null, )` |
-| 683 |   `suspend fun acpUpdateKimiCodeConfig(body: UpdateKimiCodeConfigBody): Int` |
-| 687 |   `suspend fun acpFetchKimiModels(baseUrl: String, apiKey: String): List<String>` |
-| 694 |   `suspend fun acpLoadPiConfig(): PiConfigProjection` |
-| 698 |   `suspend fun acpUpdatePiConfig(body: UpdatePiConfigBody)` |
-| 703 |   `suspend fun acpValidatePiCommand(command: String): PiCommandValidation` |
-| 707 |   `suspend fun acpInstallPiBinary(taskId: String)` |
-| 711 |   `suspend fun acpUninstallPiBinary(taskId: String)` |
-| 716 |   `suspend fun detectGit(): GitDetectResult` |
-| 719 |   `suspend fun testGitPath(path: String): GitDetectResult` |
-| 722 |   `suspend fun getGitSettings(): GitSettings` |
-| 725 |   `suspend fun updateGitSettings(customPath: String?)` |
-| 731 |   `suspend fun getGitHubAccounts(): List<GitHubAccount>` |
-| 735 |   `suspend fun validateGithubToken(serverUrl: String, token: String): GitHubTokenValidation` |
-| 739 |   `suspend fun saveAccountToken(accountId: String, token: String)` |
-| 749 |   `suspend fun updateGithubAccounts(accounts: List<GitHubAccount>)` |
-| 771 |   `suspend fun listAgentSkills(agentType: AgentType): AgentSkillsListResult` |
-| 774 |   `suspend fun readAgentSkill(agentType: AgentType, scope: String, skillId: String): AgentSkillContent` |
-| 777 |   `suspend fun saveAgentSkill(agentType: AgentType, scope: String, skillId: String, content: String, layout: String?)` |
-| 781 |   `suspend fun deleteAgentSkill(agentType: AgentType, scope: String, skillId: String)` |
-| 786 |   `suspend fun expertsList(): List<ExpertListItem>` |
-| 790 |   `suspend fun expertsListForAgent(agentType: AgentType): List<ExpertListItem>` |
-| 800 |   `suspend fun expertReadContent(expertId: String): String` |
-| 805 |   `suspend fun expertsListAllInstallStatuses(): List<ExpertInstallStatus>` |
-| 808 |   `suspend fun expertInstallStatus(expertId: String): List<ExpertInstallStatus>` |
-| 812 |   `suspend fun expertLink(expertId: String, agentType: AgentType): ExpertInstallStatus` |
-| 815 |   `suspend fun expertUnlink(expertId: String, agentType: AgentType)` |
-| 821 |   `suspend fun listChatChannels(): List<ChatChannelInfo>` |
-| 824 |   `suspend fun chatChannelStatus(): List<ChannelStatusInfo>` |
-| 827 |   `suspend fun createChatChannel( name: String, channelType: ChannelType, configJson: String, enabled: Boolean, dailyReportEnabled: Boolean, dailyReportTime: String?, ): ChatChannelInfo` |
-| 835 |   `suspend fun updateChatChannel(body: UpdateChatChannelBody): ChatChannelInfo` |
-| 851 |   `suspend fun deleteChatChannel(id: Int)` |
-| 852 |   `suspend fun connectChatChannel(id: Int)` |
-| 853 |   `suspend fun disconnectChatChannel(id: Int)` |
-| 854 |   `suspend fun testChatChannel(id: Int)` |
-| 856 |   `suspend fun saveChatChannelToken(channelId: Int, token: String)` |
-| 860 |   `suspend fun chatChannelHasToken(channelId: Int): Boolean` |
-| 863 |   `suspend fun deleteChatChannelToken(channelId: Int)` |
-| 867 |   `suspend fun listChatChannelMessages(channelId: Int, limit: Int? = 50, offset: Int? = null): List<ChatChannelMessageLog>` |
-| 870 |   `suspend fun weixinGetQrcode(): WeixinQrcode` |
-| 874 |   `suspend fun weixinCheckQrcode(channelId: Int, qrcode: String): String` |
-| 879 |   `suspend fun chatCommandPrefix(): String` |
-| 882 |   `suspend fun setChatCommandPrefix(prefix: String)` |
-| 884 |   `suspend fun chatMessageLanguage(): String` |
-| 887 |   `suspend fun setChatMessageLanguage(language: String)` |
-| 890 |   `suspend fun chatEventFilter(): List<String>?` |
-| 893 |   `suspend fun setChatEventFilter(filter: List<String>?)` |
-| 901 |   `suspend fun chatEventWebhooks(): List<WebhookConfig>` |
-| 904 |   `suspend fun setChatEventWebhooks(webhooks: List<WebhookConfig>)` |
-| 913 |   `suspend fun sessionSnapshotByConversation(conversationId: Int): SessionSnapshot?` |
-| 920 |   `suspend fun sessionSnapshot(connectionId: String): SessionSnapshot?` |
-| 927 |   `suspend fun describeAgentOptions(agentType: AgentType, workingDir: String?): AgentOptionsSnapshot` |
-| 930 |   `suspend fun acpSetMode(connectionId: String, modeId: String)` |
-| 934 |   `suspend fun acpSetConfigOption(connectionId: String, configId: String, valueId: String)` |
-| 948 |   `private suspend fun send(path: String, bodyJson: String): String` |
-| 982 |   `private inline fun <reified T> encode(body: T): String` |
-| 985 |   `private fun <T> decode(text: String, deserializer: DeserializationStrategy<T>): T` |
-| 991 |   `companion object` |
-| 993 |     `fun normalizeBaseUrl(raw: String): String` |
-| 1001 |     `fun decodeConnectionId(text: String): String` |
-| 1017 |     `fun decodeAgentList(text: String): List<AcpAgentInfo>` |
-| 1034 |     `fun isJsonNull(text: String): Boolean` |
+| 160 | `class CodegClient( rawBaseUrl: String, private val token: String, private val http: HttpClient, )` |
+| 162 |   `private val token: String` |
+| 163 |   `private val http: HttpClient` |
+| 166 |   `val baseUrl: String` |
+| 171 |   `suspend fun health(): HealthResponse` |
+| 175 |   `suspend fun listFolders(): List<FolderDetail>` |
+| 179 |   `suspend fun listOpenFolders(): List<FolderDetail>` |
+| 183 |   `suspend fun listConversations( folderIds: List<Int>? = null, status: String? = null, search: String? = null, sortBy: String? = null, ): List<ConversationSummary>` |
+| 205 |   `suspend fun conversationDetail(id: Int): ConversationDetail` |
+| 212 |   `suspend fun createConversation(folderId: Int, agentType: AgentType, title: String?): Int` |
+| 222 |   `suspend fun connect( agentType: AgentType, workingDir: String?, sessionId: String?, preferredModeId: String? = null, preferredConfigValues: Map<String, String>? = null, ): String` |
+| 237 |   `suspend fun findConnection( conversationId: Int, sessionId: String?, agentType: AgentType, ): ConversationConnectionInfo?` |
+| 251 |   `suspend fun prompt( connectionId: String, blocks: List<PromptInputBlock>, folderId: Int?, conversationId: Int?, clientMessageId: String?, )` |
+| 262 |   `suspend fun cancel(connectionId: String)` |
+| 267 |   `suspend fun respondPermission(connectionId: String, requestId: String, optionId: String)` |
+| 272 |   `suspend fun answerQuestion(connectionId: String, questionId: String, answer: QuestionAnswer)` |
+| 281 |   `suspend fun answerPlanApproval( connectionId: String, approvalId: String, decision: PlanApprovalDecision, feedback: String?, )` |
+| 294 |   `suspend fun setPinned(conversationId: Int, pinned: Boolean)` |
+| 299 |   `suspend fun renameConversation(conversationId: Int, title: String)` |
+| 304 |   `suspend fun setStatus(conversationId: Int, status: String)` |
+| 309 |   `suspend fun deleteConversation(conversationId: Int)` |
+| 318 |   `suspend fun openFolder(path: String): FolderDetail` |
+| 322 |   `suspend fun getHomeDirectory(): String` |
+| 326 |   `suspend fun listDirectoryEntries(path: String): List<DirectoryEntry>` |
+| 330 |   `suspend fun listDirectoryWithFiles(path: String): List<DirectoryItem>` |
+| 334 |   `suspend fun readFilePreview(rootPath: String, path: String): FilePreviewContent` |
+| 338 |   `suspend fun gitStatus(path: String, showAllUntracked: Boolean = true): List<GitStatusEntry>` |
+| 342 |   `suspend fun gitLog(path: String, limit: Int? = null): GitLogResult` |
+| 346 |   `suspend fun gitDiff(path: String, file: String? = null): String` |
+| 350 |   `suspend fun gitShowDiff(path: String, commit: String, file: String? = null): String` |
+| 354 |   `suspend fun cloneRepository(url: String, targetDir: String, credentials: GitCredentials?)` |
+| 359 |   `suspend fun gitListAllBranches(path: String): GitBranchList` |
+| 363 |   `suspend fun getGitBranch(path: String): String?` |
+| 370 |   `suspend fun gitCheckout(path: String, branchName: String)` |
+| 375 |   `suspend fun gitNewBranch(path: String, branchName: String, startPoint: String? = null)` |
+| 380 |   `suspend fun resolveWorktreeFolder(repoPath: String, branch: String): WorktreeResolution` |
+| 384 |   `suspend fun openWorktreeFolder(path: String, sourceFolderId: Int): FolderDetail` |
+| 392 |   `suspend fun gitCommit(path: String, message: String, files: List<String>, folderId: Int? = null): GitCommitResult` |
+| 400 |   `suspend fun gitPush(path: String, remote: String? = null, credentials: GitCredentials? = null, folderId: Int? = null): GitPushResult` |
+| 404 |   `suspend fun gitPull(path: String, credentials: GitCredentials? = null): GitPullResult` |
+| 408 |   `suspend fun gitFetch(path: String, credentials: GitCredentials? = null): String` |
+| 412 |   `suspend fun gitPushInfo(path: String): GitPushInfo` |
+| 416 |   `suspend fun gitListRemotes(path: String): List<GitRemote>` |
+| 420 |   `suspend fun gitAddFiles(path: String, files: List<String>)` |
+| 425 |   `suspend fun gitRollbackFile(path: String, file: String)` |
+| 434 |   `suspend fun deleteFileTreeEntry(rootPath: String, path: String)` |
+| 439 |   `private fun decodeBareString(text: String): String` |
+| 445 |   `private fun <T> decodeCamel(text: String, deserializer: DeserializationStrategy<T>): T` |
+| 454 |   `suspend fun quickMessagesList(): List<QuickMessage>` |
+| 457 |   `suspend fun quickMessageCreate(title: String, content: String): QuickMessage` |
+| 460 |   `suspend fun quickMessageUpdate(id: Int, title: String, content: String): QuickMessage` |
+| 463 |   `suspend fun quickMessageDelete(id: Int)` |
+| 467 |   `suspend fun quickMessagesReorder(ids: List<Int>)` |
+| 472 |   `suspend fun getFeedbackEnabled(): Boolean` |
+| 475 |   `suspend fun setFeedbackEnabled(enabled: Boolean)` |
+| 480 |   `suspend fun getQuestionEnabled(): Boolean` |
+| 483 |   `suspend fun setQuestionEnabled(enabled: Boolean)` |
+| 488 |   `suspend fun getDelegationSettings(): JsonObject` |
+| 492 |   `suspend fun setDelegationSettings(settings: JsonObject)` |
+| 498 |   `suspend fun listModelProviders(): List<ModelProviderInfo>` |
+| 501 |   `suspend fun createModelProvider(name: String, apiUrl: String, apiKey: String, agentType: AgentType, model: String?)` |
+| 505 |   `suspend fun updateModelProvider(id: Int, name: String?, apiUrl: String?, apiKey: String?, agentType: AgentType?, model: String?)` |
+| 509 |   `suspend fun deleteModelProvider(id: Int)` |
+| 514 |   `suspend fun getSystemProxySettings(): SystemProxySettings` |
+| 517 |   `suspend fun updateSystemProxySettings(enabled: Boolean, proxyUrl: String?)` |
+| 528 |   `suspend fun checkAppUpdate(): AppUpdateCheckResult` |
+| 532 |   `suspend fun mcpScanLocal(): List<LocalMcpServer>` |
+| 540 |   `suspend fun mcpUpsertLocalServer(serverId: String, spec: JsonElement, apps: List<String>)` |
+| 549 |   `suspend fun mcpRemoveServer(serverId: String, apps: List<String>? = null)` |
+| 566 |   `suspend fun acpListAgents(): List<AcpAgentInfo>` |
+| 577 |   `suspend fun acpUpdateAgentEnv(agentType: AgentType, enabled: Boolean, env: Map<String, String>, modelProviderId: Int?)` |
+| 600 |   `suspend fun acpUpdateAgentConfig( agentType: AgentType, configJson: String?, opencodeAuthJson: String?, codexAuthJson: String?, codexConfigToml: String?, grokConfigToml: String? = null, cursorCliConfigJson: String? = null, cursorStructured: CursorStructuredConfig? = null, )` |
+| 642 |   `suspend fun acpCursorAuthStatus(apiKey: String): CursorAuthStatus` |
+| 651 |   `suspend fun acpCursorListModels(apiKey: String): CursorModelsResult` |
+| 662 |   `suspend fun acpUpdateHermesConfig( provider: String, model: String?, apiKey: FieldEdit, baseUrl: FieldEdit, rawConfigYaml: String? = null, )` |
+| 688 |   `suspend fun acpUpdateKimiCodeConfig(body: UpdateKimiCodeConfigBody): Int` |
+| 692 |   `suspend fun acpFetchKimiModels(baseUrl: String, apiKey: String): List<String>` |
+| 699 |   `suspend fun acpLoadPiConfig(): PiConfigProjection` |
+| 703 |   `suspend fun acpUpdatePiConfig(body: UpdatePiConfigBody)` |
+| 708 |   `suspend fun acpValidatePiCommand(command: String): PiCommandValidation` |
+| 712 |   `suspend fun acpInstallPiBinary(taskId: String)` |
+| 716 |   `suspend fun acpUninstallPiBinary(taskId: String)` |
+| 721 |   `suspend fun detectGit(): GitDetectResult` |
+| 724 |   `suspend fun testGitPath(path: String): GitDetectResult` |
+| 727 |   `suspend fun getGitSettings(): GitSettings` |
+| 730 |   `suspend fun updateGitSettings(customPath: String?)` |
+| 736 |   `suspend fun getGitHubAccounts(): List<GitHubAccount>` |
+| 740 |   `suspend fun validateGithubToken(serverUrl: String, token: String): GitHubTokenValidation` |
+| 744 |   `suspend fun saveAccountToken(accountId: String, token: String)` |
+| 754 |   `suspend fun updateGithubAccounts(accounts: List<GitHubAccount>)` |
+| 776 |   `suspend fun listAgentSkills(agentType: AgentType): AgentSkillsListResult` |
+| 779 |   `suspend fun readAgentSkill(agentType: AgentType, scope: String, skillId: String): AgentSkillContent` |
+| 782 |   `suspend fun saveAgentSkill(agentType: AgentType, scope: String, skillId: String, content: String, layout: String?)` |
+| 786 |   `suspend fun deleteAgentSkill(agentType: AgentType, scope: String, skillId: String)` |
+| 791 |   `suspend fun expertsList(): List<ExpertListItem>` |
+| 795 |   `suspend fun expertsListForAgent(agentType: AgentType): List<ExpertListItem>` |
+| 805 |   `suspend fun expertReadContent(expertId: String): String` |
+| 810 |   `suspend fun expertsListAllInstallStatuses(): List<ExpertInstallStatus>` |
+| 813 |   `suspend fun expertInstallStatus(expertId: String): List<ExpertInstallStatus>` |
+| 817 |   `suspend fun expertLink(expertId: String, agentType: AgentType): ExpertInstallStatus` |
+| 820 |   `suspend fun expertUnlink(expertId: String, agentType: AgentType)` |
+| 826 |   `suspend fun listChatChannels(): List<ChatChannelInfo>` |
+| 829 |   `suspend fun chatChannelStatus(): List<ChannelStatusInfo>` |
+| 832 |   `suspend fun createChatChannel( name: String, channelType: ChannelType, configJson: String, enabled: Boolean, dailyReportEnabled: Boolean, dailyReportTime: String?, ): ChatChannelInfo` |
+| 840 |   `suspend fun updateChatChannel(body: UpdateChatChannelBody): ChatChannelInfo` |
+| 856 |   `suspend fun deleteChatChannel(id: Int)` |
+| 857 |   `suspend fun connectChatChannel(id: Int)` |
+| 858 |   `suspend fun disconnectChatChannel(id: Int)` |
+| 859 |   `suspend fun testChatChannel(id: Int)` |
+| 861 |   `suspend fun saveChatChannelToken(channelId: Int, token: String)` |
+| 865 |   `suspend fun chatChannelHasToken(channelId: Int): Boolean` |
+| 868 |   `suspend fun deleteChatChannelToken(channelId: Int)` |
+| 872 |   `suspend fun listChatChannelMessages(channelId: Int, limit: Int? = 50, offset: Int? = null): List<ChatChannelMessageLog>` |
+| 875 |   `suspend fun weixinGetQrcode(): WeixinQrcode` |
+| 879 |   `suspend fun weixinCheckQrcode(channelId: Int, qrcode: String): String` |
+| 884 |   `suspend fun chatCommandPrefix(): String` |
+| 887 |   `suspend fun setChatCommandPrefix(prefix: String)` |
+| 889 |   `suspend fun chatMessageLanguage(): String` |
+| 892 |   `suspend fun setChatMessageLanguage(language: String)` |
+| 895 |   `suspend fun chatEventFilter(): List<String>?` |
+| 898 |   `suspend fun setChatEventFilter(filter: List<String>?)` |
+| 906 |   `suspend fun chatEventWebhooks(): List<WebhookConfig>` |
+| 909 |   `suspend fun setChatEventWebhooks(webhooks: List<WebhookConfig>)` |
+| 918 |   `suspend fun sessionSnapshotByConversation(conversationId: Int): SessionSnapshot?` |
+| 925 |   `suspend fun sessionSnapshot(connectionId: String): SessionSnapshot?` |
+| 932 |   `suspend fun describeAgentOptions(agentType: AgentType, workingDir: String?): AgentOptionsSnapshot` |
+| 935 |   `suspend fun acpSetMode(connectionId: String, modeId: String)` |
+| 939 |   `suspend fun acpSetConfigOption(connectionId: String, configId: String, valueId: String)` |
+| 949 |   `suspend fun automationList(): List<Automation>` |
+| 952 |   `suspend fun automationGet(id: Int): Automation` |
+| 955 |   `suspend fun automationRuns(automationId: Int, limit: Long = 100): List<AutomationRun>` |
+| 958 |   `suspend fun automationSetEnabled(id: Int, enabled: Boolean): Automation` |
+| 969 |   `private suspend fun send(path: String, bodyJson: String): String` |
+| 1003 |   `private inline fun <reified T> encode(body: T): String` |
+| 1006 |   `private fun <T> decode(text: String, deserializer: DeserializationStrategy<T>): T` |
+| 1012 |   `companion object` |
+| 1014 |     `fun normalizeBaseUrl(raw: String): String` |
+| 1022 |     `fun decodeConnectionId(text: String): String` |
+| 1038 |     `fun decodeAgentList(text: String): List<AcpAgentInfo>` |
+| 1055 |     `fun isJsonNull(text: String): Boolean` |
 
 ## core/network/CodegClientFactory.kt
 

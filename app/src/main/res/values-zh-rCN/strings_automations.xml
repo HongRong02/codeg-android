@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="automations_title">自动化</string>
+    <string name="automations_empty">暂无自动化任务</string>
+    <string name="automations_empty_hint">在服务端创建或计划的自动化任务将显示在此处。</string>
+    <string name="automations_filter_all">全部</string>
+    <string name="automations_filter_enabled">已启用</string>
+    <string name="automations_filter_disabled">已停用</string>
+    <string name="automations_section_schedule">计划配置</string>
+    <string name="automations_section_prompt">提示词</string>
+    <string name="automations_section_runs">运行历史</string>
+    <string name="automations_trigger">触发方式</string>
+    <string name="automations_trigger_schedule">定时计划</string>
+    <string name="automations_trigger_manual">手动触发</string>
+    <string name="automations_agent">智能体</string>
+    <string name="automations_folder">工作目录</string>
+    <string name="automations_isolation">工作区隔离</string>
+    <string name="automations_isolation_worktree">每次运行新建 Worktree</string>
+    <string name="automations_isolation_shared">在根目录共享工作区</string>
+    <string name="automations_next_run">下次运行</string>
+    <string name="automations_last_run">上次运行</string>
+    <string name="automations_enabled">已启用</string>
+    <string name="automations_disabled">已停用</string>
+    <string name="automations_no_runs">暂无运行记录</string>
+    <string name="automations_status_running">运行中</string>
+    <string name="automations_status_succeeded">已完成</string>
+    <string name="automations_status_failed">失败</string>
+    <string name="automations_status_cancelled">已取消</string>
+    <string name="automations_status_skipped">已跳过</string>
+    <string name="automations_cron_every_minutes">每 %1$d 分钟</string>
+    <string name="automations_cron_hourly">每小时</string>
+    <string name="automations_cron_daily">每天 %1$s</string>
+    <string name="automations_cron_weekdays">工作日 %1$s</string>
+    <string name="automations_cron_weekly">%1$s %2$s</string>
+    <string name="automations_cron_monthly">每月 %1$d 日 %2$s</string>
+    <string name="automations_dow_0">周日</string>
+    <string name="automations_dow_1">周一</string>
+    <string name="automations_dow_2">周二</string>
+    <string name="automations_dow_3">周三</string>
+    <string name="automations_dow_4">周四</string>
+    <string name="automations_dow_5">周五</string>
+    <string name="automations_dow_6">周六</string>
+</resources>
