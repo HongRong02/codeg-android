@@ -5,6 +5,7 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -69,6 +70,8 @@ import app.codeg.android.core.designsystem.component.LoadingView
 import app.codeg.android.core.designsystem.component.PrimaryButton
 import app.codeg.android.core.designsystem.component.SecretField
 import app.codeg.android.core.designsystem.theme.CodegColors
+import app.codeg.android.core.designsystem.theme.CodegShapes
+import app.codeg.android.core.designsystem.theme.withOpacity
 import app.codeg.android.core.designsystem.theme.CodegTheme
 import app.codeg.android.core.model.AgentConfig
 import app.codeg.android.core.model.AgentType
@@ -121,7 +124,7 @@ fun AgentDetailContent(
         Column(
             Modifier.weight(1f).fillMaxWidth().verticalScroll(rememberScrollState())
                 .padding(horizontal = 16.dp, vertical = 12.dp),
-            verticalArrangement = Arrangement.spacedBy(20.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             AgentHeader(detail, onToggle = { viewModel.setEnabled(detail.agent, it) })
 
@@ -168,7 +171,7 @@ private fun AgentHeader(state: AgentDetailState, onToggle: (Boolean) -> Unit) {
     val colors = CodegTheme.colors
     val agent = state.agent
     Column(
-        Modifier.fillMaxWidth().webSurface(RoundedCornerShape(CodegTheme.dimens.radiusLg)).padding(16.dp),
+        Modifier.fillMaxWidth().webSurface(CodegShapes.extraSmall).padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(10.dp),
     ) {
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(14.dp)) {
@@ -189,7 +192,7 @@ private fun AgentHeader(state: AgentDetailState, onToggle: (Boolean) -> Unit) {
             )
         }
         if (agent.description.isNotEmpty()) {
-            Text(agent.description, fontSize = 13.sp, color = colors.textTertiary)
+            Text(agent.description, fontSize = 13.sp, color = colors.web.mutedForeground)
         }
         if (!agent.available) {
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
@@ -198,7 +201,7 @@ private fun AgentHeader(state: AgentDetailState, onToggle: (Boolean) -> Unit) {
             }
         }
         agent.configFilePath?.takeIf { it.isNotBlank() }?.let { path ->
-            Text(path, fontFamily = FontFamily.Monospace, fontSize = 11.sp, color = colors.textTertiary, maxLines = 1, overflow = TextOverflow.Ellipsis)
+            Text(path, fontFamily = FontFamily.Monospace, fontSize = 11.sp, color = colors.web.mutedForeground, maxLines = 1, overflow = TextOverflow.Ellipsis)
         }
     }
 }
@@ -214,7 +217,7 @@ private fun VersionLine(state: AgentDetailState) {
             stringResource(R.string.agents_detail_version_latest, installed, latest)
         else -> "v$installed"
     }
-    Text(text, fontSize = 12.sp, color = colors.textTertiary)
+    Text(text, fontSize = 12.sp, color = colors.web.mutedForeground)
 }
 
 @Composable
@@ -356,7 +359,7 @@ private fun GeminiSection(state: AgentDetailState, vm: AgentsViewModel) {
         )
         when (d.geminiAuthMode) {
             GeminiAuthMode.LOGIN_GOOGLE ->
-                Text(stringResource(R.string.agents_gemini_oauth_hint), fontSize = 12.sp, color = colors.textTertiary)
+                Text(stringResource(R.string.agents_gemini_oauth_hint), fontSize = 12.sp, color = colors.web.mutedForeground)
             GeminiAuthMode.CUSTOM -> {
                 CodegTextField(d.apiBaseUrl, { v -> vm.editDraft { it.copy(apiBaseUrl = v) } }, stringResource(R.string.agents_field_api_url), placeholder = "https://…", keyboardType = KeyboardType.Uri, mono = true)
                 SecretField(d.geminiApiKey, { v -> vm.editDraft { it.copy(geminiApiKey = v) } }, stringResource(R.string.agents_gemini_api_key))
@@ -544,11 +547,11 @@ private fun GrokSection(state: AgentDetailState, vm: AgentsViewModel) {
         val configured = d.apiKey.trim().isNotEmpty()
         Text(
             stringResource(if (configured) R.string.agents_grok_api_key_configured else R.string.agents_grok_api_key_none),
-            fontSize = 11.sp, color = colors.textTertiary, modifier = Modifier.padding(start = 4.dp),
+            fontSize = 11.sp, color = colors.web.mutedForeground, modifier = Modifier.padding(start = 4.dp),
         )
         Text(
             stringResource(R.string.agents_grok_api_key_caption),
-            fontSize = 11.sp, color = colors.textTertiary, modifier = Modifier.padding(start = 4.dp),
+            fontSize = 11.sp, color = colors.web.mutedForeground, modifier = Modifier.padding(start = 4.dp),
         )
     }
 }
@@ -634,7 +637,7 @@ private fun CursorSection(state: AgentDetailState, vm: AgentsViewModel) {
             Caption(stringResource(R.string.agents_cursor_login_hint))
             val command = CursorConfig.loginCommand(auth?.binaryPath)
             Row(
-                Modifier.fillMaxWidth().clip(RoundedCornerShape(8.dp)).background(colors.codeSurface)
+                Modifier.fillMaxWidth().clip(CodegShapes.extraSmall).background(colors.codeSurface)
                     .padding(start = 10.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
@@ -729,8 +732,8 @@ private fun CursorStatusRow(auth: CursorAuthStatus?, loading: Boolean, onRefresh
     val signedIn = auth?.isAuthenticated == true
     val tint = when {
         signedIn -> colors.accent
-        installed -> CursorActionableAmber
-        else -> colors.textTertiary.copy(alpha = 0.5f)
+        installed -> colors.web.mutedForeground
+        else -> colors.web.mutedForeground.withOpacity(0.5f)
     }
     val text = when {
         loading && auth == null -> stringResource(R.string.agents_cursor_status_checking)
@@ -750,7 +753,7 @@ private fun CursorStatusRow(auth: CursorAuthStatus?, loading: Boolean, onRefresh
                 it,
                 fontSize = 11.sp, fontWeight = FontWeight.Medium, color = colors.accent,
                 modifier = Modifier.clip(RoundedCornerShape(50))
-                    .background(colors.accent.copy(alpha = 0.12f))
+                    .background(colors.accent.withOpacity(0.12f))
                     .padding(horizontal = 6.dp, vertical = 2.dp),
             )
         }
@@ -812,10 +815,6 @@ private fun RuleEditor(
     }
 }
 
-/** "Actionable, not broken" — the amber the status badges already use for a state the
- *  user can fix (here: cursor-agent installed but not signed in). */
-private val CursorActionableAmber = Color(0xFFF5BD5C)
-
 // endregion
 
 // region Model-provider picker
@@ -826,7 +825,7 @@ private fun ColumnScope.ProviderPicker(state: AgentDetailState, vm: AgentsViewMo
     if (state.providers.isEmpty()) {
         Text(
             stringResource(R.string.agents_provider_none),
-            fontSize = 12.sp, color = colors.textTertiary,
+            fontSize = 12.sp, color = colors.web.mutedForeground,
         )
         return
     }
@@ -852,7 +851,7 @@ private fun ProviderSummary(p: ModelProviderInfo) {
 private fun ReadonlyRow(label: String, value: String) {
     val colors = CodegTheme.colors
     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-        Text(label, fontSize = 12.sp, color = colors.textTertiary)
+        Text(label, fontSize = 12.sp, color = colors.web.mutedForeground)
         Text(value, fontFamily = FontFamily.Monospace, fontSize = 12.sp, color = colors.textSecondary, maxLines = 1, overflow = TextOverflow.Ellipsis)
     }
 }
@@ -865,13 +864,13 @@ private fun ReadonlyRow(label: String, value: String) {
 internal fun FormSection(title: String, footer: String? = null, content: @Composable ColumnScope.() -> Unit) {
     val colors = CodegTheme.colors
     Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-        Text(title.uppercase(), fontSize = 11.sp, fontWeight = FontWeight.SemiBold, color = colors.textTertiary, modifier = Modifier.padding(start = 4.dp))
+        Text(title, fontSize = 11.sp, fontWeight = FontWeight.SemiBold, color = colors.web.mutedForeground, modifier = Modifier.padding(start = 4.dp))
         Column(
-            Modifier.fillMaxWidth().webSurface(RoundedCornerShape(CodegTheme.dimens.radiusLg)).padding(14.dp),
+            Modifier.fillMaxWidth().webSurface(CodegShapes.extraSmall).padding(14.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
             content = content,
         )
-        footer?.let { Text(it, fontSize = 11.sp, color = colors.textTertiary, modifier = Modifier.padding(start = 4.dp)) }
+        footer?.let { Text(it, fontSize = 11.sp, color = colors.web.mutedForeground, modifier = Modifier.padding(start = 4.dp)) }
     }
 }
 
@@ -922,7 +921,7 @@ private fun HermesProviderField(value: String, onSelect: (String) -> Unit) {
                     lastKind = opt.kind
                     Text(
                         stringResource(kindLabelRes(opt.kind)),
-                        fontSize = 11.sp, fontWeight = FontWeight.SemiBold, color = colors.textTertiary,
+                        fontSize = 11.sp, fontWeight = FontWeight.SemiBold, color = colors.web.mutedForeground,
                         modifier = Modifier.padding(start = 16.dp, top = 8.dp, bottom = 2.dp),
                     )
                 }
@@ -962,12 +961,12 @@ internal fun ColumnScope.ExpandableGroup(title: String, content: @Composable Col
     var open by remember { mutableStateOf(false) }
     val rotation by animateFloatAsState(if (open) 180f else 0f, label = "chevron")
     Row(
-        Modifier.fillMaxWidth().clickable { open = !open },
+        Modifier.fillMaxWidth().heightIn(min = 48.dp).clickable { open = !open },
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
         Text(title, fontSize = 13.sp, color = colors.textSecondary)
-        Icon(Icons.Rounded.ExpandMore, contentDescription = null, tint = colors.textTertiary, modifier = Modifier.size(20.dp).rotate(rotation))
+        Icon(Icons.Rounded.ExpandMore, contentDescription = null, tint = colors.web.mutedForeground, modifier = Modifier.size(20.dp).rotate(rotation))
     }
     AnimatedVisibility(open) {
         Column(verticalArrangement = Arrangement.spacedBy(12.dp)) { content() }
@@ -980,7 +979,7 @@ private fun TonalAction(text: String, onClick: () -> Unit) {
     androidx.compose.material3.FilledTonalButton(
         onClick = onClick,
         colors = androidx.compose.material3.ButtonDefaults.filledTonalButtonColors(
-            containerColor = colors.accent.copy(alpha = 0.14f),
+            containerColor = colors.accent.withOpacity(0.14f),
             contentColor = colors.accent,
         ),
     ) { Text(text) }
@@ -1005,16 +1004,16 @@ private fun AdvancedSection(state: AgentDetailState, vm: AgentsViewModel) {
 
     Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
         Row(
-            Modifier.fillMaxWidth().webSurface(RoundedCornerShape(CodegTheme.dimens.radiusLg))
+            Modifier.fillMaxWidth().webSurface(CodegShapes.extraSmall)
                 .clickable { open = !open }.padding(14.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween,
         ) {
             Column {
                 Text(stringResource(R.string.agents_advanced), fontSize = 14.sp, color = colors.textPrimary)
-                Text(label, fontFamily = FontFamily.Monospace, fontSize = 11.sp, color = colors.textTertiary)
+                Text(label, fontFamily = FontFamily.Monospace, fontSize = 11.sp, color = colors.web.mutedForeground)
             }
-            Icon(Icons.Rounded.ExpandMore, contentDescription = null, tint = colors.textTertiary, modifier = Modifier.size(20.dp).rotate(rotation))
+            Icon(Icons.Rounded.ExpandMore, contentDescription = null, tint = colors.web.mutedForeground, modifier = Modifier.size(20.dp).rotate(rotation))
         }
         AnimatedVisibility(open) {
             Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
@@ -1033,7 +1032,7 @@ private fun AdvancedSection(state: AgentDetailState, vm: AgentsViewModel) {
                     ),
                 )
                 state.configError?.let { Text(it, fontSize = 11.sp, color = colors.danger, modifier = Modifier.padding(start = 4.dp)) }
-                Text(stringResource(R.string.agents_advanced_override_hint), fontSize = 11.sp, color = colors.textTertiary, modifier = Modifier.padding(start = 4.dp))
+                Text(stringResource(R.string.agents_advanced_override_hint), fontSize = 11.sp, color = colors.web.mutedForeground, modifier = Modifier.padding(start = 4.dp))
             }
         }
     }
@@ -1044,11 +1043,11 @@ private fun dropdownColors(colors: CodegColors) = OutlinedTextFieldDefaults.colo
     focusedBorderColor = colors.accent,
     unfocusedBorderColor = colors.surfaceStroke,
     focusedLabelColor = colors.accent,
-    unfocusedLabelColor = colors.textTertiary,
+    unfocusedLabelColor = colors.web.mutedForeground,
     focusedTextColor = colors.textPrimary,
     unfocusedTextColor = colors.textPrimary,
-    focusedTrailingIconColor = colors.textTertiary,
-    unfocusedTrailingIconColor = colors.textTertiary,
+    focusedTrailingIconColor = colors.web.mutedForeground,
+    unfocusedTrailingIconColor = colors.web.mutedForeground,
 )
 
 // endregion
