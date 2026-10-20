@@ -168,18 +168,25 @@ fun SettingsScreen(
 }
 
 @Composable
-private fun SettingsRoot(onSelect: (SettingsLeaf) -> Unit, onOpenAutomations: () -> Unit, onOpenWorkTasks: () -> Unit) {
+private fun SettingsRoot(
+    onSelect: (SettingsLeaf) -> Unit,
+    onOpenAutomations: () -> Unit,
+    onOpenWorkTasks: () -> Unit,
+    showServerLogs: Boolean,
+) {
     val workTasks: app.codeg.android.feature.worktasks.WorkTaskViewModel = hiltViewModel()
     val workTaskUi by workTasks.ui.collectAsStateWithLifecycle()
-private fun SettingsRoot(onSelect: (SettingsLeaf) -> Unit, onOpenAutomations: () -> Unit, showServerLogs: Boolean) {
     val colors = CodegTheme.colors
     Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(horizontal = 12.dp, vertical = 8.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
         for (group in SettingsLeaf.entries.map { it.groupRes }.distinct()) {
             Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
                 Text(stringResource(group), fontSize = 12.sp, fontWeight = FontWeight.Medium, color = colors.textSecondary, modifier = Modifier.padding(start = 12.dp, bottom = 4.dp))
                 Column(Modifier.fillMaxWidth().webSurface(CodegShapes.small)) {
-                    val leaves = SettingsLeaf.entries.filter { it.groupRes == group && (it != SettingsLeaf.WORK_TASKS || workTaskUi.supported) }
-                    val leaves = SettingsLeaf.entries.filter { it.groupRes == group && (it != SettingsLeaf.SERVER_LOGS || showServerLogs) }
+                    val leaves = SettingsLeaf.entries.filter {
+                        it.groupRes == group &&
+                            (it != SettingsLeaf.WORK_TASKS || workTaskUi.supported) &&
+                            (it != SettingsLeaf.SERVER_LOGS || showServerLogs)
+                    }
                     leaves.forEachIndexed { index, l ->
                         ListItem(
                             headlineContent = { Text(stringResource(l.titleRes), fontSize = 14.sp) },
