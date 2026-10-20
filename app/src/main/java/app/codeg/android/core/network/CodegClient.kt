@@ -955,6 +955,19 @@ class CodegClient(
 
     // endregion
 
+    // region file-viewer
+
+    suspend fun readFileBase64(path: String, maxBytes: Long = 10_485_760): String =
+        decodeBareString(send("read_file_base64", encode(app.codeg.android.core.model.wire.ReadFileBase64Request(path, maxBytes))))
+
+    suspend fun gitShowFile(path: String, file: String, refName: String): String =
+        decodeBareString(send("git_show_file", encode(app.codeg.android.core.model.wire.GitShowFileRequest(path, file, refName))))
+
+    suspend fun gitShowFileBase64(path: String, file: String, refName: String): app.codeg.android.core.model.GitFileImage =
+        decodeCamel(send("git_show_file_base64", encode(app.codeg.android.core.model.wire.GitShowFileRequest(path, file, refName, 10_485_760))), app.codeg.android.core.model.GitFileImage.serializer())
+
+    // endregion
+
     // region Transport
 
     /**

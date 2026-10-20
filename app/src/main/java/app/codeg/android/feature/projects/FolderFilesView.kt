@@ -48,15 +48,23 @@ import app.codeg.android.core.designsystem.component.EmptyState
 import app.codeg.android.core.designsystem.component.InlineError
 import app.codeg.android.core.designsystem.component.LoadingView
 import app.codeg.android.core.designsystem.theme.CodegTheme
+import app.codeg.android.core.designsystem.component.FileViewer
+import app.codeg.android.core.model.FileViewerContent
+import app.codeg.android.core.model.isPreviewImage
+import app.codeg.android.core.model.previewText
+import kotlinx.coroutines.CancellationException
 import app.codeg.android.core.model.DirectoryItem
 import app.codeg.android.core.network.CodegClient
+import app.codeg.android.core.network.ApiError
 
 /** Recursive file browser with an internal directory stack + file preview. */
 @Composable
 fun FolderFilesView(client: CodegClient, rootPath: String) {
     val colors = CodegTheme.colors
     var stack by remember { mutableStateOf(listOf(rootPath)) }
-    var previewPath by remember { mutableStateOf<String?>(null) }
+    var previewPath by remember { mutableStateOf<DirectoryItem?>(null) }
+
+    var unavailablePaths by remember(rootPath) { mutableStateOf(setOf<String>()) }
 
     BackHandler(enabled = previewPath != null || stack.size > 1) {
         if (previewPath != null) previewPath = null else stack = stack.dropLast(1)
@@ -64,7 +72,7 @@ fun FolderFilesView(client: CodegClient, rootPath: String) {
 
     val preview = previewPath
     if (preview != null) {
-        FilePreview(client, rootPath, preview)
+        FilePreview(client, rootPath, preview.path, size = preview.size, onUnsupported = { unavailablePaths = unavailablePaths + preview.path; previewPath = null })
         return
     }
 
@@ -79,7 +87,7 @@ fun FolderFilesView(client: CodegClient, rootPath: String) {
             InlineError(Icons.AutoMirrored.Rounded.InsertDriveFile, stringResource(R.string.files_load_failed), r.exceptionOrNull()?.message ?: stringResource(R.string.files_error), onRetry = { result = null })
         }
         else -> {
-            val items = sortItems(r.getOrDefault(emptyList()))
+            val items = sortItems(r.getOrDefault(emptyList())).filter { it.path !in unavailablePaths }
             LazyColumn(Modifier.fillMaxSize(), contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 12.dp, vertical = 4.dp)) {
                 if (stack.size > 1) {
                     item("up") {
@@ -97,7 +105,7 @@ fun FolderFilesView(client: CodegClient, rootPath: String) {
                 }
                 items(items, key = { it.path }) { item ->
                     FileRow(item) {
-                        if (item.isDir) stack = stack + item.path else previewPath = item.path
+                        if (item.isDir) stack = stack + item.path else previewPath = item
                     }
                 }
             }
@@ -126,52 +134,40 @@ private fun FileRow(item: DirectoryItem, onClick: () -> Unit) {
 }
 
 @Composable
-private fun FilePreview(client: CodegClient, rootPath: String, absPath: String) {
+internal fun FilePreview(client: CodegClient, rootPath: String, absPath: String, size: Long? = null, commit: String? = null, onUnsupported: () -> Unit = {}) {
     val colors = CodegTheme.colors
-    val rel = if (absPath.startsWith("$rootPath/")) absPath.removePrefix("$rootPath/") else absPath.substringAfterLast('/')
-    var result by remember(absPath) { mutableStateOf<Result<String>?>(null) }
-    LaunchedEffect(absPath) { result = runCatching { client.readFilePreview(rootPath, rel).content } }
-
-    Column(Modifier.fillMaxSize()) {
-        Row(Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 6.dp), verticalAlignment = Alignment.CenterVertically) {
-            Text(rel, fontFamily = FontFamily.Monospace, fontSize = 12.sp, color = colors.textSecondary, maxLines = 1, overflow = TextOverflow.Ellipsis, modifier = Modifier.weight(1f))
-            result?.getOrNull()?.let { if (it.isNotEmpty()) CopyButton(it) }
+    val rel = if (absPath.startsWith("$rootPath/")) absPath.removePrefix("$rootPath/") else absPath
+    var result by remember(rootPath, absPath, commit) { mutableStateOf<Result<FileViewerContent>?>(null) }
+    var attempt by remember(rootPath, absPath, commit) { mutableStateOf(0) }
+    LaunchedEffect(rootPath, absPath, commit, attempt) {
+        result = try {
+            Result.success(when {
+                size != null && size > (if (isPreviewImage(rel)) 10_485_760 else 2_097_152) -> FileViewerContent.Unavailable(size, true)
+                isPreviewImage(rel) -> {
+                    val data = if (commit == null) client.readFileBase64(absPath) else client.gitShowFileBase64(rootPath, rel, commit).base64
+                    FileViewerContent.Image(data, rel)
+                }
+                else -> previewText(if (commit == null) client.readFilePreview(rootPath, rel).content else client.gitShowFile(rootPath, rel, commit), rel)
+            })
+        } catch (e: CancellationException) { throw e } catch (e: Exception) {
+            val message = e.message.orEmpty().lowercase()
+            when {
+                e is ApiError.Server && (e.status == 404 || e.code in setOf("unknown_command", "unknown_method") || message.contains("unknown command")) -> { onUnsupported(); null }
+                message.contains("too large") || message.contains("exceeds") -> Result.success(FileViewerContent.Unavailable(size, true))
+                message.contains("binary") || message.contains("utf-8") || message.contains("utf8") -> Result.success(FileViewerContent.Unavailable(size))
+                else -> Result.failure(e)
+            }
         }
+    }
+    Column(Modifier.fillMaxSize()) {
+        Text(if (commit == null) rel else "$rel @ ${commit.take(8)}", fontFamily = FontFamily.Monospace, fontSize = 12.sp, color = colors.textSecondary, modifier = Modifier.padding(12.dp))
         val r = result
         when {
             r == null -> Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { LoadingView(stringResource(R.string.common_loading)) }
             r.isFailure -> Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                InlineError(Icons.AutoMirrored.Rounded.InsertDriveFile, stringResource(R.string.files_read_failed), r.exceptionOrNull()?.message ?: stringResource(R.string.files_error), onRetry = { result = null })
+                InlineError(Icons.AutoMirrored.Rounded.InsertDriveFile, stringResource(R.string.files_read_failed), r.exceptionOrNull()?.message ?: stringResource(R.string.files_error), onRetry = { result = null; attempt++ })
             }
-            else -> {
-                val content = r.getOrDefault("")
-                if (content.isEmpty()) {
-                    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { EmptyState(Icons.AutoMirrored.Rounded.InsertDriveFile, stringResource(R.string.files_empty_file), stringResource(R.string.files_empty_file_message)) }
-                } else {
-                    FileContent(content)
-                }
-            }
-        }
-    }
-}
-
-@Composable
-private fun FileContent(content: String) {
-    val colors = CodegTheme.colors
-    val truncationNote = stringResource(R.string.files_truncated_note, 4000)
-    val lines = remember(content, truncationNote) {
-        val all = content.split("\n")
-        if (all.size > 4000) all.take(4000) + truncationNote else all
-    }
-    val gutterWidth = (lines.size.toString().length * 8 + 12).dp
-    LazyColumn(
-        Modifier.fillMaxSize().padding(horizontal = 12.dp).clip(RoundedCornerShape(8.dp)).background(colors.codeSurface).border(1.dp, colors.hairline, RoundedCornerShape(8.dp)),
-    ) {
-        items(lines.size) { i ->
-            Row(Modifier.fillMaxWidth().horizontalScroll(rememberScrollState())) {
-                Text("${i + 1}", fontFamily = FontFamily.Monospace, fontSize = 12.sp, color = colors.textSecondary, modifier = Modifier.width(gutterWidth).padding(start = 6.dp, end = 6.dp))
-                Text(lines[i].ifEmpty { " " }, fontFamily = FontFamily.Monospace, fontSize = 12.sp, color = colors.textSecondary)
-            }
+            else -> r.getOrNull()?.let { FileViewer(it) }
         }
     }
 }
