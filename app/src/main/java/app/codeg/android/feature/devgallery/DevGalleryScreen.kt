@@ -54,11 +54,14 @@ fun DevGalleryScreen(onBack: () -> Unit) {
             key(group, sample) {
                 Box(Modifier.weight(1f).fillMaxWidth()) {
                     if (sample != null) {
-                        // These galleries own a scroll container (or a full-size toaster host).
-                        val ownsScroll = sample in setOf("T44Gallery", "T45Gallery", "T51Gallery", "T52Gallery", "T54Gallery")
+                        // Scroll containers and full-size hosts must receive a bounded viewport.
+                        val ownsScroll = sample in setOf(
+                            "T43Gallery", "T44Gallery", "T45Gallery", "T51Gallery",
+                            "T52Gallery", "T53ImagePreviewGallery", "T54Gallery",
+                        )
                         val modifier = if (ownsScroll) Modifier.fillMaxSize() else
                             Modifier.fillMaxSize().verticalScroll(rememberScrollState())
-                        Column(modifier.padding(16.dp)) { GallerySample(sample!!) }
+                        Box(modifier.padding(16.dp)) { GallerySample(sample!!) }
                     } else {
                         Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(16.dp),
                             verticalArrangement = Arrangement.spacedBy(8.dp)) {
