@@ -3,7 +3,7 @@
 > 本文件是本批次状态的唯一事实来源。原生版代码保存在 tag `native-final`（= UI1 的 sit）；UI1 批次停止，不发版。
 
 ```
-批次 SHELL1：WebView 加载服务端网页，原生只做适配　集成分支：shell　状态：进行中
+批次 SHELL1：WebView 加载服务端网页，原生只做适配　集成分支：shell　状态：已发布（main 7d34737）
 │
 ├─ L0 骨架（协调方）　✅　verify run 39476701724；合入后补 onReceivedSslError 钩子（S6 反馈）
 │     MainActivity → ShellActivityHost → ShellApp → WebView；ShellFeature 插槽 ×8
@@ -21,12 +21,13 @@
 ├─ 真机第一轮（WebView 更新到 156 后）：显示/迁移/返回/深色/自动重连/管理页/剪贴板/上传/下载 ✅；键盘挤掉输入框 ❌、服务器挂掉白屏 ❌、原生界面样式简陋 ⚠️
 │     未测：外链与特殊 scheme、release 包自动更新、局域网 http 剪贴板
 ├─ L2 第二版　[并行 ×4]　任务单 .taskmaster/docs/shell/v2/
-│  ├─ V1 键盘遮挡输入框　🔄　冲突域：shell/display/**
-│  ├─ V2 白屏无错误页 + WebView 版本检查　🔄　冲突域：shell/error/**
-│  ├─ V3 服务器页样式　🔄　冲突域：shell/server/**
-│  └─ V4 上传菜单/下载提示样式　🔄　冲突域：shell/upload/**、shell/download/**
+│  ├─ V1 键盘遮挡输入框　🔗 待复测　冲突域：shell/display/**
+│  ├─ V2 白屏无错误页 + WebView 版本检查　❌ 复测仍白屏　冲突域：shell/error/**
+│  ├─ V3 服务器页样式　🔗 待复测　冲突域：shell/server/**
+│  └─ V4 上传菜单/下载提示样式　🔗 待复测　冲突域：shell/upload/**、shell/download/**
 ├─ 集成：逐个合入 shell → shell CI → 真机统一测试（tests/S1…S8 合并）→ 第二版任务
-└─ 发布：shell 合入 main（待用户确认）
+├─ 网页端：触屏长按嵌套右键菜单重叠，已在 fork 分支修复并在测试服验证
+└─ 发布：用户确认后 shell 合入 main 并推送（2026-10-21）
 ```
 
 ## 运行记录
@@ -42,5 +43,6 @@
 | S7 | 🔗 | faaa58f9-6c43-4bc3-a2e3-6e66705e5fb2 | 会话 95 | task/S7-update | |
 | S8 | 🔗 | a791b454-ea41-461c-adf9-b611d67896fe | 会话 96 | task/S8-web | |
 
-## 待用户决定
-- 外网地址 rhdemo.online:8443 的 nginx 只反代 `/api/`、`/ws/`，没有反代网页本身；套壳通过外网使用前，需要在那台服务器的 nginx 上加 `/` 的反代（属于服务端运维改动，由用户确认后再做）。局域网 / 本机直连不受影响。
+## 备注
+- 外网地址已能直接提供网页（2026-10-21 验证），无需改反向代理。
+- 套壳依赖系统 WebView：测试机原为 83，网页无法运行；更新到 156 后正常。
