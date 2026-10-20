@@ -35,63 +35,62 @@ Source root: `app/src/main/java/app/codeg/android/`
 
 | Line | Declaration |
 |---|---|
-| 50 | `private val Capsule` |
-| 54 | `@Composable fun statusColor(status: ConversationStatus): Color` |
-| 63 | `fun statusLabel(status: ConversationStatus): String` |
-| 73 | `@Composable fun AgentAvatar( agent: AgentType, modifier: Modifier = Modifier, size: Dp = 36.dp, )` |
-| 78 |   `val colors` |
-| 93 | `@Composable fun AgentBadge(agent: AgentType, modifier: Modifier = Modifier)` |
-| 94 |   `val web` |
-| 114 | `@Composable fun StatusBadge(status: ConversationStatus, modifier: Modifier = Modifier)` |
-| 115 |   `val colors` |
-| 140 | `@Composable fun SectionBadgeIcon( icon: ImageVector, tint: Color, modifier: Modifier = Modifier, size: Dp = 26.dp, )` |
-| 163 | `@Composable fun SettingsIconBadge( icon: ImageVector, modifier: Modifier = Modifier, tint: Color = CodegTheme.colors.textPrimary, size: Dp = 28.dp, )` |
-| 182 | `@Composable fun FolderBadge( color: Color, modifier: Modifier = Modifier, size: Dp = 40.dp, )` |
-| 206 | `@Composable fun CountBadge(count: Int, modifier: Modifier = Modifier)` |
-| 207 |   `val web` |
-| 222 | `@Composable fun LivePulse(modifier: Modifier = Modifier, dotSize: Dp = 8.dp)` |
-| 223 |   `val accent` |
-| 224 |   `val transition` |
-| 225 |   `val progress by transition.animateFloat( initialValue = 0f, targetValue = 1f, animationSpec = infiniteRepeatable( animation = tween(durationMillis = 1100), repeatMode = RepeatMode.Restart, ), label = "pulse-progress", )` |
-| 247 | `enum class CodegBadgeVariant` |
-| 250 | `@Composable fun CodegBadge( text: String, variant: CodegBadgeVariant = CodegBadgeVariant.Default, modifier: Modifier = Modifier, )` |
-| 255 |   `val colors` |
-| 256 |   `val web` |
-| 257 |   `val fill` |
-| 263 |   `val foreground` |
-| 279 | `@Composable fun CodegFilterChip( selected: Boolean, label: String, onClick: () -> Unit, modifier: Modifier = Modifier, )` |
-| 290 | `@Composable internal fun T46BadgesGallery()` |
-| 302 | `@Composable private fun BadgesLightPreview()` |
-| 306 | `@Composable private fun BadgesDarkPreview()` |
+| 51 | `private val Capsule` |
+| 55 | `@Composable fun statusColor(status: ConversationStatus): Color` |
+| 64 | `fun statusLabel(status: ConversationStatus): String` |
+| 74 | `@Composable fun AgentAvatar( agent: AgentType, modifier: Modifier = Modifier, size: Dp = 36.dp, )` |
+| 79 |   `val colors` |
+| 94 | `@Composable fun AgentBadge(agent: AgentType, modifier: Modifier = Modifier)` |
+| 95 |   `val web` |
+| 115 | `@Composable fun StatusBadge(status: ConversationStatus, modifier: Modifier = Modifier)` |
+| 116 |   `val colors` |
+| 141 | `@Composable fun SectionBadgeIcon( icon: ImageVector, tint: Color, modifier: Modifier = Modifier, size: Dp = 26.dp, )` |
+| 164 | `@Composable fun SettingsIconBadge( icon: ImageVector, modifier: Modifier = Modifier, tint: Color = CodegTheme.colors.textPrimary, size: Dp = 28.dp, )` |
+| 183 | `@Composable fun FolderBadge( color: Color, modifier: Modifier = Modifier, size: Dp = 40.dp, )` |
+| 207 | `@Composable fun CountBadge(count: Int, modifier: Modifier = Modifier)` |
+| 208 |   `val web` |
+| 223 | `@Composable fun LivePulse(modifier: Modifier = Modifier, dotSize: Dp = 8.dp)` |
+| 224 |   `val accent` |
+| 225 |   `val transition` |
+| 226 |   `val progress by transition.animateFloat( initialValue = 0f, targetValue = 1f, animationSpec = infiniteRepeatable( animation = tween(durationMillis = 1100), repeatMode = RepeatMode.Restart, ), label = "pulse-progress", )` |
+| 248 | `enum class CodegBadgeVariant` |
+| 251 | `@Composable fun CodegBadge( text: String, variant: CodegBadgeVariant = CodegBadgeVariant.Default, modifier: Modifier = Modifier, )` |
+| 256 |   `val colors` |
+| 257 |   `val web` |
+| 258 |   `val fill` |
+| 264 |   `val foreground` |
+| 280 | `@Composable fun CodegFilterChip( selected: Boolean, label: String, onClick: () -> Unit, modifier: Modifier = Modifier, icon: ImageVector? = null, enabled: Boolean = true, )` |
+| 288 |   `val web` |
+| 289 |   `val foreground` |
+| 304 | `@Composable internal fun T46BadgesGallery()` |
+| 316 | `@Composable private fun BadgesLightPreview()` |
+| 320 | `@Composable private fun BadgesDarkPreview()` |
 
 ## core/designsystem/component/Buttons.kt
 
 | Line | Declaration |
 |---|---|
-| 45 | `enum class CodegButtonVariant` |
-| 46 | `enum class CodegButtonSize` |
-| 49 | `@Composable fun CodegButton( onClick: () -> Unit, modifier: Modifier = Modifier, variant: CodegButtonVariant = CodegButtonVariant.Default, size: CodegButtonSize = CodegButtonSize.Default, enabled: Boolean = true, loading: Boolean = false, leadingIcon: (@Composable () -> Unit)? = null, content: @Composable androidx.compose.foundation.layout.RowScope.() -> Unit, )` |
-| 59 |   `val colors` |
-| 60 |   `val web` |
-| 61 |   `val source` |
-| 62 |   `val pressed by source.collectIsPressedAsState()` |
-| 63 |   `val focused by source.collectIsFocusedAsState()` |
-| 64 |   `val background` |
-| 72 |   `val foreground` |
-| 78 |   `val shape` |
-| 79 |   `val height` |
-| 80 |   `val inset` |
-| 104 | `@Composable fun PrimaryButton( text: String, onClick: () -> Unit, modifier: Modifier = Modifier, enabled: Boolean = true, loading: Boolean = false, icon: ImageVector? = null, )` |
-| 122 | `@Composable fun CodegSegmented( options: List<String>, selectedIndex: Int, onSelect: (Int) -> Unit, modifier: Modifier = Modifier, )` |
-| 128 |   `val colors` |
-| 129 |   `val web` |
-| 130 |   `val track` |
-| 131 |   `val tab` |
-| 178 | `@Composable fun CodegFilterChip( label: String, selected: Boolean, onClick: () -> Unit, modifier: Modifier = Modifier, icon: ImageVector? = null, enabled: Boolean = true, )` |
-| 186 |   `val colors` |
-| 187 |   `val web` |
-| 217 | `@Composable private fun ButtonPreview()` |
-| 227 | `@Composable private fun PrimaryButtonPreview()` |
+| 41 | `enum class CodegButtonVariant` |
+| 42 | `enum class CodegButtonSize` |
+| 45 | `@Composable fun CodegButton( onClick: () -> Unit, modifier: Modifier = Modifier, variant: CodegButtonVariant = CodegButtonVariant.Default, size: CodegButtonSize = CodegButtonSize.Default, enabled: Boolean = true, loading: Boolean = false, leadingIcon: (@Composable () -> Unit)? = null, content: @Composable androidx.compose.foundation.layout.RowScope.() -> Unit, )` |
+| 55 |   `val colors` |
+| 56 |   `val web` |
+| 57 |   `val source` |
+| 58 |   `val pressed by source.collectIsPressedAsState()` |
+| 59 |   `val focused by source.collectIsFocusedAsState()` |
+| 60 |   `val background` |
+| 68 |   `val foreground` |
+| 74 |   `val shape` |
+| 75 |   `val height` |
+| 76 |   `val inset` |
+| 100 | `@Composable fun PrimaryButton( text: String, onClick: () -> Unit, modifier: Modifier = Modifier, enabled: Boolean = true, loading: Boolean = false, icon: ImageVector? = null, )` |
+| 118 | `@Composable fun CodegSegmented( options: List<String>, selectedIndex: Int, onSelect: (Int) -> Unit, modifier: Modifier = Modifier, )` |
+| 124 |   `val colors` |
+| 125 |   `val web` |
+| 126 |   `val track` |
+| 127 |   `val tab` |
+| 170 | `@Composable private fun ButtonPreview()` |
+| 180 | `@Composable private fun PrimaryButtonPreview()` |
 
 ## core/designsystem/component/Cards.kt
 
@@ -161,31 +160,35 @@ Source root: `app/src/main/java/app/codeg/android/`
 
 | Line | Declaration |
 |---|---|
-| 34 | `@Composable fun CodegSelect(label: String, value: String, options: List<String>, onSelect: (String) -> Unit, modifier: Modifier = Modifier, enabled: Boolean = true, )` |
-| 39 | `@Composable fun CodegCombobox(label: String, value: String, options: List<String>, onSelect: (String) -> Unit, modifier: Modifier = Modifier, enabled: Boolean = true, )` |
-| 45 | `@Composable private fun ChoiceControl(label: String, value: String, options: List<String>, onSelect: (String) -> Unit, modifier: Modifier, enabled: Boolean, searchable: Boolean, )` |
-| 48 |   `var expanded by remember` |
-| 49 |   `var query by remember` |
-| 50 |   `val web` |
-| 83 | `@Composable fun CodegRadioGroup(options: List<String>, value: String, onSelect: (String) -> Unit, modifier: Modifier = Modifier, enabled: Boolean = true, )` |
-| 86 |   `val web` |
-| 102 | `@Composable fun CodegCheckbox(checked: Boolean, onCheckedChange: (Boolean) -> Unit, modifier: Modifier = Modifier, enabled: Boolean = true, label: String? = null, )` |
-| 105 |   `val web` |
-| 106 |   `val shape` |
-| 119 | `@Composable fun CodegSwitch(checked: Boolean, onCheckedChange: (Boolean) -> Unit, modifier: Modifier = Modifier, enabled: Boolean = true, label: String? = null, )` |
-| 122 |   `val web` |
-| 136 | `@Composable internal fun T45Gallery()` |
-| 137 |   `val example` |
-| 138 |   `val options` |
-| 139 |   `var value by remember` |
-| 140 |   `var text by remember` |
-| 141 |   `var checked by remember` |
-| 179 | `@Composable private fun T45Preview()` |
-| 184 | `@Composable private fun SelectPreview()` |
-| 194 | `@Composable private fun ComboboxPreview()` |
-| 204 | `@Composable private fun RadioGroupPreview()` |
-| 214 | `@Composable private fun CheckboxPreview()` |
-| 224 | `@Composable private fun SwitchPreview()` |
+| 33 | `@Composable fun CodegSelect(label: String, value: String, options: List<String>, onSelect: (String) -> Unit, modifier: Modifier = Modifier, enabled: Boolean = true, )` |
+| 38 | `@Composable fun CodegCombobox(label: String, value: String, options: List<String>, onSelect: (String) -> Unit, modifier: Modifier = Modifier, enabled: Boolean = true, )` |
+| 43 | `@Composable fun <T> CodegSelect(label: String, selected: T?, options: List<T>, optionLabel: (T) -> String, onSelect: (T) -> Unit, modifier: Modifier = Modifier, enabled: Boolean = true, optionDescription: ((T) -> String?)? = null, key: ((T) -> Any)? = null, )` |
+| 49 | `@Composable fun <T> CodegCombobox(label: String, selected: T?, options: List<T>, optionLabel: (T) -> String, onSelect: (T) -> Unit, modifier: Modifier = Modifier, enabled: Boolean = true, optionDescription: ((T) -> String?)? = null, key: ((T) -> Any)? = null, )` |
+| 54 | `internal fun <T> choiceMatches(option: T, query: String, label: (T) -> String, description: ((T) -> String?)? = null, ): Boolean` |
+| 59 | `internal fun <T> choiceSelected(option: T, selected: T?, key: ((T) -> Any)? = null): Boolean` |
+| 64 | `@Composable private fun <T> ChoiceControl(label: String, value: T?, options: List<T>, optionLabel: (T) -> String, onSelect: (T) -> Unit, modifier: Modifier, enabled: Boolean, searchable: Boolean, optionDescription: ((T) -> String?)?, optionKey: ((T) -> Any)?, )` |
+| 68 |   `var expanded by remember` |
+| 69 |   `var query by remember` |
+| 70 |   `val web` |
+| 109 | `@Composable fun CodegRadioGroup(options: List<String>, value: String, onSelect: (String) -> Unit, modifier: Modifier = Modifier, enabled: Boolean = true, )` |
+| 112 |   `val web` |
+| 128 | `@Composable fun CodegCheckbox(checked: Boolean, onCheckedChange: (Boolean) -> Unit, modifier: Modifier = Modifier, enabled: Boolean = true, label: String? = null, )` |
+| 131 |   `val web` |
+| 132 |   `val shape` |
+| 145 | `@Composable fun CodegSwitch(checked: Boolean, onCheckedChange: (Boolean) -> Unit, modifier: Modifier = Modifier, enabled: Boolean = true, label: String? = null, )` |
+| 148 |   `val web` |
+| 162 | `@Composable internal fun T45Gallery()` |
+| 163 |   `val example` |
+| 164 |   `val options` |
+| 165 |   `var value by remember` |
+| 166 |   `var text by remember` |
+| 167 |   `var checked by remember` |
+| 214 | `@Composable private fun T45Preview()` |
+| 219 | `@Composable private fun SelectPreview()` |
+| 229 | `@Composable private fun ComboboxPreview()` |
+| 239 | `@Composable private fun RadioGroupPreview()` |
+| 249 | `@Composable private fun CheckboxPreview()` |
+| 259 | `@Composable private fun SwitchPreview()` |
 
 ## core/designsystem/component/Dialogs.kt
 
@@ -193,35 +196,42 @@ Source root: `app/src/main/java/app/codeg/android/`
 |---|---|
 | 31 | `@Composable fun CodegDialog( title: String, description: String? = null, onDismiss: () -> Unit, footer: @Composable RowScope.() -> Unit = {}, content: @Composable ColumnScope.() -> Unit = {}, )` |
 | 69 | `@Composable internal fun T44PanelHeading(title: String, description: String?)` |
-| 78 | `@Composable fun CodegConfirmDialog( title: String, message: String, target: String, confirmLabel: String, destructive: Boolean = false, onConfirm: () -> Unit, onDismiss: () -> Unit, )` |
-| 87 |   `val web` |
-| 101 | `@Composable internal fun T44Gallery()` |
-| 102 |   `var panel by remember` |
-| 103 |   `val title` |
-| 104 |   `val description` |
-| 105 |   `val confirm` |
-| 114 |   `val dismiss` |
-| 132 | `@Composable private fun DialogLightPreview()` |
-| 138 | `@Composable private fun DialogDarkPreview()` |
-| 144 | `@Composable private fun ConfirmLightPreview()` |
-| 147 | `@Composable private fun ConfirmDarkPreview()` |
-| 149 | `@Composable private fun T44ConfirmPreview()` |
+| 78 | `@Composable fun CodegConfirmDialog( title: String, message: String, target: String, confirmLabel: String, destructive: Boolean = false, onConfirm: () -> Unit, onDismiss: () -> Unit, confirmEnabled: Boolean = true, busy: Boolean = false, content: (@Composable ColumnScope.() -> Unit)? = null, )` |
+| 90 |   `val web` |
+| 105 | `@Composable internal fun T44Gallery()` |
+| 106 |   `var panel by remember` |
+| 107 |   `val title` |
+| 108 |   `val description` |
+| 109 |   `val confirm` |
+| 119 |   `val dismiss` |
+| 140 | `@Composable private fun DialogLightPreview()` |
+| 146 | `@Composable private fun DialogDarkPreview()` |
+| 152 | `@Composable private fun ConfirmLightPreview()` |
+| 155 | `@Composable private fun ConfirmDarkPreview()` |
+| 157 | `@Composable private fun T44ConfirmPreview()` |
 
 ## core/designsystem/component/Feedback.kt
 
 | Line | Declaration |
 |---|---|
-| 34 | `@Composable fun CodegSeparator(modifier: Modifier = Modifier, vertical: Boolean = false)` |
-| 41 | `@Composable fun CodegSkeleton(modifier: Modifier = Modifier)` |
-| 42 |   `val transition` |
-| 43 |   `val opacity by transition.animateFloat(1f, 0.5f, infiniteRepeatable(tween(1000), RepeatMode.Reverse), label = "skeleton-opacity")` |
-| 48 | `internal fun normalizedProgress(progress: Float): Float` |
-| 53 | `@Composable fun CodegProgress(progress: Float, modifier: Modifier = Modifier)` |
-| 54 |   `val value` |
-| 55 |   `val web` |
-| 64 | `@Composable internal fun T46FeedbackGallery()` |
-| 78 | `@Composable private fun FeedbackLightPreview()` |
-| 82 | `@Composable private fun FeedbackDarkPreview()` |
+| 38 | `@Composable fun CodegSeparator(modifier: Modifier = Modifier, vertical: Boolean = false)` |
+| 45 | `@Composable fun CodegSkeleton(modifier: Modifier = Modifier)` |
+| 46 |   `val transition` |
+| 47 |   `val opacity by transition.animateFloat(1f, 0.5f, infiniteRepeatable(tween(1000), RepeatMode.Reverse), label = "skeleton-opacity")` |
+| 52 | `internal fun normalizedProgress(progress: Float): Float` |
+| 57 | `@Composable fun CodegProgress(progress: Float, modifier: Modifier = Modifier)` |
+| 58 |   `val value` |
+| 59 |   `val web` |
+| 69 | `@Composable fun CodegProgress(modifier: Modifier = Modifier)` |
+| 70 |   `val transition` |
+| 71 |   `val position by transition.animateFloat(-.35f, 1f, infiniteRepeatable(tween(1200, easing = LinearEasing)), label = "progress-position")` |
+| 73 |   `val web` |
+| 83 | `@Composable fun CodegSpinner(modifier: Modifier = Modifier, size: Dp = 16.dp)` |
+| 84 |   `val transition` |
+| 85 |   `val angle by transition.animateFloat(0f, 360f, infiniteRepeatable(tween(1000, easing = LinearEasing)), label = "spinner-angle")` |
+| 92 | `@Composable internal fun T46FeedbackGallery()` |
+| 109 | `@Composable private fun FeedbackLightPreview()` |
+| 113 | `@Composable private fun FeedbackDarkPreview()` |
 
 ## core/designsystem/component/FileViewer.kt
 
@@ -302,25 +312,25 @@ Source root: `app/src/main/java/app/codeg/android/`
 
 | Line | Declaration |
 |---|---|
-| 40 | `@Composable fun CodegListRow( title: String, onClick: () -> Unit, modifier: Modifier = Modifier, subtitle: String? = null, selected: Boolean = false, leading: (@Composable () -> Unit)? = null, trailing: (@Composable () -> Unit)? = null, onLongClick: (() -> Unit)? = null, onMoreClick: (() -> Unit)? = null, )` |
-| 51 |   `val web` |
-| 52 |   `val interactions` |
-| 53 |   `val pressed by interactions.collectIsPressedAsState()` |
-| 54 |   `val foreground` |
-| 84 | `@Composable fun CodegRowMoreButton( onClick: () -> Unit, modifier: Modifier = Modifier, contentDescription: String = stringResource(R.string.ds_rows_more), )` |
-| 89 |   `val web` |
-| 90 |   `val interactions` |
-| 91 |   `val pressed by interactions.collectIsPressedAsState()` |
-| 102 | `@Composable fun CodegSectionHeader( title: String, count: Int? = null, action: (@Composable () -> Unit)? = null, collapsed: Boolean = false, modifier: Modifier = Modifier, onToggle: (() -> Unit)? = null, )` |
-| 110 |   `val web` |
-| 111 |   `val state` |
-| 136 | `@Composable internal fun T46RowsGallery()` |
-| 137 |   `var collapsed by remember` |
-| 138 |   `var selected by remember` |
-| 139 |   `val title` |
-| 156 | `@Composable internal fun T46Gallery()` |
-| 168 | `@Composable private fun RowsLightPreview()` |
-| 172 | `@Composable private fun RowsDarkPreview()` |
+| 39 | `@Composable fun CodegListRow( title: String, onClick: () -> Unit, modifier: Modifier = Modifier, subtitle: String? = null, selected: Boolean = false, leading: (@Composable () -> Unit)? = null, trailing: (@Composable () -> Unit)? = null, onLongClick: (() -> Unit)? = null, onMoreClick: (() -> Unit)? = null, titleMaxLines: Int = 1, subtitleMaxLines: Int = 1, )` |
+| 52 |   `val web` |
+| 53 |   `val interactions` |
+| 54 |   `val pressed by interactions.collectIsPressedAsState()` |
+| 55 |   `val foreground` |
+| 85 | `@Composable fun CodegRowMoreButton( onClick: () -> Unit, modifier: Modifier = Modifier, contentDescription: String = stringResource(R.string.ds_rows_more), )` |
+| 90 |   `val web` |
+| 91 |   `val interactions` |
+| 92 |   `val pressed by interactions.collectIsPressedAsState()` |
+| 103 | `@Composable fun CodegSectionHeader( title: String, count: Int? = null, action: (@Composable () -> Unit)? = null, collapsed: Boolean = false, modifier: Modifier = Modifier, onToggle: (() -> Unit)? = null, )` |
+| 111 |   `val web` |
+| 112 |   `val state` |
+| 137 | `@Composable internal fun T46RowsGallery()` |
+| 138 |   `var collapsed by remember` |
+| 139 |   `var selected by remember` |
+| 140 |   `val title` |
+| 158 | `@Composable internal fun T46Gallery()` |
+| 170 | `@Composable private fun RowsLightPreview()` |
+| 174 | `@Composable private fun RowsDarkPreview()` |
 
 ## core/designsystem/component/Menus.kt
 
@@ -430,18 +440,17 @@ Source root: `app/src/main/java/app/codeg/android/`
 
 | Line | Declaration |
 |---|---|
-| 45 | `@Composable fun CodegTextField( value: String, onValueChange: (String) -> Unit, label: String, modifier: Modifier = Modifier, placeholder: String? = null, keyboardType: KeyboardType = KeyboardType.Text, mono: Boolean = false, singleLine: Boolean = true, isError: Boolean = false, supportingText: String? = null, )` |
-| 57 |   `val colors` |
-| 76 | `@Composable fun SecretField( value: String, onValueChange: (String) -> Unit, label: String, modifier: Modifier = Modifier, )` |
-| 82 |   `var visible by remember` |
-| 107 | `@Composable private fun fieldColors(): TextFieldColors` |
-| 108 |   `val colors` |
-| 109 |   `val web` |
-| 127 | `@Composable fun CodegField( label: String, description: String? = null, error: String? = null, modifier: Modifier = Modifier, content: @Composable () -> Unit, )` |
-| 134 |   `val web` |
-| 146 | `@Composable private fun TextFieldPreview()` |
-| 156 | `@Composable private fun FieldPreview()` |
-| 166 | `@Composable private fun SecretFieldPreview()` |
+| 45 | `@Composable fun CodegTextField( value: String, onValueChange: (String) -> Unit, label: String, modifier: Modifier = Modifier, placeholder: String? = null, keyboardType: KeyboardType = KeyboardType.Text, mono: Boolean = false, singleLine: Boolean = true, isError: Boolean = false, supportingText: String? = null, enabled: Boolean = true, readOnly: Boolean = false, keyboardOptions: KeyboardOptions? = null, keyboardActions: KeyboardActions = KeyboardActions.Default, leading: (@Composable () -> Unit)? = null, trailing: (@Composable () -> Unit)? = null, minLines: Int = 1, maxLines: Int = if (singleLine) 1 else Int.MAX_VALUE, )` |
+| 90 | `@Composable fun SecretField( value: String, onValueChange: (String) -> Unit, label: String, modifier: Modifier = Modifier, )` |
+| 96 |   `var visible by remember` |
+| 121 | `@Composable private fun fieldColors(): TextFieldColors` |
+| 122 |   `val colors` |
+| 123 |   `val web` |
+| 146 | `@Composable fun CodegField( label: String, description: String? = null, error: String? = null, modifier: Modifier = Modifier, content: @Composable () -> Unit, )` |
+| 153 |   `val web` |
+| 165 | `@Composable private fun TextFieldPreview()` |
+| 175 | `@Composable private fun FieldPreview()` |
+| 185 | `@Composable private fun SecretFieldPreview()` |
 
 ## core/designsystem/component/Toasts.kt
 
