@@ -53,6 +53,7 @@ import app.codeg.android.core.designsystem.component.InlineError
 import app.codeg.android.core.designsystem.component.LoadingView
 import app.codeg.android.core.designsystem.diff.DiffView
 import app.codeg.android.core.designsystem.diff.UnifiedDiff
+import app.codeg.android.core.designsystem.theme.withOpacity
 import app.codeg.android.core.designsystem.theme.CodegTheme
 import app.codeg.android.core.model.GitLogEntry
 import app.codeg.android.core.model.GitLogResult
@@ -131,7 +132,7 @@ fun FolderCommitsView(viewModel: ProjectDetailViewModel, client: CodegClient, ro
                         LazyColumn(Modifier.fillMaxSize(), contentPadding = PaddingValues(horizontal = 12.dp, vertical = 4.dp)) {
                             items(log.entries, key = { it.fullHash }) { entry -> CommitRow(entry) { commit = entry } }
                             if (log.entries.size >= 50) item("more") {
-                                Text(stringResource(R.string.commits_showing_latest_50), fontSize = 11.sp, color = CodegTheme.colors.textTertiary, modifier = Modifier.fillMaxWidth().padding(12.dp))
+                                Text(stringResource(R.string.commits_showing_latest_50), fontSize = 12.sp, color = CodegTheme.colors.textSecondary, modifier = Modifier.fillMaxWidth().padding(12.dp))
                             }
                         }
                     }
@@ -161,12 +162,12 @@ private fun SyncHeader(
             Icon(Icons.AutoMirrored.Rounded.CallSplit, contentDescription = null, tint = colors.textSecondary, modifier = Modifier.size(14.dp))
             Text(branch ?: "—", fontSize = 12.sp, fontWeight = FontWeight.Medium, color = colors.textPrimary, fontFamily = FontFamily.Monospace)
             if (trackingRemote != null) {
-                Text("→", fontSize = 12.sp, color = colors.textTertiary)
+                Text("→", fontSize = 12.sp, color = colors.textSecondary)
                 Text(trackingRemote, fontSize = 12.sp, color = colors.textSecondary, fontFamily = FontFamily.Monospace)
             }
             Box(Modifier.weight(1f))
             if (!hasRemote) {
-                Text(stringResource(R.string.sync_no_remote), fontSize = 11.sp, color = colors.textTertiary)
+                Text(stringResource(R.string.sync_no_remote), fontSize = 12.sp, color = colors.textSecondary)
             }
         }
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -187,12 +188,12 @@ private fun SyncButton(
     badge: Int? = null,
 ) {
     val colors = CodegTheme.colors
-    val tint = if (enabled) colors.accent else colors.textTertiary
+    val tint = if (enabled) colors.accent else colors.textSecondary
     Row(
         modifier
             .clip(RoundedCornerShape(8.dp))
             .border(1.dp, colors.surfaceStroke, RoundedCornerShape(8.dp))
-            .background(if (enabled) colors.accent.copy(alpha = 0.08f) else Color.Transparent)
+            .background(if (enabled) colors.accent.withOpacity(0.08f) else Color.Transparent)
             .clickable(enabled = enabled) { onClick() }
             .padding(vertical = 9.dp),
         horizontalArrangement = Arrangement.Center,
@@ -203,7 +204,7 @@ private fun SyncButton(
         if (badge != null) {
             Text(
                 badge.toString(),
-                fontSize = 10.sp,
+                fontSize = 12.sp,
                 fontWeight = FontWeight.Bold,
                 color = colors.onAccent,
                 modifier = Modifier.padding(start = 5.dp).clip(RoundedCornerShape(50)).background(colors.accent).padding(horizontal = 5.dp, vertical = 1.dp),
@@ -219,16 +220,16 @@ private fun CommitRow(entry: GitLogEntry, onClick: () -> Unit) {
         headlineContent = { Text(entry.subject, fontSize = 14.sp, fontWeight = FontWeight.Medium, maxLines = 2) },
         supportingContent = {
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                Text(entry.author, fontSize = 11.sp, color = colors.textTertiary, maxLines = 1)
-                Text(relativeDate(entry.date), fontSize = 11.sp, color = colors.textTertiary)
-                if (entry.totalAdditions > 0) Text("+${entry.totalAdditions}", fontSize = 11.sp, color = Color_Add)
-                if (entry.totalDeletions > 0) Text("−${entry.totalDeletions}", fontSize = 11.sp, color = colors.danger)
+                Text(entry.author, fontSize = 12.sp, color = colors.textSecondary, maxLines = 1)
+                Text(relativeDate(entry.date), fontSize = 12.sp, color = colors.textSecondary)
+                if (entry.totalAdditions > 0) Text("+${entry.totalAdditions}", fontSize = 12.sp, color = colors.accent)
+                if (entry.totalDeletions > 0) Text("−${entry.totalDeletions}", fontSize = 12.sp, color = colors.danger)
                 Box(Modifier.weight(1f))
-                Text(entry.hash, fontFamily = FontFamily.Monospace, fontSize = 10.sp, color = colors.textTertiary, modifier = Modifier.clip(RoundedCornerShape(50)).background(colors.textPrimary.copy(alpha = 0.06f)).padding(horizontal = 6.dp, vertical = 1.dp))
+                Text(entry.hash, fontFamily = FontFamily.Monospace, fontSize = 12.sp, color = colors.textSecondary, modifier = Modifier.clip(RoundedCornerShape(50)).background(colors.web.muted).padding(horizontal = 6.dp, vertical = 1.dp))
             }
         },
         trailingContent = entry.pushed?.let { pushed ->
-            { Icon(if (pushed) Icons.Rounded.Cloud else Icons.Rounded.CloudOff, null, tint = colors.textTertiary, modifier = Modifier.size(14.dp)) }
+            { Icon(if (pushed) Icons.Rounded.Cloud else Icons.Rounded.CloudOff, null, tint = colors.textSecondary, modifier = Modifier.size(14.dp)) }
         },
         colors = ListItemDefaults.colors(containerColor = Color.Transparent, headlineColor = colors.textPrimary),
         modifier = Modifier.clip(RoundedCornerShape(8.dp)).clickable { onClick() },
@@ -248,11 +249,11 @@ private fun CommitDetail(client: CodegClient, rootPath: String, entry: GitLogEnt
                 if (entry.body.isNotEmpty()) Text(entry.body, fontSize = 13.sp, color = colors.textSecondary)
                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     Text(entry.author, fontSize = 12.sp, color = colors.textSecondary)
-                    Text(relativeDate(entry.date), fontSize = 12.sp, color = colors.textTertiary)
-                    entry.pushed?.let { Icon(if (it) Icons.Rounded.Cloud else Icons.Rounded.CloudOff, null, tint = colors.textTertiary, modifier = Modifier.size(13.dp)) }
+                    Text(relativeDate(entry.date), fontSize = 12.sp, color = colors.textSecondary)
+                    entry.pushed?.let { Icon(if (it) Icons.Rounded.Cloud else Icons.Rounded.CloudOff, null, tint = colors.textSecondary, modifier = Modifier.size(13.dp)) }
                 }
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(entry.fullHash, fontFamily = FontFamily.Monospace, fontSize = 11.sp, color = colors.textTertiary, maxLines = 1, modifier = Modifier.weight(1f, fill = false))
+                    Text(entry.fullHash, fontFamily = FontFamily.Monospace, fontSize = 12.sp, color = colors.textSecondary, maxLines = 1, modifier = Modifier.weight(1f, fill = false))
                     CopyButton(entry.fullHash)
                 }
             }
@@ -268,7 +269,7 @@ private fun CommitDetail(client: CodegClient, rootPath: String, entry: GitLogEnt
                     val files = UnifiedDiff.parse(r.getOrDefault(""))
                     if (files != null) DiffView(files)
                     else Column(verticalArrangement = Arrangement.spacedBy(3.dp)) {
-                        for (f in entry.files) Text("${f.status}  ${f.path}   +${f.additions} −${f.deletions}", fontFamily = FontFamily.Monospace, fontSize = 11.sp, color = colors.textSecondary)
+                        for (f in entry.files) Text("${f.status}  ${f.path}   +${f.additions} −${f.deletions}", fontFamily = FontFamily.Monospace, fontSize = 12.sp, color = colors.textSecondary)
                     }
                 }
             }
@@ -276,7 +277,6 @@ private fun CommitDetail(client: CodegClient, rootPath: String, entry: GitLogEnt
     }
 }
 
-private val Color_Add = Color(0xFF85D18F)
 
 private fun relativeDate(iso: String): String =
     runCatching { RelativeTime.compact(OffsetDateTime.parse(iso).toInstant()) }.getOrDefault(iso.take(10))

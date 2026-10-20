@@ -20,11 +20,10 @@ import androidx.compose.material.icons.rounded.Key
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
+import app.codeg.android.core.designsystem.component.CodegIconButton
+import app.codeg.android.core.designsystem.component.CodegTopBar
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
@@ -47,6 +46,7 @@ import app.codeg.android.R
 import app.codeg.android.core.designsystem.component.CodegTextField
 import app.codeg.android.core.designsystem.component.PrimaryButton
 import app.codeg.android.core.designsystem.component.SecretField
+import app.codeg.android.core.designsystem.theme.withOpacity
 import app.codeg.android.core.designsystem.theme.CodegTheme
 import app.codeg.android.core.model.GitCredentials
 import app.codeg.android.core.network.displayMessage
@@ -128,24 +128,24 @@ fun GitCredentialSheet(
 
     Dialog(onDismissRequest = { viewModel.cancelCredentials() }, properties = DialogProperties(usePlatformDefaultWidth = false)) {
         Column(Modifier.fillMaxSize().background(colors.bg).windowInsetsPadding(WindowInsets.safeDrawing)) {
-            TopAppBar(
-                title = { Text(stringResource(if (prompt.github) R.string.cred_title_github else R.string.cred_title_generic)) },
+            CodegTopBar(
+                title = stringResource(if (prompt.github) R.string.cred_title_github else R.string.cred_title_generic),
                 navigationIcon = {
-                    IconButton(onClick = { viewModel.cancelCredentials() }, enabled = !submitting) {
+                    CodegIconButton(onClick = { viewModel.cancelCredentials() }, enabled = !submitting) {
                         Icon(Icons.Rounded.Close, contentDescription = stringResource(R.string.common_cancel), tint = colors.textPrimary)
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent, titleContentColor = colors.textPrimary),
+                showDivider = true,
             )
             Column(
                 Modifier.weight(1f).fillMaxWidth().verticalScroll(rememberScrollState()).padding(horizontal = 16.dp),
                 verticalArrangement = Arrangement.spacedBy(14.dp),
             ) {
                 if (prompt.isRetry) {
-                    Banner(stringResource(R.string.cred_retry_hint), WarnTint, colors.textSecondary)
+                    Banner(stringResource(R.string.cred_retry_hint), colors.textSecondary, colors.textSecondary)
                 }
                 if (prompt.github) {
-                    Text(stringResource(R.string.cred_github_footer, hostLabel), fontSize = 12.sp, color = colors.textTertiary)
+                    Text(stringResource(R.string.cred_github_footer, hostLabel), fontSize = 12.sp, color = colors.textSecondary)
                     Row(verticalAlignment = Alignment.Bottom, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                         SecretField(token, { token = it }, label = stringResource(R.string.cred_token_label), modifier = Modifier.weight(1f))
                         TextButton(onClick = {
@@ -156,7 +156,7 @@ fun GitCredentialSheet(
                         }
                     }
                 } else {
-                    Text(stringResource(R.string.cred_generic_footer, hostLabel), fontSize = 12.sp, color = colors.textTertiary)
+                    Text(stringResource(R.string.cred_generic_footer, hostLabel), fontSize = 12.sp, color = colors.textSecondary)
                     CodegTextField(username, { username = it }, label = stringResource(R.string.cred_username))
                     SecretField(password, { password = it }, label = stringResource(R.string.cred_password_label))
                     Row(
@@ -181,14 +181,12 @@ fun GitCredentialSheet(
     }
 }
 
-private val WarnTint = Color(0xFFF0A030)
-
 @Composable
 private fun Banner(message: String, tint: Color, textColor: Color) {
     Text(
         message,
         fontSize = 13.sp,
         color = textColor,
-        modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(8.dp)).background(tint.copy(alpha = 0.12f)).padding(12.dp),
+        modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(8.dp)).background(tint.withOpacity(0.12f)).padding(12.dp),
     )
 }

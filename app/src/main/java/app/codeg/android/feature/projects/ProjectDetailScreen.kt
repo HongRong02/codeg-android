@@ -18,12 +18,11 @@ import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.FolderOpen
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
+import app.codeg.android.core.designsystem.component.CodegIconButton
+import app.codeg.android.core.designsystem.component.CodegTopBar
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
@@ -42,12 +41,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import app.codeg.android.feature.projects.git.GitActionsMenu
 import app.codeg.android.R
 import app.codeg.android.core.designsystem.component.CodegSegmented
 import app.codeg.android.core.designsystem.component.CountBadge
 import app.codeg.android.core.designsystem.component.InlineError
 import app.codeg.android.core.designsystem.component.LivePulse
 import app.codeg.android.core.designsystem.component.LoadingView
+import app.codeg.android.core.designsystem.theme.withOpacity
 import app.codeg.android.core.designsystem.theme.CodegTheme
 import app.codeg.android.core.designsystem.theme.colorFromHex
 
@@ -97,14 +98,20 @@ fun ProjectDetailScreen(
         containerColor = Color.Transparent,
         contentWindowInsets = WindowInsets(0, 0, 0, 0),
         topBar = {
-            TopAppBar(
-                title = { Text(ui.folder?.name ?: stringResource(R.string.tab_folders), maxLines = 1, overflow = TextOverflow.Ellipsis) },
+            CodegTopBar(
+                title = ui.folder?.name ?: stringResource(R.string.tab_folders),
                 navigationIcon = {
-                    IconButton(onClick = onBack) {
+                    CodegIconButton(onClick = onBack) {
                         Icon(Icons.AutoMirrored.Rounded.ArrowBack, contentDescription = stringResource(R.string.common_back), tint = colors.textPrimary)
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent, titleContentColor = colors.textPrimary),
+                showDivider = true,
+                actions = {
+                    GitActionsMenu(
+                        onSwitchBranch = { showBranchPicker = true },
+                        enabled = ui.folder != null && !ui.loading,
+                    )
+                },
             )
         },
     ) { padding ->
@@ -115,7 +122,7 @@ fun ProjectDetailScreen(
                     Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { LoadingView(stringResource(R.string.common_loading)) }
                 folder == null ->
                     Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                        InlineError(Icons.Rounded.FolderOpen, stringResource(R.string.projects_load_failed), ui.error ?: "Folder not found", viewModel::load)
+                        InlineError(Icons.Rounded.FolderOpen, stringResource(R.string.projects_load_failed), ui.error ?: stringResource(R.string.projects_load_failed), viewModel::load)
                     }
                 else -> Column(Modifier.fillMaxSize()) {
                     Header(
@@ -152,15 +159,15 @@ private fun Header(name: String, path: String, color: Color, branch: String?, ru
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(12.dp),
     ) {
-        Box(Modifier.size(48.dp).clip(RoundedCornerShape(14.dp)).background(color.copy(alpha = 0.22f)).border(1.dp, color.copy(alpha = 0.45f), RoundedCornerShape(14.dp)))
+        Box(Modifier.size(48.dp).clip(RoundedCornerShape(14.dp)).background(color.withOpacity(0.22f)).border(1.dp, color.withOpacity(0.45f), RoundedCornerShape(14.dp)))
         Column(Modifier.weight(1f)) {
             Text(name, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold, color = colors.textPrimary, maxLines = 1, overflow = TextOverflow.Ellipsis)
-            Text(path, fontFamily = FontFamily.Monospace, fontSize = 11.sp, color = colors.textTertiary, maxLines = 1, overflow = TextOverflow.Ellipsis)
+            Text(path, fontFamily = FontFamily.Monospace, fontSize = 12.sp, color = colors.textSecondary, maxLines = 1, overflow = TextOverflow.Ellipsis)
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.padding(top = 4.dp)) {
                 branch?.let { Box(Modifier.clip(RoundedCornerShape(50)).clickable { onBranchClick() }) { BranchPill(it) } }
                 if (running > 0) {
                     Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(3.dp)) {
-                        LivePulse(dotSize = 7.dp); Text("$running", fontSize = 11.sp, color = colors.accent)
+                        LivePulse(dotSize = 7.dp); Text("$running", fontSize = 12.sp, color = colors.accent)
                     }
                 }
                 if (sessions > 0) CountBadge(sessions)

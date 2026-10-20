@@ -42,8 +42,10 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import app.codeg.android.core.designsystem.component.CodegTopBar
 import app.codeg.android.R
 import app.codeg.android.core.designsystem.component.CodegTextField
+import app.codeg.android.core.designsystem.theme.withOpacity
 import app.codeg.android.core.designsystem.theme.CodegTheme
 
 /**
@@ -77,7 +79,7 @@ fun BranchPickerSheet(viewModel: ProjectDetailViewModel, onDismiss: () -> Unit) 
 
     ModalBottomSheet(onDismissRequest = onDismiss, sheetState = sheetState, containerColor = colors.bgElevated) {
         Column(Modifier.fillMaxWidth().heightIn(max = 520.dp).padding(horizontal = 16.dp).padding(bottom = 28.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-            Text(stringResource(R.string.branch_switch_branch), fontSize = 18.sp, fontWeight = FontWeight.SemiBold, color = colors.textPrimary)
+            CodegTopBar(title = stringResource(R.string.branch_switch_branch), showDivider = true)
             error?.let { Text(it, fontSize = 12.sp, color = colors.danger) }
 
             // New branch.
@@ -90,8 +92,8 @@ fun BranchPickerSheet(viewModel: ProjectDetailViewModel, onDismiss: () -> Unit) 
                     },
                     enabled = newBranch.isNotBlank() && !busy,
                     modifier = Modifier.size(48.dp),
-                    shape = RoundedCornerShape(14.dp),
-                    colors = IconButtonDefaults.filledIconButtonColors(containerColor = colors.accent.copy(alpha = 0.16f), contentColor = colors.accent),
+                    shape = RoundedCornerShape(CodegTheme.dimens.radiusMd),
+                    colors = IconButtonDefaults.filledIconButtonColors(containerColor = colors.accent.withOpacity(0.16f), contentColor = colors.accent),
                 ) { Icon(Icons.Rounded.Add, stringResource(R.string.branch_create_branch)) }
             }
 
@@ -111,7 +113,7 @@ fun BranchPickerSheet(viewModel: ProjectDetailViewModel, onDismiss: () -> Unit) 
 
 @Composable
 private fun SectionLabel(text: String) {
-    Text(text, fontSize = 11.sp, fontWeight = FontWeight.SemiBold, color = CodegTheme.colors.textTertiary, modifier = Modifier.padding(top = 8.dp, start = 4.dp, bottom = 2.dp))
+    Text(text, fontSize = 12.sp, fontWeight = FontWeight.SemiBold, color = CodegTheme.colors.textSecondary, modifier = Modifier.padding(top = 8.dp, start = 4.dp, bottom = 2.dp))
 }
 
 @Composable

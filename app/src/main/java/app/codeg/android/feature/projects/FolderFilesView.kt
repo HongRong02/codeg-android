@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -83,7 +84,7 @@ fun FolderFilesView(client: CodegClient, rootPath: String) {
                 if (stack.size > 1) {
                     item("up") {
                         Row(
-                            Modifier.fillMaxWidth().clip(RoundedCornerShape(8.dp)).clickable { stack = stack.dropLast(1) }.padding(8.dp),
+                            Modifier.fillMaxWidth().clip(RoundedCornerShape(8.dp)).clickable { stack = stack.dropLast(1) }.heightIn(min = 48.dp).padding(8.dp),
                             verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp),
                         ) {
                             Icon(Icons.Rounded.ArrowUpward, null, tint = colors.textSecondary, modifier = Modifier.size(20.dp))
@@ -118,7 +119,7 @@ private fun FileRow(item: DirectoryItem, onClick: () -> Unit) {
                 modifier = Modifier.size(20.dp),
             )
         },
-        trailingContent = sizeLabel?.let { { Text(it, fontSize = 11.sp, color = colors.textTertiary) } },
+        trailingContent = sizeLabel?.let { { Text(it, fontSize = 12.sp, color = colors.textSecondary) } },
         colors = ListItemDefaults.colors(containerColor = Color.Transparent, headlineColor = colors.textPrimary),
         modifier = Modifier.clip(RoundedCornerShape(8.dp)).clickable { onClick() },
     )
@@ -168,7 +169,7 @@ private fun FileContent(content: String) {
     ) {
         items(lines.size) { i ->
             Row(Modifier.fillMaxWidth().horizontalScroll(rememberScrollState())) {
-                Text("${i + 1}", fontFamily = FontFamily.Monospace, fontSize = 11.sp, color = colors.textTertiary, modifier = Modifier.width(gutterWidth).padding(start = 6.dp, end = 6.dp))
+                Text("${i + 1}", fontFamily = FontFamily.Monospace, fontSize = 12.sp, color = colors.textSecondary, modifier = Modifier.width(gutterWidth).padding(start = 6.dp, end = 6.dp))
                 Text(lines[i].ifEmpty { " " }, fontFamily = FontFamily.Monospace, fontSize = 12.sp, color = colors.textSecondary)
             }
         }
