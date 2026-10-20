@@ -28,6 +28,7 @@ data class ConversationSummary(
      * `updated_at` — the "Pinned" group sorts by this instead. */
     @Serializable(with = InstantSerializer::class)
     val pinnedAt: Instant? = null,
+    val tagIds: List<Int>? = null,
 ) {
     /** Non-empty, trimmed user title, or null for an unnamed session. Render
      * verbatim (user data); fall back to a localized "Untitled session" only

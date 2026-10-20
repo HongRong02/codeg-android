@@ -1135,6 +1135,33 @@ class CodegClient(
 
     // endregion
 
+    // region conversation-tags
+
+    suspend fun listConversationTags(): List<app.codeg.android.core.model.ConversationTag> =
+        decode(send("list_conversation_tags", encode(EmptyBody)),
+            ListSerializer(app.codeg.android.core.model.ConversationTag.serializer()))
+
+    suspend fun createConversationTag(name: String, color: String): app.codeg.android.core.model.ConversationTag =
+        decode(send("create_conversation_tag", encode(
+            app.codeg.android.core.model.wire.CreateConversationTagRequest(name, color))),
+            app.codeg.android.core.model.ConversationTag.serializer())
+
+    suspend fun updateConversationTag(id: Int, name: String, color: String): app.codeg.android.core.model.ConversationTag =
+        decode(send("update_conversation_tag", encode(
+            app.codeg.android.core.model.wire.UpdateConversationTagRequest(id, name, color))),
+            app.codeg.android.core.model.ConversationTag.serializer())
+
+    suspend fun deleteConversationTag(id: Int) {
+        send("delete_conversation_tag", encode(app.codeg.android.core.model.wire.ConversationTagIdRequest(id)))
+    }
+
+    suspend fun updateConversationTags(id: Int, add: List<Int>, remove: List<Int>): ConversationSummary =
+        decode(send("update_conversation_tags", encode(
+            app.codeg.android.core.model.wire.UpdateConversationTagsRequest(id, add, remove))),
+            ConversationSummary.serializer())
+
+    // endregion
+
     // region Transport
 
     /**

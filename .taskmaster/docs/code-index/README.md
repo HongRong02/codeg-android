@@ -5,13 +5,13 @@ Paths are relative to `app/src/main/java/app/codeg/android/`.
 
 | Area | Index file | Files |
 |---|---|---|
-| app | [app.md](app.md) | 2 |
 | root | [root.md](root.md) | 2 |
+| app | [app.md](app.md) | 2 |
 | core/common | [core-common.md](core-common.md) | 5 |
 | core/data | [core-data.md](core-data.md) | 1 |
 | core/datastore | [core-datastore.md](core-datastore.md) | 5 |
 | core/designsystem | [core-designsystem.md](core-designsystem.md) | 24 |
-| core/model | [core-model.md](core-model.md) | 38 |
+| core/model | [core-model.md](core-model.md) | 40 |
 | core/network | [core-network.md](core-network.md) | 7 |
 | core/security | [core-security.md](core-security.md) | 2 |
 | di | [di.md](di.md) | 3 |
@@ -24,6 +24,6 @@ Paths are relative to `app/src/main/java/app/codeg/android/`.
 | feature/server | [feature-server.md](feature-server.md) | 3 |
 | feature/serverlogs | [feature-serverlogs.md](feature-serverlogs.md) | 2 |
 | feature/sessiondetail | [feature-sessiondetail.md](feature-sessiondetail.md) | 25 |
-| feature/sessions | [feature-sessions.md](feature-sessions.md) | 5 |
+| feature/sessions | [feature-sessions.md](feature-sessions.md) | 7 |
 | feature/settings | [feature-settings.md](feature-settings.md) | 36 |
 | feature/worktasks | [feature-worktasks.md](feature-worktasks.md) | 2 |
