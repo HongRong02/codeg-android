@@ -1135,6 +1135,37 @@ class CodegClient(
 
     // endregion
 
+    // region folder-groups
+
+    suspend fun listFolderGroups(): List<app.codeg.android.core.model.FolderGroup> =
+        decode(send("list_folder_groups", "{}"), ListSerializer(app.codeg.android.core.model.FolderGroup.serializer()))
+
+    suspend fun createFolderGroup(name: String) {
+        send("create_folder_group", encode(app.codeg.android.core.model.wire.CreateFolderGroupBody(name)))
+    }
+
+    suspend fun updateFolderGroup(groupId: Int, name: String) {
+        send("update_folder_group", encode(app.codeg.android.core.model.wire.UpdateFolderGroupBody(groupId, name)))
+    }
+
+    suspend fun deleteFolderGroup(groupId: Int) {
+        send("delete_folder_group", encode(app.codeg.android.core.model.wire.FolderGroupIdBody(groupId)))
+    }
+
+    suspend fun setFolderGroup(folderId: Int, groupId: Int?) {
+        send("set_folder_group", encode(app.codeg.android.core.model.wire.SetFolderGroupBody(folderId, groupId)))
+    }
+
+    suspend fun updateFolderAlias(folderId: Int, alias: String?) {
+        send("update_folder_alias", encode(app.codeg.android.core.model.wire.UpdateFolderAliasBody(folderId, alias)))
+    }
+
+    suspend fun updateFolderColor(folderId: Int, color: String) {
+        send("update_folder_color", encode(app.codeg.android.core.model.wire.UpdateFolderColorBody(folderId, color)))
+    }
+
+    // endregion
+
     // region Transport
 
     /**

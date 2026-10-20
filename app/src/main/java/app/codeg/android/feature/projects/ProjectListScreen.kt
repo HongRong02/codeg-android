@@ -1,5 +1,11 @@
 package app.codeg.android.feature.projects
 
+import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.AlertDialog
+import app.codeg.android.feature.projects.groups.*
+import app.codeg.android.core.model.FolderGroup
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -78,6 +84,11 @@ fun ProjectListScreen(
     var menuOpen by remember { mutableStateOf(false) }
     var showBrowser by remember { mutableStateOf(false) }
     var showClone by remember { mutableStateOf(false) }
+    var createGroup by remember { mutableStateOf(false) }
+    var editFolder by remember { mutableStateOf<FolderDetail?>(null) }
+    var renameGroup by remember { mutableStateOf<FolderGroup?>(null) }
+    var deleteGroup by remember { mutableStateOf<FolderGroup?>(null) }
+    var collapsed by remember { mutableStateOf(setOf<Int>()) }
 
     Scaffold(
         containerColor = Color.Transparent,
@@ -102,6 +113,11 @@ fun ProjectListScreen(
                             expanded = menuOpen,
                             onDismissRequest = { menuOpen = false },
                         ) {
+                            if (ui.groupsSupported) {
+                                DropdownMenuItem(text = { Text(stringResource(R.string.fg_create)) },
+                                    enabled = !ui.isBusy,
+                                    onClick = { menuOpen = false; createGroup = true })
+                            }
                             DropdownMenuItem(
                                 text = { Text(stringResource(R.string.projects_open_folder)) },
                                 leadingIcon = {
@@ -157,7 +173,7 @@ fun ProjectListScreen(
                         )
                     }
                 }
-                ui.hasLoaded && ui.folders.isEmpty() -> {
+                ui.hasLoaded && ui.folders.isEmpty() && ui.groups.isEmpty() -> {
                     Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                         EmptyState(
                             icon = Icons.Rounded.FolderOpen,
@@ -230,20 +246,36 @@ fun ProjectListScreen(
                                         .fillMaxWidth()
                                         .webSurface(RoundedCornerShape(CodegTheme.dimens.radiusLg)),
                                 ) {
-                                    val list = sortedFolders(ui.folders)
-                                    list.forEachIndexed { index, folder ->
-                                        if (index > 0) {
-                                            HorizontalDivider(
-                                                thickness = CodegTheme.dimens.hairlineWidth,
-                                                color = colors.hairline,
-                                                modifier = Modifier.padding(start = 66.dp),
-                                            )
+                                    folderLayout(ui.folders, ui.groups).forEach { entry ->
+                                        val group = entry.group
+                                        if (group != null) {
+                                            Row(Modifier.fillMaxWidth().padding(horizontal = 8.dp), verticalAlignment = Alignment.CenterVertically) {
+                                                TextButton(modifier = Modifier.weight(1f), onClick = {
+                                                    collapsed = if (group.id in collapsed) collapsed - group.id else collapsed + group.id
+                                                }) {
+                                                    Box(Modifier.size(8.dp).background(folderTint(group.color), CircleShape))
+                                                    Spacer(Modifier.width(8.dp))
+                                                    Text((if (group.id in collapsed) "▸ " else "▾ ") + group.name)
+                                                }
+                                                if (ui.groupsSupported) {
+                                                    TextButton(enabled = !ui.isBusy, onClick = { renameGroup = group }) { Text(stringResource(R.string.fg_rename)) }
+                                                    TextButton(enabled = !ui.isBusy, onClick = { deleteGroup = group }) { Text(stringResource(R.string.fg_delete)) }
+                                                }
+                                            }
+                                            if (group.id !in collapsed) {
+                                                val members = groupMembers(ui.folders, group.id)
+                                                if (members.isEmpty()) Text(stringResource(R.string.fg_empty), Modifier.padding(16.dp), color = colors.textSecondary)
+                                                members.forEach { folder ->
+                                                    FolderRow(folder, ui.runningCount(folder.id), Modifier.padding(start = 16.dp),
+                                                        onLongClick = if (ui.groupsSupported && !ui.isBusy) ({ editFolder = folder }) else null,
+                                                        onClick = { onOpenFolder(folder.id) })
+                                                }
+                                            }
+                                        } else entry.folder?.let { folder ->
+                                            FolderRow(folder, ui.runningCount(folder.id),
+                                                onLongClick = if (ui.groupsSupported && !ui.isBusy) ({ editFolder = folder }) else null,
+                                                onClick = { onOpenFolder(folder.id) })
                                         }
-                                        FolderRow(
-                                            folder = folder,
-                                            running = ui.runningCount(folder.id),
-                                            onClick = { onOpenFolder(folder.id) },
-                                        )
                                     }
                                 }
                             }
@@ -252,6 +284,29 @@ fun ProjectListScreen(
                 }
             }
         }
+    }
+
+    if (createGroup && ui.groupsSupported) GroupTextDialog(stringResource(R.string.fg_create), "", onDismiss = { createGroup = false }) { name ->
+        viewModel.editGroup { it.createFolderGroup(name) }
+    }
+    renameGroup?.takeIf { ui.groupsSupported }?.let { group ->
+        GroupTextDialog(stringResource(R.string.fg_rename), group.name, onDismiss = { renameGroup = null }) { name ->
+            viewModel.editGroup { it.updateFolderGroup(group.id, name) }
+        }
+    }
+    deleteGroup?.takeIf { ui.groupsSupported }?.let { group ->
+        AlertDialog(onDismissRequest = { deleteGroup = null }, title = { Text(stringResource(R.string.fg_delete)) },
+            text = { Text(stringResource(R.string.fg_delete_confirm, group.name)) },
+            confirmButton = { TextButton(enabled = !ui.isBusy, onClick = {
+                deleteGroup = null; viewModel.editGroup { it.deleteFolderGroup(group.id) }
+            }) { Text(stringResource(R.string.fg_delete)) } },
+            dismissButton = { TextButton(onClick = { deleteGroup = null }) { Text(stringResource(R.string.fg_cancel)) } })
+    }
+    editFolder?.takeIf { ui.groupsSupported }?.let { folder ->
+        FolderEditDialog(folder, ui.groups, onDismiss = { editFolder = null },
+            onAlias = { alias -> viewModel.editGroup { it.updateFolderAlias(folder.id, alias.takeIf(String::isNotBlank)) } },
+            onColor = { color -> viewModel.editGroup { it.updateFolderColor(folder.id, color) } },
+            onGroup = { id -> viewModel.editGroup { it.setFolderGroup(folder.id, id) } })
     }
 
     if (showBrowser) {
@@ -281,27 +336,30 @@ fun ProjectListScreen(
  * relative last-opened time, then a drill-in chevron. The enclosing [webSurface]
  * card draws the surface; rows are split by inset hairlines.
  */
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun FolderRow(
     folder: FolderDetail,
     running: Int,
     modifier: Modifier = Modifier,
+    onLongClick: (() -> Unit)? = null,
     onClick: () -> Unit,
 ) {
     val colors = CodegTheme.colors
-    val tile = colorFromHex(folder.color) ?: colors.accent
+    val tile = folderTint(folder.color)
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .clickable { onClick() }
+            .combinedClickable(onClick = onClick, onLongClick = onLongClick)
             .padding(horizontal = 14.dp, vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         FolderBadge(color = tile, size = 40.dp)
+        Box(Modifier.size(7.dp).background(tile, CircleShape))
         Column(Modifier.weight(1f)) {
             Text(
-                text = folder.name,
+                text = folderDisplayName(folder),
                 style = MaterialTheme.typography.bodyLarge,
                 color = colors.textPrimary,
                 maxLines = 1,
@@ -396,4 +454,4 @@ fun BranchPill(branch: String, modifier: Modifier = Modifier) {
 }
 
 internal fun sortedFolders(folders: List<FolderDetail>): List<FolderDetail> =
-    folders.sortedWith(compareBy({ it.sortOrder }, { it.name.lowercase() }))
+    folders.sortedWith(compareBy({ it.sortOrder }, { it.id }))

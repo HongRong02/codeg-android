@@ -199,14 +199,21 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 1126 |   `suspend fun readServerLog(name: String): String` |
 | 1129 |   `suspend fun serverConversationStats(): app.codeg.android.core.model.ServerConversationStats` |
 | 1132 |   `suspend fun serverTokenReport(filter: app.codeg.android.core.model.wire.ServerTokenFilter): app.codeg.android.core.model.ServerTokenReport` |
-| 1144 |   `private suspend fun send(path: String, bodyJson: String): String` |
-| 1178 |   `private inline fun <reified T> encode(body: T): String` |
-| 1181 |   `private fun <T> decode(text: String, deserializer: DeserializationStrategy<T>): T` |
-| 1187 |   `companion object` |
-| 1189 |     `fun normalizeBaseUrl(raw: String): String` |
-| 1197 |     `fun decodeConnectionId(text: String): String` |
-| 1213 |     `fun decodeAgentList(text: String): List<AcpAgentInfo>` |
-| 1230 |     `fun isJsonNull(text: String): Boolean` |
+| 1140 |   `suspend fun listFolderGroups(): List<app.codeg.android.core.model.FolderGroup>` |
+| 1143 |   `suspend fun createFolderGroup(name: String)` |
+| 1147 |   `suspend fun updateFolderGroup(groupId: Int, name: String)` |
+| 1151 |   `suspend fun deleteFolderGroup(groupId: Int)` |
+| 1155 |   `suspend fun setFolderGroup(folderId: Int, groupId: Int?)` |
+| 1159 |   `suspend fun updateFolderAlias(folderId: Int, alias: String?)` |
+| 1163 |   `suspend fun updateFolderColor(folderId: Int, color: String)` |
+| 1175 |   `private suspend fun send(path: String, bodyJson: String): String` |
+| 1209 |   `private inline fun <reified T> encode(body: T): String` |
+| 1212 |   `private fun <T> decode(text: String, deserializer: DeserializationStrategy<T>): T` |
+| 1218 |   `companion object` |
+| 1220 |     `fun normalizeBaseUrl(raw: String): String` |
+| 1228 |     `fun decodeConnectionId(text: String): String` |
+| 1244 |     `fun decodeAgentList(text: String): List<AcpAgentInfo>` |
+| 1261 |     `fun isJsonNull(text: String): Boolean` |
 
 ## core/network/CodegClientFactory.kt
 
