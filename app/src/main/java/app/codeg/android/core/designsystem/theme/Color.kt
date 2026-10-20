@@ -26,6 +26,14 @@ data class CodegColors(
     val onAccent: Color,
     val accentDim: Color,
     val web: WebTokens,
+    // Status hues the web takes from Tailwind rather than theme tokens:
+    // text-green-600 / dark:text-green-400, text-red-600 / dark:text-red-400,
+    // bg-green-500/10, bg-red-500/10 (diffs, tool results, completed steps).
+    val success: Color = if (isDark) Color(0xFF4ADE80) else Color(0xFF16A34A),
+    val diffAdded: Color = success,
+    val diffDeleted: Color = if (isDark) Color(0xFFF87171) else Color(0xFFDC2626),
+    val diffAddedBg: Color = Color(0xFF22C55E).copy(alpha = 0.10f),
+    val diffDeletedBg: Color = Color(0xFFEF4444).copy(alpha = 0.10f),
 )
 
 /**

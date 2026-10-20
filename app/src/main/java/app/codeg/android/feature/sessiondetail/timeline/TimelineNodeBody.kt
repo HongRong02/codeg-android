@@ -29,6 +29,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -59,10 +60,10 @@ import app.codeg.android.feature.sessiondetail.rendering.LivePlanView
 import app.codeg.android.feature.sessiondetail.rendering.ReasoningBlock
 import app.codeg.android.feature.sessiondetail.rendering.ToolCallCard
 import app.codeg.android.feature.sessiondetail.rendering.ToolGroupCard
-import kotlinx.coroutines.delay
 import kotlin.math.roundToInt
+import kotlinx.coroutines.delay
 
-private val SuccessGreen = Color(0xFF85D18F)
+private val SuccessGreen: Color @Composable @ReadOnlyComposable get() = CodegTheme.colors.success
 
 /** Scrolls the timeline to a node id — used by the footer's jump-to-question button. */
 val LocalTimelineScroll = staticCompositionLocalOf<(String) -> Unit> { {} }

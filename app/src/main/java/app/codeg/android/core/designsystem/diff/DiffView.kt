@@ -15,6 +15,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -31,10 +32,10 @@ import androidx.compose.ui.unit.sp
 import app.codeg.android.R
 import app.codeg.android.core.designsystem.theme.CodegTheme
 
-private val AddedFg = Color(0xFF8CE69E)
-private val DeletedFg = Color(0xFFF58585)
-private val AddedBg = Color(0xFF3DDC84).copy(alpha = 0.12f)
-private val DeletedBg = Color(0xFFF55555).copy(alpha = 0.12f)
+private val AddedFg: Color @Composable @ReadOnlyComposable get() = CodegTheme.colors.diffAdded
+private val DeletedFg: Color @Composable @ReadOnlyComposable get() = CodegTheme.colors.diffDeleted
+private val AddedBg: Color @Composable @ReadOnlyComposable get() = CodegTheme.colors.diffAddedBg
+private val DeletedBg: Color @Composable @ReadOnlyComposable get() = CodegTheme.colors.diffDeletedBg
 
 /** Renders a parsed unified diff (one or more files). Port of the iOS `DiffView`. */
 @Composable
