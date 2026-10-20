@@ -26,4 +26,4 @@ Paths are relative to `app/src/main/java/app/codeg/android/`.
 | feature/sessiondetail | [feature-sessiondetail.md](feature-sessiondetail.md) | 25 |
 | feature/sessions | [feature-sessions.md](feature-sessions.md) | 7 |
 | feature/settings | [feature-settings.md](feature-settings.md) | 36 |
-| feature/worktasks | [feature-worktasks.md](feature-worktasks.md) | 4 |
+| feature/worktasks | [feature-worktasks.md](feature-worktasks.md) | 5 |

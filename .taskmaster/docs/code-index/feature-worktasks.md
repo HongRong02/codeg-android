@@ -36,6 +36,14 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 106 |   `var agent by remember` |
 | 107 |   `val inherit` |
 
+## feature/worktasks/WorkTaskLabels.kt
+
+| Line | Declaration |
+|---|---|
+| 12 | `@Composable fun workTaskStatusLabel(status: String): String` |
+| 27 | `private val timeFormatter` |
+| 30 | `fun formatWorkTaskTime(iso: String): String` |
+
 ## feature/worktasks/WorkTaskScreen.kt
 
 | Line | Declaration |

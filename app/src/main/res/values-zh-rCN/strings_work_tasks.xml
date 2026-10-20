@@ -8,7 +8,7 @@
     <string name="work_tasks_retry">重试</string>
     <string name="work_tasks_unavailable">此服务器不支持工作任务。</string>
     <string name="work_tasks_empty">暂无工作任务</string>
-    <string name="work_tasks_empty_hint">网页端创建的工作任务将显示在这里。</string>
+    <string name="work_tasks_empty_hint">点「新建任务」创建，网页端创建的任务也会显示在这里。</string>
     <string name="work_tasks_agent">Agent：%1$s</string>
     <string name="work_tasks_unknown_agent">未配置</string>
     <string name="work_tasks_updated">更新时间：%1$s</string>
@@ -20,4 +20,15 @@
     <string name="work_tasks_file_stats">%1$s  +%2$d / −%3$d</string>
     <string name="work_tasks_diff">差异</string>
     <string name="work_tasks_no_diff">暂无可用差异</string>
+    <string name="wt_status_todo">待办</string>
+    <string name="wt_status_queued">排队中</string>
+    <string name="wt_status_preparing">初始化中</string>
+    <string name="wt_status_running">进行中</string>
+    <string name="wt_status_awaiting_input">等待输入</string>
+    <string name="wt_status_review">待验收</string>
+    <string name="wt_status_merging">合并中</string>
+    <string name="wt_status_done">已完成</string>
+    <string name="wt_status_failed">失败</string>
+    <string name="wt_status_canceled">已取消</string>
+    <string name="wt_status_interrupted">已中断</string>
 </resources>

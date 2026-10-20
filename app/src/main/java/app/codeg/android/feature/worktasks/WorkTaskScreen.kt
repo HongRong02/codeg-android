@@ -99,7 +99,7 @@ fun WorkTaskScreen(onBack: () -> Unit, viewModel: WorkTaskViewModel = hiltViewMo
                             Column(Modifier.fillMaxWidth().clickable(enabled = !ui.busy) { viewModel.select(task) }.padding(vertical = 12.dp)) {
                                 Text(task.title, color = CodegTheme.colors.textPrimary, style = MaterialTheme.typography.titleMedium)
                                 Text(stringResource(R.string.work_tasks_agent, task.agentType ?: stringResource(R.string.work_tasks_unknown_agent)), color = CodegTheme.colors.textSecondary)
-                                Text(task.status, color = CodegTheme.colors.textSecondary)
+                                Text(workTaskStatusLabel(task.status), color = CodegTheme.colors.textSecondary)
                                 WorkTaskActions(task, ui, viewModel, compact = true)
                                 if ("reorder" !in ui.hiddenActions && task.status in setOf("todo", "queued")) Row {
                                     val project = tasks.filter { it.folderId == task.folderId }
@@ -116,9 +116,9 @@ fun WorkTaskScreen(onBack: () -> Unit, viewModel: WorkTaskViewModel = hiltViewMo
                 if (ui.supported) item { WorkTaskActions(selected, ui, viewModel) }
                 item {
                     Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                        Text(selected.status, color = CodegTheme.colors.accent)
+                        Text(workTaskStatusLabel(selected.status), color = CodegTheme.colors.accent)
                         Text(stringResource(R.string.work_tasks_agent, selected.agentType ?: stringResource(R.string.work_tasks_unknown_agent)))
-                        Text(stringResource(R.string.work_tasks_updated, selected.updatedAt))
+                        Text(stringResource(R.string.work_tasks_updated, formatWorkTaskTime(selected.updatedAt)))
                         selected.workBranch?.let { Text(it) }
                         selected.resultSummary?.let { Text(it) }
                         selected.failureReason?.let { Text(it, color = CodegTheme.colors.danger) }
@@ -132,7 +132,7 @@ fun WorkTaskScreen(onBack: () -> Unit, viewModel: WorkTaskViewModel = hiltViewMo
                 items(ui.events, key = { it.id }) { event ->
                     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                         Text(event.kind, color = CodegTheme.colors.textPrimary)
-                        Text(stringResource(R.string.work_tasks_event_meta, event.actor, event.createdAt), color = CodegTheme.colors.textSecondary)
+                        Text(stringResource(R.string.work_tasks_event_meta, event.actor, formatWorkTaskTime(event.createdAt)), color = CodegTheme.colors.textSecondary)
                         event.payload?.let { Text(it.toString(), style = MaterialTheme.typography.bodySmall) }
                     }
                 }

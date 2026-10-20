@@ -8,7 +8,7 @@
     <string name="work_tasks_retry">Retry</string>
     <string name="work_tasks_unavailable">This server does not support work tasks.</string>
     <string name="work_tasks_empty">No work tasks</string>
-    <string name="work_tasks_empty_hint">Tasks created on the web will appear here.</string>
+    <string name="work_tasks_empty_hint">Tap New task to create one, or create it on the web.</string>
     <string name="work_tasks_agent">Agent: %1$s</string>
     <string name="work_tasks_unknown_agent">Not configured</string>
     <string name="work_tasks_updated">Updated: %1$s</string>
@@ -20,4 +20,15 @@
     <string name="work_tasks_file_stats">%1$s  +%2$d / −%3$d</string>
     <string name="work_tasks_diff">Diff</string>
     <string name="work_tasks_no_diff">No diff available</string>
+    <string name="wt_status_todo">To do</string>
+    <string name="wt_status_queued">Queued</string>
+    <string name="wt_status_preparing">Setting up</string>
+    <string name="wt_status_running">Running</string>
+    <string name="wt_status_awaiting_input">Awaiting input</string>
+    <string name="wt_status_review">To review</string>
+    <string name="wt_status_merging">Merging</string>
+    <string name="wt_status_done">Done</string>
+    <string name="wt_status_failed">Failed</string>
+    <string name="wt_status_canceled">Canceled</string>
+    <string name="wt_status_interrupted">Interrupted</string>
 </resources>
