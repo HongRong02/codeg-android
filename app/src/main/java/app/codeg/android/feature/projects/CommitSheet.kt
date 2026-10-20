@@ -2,6 +2,7 @@ package app.codeg.android.feature.projects
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -22,11 +23,10 @@ import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.RadioButtonUnchecked
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
+import app.codeg.android.core.designsystem.component.CodegIconButton
+import app.codeg.android.core.designsystem.component.CodegTopBar
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -52,6 +52,7 @@ import app.codeg.android.core.designsystem.component.EmptyState
 import app.codeg.android.core.designsystem.component.InlineError
 import app.codeg.android.core.designsystem.component.LoadingView
 import app.codeg.android.core.designsystem.component.PrimaryButton
+import app.codeg.android.core.designsystem.theme.withOpacity
 import app.codeg.android.core.designsystem.theme.CodegTheme
 import app.codeg.android.core.model.GitChange
 import app.codeg.android.core.model.GitStatusEntry
@@ -123,14 +124,14 @@ fun CommitSheet(
 
     Dialog(onDismissRequest = { if (!committing) onDismiss() }, properties = DialogProperties(usePlatformDefaultWidth = false)) {
         Column(Modifier.fillMaxSize().background(colors.bg).windowInsetsPadding(WindowInsets.safeDrawing)) {
-            TopAppBar(
-                title = { Text(stringResource(R.string.commit_title)) },
+            CodegTopBar(
+                title = stringResource(R.string.commit_title),
                 navigationIcon = {
-                    IconButton(onClick = onDismiss, enabled = !committing) {
+                    CodegIconButton(onClick = onDismiss, enabled = !committing) {
                         Icon(Icons.Rounded.Close, contentDescription = stringResource(R.string.common_cancel), tint = colors.textPrimary)
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent, titleContentColor = colors.textPrimary),
+                showDivider = true,
             )
 
             when {
@@ -184,7 +185,7 @@ fun CommitSheet(
                                 it,
                                 fontSize = 13.sp,
                                 color = colors.danger,
-                                modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(8.dp)).background(colors.danger.copy(alpha = 0.12f)).padding(12.dp),
+                                modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(8.dp)).background(colors.danger.withOpacity(0.12f)).padding(12.dp),
                             )
                         }
                     }
@@ -201,7 +202,7 @@ fun CommitSheet(
                             enabled = canCommit,
                             modifier = Modifier.fillMaxWidth(),
                         ) {
-                            Text(stringResource(R.string.commit_and_push), color = if (canCommit) colors.accent else colors.textTertiary, fontWeight = FontWeight.Medium)
+                            Text(stringResource(R.string.commit_and_push), color = if (canCommit) colors.accent else colors.textSecondary, fontWeight = FontWeight.Medium)
                         }
                     }
                 }
@@ -248,18 +249,18 @@ private fun FileSection(
 ) {
     val colors = CodegTheme.colors
     Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
-        Text(title.uppercase(), fontSize = 11.sp, fontWeight = FontWeight.SemiBold, color = colors.textTertiary, modifier = Modifier.padding(start = 4.dp, bottom = 4.dp))
+        Text(title.uppercase(), fontSize = 12.sp, fontWeight = FontWeight.SemiBold, color = colors.textSecondary, modifier = Modifier.padding(start = 4.dp, bottom = 4.dp))
         for (entry in entries) {
             val isSelected = entry.path in selected
             Row(
-                Modifier.fillMaxWidth().clip(RoundedCornerShape(8.dp)).clickable(enabled = enabled) { onToggle(entry.path) }.padding(vertical = 8.dp, horizontal = 4.dp),
+                Modifier.fillMaxWidth().clip(RoundedCornerShape(8.dp)).clickable(enabled = enabled) { onToggle(entry.path) }.heightIn(min = 48.dp).padding(vertical = 8.dp, horizontal = 4.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(11.dp),
             ) {
                 Icon(
                     if (isSelected) Icons.Rounded.CheckCircle else Icons.Rounded.RadioButtonUnchecked,
                     contentDescription = null,
-                    tint = if (isSelected) colors.accent else colors.textTertiary,
+                    tint = if (isSelected) colors.accent else colors.textSecondary,
                     modifier = Modifier.size(20.dp),
                 )
                 GitChangeBadge(entry.change)
@@ -267,7 +268,7 @@ private fun FileSection(
                     Text(entry.path.substringAfterLast('/'), fontSize = 14.sp, color = colors.textPrimary, maxLines = 1, overflow = TextOverflow.Ellipsis)
                     val dir = entry.path.substringBeforeLast('/', "")
                     if (dir.isNotEmpty()) {
-                        Text(dir, fontFamily = FontFamily.Monospace, fontSize = 10.sp, color = colors.textTertiary, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                        Text(dir, fontFamily = FontFamily.Monospace, fontSize = 12.sp, color = colors.textSecondary, maxLines = 1, overflow = TextOverflow.Ellipsis)
                     }
                 }
             }

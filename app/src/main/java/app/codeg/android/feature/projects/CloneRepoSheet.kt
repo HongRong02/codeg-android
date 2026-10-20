@@ -21,10 +21,9 @@ import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.CreateNewFolder
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
+import app.codeg.android.core.designsystem.component.CodegIconButton
+import app.codeg.android.core.designsystem.component.CodegTopBar
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -47,6 +46,7 @@ import app.codeg.android.R
 import app.codeg.android.core.designsystem.component.CodegTextField
 import app.codeg.android.core.designsystem.component.PrimaryButton
 import app.codeg.android.core.designsystem.component.SecretField
+import app.codeg.android.core.designsystem.theme.withOpacity
 import app.codeg.android.core.designsystem.theme.CodegTheme
 import app.codeg.android.core.model.DirectoryEntry
 import app.codeg.android.core.model.GitCredentials
@@ -78,12 +78,12 @@ fun CloneRepoSheet(
 
     Dialog(onDismissRequest = onDismiss, properties = DialogProperties(usePlatformDefaultWidth = false)) {
         Column(Modifier.fillMaxSize().background(colors.bg).windowInsetsPadding(WindowInsets.safeDrawing)) {
-            TopAppBar(
-                title = { Text(stringResource(R.string.projects_clone_repo)) },
+            CodegTopBar(
+                title = stringResource(R.string.projects_clone_repo),
                 navigationIcon = {
-                    IconButton(onClick = onDismiss, enabled = !cloning) { Icon(Icons.Rounded.Close, contentDescription = stringResource(R.string.clone_close), tint = colors.textPrimary) }
+                    CodegIconButton(onClick = onDismiss, enabled = !cloning) { Icon(Icons.Rounded.Close, contentDescription = stringResource(R.string.clone_close), tint = colors.textPrimary) }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = androidx.compose.ui.graphics.Color.Transparent, titleContentColor = colors.textPrimary),
+                showDivider = true,
             )
             Column(
                 Modifier.weight(1f).fillMaxWidth().verticalScroll(rememberScrollState()).padding(horizontal = 16.dp),
@@ -92,15 +92,15 @@ fun CloneRepoSheet(
                 CodegTextField(url, { url = it }, label = stringResource(R.string.clone_repository_url), placeholder = stringResource(R.string.clone_url_placeholder), keyboardType = KeyboardType.Uri, mono = true)
                 Row(verticalAlignment = Alignment.Bottom, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     CodegTextField(parentDir, { parentDir = it }, label = stringResource(R.string.clone_parent_directory), mono = true, modifier = Modifier.weight(1f))
-                    IconButton(onClick = { showBrowser = true }) { Icon(Icons.Rounded.CreateNewFolder, contentDescription = stringResource(R.string.clone_browse), tint = colors.accent) }
+                    CodegIconButton(onClick = { showBrowser = true }) { Icon(Icons.Rounded.CreateNewFolder, contentDescription = stringResource(R.string.clone_browse), tint = colors.accent) }
                 }
                 CodegTextField(username, { username = it }, label = stringResource(R.string.clone_username_optional))
                 SecretField(password, { password = it }, label = stringResource(R.string.clone_password_token_optional))
                 if (targetDir.isNotEmpty()) {
-                    Text(stringResource(R.string.clone_clones_into, targetDir), fontFamily = FontFamily.Monospace, fontSize = 11.sp, color = colors.textTertiary)
+                    Text(stringResource(R.string.clone_clones_into, targetDir), fontFamily = FontFamily.Monospace, fontSize = 12.sp, color = colors.textSecondary)
                 }
                 error?.let {
-                    Text(it, fontSize = 13.sp, color = colors.danger, modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(8.dp)).background(colors.danger.copy(alpha = 0.12f)).padding(10.dp))
+                    Text(it, fontSize = 13.sp, color = colors.danger, modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(8.dp)).background(colors.danger.withOpacity(0.12f)).padding(10.dp))
                 }
             }
             PrimaryButton(

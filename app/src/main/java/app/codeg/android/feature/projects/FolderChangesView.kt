@@ -216,10 +216,10 @@ private fun ChangeRow(entry: GitStatusEntry, onClick: () -> Unit, onLongClick: (
     ListItem(
         headlineContent = { Text(entry.path.substringAfterLast('/'), fontSize = 14.sp, maxLines = 1, overflow = TextOverflow.Ellipsis) },
         supportingContent = sub.takeIf { it.isNotEmpty() }?.let {
-            { Text(it, fontFamily = FontFamily.Monospace, fontSize = 10.sp, maxLines = 1, overflow = TextOverflow.Ellipsis) }
+            { Text(it, fontFamily = FontFamily.Monospace, fontSize = 12.sp, maxLines = 1, overflow = TextOverflow.Ellipsis) }
         },
         leadingContent = { GitChangeBadge(entry.change) },
-        colors = ListItemDefaults.colors(containerColor = Color.Transparent, headlineColor = colors.textPrimary, supportingColor = colors.textTertiary),
+        colors = ListItemDefaults.colors(containerColor = Color.Transparent, headlineColor = colors.textPrimary, supportingColor = colors.textSecondary),
         modifier = Modifier.clip(RoundedCornerShape(8.dp)).combinedClickable(onClick = onClick, onLongClick = onLongClick),
     )
 }

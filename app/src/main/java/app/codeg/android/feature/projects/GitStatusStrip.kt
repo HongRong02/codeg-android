@@ -15,7 +15,7 @@ import androidx.compose.material.icons.rounded.ErrorOutline
 import androidx.compose.material.icons.rounded.WarningAmber
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
+import app.codeg.android.core.designsystem.component.CodegIconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -26,11 +26,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.codeg.android.R
+import app.codeg.android.core.designsystem.theme.withOpacity
 import app.codeg.android.core.designsystem.theme.CodegTheme
 import app.codeg.android.core.designsystem.component.webSurface
-
-private val SuccessGreen = Color(0xFF4CBC75)
-private val WarnAmber = Color(0xFFF0A030)
 
 /**
  * Shown atop the Changes / Commits tabs: a busy row while a git operation runs,
@@ -59,8 +57,8 @@ internal fun GitStatusStrip(
 
         banner != null -> {
             val tint = when (banner.kind) {
-                GitBannerKind.SUCCESS -> SuccessGreen
-                GitBannerKind.WARNING -> WarnAmber
+                GitBannerKind.SUCCESS -> colors.accent
+                GitBannerKind.WARNING -> colors.textSecondary
                 GitBannerKind.ERROR -> colors.danger
             }
             val icon = when (banner.kind) {
@@ -69,14 +67,14 @@ internal fun GitStatusStrip(
                 GitBannerKind.ERROR -> Icons.Rounded.ErrorOutline
             }
             Row(
-                modifier.fillMaxWidth().clip(RoundedCornerShape(CodegTheme.dimens.radiusMd)).background(tint.copy(alpha = 0.12f)).border(1.dp, tint.copy(alpha = 0.35f), RoundedCornerShape(CodegTheme.dimens.radiusMd)).padding(start = 14.dp, top = 8.dp, bottom = 8.dp, end = 6.dp),
+                modifier.fillMaxWidth().clip(RoundedCornerShape(CodegTheme.dimens.radiusMd)).background(tint.withOpacity(0.12f)).border(1.dp, tint.withOpacity(0.35f), RoundedCornerShape(CodegTheme.dimens.radiusMd)).padding(start = 14.dp, top = 8.dp, bottom = 8.dp, end = 6.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(10.dp),
             ) {
                 Icon(icon, contentDescription = null, tint = tint, modifier = Modifier.size(16.dp))
                 Text(banner.message, fontSize = 12.sp, color = colors.textSecondary, modifier = Modifier.weight(1f), maxLines = 3)
-                IconButton(onClick = onDismissBanner, modifier = Modifier.size(28.dp)) {
-                    Icon(Icons.Rounded.Close, contentDescription = stringResource(R.string.git_dismiss), tint = colors.textTertiary, modifier = Modifier.size(15.dp))
+                CodegIconButton(onClick = onDismissBanner) {
+                    Icon(Icons.Rounded.Close, contentDescription = stringResource(R.string.git_dismiss), tint = colors.textSecondary, modifier = Modifier.size(15.dp))
                 }
             }
         }
