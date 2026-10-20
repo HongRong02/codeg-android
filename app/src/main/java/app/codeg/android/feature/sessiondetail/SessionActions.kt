@@ -6,18 +6,21 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.MoreVert
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.RadioButton
@@ -25,24 +28,27 @@ import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.codeg.android.R
 import app.codeg.android.core.common.RelativeTime
 import app.codeg.android.core.designsystem.component.AgentAvatar
+import app.codeg.android.core.designsystem.component.CodegIconButton
 import app.codeg.android.core.designsystem.component.statusColor
 import app.codeg.android.core.designsystem.component.statusLabel
+import app.codeg.android.core.designsystem.theme.CodegShapes
 import app.codeg.android.core.designsystem.theme.CodegTheme
 import app.codeg.android.core.model.ConversationStatus
 
@@ -67,7 +73,7 @@ fun SessionActionsMenu(
     var showDelete by remember { mutableStateOf(false) }
 
     Box {
-        IconButton(onClick = { menu = true }) {
+        CodegIconButton(onClick = { menu = true }) {
             Icon(Icons.Rounded.MoreVert, contentDescription = stringResource(R.string.sessionactions_session_actions), tint = colors.textPrimary)
         }
         DropdownMenu(expanded = menu, onDismissRequest = { menu = false }) {
@@ -75,6 +81,7 @@ fun SessionActionsMenu(
             DropdownMenuItem(text = { Text(if (summary.isPinned) stringResource(R.string.sessionactions_unpin) else stringResource(R.string.sessionactions_pin)) }, onClick = { menu = false; viewModel.togglePin() })
             DropdownMenuItem(text = { Text(stringResource(R.string.sessionactions_session_details)) }, onClick = { menu = false; showDetails = true })
             DropdownMenuItem(text = { Text(stringResource(R.string.sessionactions_change_status)) }, onClick = { menu = false; showStatus = true })
+            HorizontalDivider(color = colors.web.border)
             DropdownMenuItem(text = { Text(stringResource(R.string.common_delete), color = colors.danger) }, onClick = { menu = false; showDelete = true })
         }
     }
@@ -90,7 +97,7 @@ fun SessionActionsMenu(
             },
             confirmButton = {
                 TextButton(enabled = name.trim().isNotEmpty(), onClick = { viewModel.rename(name); showRename = false }) {
-                    Text(stringResource(R.string.sessionactions_rename), color = if (name.trim().isNotEmpty()) colors.accent else colors.textTertiary)
+                    Text(stringResource(R.string.sessionactions_rename), color = if (name.trim().isNotEmpty()) colors.accent else colors.web.mutedForeground)
                 }
             },
             dismissButton = { TextButton(onClick = { showRename = false }) { Text(stringResource(R.string.common_cancel), color = colors.textSecondary) } },
@@ -106,7 +113,7 @@ fun SessionActionsMenu(
                 Column {
                     for (status in ConversationStatus.selectable) {
                         Row(
-                            Modifier.fillMaxWidth().clip(RoundedCornerShape(8.dp))
+                            Modifier.fillMaxWidth().clip(CodegShapes.extraSmall)
                                 .selectable(selected = summary.status == status, role = Role.RadioButton) { viewModel.setStatus(status); showStatus = false }
                                 .padding(vertical = 4.dp, horizontal = 4.dp),
                             verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp),
@@ -114,7 +121,7 @@ fun SessionActionsMenu(
                             RadioButton(
                                 selected = summary.status == status,
                                 onClick = null,
-                                colors = RadioButtonDefaults.colors(selectedColor = colors.accent, unselectedColor = colors.textTertiary),
+                                colors = RadioButtonDefaults.colors(selectedColor = colors.accent, unselectedColor = colors.web.mutedForeground),
                             )
                             Box(Modifier.size(9.dp).clip(RoundedCornerShape(50)).background(statusColor(status)))
                             Text(statusLabel(status), color = colors.textPrimary, modifier = Modifier.weight(1f))
@@ -141,11 +148,12 @@ fun SessionActionsMenu(
     if (showDetails) {
         val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
         ModalBottomSheet(onDismissRequest = { showDetails = false }, sheetState = sheetState, containerColor = colors.bgElevated) {
-            Column(Modifier.fillMaxWidth().padding(horizontal = 20.dp).padding(bottom = 32.dp), verticalArrangement = Arrangement.spacedBy(14.dp)) {
+            Column(Modifier.fillMaxWidth().verticalScroll(rememberScrollState()).padding(horizontal = 16.dp).padding(bottom = 32.dp), verticalArrangement = Arrangement.spacedBy(14.dp)) {
                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                     AgentAvatar(ui.agent, size = 40.dp)
-                    Text(summary.trimmedTitle ?: stringResource(R.string.sessionactions_untitled), fontSize = 18.sp, fontWeight = FontWeight.SemiBold, color = colors.textPrimary)
+                    Text(summary.trimmedTitle ?: stringResource(R.string.sessionactions_untitled), fontSize = 16.sp, fontWeight = FontWeight.SemiBold, color = colors.textPrimary, modifier = Modifier.weight(1f))
                 }
+                HorizontalDivider(color = colors.web.border)
                 DetailRow(stringResource(R.string.sessionactions_detail_status), statusLabel(summary.status), statusColor(summary.status))
                 ui.folderName?.let { DetailRow(stringResource(R.string.sessionactions_detail_folder), it) }
                 DetailRow(stringResource(R.string.sessionactions_detail_messages), summary.messageCount.toString())
@@ -161,8 +169,8 @@ fun SessionActionsMenu(
 @Composable
 private fun DetailRow(label: String, value: String, valueColor: androidx.compose.ui.graphics.Color? = null) {
     val colors = CodegTheme.colors
-    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-        Text(label, fontSize = 14.sp, color = colors.textSecondary)
-        Text(value, fontSize = 14.sp, fontWeight = FontWeight.Medium, color = valueColor ?: colors.textPrimary)
+    Row(Modifier.fillMaxWidth().heightIn(min = 40.dp), horizontalArrangement = Arrangement.spacedBy(16.dp), verticalAlignment = Alignment.Top) {
+        Text(label, fontSize = 12.sp, color = colors.web.mutedForeground, modifier = Modifier.weight(1f))
+        Text(value, fontSize = 14.sp, fontWeight = FontWeight.Medium, color = valueColor ?: colors.textPrimary, modifier = Modifier.weight(2f), textAlign = TextAlign.End)
     }
 }

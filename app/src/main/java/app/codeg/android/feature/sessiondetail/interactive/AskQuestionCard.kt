@@ -27,15 +27,14 @@ import androidx.compose.material3.RadioButton
 import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.res.stringResource
@@ -44,8 +43,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.codeg.android.R
+import app.codeg.android.core.designsystem.component.webSurface
 import app.codeg.android.core.designsystem.theme.CodegSans
+import app.codeg.android.core.designsystem.theme.CodegShapes
 import app.codeg.android.core.designsystem.theme.CodegTheme
+import app.codeg.android.core.designsystem.theme.withOpacity
 import app.codeg.android.core.model.QuestionAnswer
 import app.codeg.android.core.model.QuestionAnswerItem
 import app.codeg.android.core.model.QuestionSpec
@@ -76,10 +78,8 @@ fun AskQuestionCard(
     Column(
         modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(14.dp))
-            .background(colors.bgElevated)
-            .border(1.dp, colors.surfaceStroke, RoundedCornerShape(14.dp))
-            .padding(14.dp),
+            .webSurface(CodegShapes.small)
+            .padding(12.dp),
         verticalArrangement = Arrangement.spacedBy(10.dp),
     ) {
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -127,8 +127,8 @@ fun AskQuestionCard(
                 colors = ButtonDefaults.buttonColors(
                     containerColor = colors.accent,
                     contentColor = colors.onAccent,
-                    disabledContainerColor = colors.accent.copy(alpha = 0.4f),
-                    disabledContentColor = colors.onAccent.copy(alpha = 0.8f),
+                    disabledContainerColor = colors.accent.withOpacity(0.4f),
+                    disabledContentColor = colors.onAccent.withOpacity(0.8f),
                 ),
             ) {
                 if (submitting) {
@@ -155,16 +155,16 @@ private fun QuestionBlock(
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
             Text(
                 if (question.multiSelect) stringResource(R.string.ask_badge_multiple) else stringResource(R.string.ask_badge_single),
-                fontSize = 9.sp,
+                fontSize = 11.sp,
                 fontWeight = FontWeight.Bold,
-                color = colors.textTertiary,
+                color = colors.web.mutedForeground,
                 modifier = Modifier
                     .clip(RoundedCornerShape(4.dp))
-                    .background(colors.textPrimary.copy(alpha = 0.06f))
+                    .background(colors.web.muted)
                     .padding(horizontal = 5.dp, vertical = 1.dp),
             )
             if (showHeader && question.header.isNotEmpty()) {
-                Text(question.header, fontSize = 11.sp, color = colors.textTertiary)
+                Text(question.header, fontSize = 12.sp, color = colors.web.mutedForeground)
             }
         }
         Text(question.question, fontSize = 14.sp, fontWeight = FontWeight.Medium, color = colors.textPrimary)
@@ -190,12 +190,12 @@ private fun QuestionBlock(
             Box(
                 Modifier
                     .fillMaxWidth()
-                    .clip(RoundedCornerShape(8.dp))
+                    .clip(CodegShapes.extraSmall)
                     .background(colors.codeSurface)
-                    .border(1.dp, colors.surfaceStroke, RoundedCornerShape(8.dp))
+                    .border(1.dp, colors.web.border, CodegShapes.extraSmall)
                     .padding(horizontal = 10.dp, vertical = 8.dp),
             ) {
-                if (otherText.isEmpty()) Text(stringResource(R.string.ask_other_placeholder), color = colors.textTertiary, fontSize = 13.sp)
+                if (otherText.isEmpty()) Text(stringResource(R.string.ask_other_placeholder), color = colors.web.mutedForeground, fontSize = 13.sp)
                 BasicTextField(
                     value = otherText,
                     onValueChange = onOtherText,
@@ -214,9 +214,10 @@ private fun OptionRow(label: String, description: String, checked: Boolean, mult
     Row(
         Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(8.dp))
-            .background(if (checked) colors.accent.copy(alpha = 0.12f) else colors.textPrimary.copy(alpha = 0.02f))
-            .border(0.5.dp, if (checked) colors.accent.copy(alpha = 0.4f) else colors.hairline, RoundedCornerShape(8.dp))
+            .clip(CodegShapes.extraSmall)
+            .heightIn(min = 48.dp)
+            .background(if (checked) colors.web.primary.withOpacity(0.10f) else colors.web.muted.withOpacity(0.3f))
+            .border(0.5.dp, if (checked) colors.accent.withOpacity(0.4f) else colors.hairline, CodegShapes.extraSmall)
             .clickable { onClick() }
             .padding(horizontal = 10.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
@@ -227,18 +228,18 @@ private fun OptionRow(label: String, description: String, checked: Boolean, mult
             Checkbox(
                 checked = checked,
                 onCheckedChange = null,
-                colors = CheckboxDefaults.colors(checkedColor = colors.accent, uncheckedColor = colors.textTertiary),
+                colors = CheckboxDefaults.colors(checkedColor = colors.accent, uncheckedColor = colors.web.mutedForeground),
             )
         } else {
             RadioButton(
                 selected = checked,
                 onClick = null,
-                colors = RadioButtonDefaults.colors(selectedColor = colors.accent, unselectedColor = colors.textTertiary),
+                colors = RadioButtonDefaults.colors(selectedColor = colors.accent, unselectedColor = colors.web.mutedForeground),
             )
         }
         Column(Modifier.weight(1f)) {
             Text(label, fontSize = 13.sp, color = colors.textPrimary)
-            if (description.isNotEmpty()) Text(description, fontSize = 11.sp, color = colors.textTertiary)
+            if (description.isNotEmpty()) Text(description, fontSize = 12.sp, color = colors.web.mutedForeground)
         }
     }
 }

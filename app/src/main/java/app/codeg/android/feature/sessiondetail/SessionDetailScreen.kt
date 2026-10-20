@@ -43,17 +43,15 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -63,8 +61,8 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -72,10 +70,14 @@ import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.codeg.android.R
 import app.codeg.android.core.designsystem.component.AgentAvatar
+import app.codeg.android.core.designsystem.component.CodegIconButton
+import app.codeg.android.core.designsystem.component.CodegTopBar
 import app.codeg.android.core.designsystem.component.EmptyState
 import app.codeg.android.core.designsystem.component.InlineError
 import app.codeg.android.core.designsystem.component.LoadingView
+import app.codeg.android.core.designsystem.theme.CodegShapes
 import app.codeg.android.core.designsystem.theme.CodegTheme
+import app.codeg.android.core.designsystem.theme.withOpacity
 import app.codeg.android.feature.sessiondetail.interactive.AskQuestionCard
 import app.codeg.android.feature.sessiondetail.interactive.PermissionRequestCard
 import app.codeg.android.feature.sessiondetail.interactive.PlanApprovalCard
@@ -192,14 +194,17 @@ fun SessionDetailScreen(
         else -> ui.summary?.trimmedTitle ?: stringResource(R.string.session_title_fallback)
     }
 
+    val agentOptionsLabel = stringResource(R.string.session_agent_options)
+
     Scaffold(
         containerColor = Color.Transparent,
         contentWindowInsets = WindowInsets(0, 0, 0, 0),
         topBar = {
-            TopAppBar(
-                title = { Text(title, maxLines = 1, overflow = TextOverflow.Ellipsis) },
+            CodegTopBar(
+                title = title,
+                showDivider = true,
                 navigationIcon = {
-                    IconButton(onClick = onBack) {
+                    CodegIconButton(onClick = onBack) {
                         Icon(
                             Icons.AutoMirrored.Rounded.ArrowBack,
                             contentDescription = stringResource(R.string.common_back),
@@ -209,24 +214,14 @@ fun SessionDetailScreen(
                 },
                 actions = {
                     // The agent avatar is the options button (mode / config / folder / branch).
-                    Box(
-                        Modifier
-                            .size(40.dp)
-                            .clip(CircleShape)
-                            .clickable(
-                                onClickLabel = stringResource(R.string.session_agent_options),
-                                role = Role.Button,
-                            ) { showOptions = true },
-                        contentAlignment = Alignment.Center,
+                    CodegIconButton(
+                        onClick = { showOptions = true },
+                        modifier = Modifier.semantics { contentDescription = agentOptionsLabel },
                     ) {
-                        AgentAvatar(ui.agent, size = 28.dp)
+                        AgentAvatar(ui.agent, size = 16.dp)
                     }
                     if (ui.summary != null) SessionActionsMenu(ui, viewModel, onDeleted = onBack)
                 },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color.Transparent,
-                    titleContentColor = colors.textPrimary,
-                ),
             )
         },
         bottomBar = {
@@ -301,12 +296,12 @@ fun SessionDetailScreen(
         Box(Modifier.padding(padding).fillMaxSize()) {
             when {
                 ui.loading && !hasContent ->
-                    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Box(Modifier.fillMaxSize().padding(24.dp), contentAlignment = Alignment.Center) {
                         LoadingView(message = stringResource(R.string.common_loading))
                     }
 
                 ui.error != null && !hasContent ->
-                    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Box(Modifier.fillMaxSize().padding(24.dp), contentAlignment = Alignment.Center) {
                         InlineError(
                             icon = Icons.Rounded.Forum,
                             title = stringResource(R.string.session_load_failed),
@@ -317,7 +312,7 @@ fun SessionDetailScreen(
                     }
 
                 !hasContent ->
-                    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Box(Modifier.fillMaxSize().padding(24.dp), contentAlignment = Alignment.Center) {
                         EmptyState(
                             icon = Icons.Rounded.Forum,
                             title = if (ui.isNew) {
@@ -400,7 +395,7 @@ private fun SendStatusLine(status: String) {
     Text(
         text = status,
         fontSize = 12.sp,
-        color = colors.textTertiary,
+        color = colors.web.mutedForeground,
         modifier = Modifier
             .fillMaxWidth()
             .background(colors.bgElevated)
@@ -419,7 +414,10 @@ private fun NoticeBanner(
     Row(
         Modifier
             .fillMaxWidth()
-            .background(colors.danger.copy(alpha = 0.14f))
+            .padding(horizontal = 16.dp, vertical = 4.dp)
+            .clip(CodegShapes.extraSmall)
+            .background(colors.danger.withOpacity(0.10f))
+            .border(1.dp, colors.danger.withOpacity(0.20f), CodegShapes.extraSmall)
             .padding(horizontal = 14.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -456,12 +454,12 @@ private fun AttachmentStrip(attachments: List<Attachment>, onRemove: (String) ->
             }
             Box(Modifier.size(60.dp)) {
                 if (bitmap != null) {
-                    Image(bitmap, contentDescription = stringResource(R.string.sessiondetail_attachment), contentScale = ContentScale.Crop, modifier = Modifier.size(60.dp).clip(RoundedCornerShape(8.dp)))
+                    Image(bitmap, contentDescription = stringResource(R.string.sessiondetail_attachment), contentScale = ContentScale.Crop, modifier = Modifier.size(60.dp).clip(CodegShapes.extraSmall))
                 } else {
-                    Box(Modifier.size(60.dp).clip(RoundedCornerShape(8.dp)).background(colors.codeSurface))
+                    Box(Modifier.size(60.dp).clip(CodegShapes.extraSmall).background(colors.codeSurface))
                 }
                 Box(
-                    Modifier.align(Alignment.TopEnd).padding(2.dp).size(18.dp).clip(RoundedCornerShape(50)).background(colors.bg.copy(alpha = 0.7f)).clickable { onRemove(att.id) },
+                    Modifier.align(Alignment.TopEnd).padding(2.dp).size(18.dp).clip(RoundedCornerShape(50)).background(colors.bg.withOpacity(0.7f)).clickable { onRemove(att.id) },
                     contentAlignment = Alignment.Center,
                 ) { Icon(Icons.Rounded.Close, contentDescription = stringResource(R.string.common_remove), tint = colors.textPrimary, modifier = Modifier.size(12.dp)) }
             }
