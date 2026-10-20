@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -19,6 +20,7 @@ import app.codeg.android.core.designsystem.icon.*
 import app.codeg.android.core.designsystem.theme.CodegTheme
 
 /** Debug-only component harness; it does not persist app appearance settings. */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DevGalleryScreen(onBack: () -> Unit) {
     if (!BuildConfig.DEBUG) return
