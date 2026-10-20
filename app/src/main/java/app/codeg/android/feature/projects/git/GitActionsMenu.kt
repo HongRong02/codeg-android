@@ -83,6 +83,21 @@ fun GitActionsMenu(onSwitchBranch: () -> Unit, enabled: Boolean = true) {
         GitMiscSheet(client, folder.path, folder.id, onDismiss = { showMisc = false }, onChanged = project::load)
     }
 
+    // T32: forge
+    var showForge by remember(client, folder?.id) { mutableStateOf(false) }
+    val forge: app.codeg.android.feature.projects.forge.ForgeViewModel? = if (client != null && folder != null) {
+        viewModel(key = "forge-${folder.id}-${System.identityHashCode(client)}", factory = object : ViewModelProvider.Factory {
+            @Suppress("UNCHECKED_CAST")
+            override fun <T : ViewModel> create(modelClass: Class<T>): T =
+                app.codeg.android.feature.projects.forge.ForgeViewModel(client, folder.id) as T
+        })
+    } else null
+    val forgeUi = forge?.ui?.collectAsStateWithLifecycle()?.value
+    LaunchedEffect(forge, enabled) { if (enabled) forge?.probe() }
+    if (showForge && forge != null && forgeUi?.remote?.supported == true) {
+        app.codeg.android.feature.projects.forge.ForgeSheet(forge, onDismiss = { showForge = false })
+    }
+
     var expanded by remember { mutableStateOf(false) }
     Box {
         CodegIconButton(onClick = { expanded = true }, enabled = enabled) {
@@ -125,6 +140,14 @@ fun GitActionsMenu(onSwitchBranch: () -> Unit, enabled: Boolean = true) {
                 text = { Text(stringResource(R.string.git_misc_title)) },
                 onClick = { expanded = false; showMisc = true },
             )
+            // T32
+            if (forge != null && forgeUi?.remote?.supported == true) {
+                DropdownMenuItem(
+                    text = { Text(stringResource(R.string.forge_title)) },
+                    onClick = { expanded = false; showForge = true; forge.refresh() },
+                    enabled = !projectUi.gitBusy,
+                )
+            }
         }
     }
 }

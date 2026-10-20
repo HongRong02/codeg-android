@@ -1153,6 +1153,52 @@ class CodegClient(
 
     // endregion
 
+    // region forge
+
+    suspend fun forgeRemote(body: kotlinx.serialization.json.JsonObject): app.codeg.android.core.model.ForgeRemote? =
+        send("folder_forge_remote", encode(body)).let { if (it.trim() == "null") null else decode(it, app.codeg.android.core.model.ForgeRemote.serializer()) }
+
+    suspend fun forgeIssues(body: kotlinx.serialization.json.JsonObject): app.codeg.android.core.model.ForgeIssueList =
+        decode(send("forge_list_issues", encode(body)), app.codeg.android.core.model.ForgeIssueList.serializer())
+
+    suspend fun forgeLabels(body: kotlinx.serialization.json.JsonObject): app.codeg.android.core.model.ForgeLabelList =
+        decode(send("forge_list_labels", encode(body)), app.codeg.android.core.model.ForgeLabelList.serializer())
+
+    suspend fun forgeComments(body: kotlinx.serialization.json.JsonObject): app.codeg.android.core.model.ForgeCommentList =
+        decode(send("forge_list_comments", encode(body)), app.codeg.android.core.model.ForgeCommentList.serializer())
+
+    suspend fun forgeComment(body: kotlinx.serialization.json.JsonObject): app.codeg.android.core.model.ForgeComment =
+        decode(send("forge_create_comment", encode(body)), app.codeg.android.core.model.ForgeComment.serializer())
+
+    suspend fun forgeState(body: kotlinx.serialization.json.JsonObject): app.codeg.android.core.model.ForgeIssueRow =
+        decode(send("forge_set_item_state", encode(body)), app.codeg.android.core.model.ForgeIssueRow.serializer())
+
+    suspend fun forgeCreateIssue(body: kotlinx.serialization.json.JsonObject): app.codeg.android.core.model.ForgeIssueRow =
+        decode(send("forge_create_issue", encode(body)), app.codeg.android.core.model.ForgeIssueRow.serializer())
+
+    suspend fun forgeDetail(body: kotlinx.serialization.json.JsonObject): app.codeg.android.core.model.ForgeChangeDetail =
+        decode(send("forge_change_detail", encode(body)), app.codeg.android.core.model.ForgeChangeDetail.serializer())
+
+    suspend fun forgeFiles(body: kotlinx.serialization.json.JsonObject): app.codeg.android.core.model.ForgeChangedFileList =
+        decode(send("forge_change_files", encode(body)), app.codeg.android.core.model.ForgeChangedFileList.serializer())
+
+    suspend fun forgeMergeOptions(body: kotlinx.serialization.json.JsonObject): app.codeg.android.core.model.ForgeMergeOptions =
+        decode(send("forge_merge_options", encode(body)), app.codeg.android.core.model.ForgeMergeOptions.serializer())
+
+    suspend fun forgeMerge(body: kotlinx.serialization.json.JsonObject): app.codeg.android.core.model.ForgeIssueRow? =
+        send("forge_merge_change", encode(body)).let { if (it.trim() == "null") null else decode(it, app.codeg.android.core.model.ForgeIssueRow.serializer()) }
+
+    suspend fun forgeCreateTask(body: kotlinx.serialization.json.JsonObject): app.codeg.android.core.model.ForgeCreateResult =
+        decode(send("work_task_create_from_forge", encode(body)), app.codeg.android.core.model.ForgeCreateResult.serializer())
+
+    suspend fun forgeCount(body: kotlinx.serialization.json.JsonObject): Long? =
+        send("forge_tab_count", encode(body)).let { if (it.trim() == "null") null else decode(it, Long.serializer()) }
+
+    suspend fun forgeLookup(body: kotlinx.serialization.json.JsonObject): List<app.codeg.android.core.model.ForgeTaskLink> =
+        decode(send("work_task_lookup_by_source", encode(body)), ListSerializer(app.codeg.android.core.model.ForgeTaskLink.serializer()))
+
+    // endregion
+
     // region Transport
 
     /**
