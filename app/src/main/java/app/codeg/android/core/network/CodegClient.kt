@@ -1268,6 +1268,37 @@ class CodegClient(
 
     // endregion
 
+    // region custom-skills
+
+    suspend fun customSkillsList(): List<app.codeg.android.core.model.CustomSkill> =
+        decodeCamel(send("custom_list", encode(EmptyBody)), ListSerializer(app.codeg.android.core.model.CustomSkill.serializer()))
+
+    suspend fun customSkillsStatuses(): List<ExpertInstallStatus> =
+        decodeCamel(send("custom_list_all_install_statuses", encode(EmptyBody)), ListSerializer(ExpertInstallStatus.serializer()))
+
+    suspend fun customSkillRead(id: String): String =
+        decodeCamel(send("custom_read_skill", encode(app.codeg.android.core.model.wire.CustomSkillIdBody(id))), String.serializer())
+
+    suspend fun customSkillCreate(id: String, content: String): app.codeg.android.core.model.CustomSkill =
+        decodeCamel(send("custom_create_skill", encode(app.codeg.android.core.model.wire.CustomSkillContentBody(id, content))), app.codeg.android.core.model.CustomSkill.serializer())
+
+    suspend fun customSkillSave(id: String, content: String): app.codeg.android.core.model.CustomSkill =
+        decodeCamel(send("custom_save_skill", encode(app.codeg.android.core.model.wire.CustomSkillContentBody(id, content))), app.codeg.android.core.model.CustomSkill.serializer())
+
+    suspend fun customSkillDuplicate(sourceId: String, newId: String): app.codeg.android.core.model.CustomSkill =
+        decodeCamel(send("custom_duplicate_skill", encode(app.codeg.android.core.model.wire.CustomSkillDuplicateBody(sourceId, newId))), app.codeg.android.core.model.CustomSkill.serializer())
+
+    suspend fun customSkillsDelete(ids: List<String>): List<app.codeg.android.core.model.CustomSkillResult> =
+        decodeCamel(send("custom_delete_skills", encode(app.codeg.android.core.model.wire.CustomSkillDeleteBody(ids))), ListSerializer(app.codeg.android.core.model.CustomSkillResult.serializer()))
+
+    suspend fun customSkillsImport(agent: AgentType, ids: List<String>): List<app.codeg.android.core.model.CustomSkillResult> =
+        decodeCamel(send("custom_import_from_agent", encode(app.codeg.android.core.model.wire.CustomSkillImportBody(agent, ids))), ListSerializer(app.codeg.android.core.model.CustomSkillResult.serializer()))
+
+    suspend fun customSkillsApplyLinks(ops: List<app.codeg.android.core.model.wire.CustomSkillLinkOp>): List<app.codeg.android.core.model.CustomLinkResult> =
+        decodeCamel(send("custom_apply_links", encode(app.codeg.android.core.model.wire.CustomSkillLinksBody(ops))), ListSerializer(app.codeg.android.core.model.CustomLinkResult.serializer()))
+
+    // endregion
+
     // region Transport
 
     /**

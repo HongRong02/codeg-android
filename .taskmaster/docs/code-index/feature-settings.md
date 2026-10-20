@@ -805,29 +805,29 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 92 |   `val colors` |
 | 93 |   `var editor by remember` |
 | 94 |   `var pendingDelete by remember` |
-| 163 | `@Composable private fun AgentFilterBar(agents: List<AgentType>, selected: AgentType?, onSelect: (AgentType) -> Unit)` |
-| 164 |   `val colors` |
-| 194 | `@Composable private fun SkillsArea( ui: SkillsUiState, onAdd: () -> Unit, onOpen: (AgentSkillItem) -> Unit, onDelete: (AgentSkillItem) -> Unit, onRetry: () -> Unit, onDismissError: () -> Unit, )` |
-| 202 |   `val colors` |
-| 203 |   `val result` |
-| 245 | `@Composable private fun SkillRow(skill: AgentSkillItem, onClick: () -> Unit, onDelete: () -> Unit)` |
-| 246 |   `val colors` |
-| 247 |   `val isDir` |
-| 273 | `@Composable private fun RefreshErrorBanner(message: String, onRetry: () -> Unit, onDismiss: () -> Unit)` |
-| 274 |   `val colors` |
-| 287 | `@Composable private fun SkillEditorDialog( target: SkillEditTarget, agent: AgentType, loadContent: suspend (AgentSkillItem) -> String, onSave: suspend (id: String, scope: String, content: String, layout: String?) -> Unit, onDismiss: () -> Unit, )` |
-| 294 |   `val colors` |
-| 295 |   `val scope` |
-| 296 |   `val existing` |
-| 297 |   `val isReadOnly` |
-| 298 |   `val skillScope` |
-| 299 |   `val layout` |
-| 301 |   `var skillId by remember` |
-| 302 |   `var content by remember` |
-| 303 |   `var loadingContent by remember` |
-| 304 |   `var saving by remember` |
-| 305 |   `var error by remember` |
-| 316 |   `val canSave` |
+| 166 | `@Composable private fun AgentFilterBar(agents: List<AgentType>, selected: AgentType?, onSelect: (AgentType) -> Unit)` |
+| 167 |   `val colors` |
+| 197 | `@Composable private fun SkillsArea( ui: SkillsUiState, onAdd: () -> Unit, onOpen: (AgentSkillItem) -> Unit, onDelete: (AgentSkillItem) -> Unit, onRetry: () -> Unit, onDismissError: () -> Unit, )` |
+| 205 |   `val colors` |
+| 206 |   `val result` |
+| 248 | `@Composable private fun SkillRow(skill: AgentSkillItem, onClick: () -> Unit, onDelete: () -> Unit)` |
+| 249 |   `val colors` |
+| 250 |   `val isDir` |
+| 276 | `@Composable private fun RefreshErrorBanner(message: String, onRetry: () -> Unit, onDismiss: () -> Unit)` |
+| 277 |   `val colors` |
+| 290 | `@Composable private fun SkillEditorDialog( target: SkillEditTarget, agent: AgentType, loadContent: suspend (AgentSkillItem) -> String, onSave: suspend (id: String, scope: String, content: String, layout: String?) -> Unit, onDismiss: () -> Unit, )` |
+| 297 |   `val colors` |
+| 298 |   `val scope` |
+| 299 |   `val existing` |
+| 300 |   `val isReadOnly` |
+| 301 |   `val skillScope` |
+| 302 |   `val layout` |
+| 304 |   `var skillId by remember` |
+| 305 |   `var content by remember` |
+| 306 |   `var loadingContent by remember` |
+| 307 |   `var saving by remember` |
+| 308 |   `var error by remember` |
+| 319 |   `val canSave` |
 
 ## feature/settings/SkillsViewModel.kt
 
@@ -924,3 +924,75 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 91 |   `val testResult: GitDetectResult?` |
 | 92 |   `val saving: Boolean` |
 | 93 |   `val error: String?` |
+
+## feature/settings/customskills/CustomSkillPolicy.kt
+
+| Line | Declaration |
+|---|---|
+| 6 | `fun canEnableCustomSkill(state: ExpertLinkState?): Boolean` |
+| 9 | `fun importableCustomSkills(skills: List<AgentSkillItem>, libraryIds: Set<String>): List<AgentSkillItem>` |
+
+## feature/settings/customskills/CustomSkillsScreen.kt
+
+| Line | Declaration |
+|---|---|
+| 36 | `@Composable fun CustomSkillsEntry(onClosed: () -> Unit, viewModel: CustomSkillsViewModel = hiltViewModel())` |
+| 37 |   `val ui by viewModel.ui.collectAsStateWithLifecycle()` |
+| 38 |   `var open by remember` |
+| 53 | `private enum class EditorMode` |
+| 54 | `private data class EditorTarget(val mode: EditorMode, val id: String = "")` |
+| 57 | `@Composable private fun CustomSkillsPage(ui: CustomSkillsUi, viewModel: CustomSkillsViewModel, onDismiss: () -> Unit)` |
+| 58 |   `var editor by remember` |
+| 59 |   `var deleting by remember` |
+| 60 |   `var importing by remember` |
+| 121 | `private fun linkStateLabel(state: ExpertLinkState?): Int` |
+| 130 | `@Composable private fun CustomSkillsEditor(target: EditorTarget, ui: CustomSkillsUi, viewModel: CustomSkillsViewModel, onDismiss: () -> Unit)` |
+| 131 |   `val scope` |
+| 132 |   `var id by remember(target)` |
+| 133 |   `var content by remember(target)` |
+| 134 |   `var loading by remember(target)` |
+| 135 |   `var loaded by remember(target)` |
+| 136 |   `var error by remember(target)` |
+| 137 |   `var retry by remember` |
+| 147 |   `val title` |
+| 179 | `@Composable private fun CustomSkillsImport(ui: CustomSkillsUi, viewModel: CustomSkillsViewModel, onDismiss: () -> Unit)` |
+| 180 |   `val scope` |
+| 181 |   `var agent by remember` |
+| 182 |   `var candidates by remember` |
+| 183 |   `var selected by remember` |
+| 184 |   `var loading by remember` |
+| 185 |   `var error by remember` |
+| 186 |   `var retry by remember` |
+| 228 | `@Composable private fun CustomSkillsError(error: String?)` |
+| 233 | `@Composable private fun CustomSkillsFrame(title: String, onDismiss: () -> Unit, content: @Composable ColumnScope.() -> Unit)` |
+
+## feature/settings/customskills/CustomSkillsViewModel.kt
+
+| Line | Declaration |
+|---|---|
+| 20 | `data class CustomSkillsUi( val supported: Boolean = false, val loading: Boolean = true, val busy: Boolean = false, val skills: List<CustomSkill> = emptyList(), val agents: List<AgentType> = emptyList(), val statuses: List<ExpertInstallStatus> = emptyList(), val error: String? = null, )` |
+| 21 |   `val supported: Boolean` |
+| 22 |   `val loading: Boolean` |
+| 23 |   `val busy: Boolean` |
+| 24 |   `val skills: List<CustomSkill>` |
+| 25 |   `val agents: List<AgentType>` |
+| 26 |   `val statuses: List<ExpertInstallStatus>` |
+| 27 |   `val error: String?` |
+| 31 | `class CustomSkillsViewModel @Inject constructor( private val repository: ServerRepository, @ApplicationContext private val context: Context, ) : ViewModel()` |
+| 32 |   `private val repository: ServerRepository` |
+| 35 |   `private val state` |
+| 36 |   `val ui` |
+| 37 |   `private var client: CodegClient?` |
+| 39 |   `private var refreshing` |
+| 43 |   `fun refresh()` |
+| 61 |   `private suspend fun reload(c: CodegClient)` |
+| 69 |   `private fun report(e: Exception)` |
+| 78 |   `private fun currentClient(): CodegClient` |
+| 80 |   `suspend fun read(id: String): String` |
+| 83 |   `private suspend fun mutate(action: suspend (CodegClient) -> Unit): Boolean` |
+| 97 |   `suspend fun save(id: String, content: String, create: Boolean): Boolean` |
+| 101 |   `suspend fun duplicate(sourceId: String, newId: String): Boolean` |
+| 103 |   `fun delete(id: String)` |
+| 114 |   `fun toggle(id: String, agent: AgentType, enable: Boolean)` |
+| 133 |   `suspend fun importCandidates(agent: AgentType): List<AgentSkillItem>` |
+| 139 |   `suspend fun importFromAgent(agent: AgentType, ids: List<String>): Boolean` |

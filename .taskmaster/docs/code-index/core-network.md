@@ -237,14 +237,23 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 1257 |   `suspend fun setFolderGroup(folderId: Int, groupId: Int?)` |
 | 1261 |   `suspend fun updateFolderAlias(folderId: Int, alias: String?)` |
 | 1265 |   `suspend fun updateFolderColor(folderId: Int, color: String)` |
-| 1277 |   `private suspend fun send(path: String, bodyJson: String): String` |
-| 1311 |   `private inline fun <reified T> encode(body: T): String` |
-| 1314 |   `private fun <T> decode(text: String, deserializer: DeserializationStrategy<T>): T` |
-| 1320 |   `companion object` |
-| 1322 |     `fun normalizeBaseUrl(raw: String): String` |
-| 1330 |     `fun decodeConnectionId(text: String): String` |
-| 1346 |     `fun decodeAgentList(text: String): List<AcpAgentInfo>` |
-| 1363 |     `fun isJsonNull(text: String): Boolean` |
+| 1273 |   `suspend fun customSkillsList(): List<app.codeg.android.core.model.CustomSkill>` |
+| 1276 |   `suspend fun customSkillsStatuses(): List<ExpertInstallStatus>` |
+| 1279 |   `suspend fun customSkillRead(id: String): String` |
+| 1282 |   `suspend fun customSkillCreate(id: String, content: String): app.codeg.android.core.model.CustomSkill` |
+| 1285 |   `suspend fun customSkillSave(id: String, content: String): app.codeg.android.core.model.CustomSkill` |
+| 1288 |   `suspend fun customSkillDuplicate(sourceId: String, newId: String): app.codeg.android.core.model.CustomSkill` |
+| 1291 |   `suspend fun customSkillsDelete(ids: List<String>): List<app.codeg.android.core.model.CustomSkillResult>` |
+| 1294 |   `suspend fun customSkillsImport(agent: AgentType, ids: List<String>): List<app.codeg.android.core.model.CustomSkillResult>` |
+| 1297 |   `suspend fun customSkillsApplyLinks(ops: List<app.codeg.android.core.model.wire.CustomSkillLinkOp>): List<app.codeg.android.core.model.CustomLinkResult>` |
+| 1308 |   `private suspend fun send(path: String, bodyJson: String): String` |
+| 1342 |   `private inline fun <reified T> encode(body: T): String` |
+| 1345 |   `private fun <T> decode(text: String, deserializer: DeserializationStrategy<T>): T` |
+| 1351 |   `companion object` |
+| 1353 |     `fun normalizeBaseUrl(raw: String): String` |
+| 1361 |     `fun decodeConnectionId(text: String): String` |
+| 1377 |     `fun decodeAgentList(text: String): List<AcpAgentInfo>` |
+| 1394 |     `fun isJsonNull(text: String): Boolean` |
 
 ## core/network/CodegClientFactory.kt
 
