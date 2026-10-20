@@ -5,10 +5,8 @@ import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -32,11 +30,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.ArrowBack
-import androidx.compose.material.icons.rounded.ArrowDownward
-import androidx.compose.material.icons.rounded.Close
-import androidx.compose.material.icons.rounded.Forum
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -76,6 +69,8 @@ import app.codeg.android.core.designsystem.component.CodegTopBar
 import app.codeg.android.core.designsystem.component.EmptyState
 import app.codeg.android.core.designsystem.component.InlineError
 import app.codeg.android.core.designsystem.component.LoadingView
+import app.codeg.android.core.designsystem.component.LocalCodegToaster
+import app.codeg.android.core.designsystem.icon.*
 import app.codeg.android.core.designsystem.theme.CodegShapes
 import app.codeg.android.core.designsystem.theme.CodegTheme
 import app.codeg.android.core.designsystem.theme.withOpacity
@@ -109,7 +104,20 @@ fun SessionDetailScreen(
         viewModel.resumeStream()
         onPauseOrDispose { viewModel.pauseStream() }
     }
-    // TODO(T52): CodegToaster for session notices.
+    val toaster = LocalCodegToaster.current
+    val noticeTitle = stringResource(R.string.t55_session_notice)
+    val disconnectedNotice = stringResource(R.string.session_fork_disconnected)
+    val droppedNotesNotice = stringResource(R.string.plan_approval_notes_dropped)
+    LaunchedEffect(ui.notice) {
+        ui.notice?.let {
+            when (it) {
+                disconnectedNotice -> toaster.success(noticeTitle, description = it)
+                droppedNotesNotice -> toaster.warning(noticeTitle, description = it)
+                else -> toaster.error(noticeTitle, description = it)
+            }
+            viewModel.dismissNotice()
+        }
+    }
     val colors = CodegTheme.colors
     var draft by remember { mutableStateOf("") }
     var showInsert by remember { mutableStateOf(false) }
@@ -208,10 +216,9 @@ fun SessionDetailScreen(
                 navigationIcon = {
                     CodegIconButton(onClick = onBack) {
                         Icon(
-                            Icons.AutoMirrored.Rounded.ArrowBack,
+                            Lucide.ArrowLeft,
                             contentDescription = stringResource(R.string.common_back),
-                            tint = colors.textPrimary,
-                        )
+                            tint = colors.textPrimary, modifier = Modifier.size(16.dp))
                     }
                 },
                 actions = {
@@ -259,16 +266,6 @@ fun SessionDetailScreen(
                         onAction = onOpenServers,
                     )
                 }
-                // Keep the last shown message so the exit animation has content to fade.
-                var lastNotice by remember { mutableStateOf("") }
-                LaunchedEffect(ui.notice) { ui.notice?.let { lastNotice = it } }
-                AnimatedVisibility(
-                    visible = ui.notice != null,
-                    enter = expandVertically(tween(220)) + fadeIn(tween(220)),
-                    exit = shrinkVertically(tween(180)) + fadeOut(tween(180)),
-                ) {
-                    NoticeBanner(lastNotice, onDismiss = viewModel::dismissNotice)
-                }
                 AnimatedVisibility(
                     visible = ui.sendStatus != null && ui.isInFlight,
                     enter = fadeIn(tween(160)),
@@ -305,7 +302,7 @@ fun SessionDetailScreen(
                 ui.error != null && !hasContent ->
                     Box(Modifier.fillMaxSize().padding(24.dp), contentAlignment = Alignment.Center) {
                         InlineError(
-                            icon = Icons.Rounded.Forum,
+                            icon = Lucide.MessageSquare,
                             title = stringResource(R.string.session_load_failed),
                             message = ui.error!!,
                             onRetry = viewModel::load,
@@ -316,7 +313,7 @@ fun SessionDetailScreen(
                 !hasContent ->
                     Box(Modifier.fillMaxSize().padding(24.dp), contentAlignment = Alignment.Center) {
                         EmptyState(
-                            icon = Icons.Rounded.Forum,
+                            icon = Lucide.MessageSquare,
                             title = if (ui.isNew) {
                                 stringResource(R.string.session_new_task)
                             } else {
@@ -375,7 +372,7 @@ private fun JumpToLatestButton(onClick: () -> Unit) {
     val colors = CodegTheme.colors
     Box(
         Modifier
-            .size(40.dp)
+            .size(48.dp)
             .clip(CircleShape)
             .background(colors.bgElevated)
             .border(1.dp, colors.surfaceStroke, CircleShape)
@@ -383,10 +380,10 @@ private fun JumpToLatestButton(onClick: () -> Unit) {
         contentAlignment = Alignment.Center,
     ) {
         Icon(
-            Icons.Rounded.ArrowDownward,
+            Lucide.ArrowDown,
             contentDescription = stringResource(R.string.session_jump_to_latest),
             tint = colors.accent,
-            modifier = Modifier.size(20.dp),
+            modifier = Modifier.size(16.dp),
         )
     }
 }
@@ -433,7 +430,7 @@ private fun NoticeBanner(
             CodegButton(variant = CodegButtonVariant.Ghost, onClick = onAction) { Text(actionLabel, color = colors.textPrimary) }
         }
         IconButton(onClick = onDismiss) {
-            Icon(Icons.Rounded.Close, contentDescription = stringResource(R.string.common_dismiss), tint = colors.textSecondary)
+            Icon(Lucide.X, contentDescription = stringResource(R.string.common_dismiss), tint = colors.textSecondary, modifier = Modifier.size(16.dp))
         }
     }
 }
@@ -461,9 +458,13 @@ private fun AttachmentStrip(attachments: List<Attachment>, onRemove: (String) ->
                     Box(Modifier.size(60.dp).clip(CodegShapes.extraSmall).background(colors.codeSurface))
                 }
                 Box(
-                    Modifier.align(Alignment.TopEnd).padding(2.dp).size(18.dp).clip(RoundedCornerShape(50)).background(colors.bg.withOpacity(0.7f)).clickable { onRemove(att.id) },
-                    contentAlignment = Alignment.Center,
-                ) { Icon(Icons.Rounded.Close, contentDescription = stringResource(R.string.common_remove), tint = colors.textPrimary, modifier = Modifier.size(12.dp)) }
+                    Modifier.align(Alignment.TopEnd).size(48.dp).clickable { onRemove(att.id) },
+                    contentAlignment = Alignment.TopEnd,
+                ) {
+                    Box(Modifier.padding(2.dp).size(20.dp).clip(CircleShape).background(colors.bg.withOpacity(0.7f)), contentAlignment = Alignment.Center) {
+                        Icon(Lucide.X, contentDescription = stringResource(R.string.common_remove), tint = colors.textPrimary, modifier = Modifier.size(16.dp))
+                    }
+                }
             }
         }
     }

@@ -4,11 +4,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
+import app.codeg.android.core.designsystem.component.CodegInstantCollapsible
 import app.codeg.android.core.designsystem.component.CodegSectionHeader
 
 /** Compact web-style group label with a full-row touch target for folding. */
@@ -23,7 +23,14 @@ fun CollapsibleSectionHeader(
     modifier: Modifier = Modifier,
     collapsible: Boolean = true,
 ) {
-    // TODO(T53): CodegCollapsible owns the section body in the next phase.
+    if (collapsible) {
+        CodegInstantCollapsible(expanded = !collapsed, onExpandedChange = { onToggle() }, modifier = modifier.padding(top = 12.dp), header = {
+            CodegSectionHeader(title = label, count = count,
+                action = { Icon(icon, null, tint = tint, modifier = Modifier.size(16.dp)) })
+        }, content = {})
+        return
+    }
+    // Rows remain lazy siblings in SessionListScreen to preserve virtualization.
     CodegSectionHeader(
         title = label,
         count = count,

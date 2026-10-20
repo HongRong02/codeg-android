@@ -9,11 +9,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.CheckCircle
-import androidx.compose.material.icons.rounded.Checklist
-import androidx.compose.material.icons.rounded.RadioButtonUnchecked
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -27,6 +22,8 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.codeg.android.R
+import app.codeg.android.core.designsystem.component.CodegSpinner
+import app.codeg.android.core.designsystem.icon.*
 import app.codeg.android.core.designsystem.theme.CodegTheme
 import app.codeg.android.core.model.PlanEntry
 
@@ -48,7 +45,7 @@ fun LivePlanView(entries: List<PlanEntry>, modifier: Modifier = Modifier) {
         verticalArrangement = Arrangement.spacedBy(6.dp),
     ) {
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            Icon(Icons.Rounded.Checklist, null, tint = colors.textSecondary, modifier = Modifier.size(15.dp))
+            Icon(Lucide.ListTodo, null, tint = colors.textSecondary, modifier = Modifier.size(16.dp))
             Text(stringResource(R.string.liveplan_title), fontSize = 12.sp, fontWeight = FontWeight.SemiBold, color = colors.textSecondary, modifier = Modifier.weight(1f))
             Text("$done/${entries.size}", fontSize = 11.sp, color = colors.textTertiary)
         }
@@ -63,11 +60,11 @@ private fun PlanRow(entry: PlanEntry) {
     Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.Top) {
         when (entry.normalizedStatus) {
             PlanEntry.Status.COMPLETED ->
-                Icon(Icons.Rounded.CheckCircle, null, tint = SuccessGreen, modifier = Modifier.size(15.dp))
+                Icon(Lucide.CircleCheckBig, null, tint = SuccessGreen, modifier = Modifier.size(16.dp))
             PlanEntry.Status.IN_PROGRESS ->
-                CircularProgressIndicator(modifier = Modifier.size(13.dp), strokeWidth = 2.dp, color = colors.accent)
+                CodegSpinner(modifier = Modifier.size(13.dp))
             PlanEntry.Status.PENDING ->
-                Icon(Icons.Rounded.RadioButtonUnchecked, null, tint = colors.textTertiary, modifier = Modifier.size(15.dp))
+                Icon(Lucide.CircleDashed, null, tint = colors.textTertiary, modifier = Modifier.size(16.dp))
         }
         Text(
             text = entry.content,

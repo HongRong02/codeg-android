@@ -9,8 +9,6 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.selection.selectable
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.MoreVert
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -45,6 +43,7 @@ import app.codeg.android.core.designsystem.component.CodegSheet
 import app.codeg.android.core.designsystem.component.CodegTextField
 import app.codeg.android.core.designsystem.component.statusColor
 import app.codeg.android.core.designsystem.component.statusLabel
+import app.codeg.android.core.designsystem.icon.*
 import app.codeg.android.core.designsystem.theme.CodegTheme
 import app.codeg.android.core.model.ConversationStatus
 
@@ -71,7 +70,7 @@ fun SessionActionsMenu(
 
     Box {
         CodegIconButton(onClick = { menu = true }) {
-            Icon(Icons.Rounded.MoreVert, contentDescription = stringResource(R.string.sessionactions_session_actions), tint = colors.textPrimary)
+            Icon(Lucide.EllipsisVertical, contentDescription = stringResource(R.string.sessionactions_session_actions), tint = colors.textPrimary, modifier = Modifier.size(16.dp))
         }
         CodegDropdownMenu(expanded = menu, onDismissRequest = { menu = false }) {
             CodegMenuItem(text = { Text(stringResource(R.string.sessionactions_rename)) }, onClick = { menu = false; showRename = true })

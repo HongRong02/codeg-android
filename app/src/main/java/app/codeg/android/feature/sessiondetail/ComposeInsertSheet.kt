@@ -6,11 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -21,10 +17,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import app.codeg.android.R
-import app.codeg.android.core.designsystem.component.CodegListRow
+import app.codeg.android.core.designsystem.component.CodegCommandGroup
+import app.codeg.android.core.designsystem.component.CodegCommandItem
+import app.codeg.android.core.designsystem.component.CodegCommandList
 import app.codeg.android.core.designsystem.component.CodegSheet
+import app.codeg.android.core.designsystem.component.CodegSpinner
 import app.codeg.android.core.designsystem.component.CodegTabs
 import app.codeg.android.core.designsystem.theme.CodegTheme
 import app.codeg.android.core.model.AgentType
@@ -60,6 +58,7 @@ fun ComposeInsertSheet(
 ) {
     val colors = CodegTheme.colors
     var source by remember { mutableStateOf(InsertSource.QUICK) }
+    var query by remember(source) { mutableStateOf("") }
     var loading by remember { mutableStateOf(true) }
     var quick by remember { mutableStateOf<List<QuickMessage>>(emptyList()) }
     var experts by remember { mutableStateOf<List<ExpertListItem>>(emptyList()) }
@@ -97,46 +96,33 @@ fun ComposeInsertSheet(
 
             Box(Modifier.fillMaxWidth().heightIn(min = 120.dp, max = 420.dp)) {
                 when {
-                    loading -> Box(Modifier.fillMaxWidth().padding(40.dp), contentAlignment = Alignment.Center) { CircularProgressIndicator(color = colors.accent) }
-                    source == InsertSource.QUICK -> InsertList(quick.isEmpty(), stringResource(R.string.insert_empty_quick)) {
-                        items(quick, key = { it.id }) { qm ->
-                            InsertRow(qm.title.ifEmpty { qm.content }, qm.content) {
-                                onInsert { draft -> ComposeInsert.appendMessage(qm.content, draft) }; onDismiss()
-                            }
+                    loading -> Box(Modifier.fillMaxWidth().padding(40.dp), contentAlignment = Alignment.Center) { CodegSpinner() }
+                    else -> {
+                        val entries = when (source) {
+                            InsertSource.QUICK -> quick.map { CodegCommandItem(it.id.toString(), it.title.ifEmpty { it.content } + if (it.title.isNotEmpty()) " · ${it.content}" else "", listOf(it.content)) }
+                            InsertSource.EXPERTS -> experts.map { CodegCommandItem(it.id, it.metadata.title() + " · ${it.metadata.desc()}", listOf(it.metadata.desc())) }
+                            InsertSource.COMMANDS -> commands.map { CodegCommandItem(it.name, "/${it.name}" + (it.description?.let { desc -> " · $desc" } ?: ""), listOf(it.description.orEmpty())) }
                         }
-                    }
-                    source == InsertSource.EXPERTS -> InsertList(experts.isEmpty(), stringResource(R.string.insert_empty_experts)) {
-                        items(experts, key = { it.id }) { ex ->
-                            InsertRow(ex.metadata.title(), ex.metadata.desc()) {
-                                onInsert { draft -> ComposeInsert.applyExpert(ex.id, draft, viewModel.agentForInsert, knownIds) }; onDismiss()
-                            }
-                        }
-                    }
-                    else -> InsertList(commands.isEmpty(), stringResource(R.string.insert_empty_commands)) {
-                        items(commands, key = { it.name }) { cmd ->
-                            InsertRow("/${cmd.name}", cmd.description ?: "") {
-                                onInsert { draft -> ComposeInsert.appendCommand(cmd.name, draft) }; onDismiss()
-                            }
-                        }
+                        CodegCommandList(query = query, onQueryChange = { query = it },
+                            groups = listOf(CodegCommandGroup(sourceLabels[sources.indexOf(source)], entries)),
+                            empty = stringResource(when (source) {
+                                InsertSource.QUICK -> R.string.insert_empty_quick
+                                InsertSource.EXPERTS -> R.string.insert_empty_experts
+                                InsertSource.COMMANDS -> R.string.insert_empty_commands
+                            }),
+                            onSelect = { item ->
+                                when (source) {
+                                    InsertSource.QUICK -> quick.firstOrNull { it.id.toString() == item.id }?.let { qm ->
+                                        onInsert { draft -> ComposeInsert.appendMessage(qm.content, draft) }
+                                    }
+                                    InsertSource.EXPERTS -> onInsert { draft -> ComposeInsert.applyExpert(item.id, draft, viewModel.agentForInsert, knownIds) }
+                                    InsertSource.COMMANDS -> onInsert { draft -> ComposeInsert.appendCommand(item.id, draft) }
+                                }
+                                onDismiss()
+                            })
                     }
                 }
             }
         }
     }
-}
-
-@Composable
-private fun InsertList(empty: Boolean, emptyText: String, content: androidx.compose.foundation.lazy.LazyListScope.() -> Unit) {
-    val colors = CodegTheme.colors
-    if (empty) {
-        Box(Modifier.fillMaxWidth().padding(40.dp), contentAlignment = Alignment.Center) { Text(emptyText, fontSize = 13.sp, color = colors.textTertiary) }
-    } else {
-        LazyColumn(Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(2.dp), content = content)
-    }
-}
-
-@Composable
-private fun InsertRow(title: String, subtitle: String, onClick: () -> Unit) {
-    // TODO(T53): CodegCommandList for slash commands and expert search.
-    CodegListRow(title = title, subtitle = subtitle.takeIf { it.isNotEmpty() }, onClick = onClick)
 }

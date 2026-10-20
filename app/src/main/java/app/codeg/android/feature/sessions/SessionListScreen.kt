@@ -15,17 +15,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Add
-import androidx.compose.material.icons.rounded.Check
-import androidx.compose.material.icons.rounded.Close
-import androidx.compose.material.icons.rounded.Dns
-import androidx.compose.material.icons.rounded.ErrorOutline
-import androidx.compose.material.icons.rounded.ExpandMore
-import androidx.compose.material.icons.rounded.Folder
-import androidx.compose.material.icons.rounded.Forum
-import androidx.compose.material.icons.rounded.Inbox
-import androidx.compose.material.icons.rounded.PushPin
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
@@ -34,6 +23,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -62,7 +52,9 @@ import app.codeg.android.core.designsystem.component.CodegTopBar
 import app.codeg.android.core.designsystem.component.EmptyState
 import app.codeg.android.core.designsystem.component.InlineError
 import app.codeg.android.core.designsystem.component.LoadingView
+import app.codeg.android.core.designsystem.component.LocalCodegToaster
 import app.codeg.android.core.designsystem.component.webSurface
+import app.codeg.android.core.designsystem.icon.*
 import app.codeg.android.core.designsystem.theme.CodegTheme
 import app.codeg.android.core.designsystem.theme.colorFromHex
 import app.codeg.android.core.designsystem.theme.withOpacity
@@ -104,7 +96,14 @@ fun SessionListScreen(
     // re-runs the grouping flow; rememberSaveable keeps the fold state across
     // rotation / process death.
     var collapsed by rememberSaveable { mutableStateOf(emptySet<String>()) }
-    // TODO(T52): CodegToaster for list errors.
+    val toaster = LocalCodegToaster.current
+    val errorTitle = stringResource(R.string.t55_operation_failed)
+    LaunchedEffect(ui.error, ui.hasLoaded) {
+        if (ui.hasLoaded) ui.error?.let {
+            toaster.error(errorTitle, description = it)
+            viewModel.dismissError()
+        }
+    }
     val colors = CodegTheme.colors
     val selectedName = servers.firstOrNull { it.id == selectedId }?.name
         ?: stringResource(R.string.app_name)
@@ -128,10 +127,9 @@ fun SessionListScreen(
                 actions = {
                     CodegIconButton(onClick = onManageServers, visualSize = 32.dp) {
                         Icon(
-                            Icons.Rounded.Dns,
+                            Lucide.Server,
                             contentDescription = stringResource(R.string.home_manage_servers),
-                            tint = colors.textSecondary,
-                        )
+                            tint = colors.textSecondary, modifier = Modifier.size(16.dp))
                     }
                 },
             )
@@ -142,7 +140,7 @@ fun SessionListScreen(
                 // Follows the bottom bar: collapses to just "+" while scrolling up,
                 // expands back to the full pill when scrolling down (driven by MainShell).
                 expanded = LocalBarsVisible.current,
-                icon = { Icon(Icons.Rounded.Add, contentDescription = null) },
+                icon = { Icon(Lucide.Plus, contentDescription = null, modifier = Modifier.size(16.dp)) },
                 text = { Text(stringResource(R.string.session_new_task)) },
                 containerColor = colors.accent,
                 contentColor = colors.onAccent,
@@ -160,7 +158,7 @@ fun SessionListScreen(
                 !ui.hasLoaded && ui.error != null -> {
                     Box(Modifier.fillMaxSize().padding(horizontal = 24.dp, vertical = 16.dp), contentAlignment = Alignment.Center) {
                         InlineError(
-                            icon = Icons.Rounded.Forum,
+                            icon = Lucide.MessageSquare,
                             title = stringResource(R.string.sessions_load_failed),
                             message = ui.error!!,
                             onRetry = viewModel::refresh,
@@ -172,7 +170,7 @@ fun SessionListScreen(
                 ui.hasLoaded && ui.isEmpty -> {
                     Box(Modifier.fillMaxSize().padding(horizontal = 24.dp, vertical = 16.dp), contentAlignment = Alignment.Center) {
                         EmptyState(
-                            icon = Icons.Rounded.Forum,
+                            icon = Lucide.MessageSquare,
                             title = stringResource(R.string.sessions_empty_title),
                             message = stringResource(R.string.sessions_empty_message),
                             actionLabel = stringResource(R.string.session_new_task),
@@ -207,7 +205,7 @@ fun SessionListScreen(
                                 onTogglePin = { conv -> viewModel.setPinned(conv, !conv.isPinned) },
                                 // A refresh that failed over a still-populated list: surface
                                 // it inline above the rows rather than swallowing it.
-                                refreshError = ui.error,
+                                refreshError = null,
                                 onRetry = viewModel::refresh,
                                 onDismissError = viewModel::dismissError,
                             )
@@ -296,17 +294,17 @@ private fun sectionStyle(kind: SectionKind): SectionStyle {
     val colors = CodegTheme.colors
     return when (kind) {
         SectionKind.Pinned -> SectionStyle(
-            icon = Icons.Rounded.PushPin,
+            icon = Lucide.Pin,
             tint = colors.accent,
             label = stringResource(R.string.sessions_pinned),
         )
         is SectionKind.Folder -> SectionStyle(
-            icon = Icons.Rounded.Folder,
+            icon = Lucide.Folder,
             tint = colorFromHex(kind.colorHex) ?: colors.accent,
             label = kind.name,
         )
         SectionKind.Other -> SectionStyle(
-            icon = Icons.Rounded.Inbox,
+            icon = Lucide.Inbox,
             tint = colors.textSecondary,
             label = stringResource(R.string.sessions_other),
         )
@@ -339,10 +337,10 @@ private fun RefreshErrorBanner(
         horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         Icon(
-            Icons.Rounded.ErrorOutline,
+            Lucide.CircleAlert,
             contentDescription = null,
             tint = colors.danger,
-            modifier = Modifier.size(18.dp),
+            modifier = Modifier.size(16.dp),
         )
         Text(
             text = message,
@@ -359,10 +357,10 @@ private fun RefreshErrorBanner(
         }
         CodegIconButton(onClick = onDismiss, visualSize = 32.dp) {
             Icon(
-                Icons.Rounded.Close,
+                Lucide.X,
                 contentDescription = stringResource(R.string.common_dismiss),
                 tint = colors.textTertiary,
-                modifier = Modifier.size(18.dp),
+                modifier = Modifier.size(16.dp),
             )
         }
     }
@@ -397,10 +395,10 @@ private fun ServerSwitcher(
                 modifier = Modifier.weight(1f, fill = false),
             )
             Icon(
-                Icons.Rounded.ExpandMore,
+                Lucide.ChevronDown,
                 contentDescription = null,
                 tint = colors.textSecondary,
-                modifier = Modifier.size(20.dp),
+                modifier = Modifier.size(16.dp),
             )
         }
         CodegDropdownMenu(expanded = open, onDismissRequest = { open = false }) {
@@ -414,10 +412,10 @@ private fun ServerSwitcher(
                     trailingIcon = {
                         if (server.id == selectedId) {
                             Icon(
-                                Icons.Rounded.Check,
+                                Lucide.Check,
                                 contentDescription = null,
                                 tint = colors.accent,
-                                modifier = Modifier.size(18.dp),
+                                modifier = Modifier.size(16.dp),
                             )
                         }
                     },
@@ -426,7 +424,7 @@ private fun ServerSwitcher(
             CodegMenuSeparator()
             CodegMenuItem(
                 text = { Text(stringResource(R.string.home_manage_servers)) },
-                leadingIcon = { Icon(Icons.Rounded.Dns, contentDescription = null) },
+                leadingIcon = { Icon(Lucide.Server, contentDescription = null, modifier = Modifier.size(16.dp)) },
                 onClick = {
                     open = false
                     onManageServers()

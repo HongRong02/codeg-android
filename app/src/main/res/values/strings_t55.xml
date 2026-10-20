@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="t55_operation_failed">Operation failed</string>
+    <string name="t55_session_notice">Session notice</string>
+    <string name="t55_branch_occupied">In use</string>
+    <string name="t55_branch_current">Current</string>
+</resources>

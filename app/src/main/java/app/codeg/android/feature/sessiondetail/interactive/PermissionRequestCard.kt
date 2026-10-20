@@ -12,10 +12,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.Assignment
-import androidx.compose.material.icons.rounded.GppMaybe
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -38,9 +34,10 @@ import app.codeg.android.core.designsystem.component.CodegBadgeVariant
 import app.codeg.android.core.designsystem.component.CodegButton
 import app.codeg.android.core.designsystem.component.CodegButtonVariant
 import app.codeg.android.core.designsystem.component.CodegCard
+import app.codeg.android.core.designsystem.component.CodegSpinner
 import app.codeg.android.core.designsystem.diff.DiffView
+import app.codeg.android.core.designsystem.icon.*
 import app.codeg.android.core.designsystem.markdown.MarkdownContent
-import app.codeg.android.core.designsystem.theme.CodegShapes
 import app.codeg.android.core.designsystem.theme.CodegTheme
 import app.codeg.android.core.designsystem.theme.withOpacity
 import app.codeg.android.core.model.PermissionOption
@@ -62,10 +59,10 @@ fun PermissionRequestCard(
             // Header.
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 Icon(
-                    if (parsed.isPlan) Icons.AutoMirrored.Rounded.Assignment else Icons.Rounded.GppMaybe,
+                    if (parsed.isPlan) Lucide.ClipboardList else Lucide.ShieldAlert,
                     contentDescription = null,
                     tint = if (parsed.isPlan) accent else colors.danger,
-                    modifier = Modifier.size(20.dp),
+                    modifier = Modifier.size(16.dp),
                 )
                 Column(Modifier.weight(1f)) {
                     Text(parsed.title.ifBlank { stringResource(R.string.perm_request_title) }, fontSize = 14.sp, fontWeight = FontWeight.SemiBold, color = colors.textPrimary)
@@ -174,7 +171,7 @@ private fun OptionButton(option: PermissionOption, submitting: Boolean, enabled:
             modifier = Modifier.fillMaxWidth(),
         ) {
             if (submitting) {
-                CircularProgressIndicator(Modifier.size(16.dp), strokeWidth = 2.dp, color = colors.textPrimary)
+                CodegSpinner(Modifier.size(16.dp))
             } else {
                 Text(option.name, fontWeight = FontWeight.SemiBold)
             }
@@ -186,7 +183,7 @@ private fun OptionButton(option: PermissionOption, submitting: Boolean, enabled:
             modifier = Modifier.fillMaxWidth(),
         ) {
             if (submitting) {
-                CircularProgressIndicator(Modifier.size(16.dp), strokeWidth = 2.dp, color = colors.onAccent)
+                CodegSpinner(Modifier.size(16.dp))
             } else {
                 Text(option.name, fontWeight = FontWeight.SemiBold)
             }

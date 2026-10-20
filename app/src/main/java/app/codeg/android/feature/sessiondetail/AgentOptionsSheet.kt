@@ -17,15 +17,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.AltRoute
-import androidx.compose.material.icons.automirrored.rounded.ArrowBack
-import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowRight
-import androidx.compose.material.icons.rounded.Add
-import androidx.compose.material.icons.rounded.Check
-import androidx.compose.material.icons.rounded.Folder
-import androidx.compose.material.icons.rounded.Lock
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
@@ -43,6 +34,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -53,15 +45,23 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.codeg.android.R
 import app.codeg.android.core.designsystem.component.AgentAvatar
 import app.codeg.android.core.designsystem.component.AgentVisuals
+import app.codeg.android.core.designsystem.component.CodegAvatar
 import app.codeg.android.core.designsystem.component.CodegButton
 import app.codeg.android.core.designsystem.component.CodegButtonVariant
 import app.codeg.android.core.designsystem.component.CodegCard
+import app.codeg.android.core.designsystem.component.CodegCommandGroup
+import app.codeg.android.core.designsystem.component.CodegCommandItem
+import app.codeg.android.core.designsystem.component.CodegCommandList
+import app.codeg.android.core.designsystem.component.CodegFolderBadge
 import app.codeg.android.core.designsystem.component.CodegFullScreenSheet
 import app.codeg.android.core.designsystem.component.CodegListRow
 import app.codeg.android.core.designsystem.component.CodegSectionHeader
 import app.codeg.android.core.designsystem.component.CodegSelect
 import app.codeg.android.core.designsystem.component.CodegSeparator
+import app.codeg.android.core.designsystem.component.CodegSpinner
 import app.codeg.android.core.designsystem.component.CodegTextField
+import app.codeg.android.core.designsystem.component.LocalCodegToaster
+import app.codeg.android.core.designsystem.icon.*
 import app.codeg.android.core.designsystem.theme.CodegShapes
 import app.codeg.android.core.designsystem.theme.CodegTheme
 import app.codeg.android.core.designsystem.theme.withOpacity
@@ -102,8 +102,7 @@ fun AgentOptionsSheet(
     var data by remember { mutableStateOf(AgentOptionsData()) }
     var currentMode by remember { mutableStateOf<String?>(null) }
     var currentValues by remember { mutableStateOf<Map<String, String>>(emptyMap()) }
-    // TODO(T52): CodegToaster for apply failures.
-    var note by remember { mutableStateOf<String?>(null) }
+    val toaster = LocalCodegToaster.current
     // Keyed by the LOGICAL selector ("mode" / config-option id), as a set — several config
     // options can be applying at once, and each must clear only its own lock (iOS Set<String>).
     var applying by remember { mutableStateOf<Set<String>>(emptySet()) }
@@ -112,7 +111,6 @@ fun AgentOptionsSheet(
     // Reload the agent's options whenever the (draft) agent or folder changes.
     LaunchedEffect(ui.agent, ui.selectedFolderId) {
         loading = true
-        note = null
         // Clear any in-flight apply lock: a switch cancels the old-context options connect, which
         // cancels the awaiting apply before it can release its own lock. Resetting here (the switch
         // is the trigger) keeps the new agent's rows tappable.
@@ -160,11 +158,10 @@ fun AgentOptionsSheet(
                         Text(stringResource(R.string.agentopts_busy), fontSize = 12.sp, color = colors.web.mutedForeground)
                     }
 
-                    note?.let { Text(it, fontSize = 12.sp, color = colors.web.mutedForeground) }
 
                     when {
                         loading -> Box(Modifier.fillMaxWidth().padding(40.dp), contentAlignment = Alignment.Center) {
-                            CircularProgressIndicator(color = colors.accent)
+                            CodegSpinner()
                         }
                         showModes -> {
                             CodegSectionHeader(title = stringResource(R.string.agentopts_mode))
@@ -182,13 +179,12 @@ fun AgentOptionsSheet(
                                         val previous = currentMode
                                         currentMode = mode.id
                                         applying = applying + MODE_APPLY
-                                        note = null
                                         scope.launch {
                                             val resolved = viewModel.applyMode(mode.id)
                                             applying = applying - MODE_APPLY
                                             // Adopt the reconciled/normalized value; on failure revert + notice.
                                             if (resolved != null) currentMode = resolved
-                                            else { currentMode = previous; note = applyFailedNote }
+                                            else { currentMode = previous; toaster.error(applyFailedNote) }
                                         }
                                     }
                                 }
@@ -200,7 +196,6 @@ fun AgentOptionsSheet(
                                 val previous = currentValues[option.id]
                                 currentValues = currentValues + (option.id to valueId)
                                 applying = applying + option.id
-                                note = null
                                 scope.launch {
                                     val resolved = viewModel.applyConfig(option.id, valueId)
                                     applying = applying - option.id
@@ -208,7 +203,7 @@ fun AgentOptionsSheet(
                                         currentValues = currentValues + (option.id to resolved)
                                     } else {
                                         currentValues = if (previous != null) currentValues + (option.id to previous) else currentValues - option.id
-                                        note = applyFailedNote
+                                        toaster.error(applyFailedNote)
                                     }
                                 }
                             }
@@ -230,7 +225,6 @@ private fun AgentPickerSection(agents: List<AgentType>, selected: AgentType, onS
     val colors = CodegTheme.colors
     Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
         CodegSectionHeader(title = stringResource(R.string.agentopts_agent_section))
-        // TODO(T53): CodegAvatar for the agent picker.
         LazyRow(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
             items(agents, key = { it.wire }) { agent ->
                 val isSelected = agent == selected
@@ -247,7 +241,11 @@ private fun AgentPickerSection(agents: List<AgentType>, selected: AgentType, onS
                         if (isSelected) {
                             Box(Modifier.size(54.dp).clip(CircleShape).border(2.dp, AgentVisuals.accent(agent), CircleShape))
                         }
-                        AgentAvatar(agent, size = 46.dp, modifier = Modifier.alpha(if (isSelected) 1f else 0.75f))
+                        if (AgentVisuals.iconIsTemplate(agent)) {
+                            AgentAvatar(agent, size = 46.dp, modifier = Modifier.alpha(if (isSelected) 1f else 0.75f))
+                        } else {
+                            CodegAvatar(agent.shortName, painter = painterResource(AgentVisuals.icon(agent)), size = 46.dp, modifier = Modifier.alpha(if (isSelected) 1f else 0.75f))
+                        }
                     }
                     Text(
                         agent.shortName,
@@ -288,9 +286,12 @@ private fun WorkspaceSection(
 private fun FolderMenuRow(ui: SessionDetailUiState, onSelectFolder: (FolderDetail) -> Unit) {
     CodegSelect(
         label = stringResource(R.string.agentopts_choose_folder),
-        value = ui.folderPath.orEmpty(),
-        options = ui.availableFolders.map { it.path },
-        onSelect = { path -> ui.availableFolders.firstOrNull { it.path == path }?.let(onSelectFolder) },
+        selected = ui.availableFolders.firstOrNull { it.path == ui.folderPath },
+        options = ui.availableFolders,
+        optionLabel = { it.name },
+        optionDescription = { it.path },
+        key = { it.id },
+        onSelect = onSelectFolder,
     )
 }
 
@@ -301,12 +302,12 @@ private fun FolderReadOnlyRow(ui: SessionDetailUiState) {
         Modifier.fillMaxWidth().padding(horizontal = 14.dp, vertical = 11.dp),
         verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        Icon(Icons.Rounded.Folder, null, tint = colors.web.mutedForeground, modifier = Modifier.size(18.dp))
+        CodegFolderBadge(name = ui.folderName ?: ui.folderPath.orEmpty())
         Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(1.dp)) {
             Text(ui.folderName ?: "—", fontSize = 14.sp, fontWeight = FontWeight.Medium, color = colors.textPrimary, maxLines = 1, overflow = TextOverflow.Ellipsis)
             ui.folderPath?.let { PathLine(it) }
         }
-        Icon(Icons.Rounded.Lock, contentDescription = stringResource(R.string.agentopts_folder_readonly), tint = colors.web.mutedForeground, modifier = Modifier.size(14.dp))
+        Icon(Lucide.Lock, contentDescription = stringResource(R.string.agentopts_folder_readonly), tint = colors.web.mutedForeground, modifier = Modifier.size(16.dp))
     }
 }
 
@@ -318,8 +319,8 @@ private fun BranchRow(current: String?, isBusy: Boolean, onClick: () -> Unit) {
         subtitle = current ?: stringResource(R.string.agentopts_select_branch),
         onClick = { if (!isBusy) onClick() },
         modifier = Modifier.alpha(if (isBusy) 0.5f else 1f),
-        leading = { Icon(Icons.AutoMirrored.Rounded.AltRoute, null, tint = colors.accent, modifier = Modifier.size(18.dp)) },
-        trailing = { Icon(Icons.AutoMirrored.Rounded.KeyboardArrowRight, null, tint = colors.web.mutedForeground, modifier = Modifier.size(18.dp)) },
+        leading = { Icon(Lucide.GitBranch, null, tint = colors.accent, modifier = Modifier.size(16.dp)) },
+        trailing = { Icon(Lucide.ChevronRight, null, tint = colors.web.mutedForeground, modifier = Modifier.size(16.dp)) },
     )
 }
 
@@ -343,7 +344,6 @@ private fun BranchPickerContent(
     val scope = rememberCoroutineScope()
     var loading by remember { mutableStateOf(true) }
     var list by remember { mutableStateOf<GitBranchList?>(null) }
-    // TODO(T53): CodegCommandList for branch search.
     var query by remember { mutableStateOf("") }
     var switching by remember { mutableStateOf<String?>(null) }
     var showNew by remember { mutableStateOf(false) }
@@ -372,8 +372,6 @@ private fun BranchPickerContent(
     }
 
     val worktree = list?.worktreeBranches?.toSet() ?: emptySet()
-    val locals = list?.local.orEmpty().filter { it.matches(query) }
-    val remotes = list?.remote.orEmpty().filterNot { it.endsWith("/HEAD") }.filter { it.matches(query) }
 
     LazyColumn(
         Modifier.fillMaxWidth().heightIn(max = 600.dp).padding(horizontal = 16.dp).padding(bottom = 28.dp),
@@ -381,15 +379,11 @@ private fun BranchPickerContent(
     ) {
         item("header") {
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                IconButton(onClick = onBack, modifier = Modifier.size(36.dp)) {
-                    Icon(Icons.AutoMirrored.Rounded.ArrowBack, contentDescription = stringResource(R.string.common_back), tint = colors.textPrimary)
+                IconButton(onClick = onBack, modifier = Modifier.size(48.dp)) {
+                    Icon(Lucide.ArrowLeft, contentDescription = stringResource(R.string.common_back), tint = colors.textPrimary, modifier = Modifier.size(16.dp))
                 }
                 Text(stringResource(R.string.agentopts_branch), fontSize = 18.sp, fontWeight = FontWeight.SemiBold, color = colors.textPrimary)
             }
-        }
-        ui.notice?.let { msg -> item("err") { Text(msg, fontSize = 12.sp, color = colors.danger) } }
-        item("search") {
-            CodegTextField(query, { query = it }, label = stringResource(R.string.branch_filter), mono = true)
         }
         item("new") {
             NewBranchInline(
@@ -410,39 +404,35 @@ private fun BranchPickerContent(
         if (loading) {
             item("loading") {
                 Row(Modifier.fillMaxWidth().padding(14.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                    CircularProgressIndicator(color = colors.accent, modifier = Modifier.size(18.dp))
+                    CodegSpinner(modifier = Modifier.size(18.dp))
                     Text(stringResource(R.string.branch_loading), fontSize = 12.sp, color = colors.textSecondary)
                 }
             }
-        } else if (locals.isEmpty() && remotes.isEmpty()) {
-            item("empty") { Text(stringResource(R.string.branch_none), fontSize = 12.sp, color = colors.textSecondary, modifier = Modifier.padding(start = 4.dp)) }
         } else {
-            if (locals.isNotEmpty()) {
-                item("lh") { BranchSectionLabel(stringResource(R.string.branch_local)) }
-                items(locals, key = { "l-$it" }) { name ->
-                    val occupied = worktree.contains(name) && name != current
-                    BranchRowItem(display = name, target = name, isRemote = false, occupied = occupied, isCurrent = name == current, switching = switching == name, enabled = switching == null) {
-                        pick(name, name, false)
-                    }
+            item("branches") {
+                val occupiedLabel = stringResource(R.string.t55_branch_occupied)
+                val currentLabel = stringResource(R.string.t55_branch_current)
+                fun entry(name: String, remote: Boolean): CodegCommandItem {
+                    val choice = t55BranchChoice(name, remote, current, worktree, isBusy || switching != null)
+                    return CodegCommandItem(choice.id,
+                        name + if (choice.occupied) " · $occupiedLabel" else if (choice.current) " · $currentLabel" else "",
+                        enabled = choice.enabled)
                 }
-            }
-            if (remotes.isNotEmpty()) {
-                item("rh") { BranchSectionLabel(stringResource(R.string.branch_remote)) }
-                items(remotes, key = { "r-$it" }) { name ->
-                    val target = name.substringAfter('/', name)
-                    val occupied = worktree.contains(target) && target != current
-                    BranchRowItem(display = name, target = target, isRemote = true, occupied = occupied, isCurrent = target == current, switching = switching == name, enabled = switching == null) {
-                        pick(name, target, true)
-                    }
-                }
+                CodegCommandList(query = query, onQueryChange = { query = it },
+                    placeholder = stringResource(R.string.branch_filter),
+                    empty = stringResource(R.string.branch_none),
+                    groups = listOf(
+                        CodegCommandGroup(stringResource(R.string.branch_local), list?.local.orEmpty().map { entry(it, false) }),
+                        CodegCommandGroup(stringResource(R.string.branch_remote), list?.remote.orEmpty().filterNot { it.endsWith("/HEAD") }.map { entry(it, true) }),
+                    ),
+                    onSelect = { item ->
+                        val remote = item.id.startsWith("r-")
+                        val name = item.id.drop(2)
+                        pick(name, t55BranchChoice(name, remote, current, worktree, false).target, remote)
+                    }, modifier = Modifier.heightIn(max = 420.dp))
             }
         }
     }
-}
-
-private fun String.matches(query: String): Boolean {
-    val q = query.trim().lowercase()
-    return q.isEmpty() || lowercase().contains(q)
 }
 
 @Composable
@@ -459,7 +449,7 @@ private fun NewBranchInline(
     val colors = CodegTheme.colors
     if (!show) {
         CodegButton(variant = CodegButtonVariant.Ghost, onClick = onShow, modifier = Modifier.fillMaxWidth()) {
-            Icon(Icons.Rounded.Add, null, tint = colors.accent, modifier = Modifier.size(18.dp))
+            Icon(Lucide.Plus, null, tint = colors.accent, modifier = Modifier.size(16.dp))
             Text(stringResource(R.string.branch_new_branch), fontSize = 14.sp, fontWeight = FontWeight.Medium, color = colors.textPrimary)
         }
     } else {
@@ -473,8 +463,8 @@ private fun NewBranchInline(
                     shape = CodegShapes.small,
                     colors = IconButtonDefaults.filledIconButtonColors(containerColor = colors.accent.withOpacity(0.16f), contentColor = colors.accent),
                 ) {
-                    if (creating) CircularProgressIndicator(color = colors.accent, modifier = Modifier.size(18.dp))
-                    else Icon(Icons.Rounded.Check, stringResource(R.string.branch_create_branch))
+                    if (creating) CodegSpinner(modifier = Modifier.size(18.dp))
+                    else Icon(Lucide.Check, stringResource(R.string.branch_create_branch), modifier = Modifier.size(16.dp))
                 }
             }
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -483,39 +473,6 @@ private fun NewBranchInline(
             }
         }
     }
-}
-
-@Composable
-private fun BranchRowItem(
-    display: String,
-    target: String,
-    isRemote: Boolean,
-    occupied: Boolean,
-    isCurrent: Boolean,
-    switching: Boolean,
-    enabled: Boolean,
-    onClick: () -> Unit,
-) {
-    val colors = CodegTheme.colors
-    CodegListRow(
-        title = display,
-        subtitle = if (occupied) stringResource(R.string.branch_occupied) else null,
-        selected = isCurrent,
-        onClick = { if (enabled && !occupied && !isCurrent) onClick() },
-        modifier = Modifier.alpha(if (occupied) 0.5f else 1f),
-        leading = { Icon(Icons.AutoMirrored.Rounded.AltRoute, null, tint = colors.accent, modifier = Modifier.size(16.dp)) },
-        trailing = {
-            when {
-                switching -> CircularProgressIndicator(color = colors.accent, modifier = Modifier.size(16.dp))
-                isCurrent -> Icon(Icons.Rounded.Check, null, tint = colors.accent, modifier = Modifier.size(18.dp))
-            }
-        },
-    )
-}
-
-@Composable
-private fun BranchSectionLabel(text: String) {
-    CodegSectionHeader(title = text)
 }
 
 // endregion
@@ -559,8 +516,8 @@ private fun OptionRow(title: String, description: String?, selected: Boolean, bu
         onClick = { if (enabled) onClick() },
         modifier = Modifier.alpha(if (enabled) 1f else 0.5f),
         trailing = {
-            if (busy) CircularProgressIndicator(color = colors.accent, modifier = Modifier.size(16.dp))
-            else if (selected) Icon(Icons.Rounded.Check, null, tint = colors.accent, modifier = Modifier.size(18.dp))
+            if (busy) CodegSpinner(modifier = Modifier.size(16.dp))
+            else if (selected) Icon(Lucide.Check, null, tint = colors.accent, modifier = Modifier.size(16.dp))
         },
     )
 }

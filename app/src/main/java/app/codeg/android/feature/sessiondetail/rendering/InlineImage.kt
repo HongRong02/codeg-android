@@ -4,6 +4,7 @@ import android.graphics.BitmapFactory
 import android.util.Base64
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
@@ -11,27 +12,39 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import app.codeg.android.core.designsystem.component.CodegImagePreviewDialog
+import app.codeg.android.core.designsystem.component.CodegPreviewImage
 import app.codeg.android.core.designsystem.theme.CodegTheme
 import app.codeg.android.core.model.ImageData
 
 /** Decodes a base64 [ImageData] and renders it (max height 320dp), with an optional caption. */
 @Composable
 fun InlineImage(image: ImageData, caption: String?, modifier: Modifier = Modifier) {
-    // TODO(T53): CodegImagePreviewDialog for inline image preview.
+    var preview by remember(image.data) { mutableStateOf(false) }
     val colors = CodegTheme.colors
     val bitmap = remember(image.data) {
         runCatching {
             val bytes = Base64.decode(image.data, Base64.DEFAULT)
             BitmapFactory.decodeByteArray(bytes, 0, bytes.size)?.asImageBitmap()
         }.getOrNull()
+    }
+    if (preview && bitmap != null) {
+        CodegImagePreviewDialog(
+            images = listOf(CodegPreviewImage(BitmapPainter(bitmap), caption.orEmpty())),
+            onDismiss = { preview = false },
+        )
     }
     Column(modifier.fillMaxWidth()) {
         if (bitmap != null) {
@@ -42,6 +55,7 @@ fun InlineImage(image: ImageData, caption: String?, modifier: Modifier = Modifie
                 modifier = Modifier
                     .fillMaxWidth()
                     .heightIn(max = 320.dp)
+                    .clickable { preview = true }
                     .clip(RoundedCornerShape(8.dp)),
             )
         } else {

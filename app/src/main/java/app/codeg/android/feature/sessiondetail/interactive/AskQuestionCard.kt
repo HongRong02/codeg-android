@@ -10,11 +10,7 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Forum
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -25,7 +21,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -38,7 +33,9 @@ import app.codeg.android.core.designsystem.component.CodegButtonVariant
 import app.codeg.android.core.designsystem.component.CodegCard
 import app.codeg.android.core.designsystem.component.CodegCheckbox
 import app.codeg.android.core.designsystem.component.CodegRadioGroup
+import app.codeg.android.core.designsystem.component.CodegSpinner
 import app.codeg.android.core.designsystem.component.CodegTextField
+import app.codeg.android.core.designsystem.icon.*
 import app.codeg.android.core.designsystem.theme.CodegTheme
 import app.codeg.android.core.model.QuestionAnswer
 import app.codeg.android.core.model.QuestionAnswerItem
@@ -70,7 +67,7 @@ fun AskQuestionCard(
     CodegCard(modifier.fillMaxWidth()) {
         Column(Modifier.padding(horizontal = 12.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                Icon(Icons.Rounded.Forum, contentDescription = null, tint = colors.accent, modifier = Modifier.size(20.dp))
+                Icon(Lucide.MessageSquare, contentDescription = null, tint = colors.accent, modifier = Modifier.size(16.dp))
                 Column(Modifier.weight(1f)) {
                     Text(stringResource(R.string.ask_needs_input_title), fontSize = 14.sp, fontWeight = FontWeight.SemiBold, color = colors.textPrimary)
                     Text(stringResource(R.string.ask_needs_input_subtitle), fontSize = 12.sp, color = colors.textSecondary)
@@ -113,7 +110,7 @@ fun AskQuestionCard(
                     enabled = canSubmit,
                 ) {
                     if (submitting) {
-                        CircularProgressIndicator(modifier = Modifier.size(16.dp), strokeWidth = 2.dp, color = colors.onAccent)
+                        CodegSpinner(modifier = Modifier.size(16.dp))
                     } else {
                         Text(stringResource(R.string.ask_submit), fontWeight = FontWeight.SemiBold)
                     }
