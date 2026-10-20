@@ -1,0 +1,6 @@
+<resources>
+    <string name="shell_download_started">Downloading %1$s</string>
+    <string name="shell_download_saved">Saved to Downloads: %1$s</string>
+    <string name="shell_download_open">Open</string>
+    <string name="shell_download_failed">Download failed: %1$s</string>
+</resources>
