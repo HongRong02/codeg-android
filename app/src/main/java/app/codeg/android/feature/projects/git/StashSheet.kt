@@ -25,6 +25,7 @@ fun StashSheet(viewModel: StashViewModel, onDismiss: () -> Unit, onChanged: () -
     var confirmation by remember { mutableStateOf<Pair<String, String?>?>(null) }
     val colors = CodegTheme.colors
     ModalBottomSheet(
+        contentWindowInsets = { WindowInsets.safeDrawing },
         onDismissRequest = { if (!ui.busy) onDismiss() },
         sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
         containerColor = colors.bgElevated,

@@ -57,7 +57,7 @@ fun ServerLogsScreen(onBack: () -> Unit, viewModel: ServerLogsViewModel = hiltVi
         },
     ) { padding ->
         LazyColumn(
-            Modifier.padding(padding).fillMaxSize().padding(horizontal = 16.dp),
+            Modifier.padding(padding).fillMaxSize().imePadding().padding(horizontal = 16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp), contentPadding = PaddingValues(vertical = 12.dp),
         ) {
             item {

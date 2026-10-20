@@ -1,5 +1,6 @@
 package app.codeg.android.feature.settings
 
+import androidx.compose.foundation.layout.imePadding
 import androidx.activity.compose.BackHandler
 import androidx.annotation.StringRes
 import androidx.compose.foundation.background
@@ -128,7 +129,7 @@ fun SettingsScreen(
             )
         },
     ) { padding ->
-        Box(Modifier.padding(padding).fillMaxSize()) {
+        Box(Modifier.padding(padding).fillMaxSize().imePadding()) {
             when (leaf) {
                 null -> SettingsRoot(
                     onSelect = {

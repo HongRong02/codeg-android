@@ -1,5 +1,6 @@
 package app.codeg.android.feature.settings
 
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -314,8 +315,8 @@ private fun SkillEditorDialog(
 
     val canSave = !isReadOnly && skillId.trim().isNotEmpty() && content.trim().isNotEmpty() && !saving && !loadingContent
 
-    Dialog(onDismissRequest = onDismiss, properties = DialogProperties(usePlatformDefaultWidth = false)) {
-        Column(Modifier.fillMaxSize().background(colors.bg).windowInsetsPadding(WindowInsets.safeDrawing)) {
+    Dialog(onDismissRequest = onDismiss, properties = DialogProperties(usePlatformDefaultWidth = false, decorFitsSystemWindows = false)) {
+        Column(Modifier.fillMaxSize().background(colors.bg).windowInsetsPadding(WindowInsets.safeDrawing).imePadding()) {
             CodegTopBar(
                 title = if (existing == null) stringResource(R.string.skills_new_skill) else if (isReadOnly) stringResource(R.string.skills_view_skill) else stringResource(R.string.skills_edit_skill),
                 navigationIcon = {

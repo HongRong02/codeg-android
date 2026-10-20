@@ -1,5 +1,7 @@
 package app.codeg.android.feature.sessiondetail
 
+import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -127,6 +129,7 @@ fun AgentOptionsSheet(
     }
 
     ModalBottomSheet(
+        contentWindowInsets = { WindowInsets.safeDrawing },
         onDismissRequest = onDismiss,
         sheetState = sheetState,
         containerColor = colors.bgElevated,

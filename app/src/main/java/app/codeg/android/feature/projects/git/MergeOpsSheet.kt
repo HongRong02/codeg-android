@@ -1,5 +1,6 @@
 package app.codeg.android.feature.projects.git
 
+import androidx.compose.ui.window.DialogProperties
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -21,7 +22,7 @@ fun MergeOpsSheet(vm: MergeOpsViewModel, client: CodegClient, path: String, bran
     var mode by remember { mutableStateOf("mixed") }
     var confirm by remember { mutableStateOf(false) }
     var typed by remember { mutableStateOf("") }
-    ModalBottomSheet(onDismissRequest = { if (!ui.busy) onDismiss() }) {
+    ModalBottomSheet(contentWindowInsets = { WindowInsets.safeDrawing }, onDismissRequest = { if (!ui.busy) onDismiss() }) {
         Column(Modifier.fillMaxWidth().verticalScroll(rememberScrollState()).padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
             Text(stringResource(R.string.gm_title), style = MaterialTheme.typography.titleLarge)
             Text(stringResource(R.string.gm_current, branch.orEmpty()))
@@ -57,7 +58,9 @@ fun MergeOpsSheet(vm: MergeOpsViewModel, client: CodegClient, path: String, bran
             }
         }
     }
-    if (confirm) AlertDialog(onDismissRequest = { confirm = false }, title = { Text(operationLabel(action)) }, text = {
+    if (confirm) AlertDialog(onDismissRequest = { confirm = false },
+        modifier = Modifier.imePadding(),
+        properties = DialogProperties(decorFitsSystemWindows = false), title = { Text(operationLabel(action)) }, text = {
         Column {
             Text(stringResource(when (action) { "merge" -> R.string.gm_confirm_merge; "rebase" -> R.string.gm_confirm_rebase; else -> R.string.gm_confirm_reset }, target, branch.orEmpty(), mode))
             if (action == "reset" && mode == "hard") {

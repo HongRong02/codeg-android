@@ -6,14 +6,14 @@ Source root: `app/src/main/java/app/codeg/android/`
 
 | Line | Declaration |
 |---|---|
-| 60 | `@Composable fun SearchScreen( onOpenConversation: (Int) -> Unit, viewModel: SearchViewModel = hiltViewModel(), )` |
-| 64 |   `val ui by viewModel.ui.collectAsStateWithLifecycle()` |
-| 65 |   `val query by viewModel.query.collectAsStateWithLifecycle()` |
-| 66 |   `val recent by viewModel.recent.collectAsStateWithLifecycle()` |
-| 67 |   `val colors` |
-| 68 |   `val web` |
-| 212 | `@Composable private fun RecentList( recent: List<String>, onUse: (String) -> Unit, onClear: () -> Unit, modifier: Modifier = Modifier, )` |
-| 218 |   `val colors` |
+| 61 | `@Composable fun SearchScreen( onOpenConversation: (Int) -> Unit, viewModel: SearchViewModel = hiltViewModel(), )` |
+| 65 |   `val ui by viewModel.ui.collectAsStateWithLifecycle()` |
+| 66 |   `val query by viewModel.query.collectAsStateWithLifecycle()` |
+| 67 |   `val recent by viewModel.recent.collectAsStateWithLifecycle()` |
+| 68 |   `val colors` |
+| 69 |   `val web` |
+| 214 | `@Composable private fun RecentList( recent: List<String>, onUse: (String) -> Unit, onClear: () -> Unit, modifier: Modifier = Modifier, )` |
+| 220 |   `val colors` |
 
 ## feature/search/SearchViewModel.kt
 

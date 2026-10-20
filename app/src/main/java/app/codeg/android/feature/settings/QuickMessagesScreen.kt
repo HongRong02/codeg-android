@@ -1,5 +1,7 @@
 package app.codeg.android.feature.settings
 
+import androidx.compose.ui.window.DialogProperties
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -114,6 +116,8 @@ private fun QuickMessageEditor(existing: QuickMessage?, onDismiss: () -> Unit, o
     var content by remember { mutableStateOf(existing?.content ?: "") }
     AlertDialog(
         onDismissRequest = onDismiss,
+            modifier = Modifier.imePadding(),
+            properties = DialogProperties(decorFitsSystemWindows = false),
         title = { Text(if (existing == null) stringResource(R.string.quickmsg_new_title) else stringResource(R.string.quickmsg_edit_title)) },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
