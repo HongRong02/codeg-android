@@ -91,13 +91,13 @@ fun OnboardingScreen(
                 modifier = Modifier.padding(top = 16.dp).widthIn(max = 320.dp),
             )
         }
-        }
     }
+}
 
-    @Composable
-    private fun FeatureRow(icon: ImageVector, label: String) {
-        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-            Icon(icon, contentDescription = null, tint = CodegTheme.colors.accent, modifier = Modifier.size(22.dp))
-            Text(label, style = MaterialTheme.typography.bodyMedium, color = CodegTheme.colors.textPrimary)
+@Composable
+private fun FeatureRow(icon: ImageVector, label: String) {
+    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+        Icon(icon, contentDescription = null, tint = CodegTheme.colors.accent, modifier = Modifier.size(22.dp))
+        Text(label, style = MaterialTheme.typography.bodyMedium, color = CodegTheme.colors.textPrimary)
     }
 }
