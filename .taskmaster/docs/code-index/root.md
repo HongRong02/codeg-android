@@ -12,7 +12,8 @@ Source root: `app/src/main/java/app/codeg/android/`
 
 | Line | Declaration |
 |---|---|
-| 21 | `class MainActivity : ComponentActivity()` |
-| 22 |   `override fun attachBaseContext(newBase: Context)` |
-| 26 |   `override fun onCreate(savedInstanceState: Bundle?)` |
-| 33 |   `override fun onNewIntent(intent: Intent)` |
+| 23 | `class MainActivity : ComponentActivity()` |
+| 24 |   `private val showDevGallery` |
+| 25 |   `override fun attachBaseContext(newBase: Context)` |
+| 29 |   `override fun onCreate(savedInstanceState: Bundle?)` |
+| 43 |   `override fun onNewIntent(intent: Intent)` |

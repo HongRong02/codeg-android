@@ -129,8 +129,8 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 47 | `@Composable private fun CollapsibleBody( expanded: Boolean, onExpandedChange: (Boolean) -> Unit, header: @Composable () -> Unit, modifier: Modifier, instant: Boolean, content: @Composable () -> Unit, )` |
 | 52 |   `val rotation by animateFloatAsState(if (expanded) 180f else 0f, label = "collapsible-chevron")` |
 | 53 |   `val description` |
-| 68 | `@Composable internal fun T53CollapsibleGallery()` |
-| 69 |   `var expanded by remember` |
+| 67 | `@Composable internal fun T53CollapsibleGallery()` |
+| 68 |   `var expanded by remember` |
 
 ## core/designsystem/component/Command.kt
 
@@ -152,9 +152,9 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 68 |   `val activeId` |
 | 69 |   `val listState` |
 | 70 |   `val rowIds` |
-| 132 |   `@Composable var query by remember` |
-| 133 |   `val heading` |
-| 134 |   `val label` |
+| 131 |   `@Composable var query by remember` |
+| 132 |   `val heading` |
+| 133 |   `val label` |
 
 ## core/designsystem/component/Controls.kt
 
@@ -291,9 +291,9 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 73 |   `var viewport by remember` |
 | 74 |   `val intrinsic` |
 | 75 |   `val fitted` |
-| 121 |   `@Composable val web` |
-| 122 |   `val description` |
-| 123 |   `var index by remember` |
+| 118 |   `@Composable val web` |
+| 119 |   `val description` |
+| 120 |   `var index by remember` |
 
 ## core/designsystem/component/InputGroup.kt
 
@@ -411,17 +411,17 @@ Source root: `app/src/main/java/app/codeg/android/`
 
 | Line | Declaration |
 |---|---|
-| 42 | `@Composable fun EmptyState( icon: ImageVector, title: String, message: String, modifier: Modifier = Modifier, actionLabel: String? = null, onAction: (() -> Unit)? = null, )` |
-| 50 |   `val colors` |
-| 76 | `@Composable fun LoadingView(message: String, modifier: Modifier = Modifier)` |
-| 77 |   `val colors` |
-| 91 | `@Composable fun InlineError( icon: ImageVector, title: String, message: String, onRetry: () -> Unit, modifier: Modifier = Modifier, retryLabel: String = stringResource(R.string.ds_states_retry), showRetry: Boolean = true, )` |
-| 100 |   `val colors` |
-| 124 | `@Composable internal fun T54Gallery()` |
-| 125 |   `val title` |
-| 126 |   `val message` |
-| 150 | `@Composable private fun T54LightPreview()` |
-| 156 | `@Composable private fun T54DarkPreview()` |
+| 50 | `@Composable fun EmptyState( icon: ImageVector, title: String, message: String, modifier: Modifier = Modifier, actionLabel: String? = null, onAction: (() -> Unit)? = null, )` |
+| 58 |   `val colors` |
+| 83 | `@Composable fun LoadingView(message: String, modifier: Modifier = Modifier)` |
+| 84 |   `val colors` |
+| 102 | `@Composable fun InlineError( icon: ImageVector, title: String, message: String, onRetry: () -> Unit, modifier: Modifier = Modifier, retryLabel: String = stringResource(R.string.ds_states_retry), showRetry: Boolean = true, )` |
+| 111 |   `val colors` |
+| 134 | `@Composable internal fun T54Gallery()` |
+| 135 |   `val title` |
+| 136 |   `val message` |
+| 158 | `@Composable private fun T54LightPreview()` |
+| 164 | `@Composable private fun T54DarkPreview()` |
 
 ## core/designsystem/component/Tabs.kt
 
@@ -456,60 +456,60 @@ Source root: `app/src/main/java/app/codeg/android/`
 
 | Line | Declaration |
 |---|---|
-| 44 | `value class ToastId(val value: Long)` |
-| 45 | `enum class ToastType` |
-| 46 | `data class ToastAction(val label: String, val onClick: () -> Unit)` |
-| 48 | `internal data class ToastEntry( val id: ToastId, val type: ToastType, val title: String, val description: String? = null, val action: ToastAction? = null, val remainingMs: Long = 4000, )` |
-| 49 |   `val id: ToastId` |
-| 50 |   `val type: ToastType` |
-| 51 |   `val title: String` |
-| 52 |   `val description: String?` |
-| 53 |   `val action: ToastAction?` |
-| 54 |   `val remainingMs: Long` |
-| 61 | `internal class ToastQueue` |
-| 62 |   `private var nextId` |
-| 63 |   `private var entries` |
-| 64 |   `val visible: List<ToastEntry> get()` |
-| 66 |   `fun add(type: ToastType, title: String, description: String? = null, action: ToastAction? = null): ToastId` |
-| 72 |   `fun update(id: ToastId, type: ToastType, title: String, description: String?)` |
-| 78 |   `fun dismiss(id: ToastId)` |
-| 80 |   `fun advance(elapsedMs: Long)` |
-| 89 | `class CodegToaster internal constructor(private val silent: Boolean)` |
-| 91 |   `private val queue` |
-| 92 |   `private val mutableEntries` |
-| 93 |   `internal val entries` |
-| 96 |   `private fun add(type: ToastType, title: String, description: String?, action: ToastAction?): ToastId` |
-| 103 |   `fun success(title: String, description: String? = null, action: ToastAction? = null): ToastId` |
-| 104 |   `fun error(title: String, description: String? = null, action: ToastAction? = null): ToastId` |
-| 105 |   `fun info(title: String, description: String? = null, action: ToastAction? = null): ToastId` |
-| 106 |   `fun warning(title: String, description: String? = null, action: ToastAction? = null): ToastId` |
-| 107 |   `fun loading(title: String): ToastId` |
-| 110 |   `fun update(id: ToastId, type: ToastType, title: String, description: String? = null)` |
-| 115 |   `fun dismiss(id: ToastId)` |
-| 117 |   `internal fun advance(elapsedMs: Long)` |
-| 118 |   `private fun publish()` |
-| 121 | `val LocalCodegToaster` |
-| 124 | `@Composable fun CodegToasterHost( toaster: CodegToaster = remember { CodegToaster() }, content: @Composable () -> Unit, )` |
-| 128 |   `val entries by toaster.entries.collectAsState()` |
-| 130 |   `val rendered` |
-| 174 | `@Composable private fun ToastCard(entry: ToastEntry, dismiss: () -> Unit)` |
-| 175 |   `val web` |
-| 176 |   `val threshold` |
-| 177 |   `var dragOffset by remember(entry.id)` |
-| 225 | `@Composable internal fun T52Gallery()` |
-| 226 |   `val toaster` |
-| 227 |   `val success` |
-| 228 |   `val error` |
-| 229 |   `val info` |
-| 230 |   `val warning` |
-| 231 |   `val loading` |
-| 232 |   `val description` |
-| 233 |   `val action` |
-| 234 |   `val finish` |
-| 235 |   `var pending by remember` |
-| 249 | `@Composable private fun ToastPreviewContent()` |
-| 266 | `@Composable private fun ToastsLightPreview()` |
-| 269 | `@Composable private fun ToastsDarkPreview()` |
+| 51 | `value class ToastId(val value: Long)` |
+| 52 | `enum class ToastType` |
+| 53 | `data class ToastAction(val label: String, val onClick: () -> Unit)` |
+| 55 | `internal data class ToastEntry( val id: ToastId, val type: ToastType, val title: String, val description: String? = null, val action: ToastAction? = null, val remainingMs: Long = 4000, )` |
+| 56 |   `val id: ToastId` |
+| 57 |   `val type: ToastType` |
+| 58 |   `val title: String` |
+| 59 |   `val description: String?` |
+| 60 |   `val action: ToastAction?` |
+| 61 |   `val remainingMs: Long` |
+| 68 | `internal class ToastQueue` |
+| 69 |   `private var nextId` |
+| 70 |   `private var entries` |
+| 71 |   `val visible: List<ToastEntry> get()` |
+| 73 |   `fun add(type: ToastType, title: String, description: String? = null, action: ToastAction? = null): ToastId` |
+| 79 |   `fun update(id: ToastId, type: ToastType, title: String, description: String?)` |
+| 85 |   `fun dismiss(id: ToastId)` |
+| 87 |   `fun advance(elapsedMs: Long)` |
+| 96 | `class CodegToaster internal constructor(private val silent: Boolean)` |
+| 98 |   `private val queue` |
+| 99 |   `private val mutableEntries` |
+| 100 |   `internal val entries` |
+| 103 |   `private fun add(type: ToastType, title: String, description: String?, action: ToastAction?): ToastId` |
+| 110 |   `fun success(title: String, description: String? = null, action: ToastAction? = null): ToastId` |
+| 111 |   `fun error(title: String, description: String? = null, action: ToastAction? = null): ToastId` |
+| 112 |   `fun info(title: String, description: String? = null, action: ToastAction? = null): ToastId` |
+| 113 |   `fun warning(title: String, description: String? = null, action: ToastAction? = null): ToastId` |
+| 114 |   `fun loading(title: String): ToastId` |
+| 117 |   `fun update(id: ToastId, type: ToastType, title: String, description: String? = null)` |
+| 122 |   `fun dismiss(id: ToastId)` |
+| 124 |   `internal fun advance(elapsedMs: Long)` |
+| 125 |   `private fun publish()` |
+| 128 | `val LocalCodegToaster` |
+| 131 | `@Composable fun CodegToasterHost( toaster: CodegToaster = remember { CodegToaster() }, content: @Composable () -> Unit, )` |
+| 135 |   `val entries by toaster.entries.collectAsState()` |
+| 137 |   `val rendered` |
+| 181 | `@Composable private fun ToastCard(entry: ToastEntry, dismiss: () -> Unit)` |
+| 182 |   `val web` |
+| 183 |   `val threshold` |
+| 184 |   `var dragOffset by remember(entry.id)` |
+| 236 | `@Composable internal fun T52Gallery()` |
+| 237 |   `val toaster` |
+| 238 |   `val success` |
+| 239 |   `val error` |
+| 240 |   `val info` |
+| 241 |   `val warning` |
+| 242 |   `val loading` |
+| 243 |   `val description` |
+| 244 |   `val action` |
+| 245 |   `val finish` |
+| 246 |   `var pending by remember` |
+| 260 | `@Composable private fun ToastPreviewContent()` |
+| 277 | `@Composable private fun ToastsLightPreview()` |
+| 280 | `@Composable private fun ToastsDarkPreview()` |
 
 ## core/designsystem/component/TopBar.kt
 

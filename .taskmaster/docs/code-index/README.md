@@ -18,6 +18,7 @@ Paths are relative to `app/src/main/java/app/codeg/android/`.
 | di | [di.md](di.md) | 3 |
 | feature/activity | [feature-activity.md](feature-activity.md) | 2 |
 | feature/automations | [feature-automations.md](feature-automations.md) | 3 |
+| feature/devgallery | [feature-devgallery.md](feature-devgallery.md) | 1 |
 | feature/main | [feature-main.md](feature-main.md) | 1 |
 | feature/onboarding | [feature-onboarding.md](feature-onboarding.md) | 1 |
 | feature/projects | [feature-projects.md](feature-projects.md) | 31 |
