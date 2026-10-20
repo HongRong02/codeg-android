@@ -749,10 +749,10 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 1805 |   `val forkSupported: Boolean` |
 | 1806 |   `val disconnectSupported: Boolean` |
 | 1807 |   `val busy: Boolean` |
-| 1811 | `internal fun suppressAuthNotice(error: Throwable, streamNotice: StreamNotice?): Boolean` |
-| 1815 | `internal fun isInterruptedTurn(stopReason: String?, transcriptCompleted: Boolean): Boolean` |
-| 1819 | `internal fun hasReconciledReply( turns: List<MessageTurn>, baseline: Int, liveFromReattach: Boolean, ): Boolean` |
-| 1824 |   `val last` |
+| 1810 | `internal fun suppressAuthNotice(error: Throwable, streamNotice: StreamNotice?): Boolean` |
+| 1814 | `internal fun isInterruptedTurn(stopReason: String?, transcriptCompleted: Boolean): Boolean` |
+| 1818 | `internal fun hasReconciledReply( turns: List<MessageTurn>, baseline: Int, liveFromReattach: Boolean, ): Boolean` |
+| 1823 |   `val last` |
 
 ## feature/sessiondetail/StreamReconnectPolicy.kt
 
