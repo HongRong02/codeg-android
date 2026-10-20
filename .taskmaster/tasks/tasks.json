@@ -544,8 +544,116 @@
         "description": "更新横幅常驻、模板文字/标签/按钮、助手入口、MCP 市场超时提示、导入会话时间格式。",
         "details": "需求文档：.taskmaster/docs/tasks/T42-round3-fixes.md（先读 .taskmaster/docs/CONVENTIONS.md，再只读这一份需求文档及其中列出的代码位置；不要通读 PRD 或其它文件）。改动范围、代码定位、验收标准都在需求文档里。",
         "testStrategy": "",
+        "status": "review",
+        "dependencies": [],
+        "priority": "high",
+        "subtasks": []
+      },
+      {
+        "id": "43",
+        "title": "T43 设计系统：菜单与弹出层",
+        "description": "布局与网页版同步（见 .taskmaster/docs/ui-alignment.md）。",
+        "details": "需求文档：.taskmaster/docs/tasks/T43-ds-menus.md（先读 .taskmaster/docs/CONVENTIONS.md 和 ui-alignment.md，再只读这一份需求文档及其中列出的代码位置）。",
+        "testStrategy": "",
         "status": "in-progress",
         "dependencies": [],
+        "priority": "high",
+        "subtasks": []
+      },
+      {
+        "id": "44",
+        "title": "T44 设计系统：对话框、抽屉、卡片",
+        "description": "布局与网页版同步（见 .taskmaster/docs/ui-alignment.md）。",
+        "details": "需求文档：.taskmaster/docs/tasks/T44-ds-dialogs-sheets.md（先读 .taskmaster/docs/CONVENTIONS.md 和 ui-alignment.md，再只读这一份需求文档及其中列出的代码位置）。",
+        "testStrategy": "",
+        "status": "in-progress",
+        "dependencies": [],
+        "priority": "high",
+        "subtasks": []
+      },
+      {
+        "id": "45",
+        "title": "T45 设计系统：按钮与表单控件",
+        "description": "布局与网页版同步（见 .taskmaster/docs/ui-alignment.md）。",
+        "details": "需求文档：.taskmaster/docs/tasks/T45-ds-buttons-forms.md（先读 .taskmaster/docs/CONVENTIONS.md 和 ui-alignment.md，再只读这一份需求文档及其中列出的代码位置）。",
+        "testStrategy": "",
+        "status": "in-progress",
+        "dependencies": [],
+        "priority": "high",
+        "subtasks": []
+      },
+      {
+        "id": "46",
+        "title": "T46 设计系统：标签页、徽章、列表行",
+        "description": "布局与网页版同步（见 .taskmaster/docs/ui-alignment.md）。",
+        "details": "需求文档：.taskmaster/docs/tasks/T46-ds-tabs-badges-rows.md（先读 .taskmaster/docs/CONVENTIONS.md 和 ui-alignment.md，再只读这一份需求文档及其中列出的代码位置）。",
+        "testStrategy": "",
+        "status": "in-progress",
+        "dependencies": [],
+        "priority": "high",
+        "subtasks": []
+      },
+      {
+        "id": "47",
+        "title": "T47 界面对齐：会话",
+        "description": "布局与网页版同步（见 .taskmaster/docs/ui-alignment.md）。",
+        "details": "需求文档：.taskmaster/docs/tasks/T47-ui-sessions.md（先读 .taskmaster/docs/CONVENTIONS.md 和 ui-alignment.md，再只读这一份需求文档及其中列出的代码位置）。",
+        "testStrategy": "",
+        "status": "pending",
+        "dependencies": [
+          "43",
+          "44",
+          "45",
+          "46"
+        ],
+        "priority": "high",
+        "subtasks": []
+      },
+      {
+        "id": "48",
+        "title": "T48 界面对齐：项目与 Git",
+        "description": "布局与网页版同步（见 .taskmaster/docs/ui-alignment.md）。",
+        "details": "需求文档：.taskmaster/docs/tasks/T48-ui-projects.md（先读 .taskmaster/docs/CONVENTIONS.md 和 ui-alignment.md，再只读这一份需求文档及其中列出的代码位置）。",
+        "testStrategy": "",
+        "status": "pending",
+        "dependencies": [
+          "43",
+          "44",
+          "45",
+          "46"
+        ],
+        "priority": "high",
+        "subtasks": []
+      },
+      {
+        "id": "49",
+        "title": "T49 界面对齐：设置",
+        "description": "布局与网页版同步（见 .taskmaster/docs/ui-alignment.md）。",
+        "details": "需求文档：.taskmaster/docs/tasks/T49-ui-settings.md（先读 .taskmaster/docs/CONVENTIONS.md 和 ui-alignment.md，再只读这一份需求文档及其中列出的代码位置）。",
+        "testStrategy": "",
+        "status": "pending",
+        "dependencies": [
+          "43",
+          "44",
+          "45",
+          "46"
+        ],
+        "priority": "high",
+        "subtasks": []
+      },
+      {
+        "id": "50",
+        "title": "T50 界面对齐：其余页面与主框架",
+        "description": "布局与网页版同步（见 .taskmaster/docs/ui-alignment.md）。",
+        "details": "需求文档：.taskmaster/docs/tasks/T50-ui-misc.md（先读 .taskmaster/docs/CONVENTIONS.md 和 ui-alignment.md，再只读这一份需求文档及其中列出的代码位置）。",
+        "testStrategy": "",
+        "status": "pending",
+        "dependencies": [
+          "43",
+          "44",
+          "45",
+          "46"
+        ],
         "priority": "high",
         "subtasks": []
       }
