@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="t55_operation_failed">操作失败</string>
+    <string name="t55_session_notice">会话提示</string>
+    <string name="t55_branch_occupied">已占用</string>
+    <string name="t55_branch_current">当前</string>
+</resources>

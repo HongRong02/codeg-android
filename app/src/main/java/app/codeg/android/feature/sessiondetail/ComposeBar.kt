@@ -22,11 +22,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Add
-import androidx.compose.material.icons.rounded.ArrowUpward
-import androidx.compose.material.icons.rounded.Image
-import androidx.compose.material.icons.rounded.Stop
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -36,12 +31,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.codeg.android.R
+import app.codeg.android.core.designsystem.icon.*
 import app.codeg.android.core.designsystem.theme.CodegTheme
 import app.codeg.android.core.designsystem.theme.withOpacity
 
@@ -67,7 +64,7 @@ fun ComposeBar(
     canSendOverride: Boolean = false,
     attachments: (@Composable ColumnScope.() -> Unit)? = null,
 ) {
-    // TODO(T53): CodegInputGroup for composer attachments and actions.
+    // CodegInputGroup is single-line only; retain multiline composer and attachment slots.
     val colors = CodegTheme.colors
     val web = colors.web
     val canSend = (text.isNotBlank() || canSendOverride) && !isInFlight
@@ -122,12 +119,12 @@ fun ComposeBar(
             ) {
                 if (onPlus != null) {
                     GhostIconButton(onPlus) {
-                        Icon(Icons.Rounded.Add, contentDescription = stringResource(R.string.compose_insert), modifier = Modifier.size(20.dp))
+                        Icon(Lucide.Plus, contentDescription = stringResource(R.string.compose_insert), modifier = Modifier.size(16.dp))
                     }
                 }
                 if (onAttach != null) {
                     GhostIconButton(onAttach) {
-                        Icon(Icons.Rounded.Image, contentDescription = stringResource(R.string.compose_attach_image), modifier = Modifier.size(18.dp))
+                        Icon(Lucide.Image, contentDescription = stringResource(R.string.compose_attach_image), modifier = Modifier.size(16.dp))
                     }
                 }
                 Box(Modifier.weight(1f))
@@ -146,7 +143,7 @@ fun ComposeBar(
 private fun GhostIconButton(onClick: () -> Unit, content: @Composable () -> Unit) {
     IconButton(
         onClick = onClick,
-        modifier = Modifier.size(36.dp),
+        modifier = Modifier.size(48.dp),
         colors = IconButtonDefaults.iconButtonColors(contentColor = CodegTheme.colors.textSecondary),
         content = content,
     )
@@ -164,7 +161,7 @@ private fun SendStopButton(isInFlight: Boolean, enabled: Boolean, onClick: () ->
     FilledIconButton(
         onClick = onClick,
         enabled = enabled,
-        modifier = Modifier.padding(bottom = 2.dp).size(32.dp),
+        modifier = Modifier.padding(bottom = 2.dp).size(48.dp),
         colors = IconButtonDefaults.filledIconButtonColors(
             containerColor = if (isInFlight) stopWash else colors.accent,
             contentColor = if (isInFlight) colors.danger else colors.onAccent,
@@ -181,7 +178,7 @@ private fun SendStopButton(isInFlight: Boolean, enabled: Boolean, onClick: () ->
             label = "send-stop-icon",
         ) { inFlight ->
             Icon(
-                imageVector = if (inFlight) Icons.Rounded.Stop else Icons.Rounded.ArrowUpward,
+                imageVector = if (inFlight) Lucide.Square else Lucide.ArrowUp,
                 contentDescription = if (inFlight) stringResource(R.string.compose_stop) else stringResource(R.string.compose_send),
                 modifier = Modifier.size(16.dp),
             )

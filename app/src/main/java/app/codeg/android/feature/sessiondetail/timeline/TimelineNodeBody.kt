@@ -16,14 +16,9 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Archive
-import androidx.compose.material.icons.rounded.ArrowUpward
-import androidx.compose.material.icons.rounded.Check
-import androidx.compose.material.icons.rounded.ContentCopy
-import androidx.compose.material.icons.rounded.WarningAmber
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -50,6 +45,7 @@ import androidx.compose.ui.unit.sp
 import app.codeg.android.R
 import app.codeg.android.core.common.RelativeTime
 import app.codeg.android.core.designsystem.component.CodegSeparator
+import app.codeg.android.core.designsystem.icon.*
 import app.codeg.android.core.designsystem.markdown.MarkdownContent
 import app.codeg.android.core.designsystem.markdown.SingleBlockView
 import app.codeg.android.core.designsystem.theme.CodegTheme
@@ -190,16 +186,17 @@ private fun CopyButton(text: String) {
         Modifier
             .clip(RoundedCornerShape(6.dp))
             .clickable { clipboard.setText(AnnotatedString(text)); copied = true }
+            .sizeIn(minWidth = 48.dp, minHeight = 48.dp)
             .padding(horizontal = 4.dp, vertical = 2.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(3.dp),
     ) {
         Crossfade(copied, label = "copy-icon") { c ->
             Icon(
-                if (c) Icons.Rounded.Check else Icons.Rounded.ContentCopy,
+                if (c) Lucide.Check else Lucide.Copy,
                 contentDescription = null,
                 tint = if (c) SuccessGreen else colors.textTertiary,
-                modifier = Modifier.size(13.dp),
+                modifier = Modifier.size(16.dp),
             )
         }
         Text(if (copied) stringResource(R.string.timeline_copied) else stringResource(R.string.timeline_copy), fontSize = 11.sp, color = colors.textTertiary)
@@ -218,10 +215,10 @@ private fun JumpToQuestionButton(questionId: String) {
         horizontalArrangement = Arrangement.spacedBy(3.dp),
     ) {
         Icon(
-            Icons.Rounded.ArrowUpward,
+            Lucide.ArrowUp,
             contentDescription = stringResource(R.string.timeline_scroll_to_question),
             tint = CodegTheme.colors.textTertiary,
-            modifier = Modifier.size(13.dp),
+            modifier = Modifier.size(16.dp),
         )
         Text(stringResource(R.string.timeline_question), fontSize = 11.sp, color = CodegTheme.colors.textTertiary)
     }
@@ -293,7 +290,7 @@ fun ContextCompactionDivider(before: Int?, after: Int?, running: Boolean, modifi
     ) {
         CodegSeparator(Modifier.weight(1f))
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(5.dp)) {
-            Icon(Icons.Rounded.Archive, contentDescription = null, tint = colors.textTertiary, modifier = Modifier.size(13.dp))
+            Icon(Lucide.Archive, contentDescription = null, tint = colors.textTertiary, modifier = Modifier.size(16.dp))
             Text(label, fontSize = 11.sp, color = colors.textTertiary)
         }
         CodegSeparator(Modifier.weight(1f))
@@ -317,7 +314,7 @@ fun InlineTurnError(message: String, modifier: Modifier = Modifier) {
         verticalAlignment = Alignment.Top,
         horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        Icon(Icons.Rounded.WarningAmber, null, tint = colors.danger, modifier = Modifier.size(14.dp))
+        Icon(Lucide.TriangleAlert, null, tint = colors.danger, modifier = Modifier.size(16.dp))
         Text(message, fontSize = 12.sp, color = colors.danger, modifier = Modifier.weight(1f))
     }
 }

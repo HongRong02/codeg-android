@@ -12,9 +12,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Checklist
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -33,7 +30,9 @@ import app.codeg.android.R
 import app.codeg.android.core.designsystem.component.CodegButton
 import app.codeg.android.core.designsystem.component.CodegButtonVariant
 import app.codeg.android.core.designsystem.component.CodegCard
+import app.codeg.android.core.designsystem.component.CodegSpinner
 import app.codeg.android.core.designsystem.component.CodegTextField
+import app.codeg.android.core.designsystem.icon.*
 import app.codeg.android.core.designsystem.markdown.MarkdownContent
 import app.codeg.android.core.designsystem.theme.CodegShapes
 import app.codeg.android.core.designsystem.theme.CodegTheme
@@ -76,7 +75,7 @@ fun PlanApprovalCard(
     CodegCard(modifier.fillMaxWidth()) {
         Column(Modifier.padding(horizontal = 12.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
             Row(verticalAlignment = Alignment.Top, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                Icon(Icons.Rounded.Checklist, contentDescription = null, tint = colors.accent, modifier = Modifier.size(20.dp))
+                Icon(Lucide.ListTodo, contentDescription = null, tint = colors.accent, modifier = Modifier.size(16.dp))
                 Column(Modifier.weight(1f)) {
                     Text(
                         stringResource(R.string.plan_approval_title),
@@ -103,7 +102,7 @@ fun PlanApprovalCard(
             AnimatedVisibility(changesOpen) {
                 CodegTextField(value = feedback, onValueChange = { if (!submitting) feedback = it },
                     label = stringResource(R.string.plan_approval_request_changes),
-                    placeholder = stringResource(R.string.plan_approval_notes_placeholder), singleLine = false)
+                    placeholder = stringResource(R.string.plan_approval_notes_placeholder), singleLine = false, enabled = !submitting, minLines = 2, maxLines = 6)
             }
 
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -127,7 +126,7 @@ fun PlanApprovalCard(
                     modifier = Modifier.weight(1f),
                 ) {
                     if (submitting) {
-                        CircularProgressIndicator(modifier = Modifier.size(16.dp), strokeWidth = 2.dp, color = colors.onAccent)
+                        CodegSpinner(modifier = Modifier.size(16.dp))
                     } else {
                         Text(stringResource(R.string.plan_approval_approve), fontWeight = FontWeight.SemiBold)
                     }

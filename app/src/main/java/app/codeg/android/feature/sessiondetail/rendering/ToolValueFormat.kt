@@ -13,8 +13,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.ErrorOutline
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -35,6 +33,7 @@ import app.codeg.android.R
 import app.codeg.android.core.designsystem.component.CodeBlock
 import app.codeg.android.core.designsystem.component.CodegSeparator
 import app.codeg.android.core.designsystem.component.CopyButton
+import app.codeg.android.core.designsystem.icon.*
 import app.codeg.android.core.designsystem.theme.CodegTheme
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonArray
@@ -477,7 +476,7 @@ fun ToolErrorOutput(output: String) {
         verticalArrangement = Arrangement.spacedBy(7.dp),
     ) {
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(5.dp)) {
-            Icon(Icons.Rounded.ErrorOutline, null, tint = colors.danger, modifier = Modifier.size(13.dp))
+            Icon(Lucide.CircleAlert, null, tint = colors.danger, modifier = Modifier.size(16.dp))
             Text(stringResource(R.string.tool_error_output), fontSize = 11.sp, fontWeight = FontWeight.SemiBold, color = colors.danger)
         }
         if (fields != null) {

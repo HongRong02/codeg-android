@@ -9,6 +9,8 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -72,7 +74,7 @@ fun ConversationTagSheet(
     viewModel: SessionListViewModel,
     onDismiss: () -> Unit,
 ) {
-    // TODO(T52): CodegToaster for tag errors.
+    // List screen owns the shared error toast, including tag operations.
     var selected by remember(conversation?.id) { mutableStateOf(conversation?.tagIds.orEmpty().toSet()) }
     var editing by remember { mutableStateOf<ConversationTag?>(null) }
     var formOpen by remember { mutableStateOf(false) }
@@ -91,7 +93,6 @@ fun ConversationTagSheet(
         },
     ) {
         Column(Modifier.fillMaxWidth().padding(horizontal = 16.dp)) {
-            if (ui.error != null) Text(ui.error, color = CodegTheme.colors.danger)
             CodegButton(variant = CodegButtonVariant.Ghost, enabled = !ui.tagsBusy, onClick = { editing = null; formOpen = true }) {
                 Text(stringResource(R.string.ct_create))
             }
@@ -129,6 +130,7 @@ fun ConversationTagSheet(
             target = tag.name,
             confirmLabel = stringResource(R.string.ct_delete),
             destructive = true,
+            busy = ui.tagsBusy,
             onConfirm = {
                 if (!ui.tagsBusy) viewModel.deleteTag(tag) { selected = selected - tag.id; deleting = null }
             },
@@ -150,7 +152,7 @@ private fun TagForm(tag: ConversationTag?, busy: Boolean, onDismiss: () -> Unit,
             CodegButton(enabled = valid && !busy, onClick = { onSave(name, color) }) { Text(stringResource(R.string.ct_save)) }
         },
     ) {
-        CodegTextField(value = name, onValueChange = { if (!busy) name = it }, label = stringResource(R.string.ct_name))
-        CodegTextField(value = color, onValueChange = { if (!busy) color = it }, label = stringResource(R.string.ct_color), isError = !Regex("#[0-9a-fA-F]{6}").matches(color))
+        CodegTextField(value = name, onValueChange = { if (!busy) name = it }, label = stringResource(R.string.ct_name), enabled = !busy)
+        CodegTextField(value = color, onValueChange = { if (!busy) color = it }, label = stringResource(R.string.ct_color), enabled = !busy, isError = !Regex("#[0-9a-fA-F]{6}").matches(color))
     }
 }

@@ -10,8 +10,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.PushPin
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -23,16 +21,20 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.codeg.android.R
 import app.codeg.android.core.common.RelativeTime
 import app.codeg.android.core.designsystem.component.AgentAvatar
+import app.codeg.android.core.designsystem.component.AgentVisuals
+import app.codeg.android.core.designsystem.component.CodegAvatar
 import app.codeg.android.core.designsystem.component.CodegDropdownMenu
 import app.codeg.android.core.designsystem.component.CodegListRow
 import app.codeg.android.core.designsystem.component.CodegMenuItem
 import app.codeg.android.core.designsystem.component.LivePulse
 import app.codeg.android.core.designsystem.component.statusColor
+import app.codeg.android.core.designsystem.icon.*
 import app.codeg.android.core.designsystem.theme.CodegTheme
 import app.codeg.android.core.model.ConversationSummary
 import app.codeg.android.core.model.ConversationTag
@@ -55,7 +57,6 @@ fun SessionRow(
     var menuOpen by remember { mutableStateOf(false) }
 
     Box(modifier) {
-        // TODO(T53): CodegAvatar once the shared avatar component is available.
         CodegListRow(
             title = conversation.trimmedTitle ?: stringResource(R.string.session_untitled),
             subtitle = folderName,
@@ -65,7 +66,11 @@ fun SessionRow(
             onMoreClick = if (onTogglePin != null || onEditTags != null) ({ menuOpen = true }) else null,
             leading = {
                 Box {
-                    AgentAvatar(conversation.agentType, size = 26.dp)
+                    if (AgentVisuals.iconIsTemplate(conversation.agentType)) {
+                        AgentAvatar(conversation.agentType, size = 26.dp)
+                    } else {
+                        CodegAvatar(conversation.agentType.shortName, painter = painterResource(AgentVisuals.icon(conversation.agentType)), size = 26.dp)
+                    }
                     Box(Modifier.align(Alignment.BottomEnd).offset(x = 2.dp, y = 2.dp)
                         .size(8.dp).clip(CircleShape).background(statusColor(conversation.status))
                         .border(1.5.dp, colors.bg, CircleShape))
@@ -101,7 +106,7 @@ fun SessionRow(
                             },
                         )
                     },
-                    leadingIcon = { Icon(Icons.Rounded.PushPin, contentDescription = null) },
+                    leadingIcon = { Icon(Lucide.Pin, contentDescription = null, modifier = Modifier.size(16.dp)) },
                     onClick = {
                         menuOpen = false
                         onTogglePin()
