@@ -478,7 +478,7 @@
         "description": "work task 模板增删改、按项目的看板设置。",
         "details": "需求文档：.taskmaster/docs/tasks/T36-work-task-templates.md（先读 .taskmaster/docs/CONVENTIONS.md，再只读这一份需求文档及其中列出的代码位置；不要通读 PRD 或其它文件）。改动范围、代码定位、验收标准都在需求文档里。",
         "testStrategy": "",
-        "status": "review",
+        "status": "done",
         "dependencies": [],
         "priority": "medium",
         "subtasks": []
@@ -489,7 +489,7 @@
         "description": "扫描服务端机器上各 agent 的本地会话并勾选导入。",
         "details": "需求文档：.taskmaster/docs/tasks/T37-import-sessions.md（先读 .taskmaster/docs/CONVENTIONS.md，再只读这一份需求文档及其中列出的代码位置；不要通读 PRD 或其它文件）。改动范围、代码定位、验收标准都在需求文档里。",
         "testStrategy": "",
-        "status": "review",
+        "status": "done",
         "dependencies": [],
         "priority": "medium",
         "subtasks": []
@@ -500,7 +500,7 @@
         "description": "设置里新增助手页：列表、新建、编辑、删除、排序。",
         "details": "需求文档：.taskmaster/docs/tasks/T38-assistants.md（先读 .taskmaster/docs/CONVENTIONS.md，再只读这一份需求文档及其中列出的代码位置；不要通读 PRD 或其它文件）。改动范围、代码定位、验收标准都在需求文档里。",
         "testStrategy": "",
-        "status": "review",
+        "status": "done",
         "dependencies": [],
         "priority": "medium",
         "subtasks": []
@@ -522,7 +522,7 @@
         "description": "中央技能库的增删改、复制、导入与 agent 关联。",
         "details": "需求文档：.taskmaster/docs/tasks/T40-custom-skills.md（先读 .taskmaster/docs/CONVENTIONS.md，再只读这一份需求文档及其中列出的代码位置；不要通读 PRD 或其它文件）。改动范围、代码定位、验收标准都在需求文档里。",
         "testStrategy": "",
-        "status": "review",
+        "status": "done",
         "dependencies": [],
         "priority": "low",
         "subtasks": []
@@ -534,6 +534,17 @@
         "details": "需求文档：.taskmaster/docs/tasks/T41-apk-auto-update.md（先读 .taskmaster/docs/CONVENTIONS.md，再只读这一份需求文档及其中列出的代码位置；不要通读 PRD 或其它文件）。改动范围、代码定位、验收标准都在需求文档里。",
         "testStrategy": "",
         "status": "review",
+        "dependencies": [],
+        "priority": "high",
+        "subtasks": []
+      },
+      {
+        "id": "42",
+        "title": "T42 第三轮真机问题修复",
+        "description": "更新横幅常驻、模板文字/标签/按钮、助手入口、MCP 市场超时提示、导入会话时间格式。",
+        "details": "需求文档：.taskmaster/docs/tasks/T42-round3-fixes.md（先读 .taskmaster/docs/CONVENTIONS.md，再只读这一份需求文档及其中列出的代码位置；不要通读 PRD 或其它文件）。改动范围、代码定位、验收标准都在需求文档里。",
+        "testStrategy": "",
+        "status": "in-progress",
         "dependencies": [],
         "priority": "high",
         "subtasks": []

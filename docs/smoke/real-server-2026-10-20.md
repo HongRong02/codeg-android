@@ -52,3 +52,13 @@
 - T34 conversation tags: create tag → tick it in the session's 标签… sheet → chip on the row and in the filter bar; link stored server-side.
 - T35 folder groups: alias shows as `SandboxAlias [sandbox]`; new group "Mobile"; project moved in; group header with rename/delete.
 - T32 forge: menu item correctly hidden for a project with no remote. Still to test on a project with a GitHub remote and a version-control token (real server).
+
+## Round 3 (T36–T41) on the test server, build 1.1.139
+
+- T41: About shows 1.1.139 (139); 检查更新 → 已是最新版本. Bug: that message then stays pinned over the status bar on every page (→ T42). Full download/install path waits for the next release.
+- T38 assistants: create (Codex, all agent options required) → delete with confirm. Entry still shown on servers without support (→ T42).
+- T40 custom skills: create t40-demo → link to Codex → unlink → duplicate → delete both.
+- T39 MCP market: list and detail work; keyword search times out (server's registry call takes 61 s, app shows a raw socket-timeout string → T42). Install deliberately not tested: the test server shares the real WSL home, so it would edit real agent configs.
+- T36: template create → fill new task → delete; board settings max_concurrent 2→3 saved server-side → restore defaults (own settings null). Edit button mislabelled, picker label not updated, save button clipped (→ T42).
+- T37 import: scan lists local sessions by agent/path; imported 1 → project agentboard-sandbox appears. Raw ISO times (→ T42).
+- Tooling: E:\claude\apk\safe.sh refuses taps unless codeg is in front; don't swipe while the IME is up (vivo glide typing enters text).
