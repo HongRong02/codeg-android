@@ -13,7 +13,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -28,12 +27,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import app.codeg.android.R
-import app.codeg.android.core.designsystem.component.CodegIconButton
-import app.codeg.android.core.designsystem.component.CodegTextField
-import app.codeg.android.core.designsystem.component.CodegTopBar
-import app.codeg.android.core.designsystem.component.PrimaryButton
-import app.codeg.android.core.designsystem.component.SecretField
-import app.codeg.android.core.designsystem.component.webSurface
+import app.codeg.android.core.designsystem.component.*
 import app.codeg.android.core.designsystem.theme.CodegTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -58,75 +52,63 @@ fun ServerEditorScreen(
         },
     ) { padding ->
         Box(Modifier.fillMaxSize().padding(padding).imePadding(), contentAlignment = Alignment.TopCenter) {
-            Column(
-                modifier = Modifier
-                    .widthIn(max = 448.dp)
-                    .fillMaxWidth()
-                    .verticalScroll(rememberScrollState())
-                    .padding(16.dp)
-                    .webSurface(MaterialTheme.shapes.medium)
-                    .padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp),
-            ) {
-                SectionHeader(stringResource(R.string.server_section_connection))
-                CodegTextField(
-                    value = viewModel.name,
-                    onValueChange = viewModel::onNameChange,
-                    label = stringResource(R.string.server_name),
-                )
-                CodegTextField(
-                    value = viewModel.url,
-                    onValueChange = viewModel::onUrlChange,
-                    label = stringResource(R.string.server_url),
-                    placeholder = stringResource(R.string.server_url_placeholder),
-                    keyboardType = KeyboardType.Uri,
-                    mono = true,
-                )
+            CodegCard(Modifier.widthIn(max = 448.dp).fillMaxWidth()
+                .verticalScroll(rememberScrollState()).padding(16.dp)) {
+                CodegCardContent {
+                    Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                        CodegSectionHeader(stringResource(R.string.server_section_connection))
+                        CodegTextField(
+                            value = viewModel.name,
+                            onValueChange = viewModel::onNameChange,
+                            label = stringResource(R.string.server_name),
+                        )
+                        CodegTextField(
+                            value = viewModel.url,
+                            onValueChange = viewModel::onUrlChange,
+                            label = stringResource(R.string.server_url),
+                            placeholder = stringResource(R.string.server_url_placeholder),
+                            keyboardType = KeyboardType.Uri,
+                            mono = true,
+                        )
 
-                HorizontalDivider(color = colors.web.border)
-                SectionHeader(stringResource(R.string.server_section_auth))
-                SecretField(
-                    value = viewModel.token,
-                    onValueChange = viewModel::onTokenChange,
-                    label = stringResource(R.string.server_token),
-                )
+                        CodegSeparator()
+                        CodegSectionHeader(stringResource(R.string.server_section_auth))
+                        SecretField(
+                            value = viewModel.token,
+                            onValueChange = viewModel::onTokenChange,
+                            label = stringResource(R.string.server_token),
+                        )
 
-                PrimaryButton(
-                    text = stringResource(R.string.server_test_connection),
-                    onClick = viewModel::testConnection,
-                    loading = viewModel.test is TestState.Testing,
-                    enabled = viewModel.url.isNotBlank() && viewModel.token.isNotBlank(),
-                )
-                PrimaryButton(
-                    text = stringResource(R.string.server_save),
-                    onClick = { viewModel.save(onDone) },
-                    enabled = viewModel.canSave,
-                )
-                when (val test = viewModel.test) {
-                    is TestState.Success -> Text(
-                        stringResource(R.string.server_connection_ok, test.version),
-                        style = MaterialTheme.typography.bodySmall,
-                        color = colors.textPrimary,
-                        fontFamily = FontFamily.Monospace,
-                    )
-                    is TestState.Failure -> Text(
-                        stringResource(R.string.server_connection_failed, test.message),
-                        style = MaterialTheme.typography.bodySmall,
-                        color = colors.danger,
-                    )
-                    else -> Unit
+                        PrimaryButton(
+                            text = stringResource(R.string.server_test_connection),
+                            onClick = viewModel::testConnection,
+                            loading = viewModel.test is TestState.Testing,
+                            enabled = viewModel.url.isNotBlank() && viewModel.token.isNotBlank(),
+                        )
+                        PrimaryButton(
+                            text = stringResource(R.string.server_save),
+                            onClick = { viewModel.save(onDone) },
+                            enabled = viewModel.canSave,
+                        )
+                        // TODO(T52): CodegToaster for connection test feedback.
+                        when (val test = viewModel.test) {
+                            is TestState.Success -> Text(
+                                stringResource(R.string.server_connection_ok, test.version),
+                                style = MaterialTheme.typography.bodySmall,
+                                color = colors.textPrimary,
+                                fontFamily = FontFamily.Monospace,
+                            )
+                            is TestState.Failure -> Text(
+                                stringResource(R.string.server_connection_failed, test.message),
+                                style = MaterialTheme.typography.bodySmall,
+                                color = colors.danger,
+                            )
+                            else -> Unit
+                        }
+
+                    }
                 }
             }
         }
     }
-}
-
-@Composable
-private fun SectionHeader(text: String) {
-    Text(
-        text = text,
-        style = MaterialTheme.typography.labelSmall,
-        color = CodegTheme.colors.web.mutedForeground,
-        modifier = Modifier.padding(start = 4.dp),
-    )
 }

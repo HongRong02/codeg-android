@@ -3,6 +3,7 @@ package app.codeg.android.feature.activity
 import android.text.format.DateUtils
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -38,12 +39,12 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.codeg.android.R
 import app.codeg.android.core.designsystem.component.CodegIconButton
+import app.codeg.android.core.designsystem.component.CodegSectionHeader
 import app.codeg.android.core.designsystem.component.CodegTopBar
 import app.codeg.android.core.designsystem.component.EmptyState
 import app.codeg.android.core.designsystem.component.InlineError
 import app.codeg.android.core.designsystem.component.LoadingView
 import app.codeg.android.core.designsystem.theme.CodegTheme
-import app.codeg.android.feature.sessions.CollapsibleSectionHeader
 import app.codeg.android.feature.sessions.SessionRow
 import java.time.Instant
 
@@ -137,16 +138,14 @@ fun ActivityScreen(
                             val isCollapsed = section.id in collapsed
                             item(key = "h-${section.id}", contentType = "header") {
                                 val style = activitySectionStyle(section.kind)
-                                CollapsibleSectionHeader(
-                                    icon = style.icon,
-                                    tint = style.tint,
-                                    label = style.label,
-                                    count = section.count,
-                                    collapsed = isCollapsed,
-                                    onToggle = { toggle(section.id) },
-                                    collapsible = section.count > 0,
-                                    modifier = Modifier.animateItem(),
-                                )
+                                // TODO(T53): CodegCollapsible for section body visibility.
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    Icon(style.icon, contentDescription = null, tint = style.tint)
+                                    CodegSectionHeader(title = style.label, count = section.count,
+                                        collapsed = isCollapsed,
+                                        onToggle = if (section.count > 0) ({ toggle(section.id) }) else null,
+                                        modifier = Modifier.weight(1f).animateItem())
+                                }
                             }
                             if (!isCollapsed) {
                                 items(section.rows, key = { "row-${it.conversation.id}" }, contentType = { "row" }) { row ->

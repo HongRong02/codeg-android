@@ -1,14 +1,13 @@
 package app.codeg.android.feature.worktasks
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.codeg.android.R
+import app.codeg.android.core.designsystem.component.*
 import app.codeg.android.core.designsystem.theme.CodegTheme
 import kotlinx.serialization.json.*
 
@@ -74,49 +73,50 @@ fun WorkTaskSettingsSheet(ui: WorkTaskUi, viewModel: WorkTaskViewModel) {
     }
     val enabled = !ui.busy && !ui.settingsLoading
     val folder = ui.folders.find { it.id == ui.settingsFolder }
-    AlertDialog(onDismissRequest = viewModel::closeManagement,
-        title = { Text(stringResource(R.string.wtt_settings)) },
-        text = {
-            Column(Modifier.verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+    CodegDialog(onDismiss = viewModel::closeManagement,
+        title = stringResource(R.string.wtt_settings),
+        content = {
+            Column(Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 ui.error?.let { Text(it, color = CodegTheme.colors.danger) }
                 Box {
-                    TextButton(enabled = enabled, onClick = { projectMenu = true }) {
+                    CodegButton(variant = CodegButtonVariant.Ghost, size = CodegButtonSize.Sm, enabled = enabled, onClick = { projectMenu = true }) {
                         Text(folder?.name ?: stringResource(R.string.wtb_project))
                     }
-                    DropdownMenu(projectMenu, { projectMenu = false }) {
+                    CodegDropdownMenu(projectMenu, { projectMenu = false }) {
                         ui.folders.forEach { project ->
-                            DropdownMenuItem(text = { Text(project.name) }, onClick = {
-                                projectMenu = false; viewModel.loadSettings(project.id)
+                            CodegMenuItem(text = { Text(project.name) }, onClick = {
+                                    projectMenu = false; viewModel.loadSettings(project.id)
                             })
                         }
                     }
                 }
+                // CodegProgress has no indeterminate variant; retain loading semantics.
                 if (ui.settingsLoading || ui.busy) LinearProgressIndicator(Modifier.fillMaxWidth())
                 ui.effectiveSettings?.let { effective ->
-                    Text(stringResource(R.string.wtt_effective), style = MaterialTheme.typography.titleSmall)
+                    CodegSectionHeader(title = stringResource(R.string.wtt_effective))
                     SettingsSummary(effective)
-                    Text(stringResource(R.string.wtt_own), style = MaterialTheme.typography.titleSmall)
+                    CodegSectionHeader(title = stringResource(R.string.wtt_own))
                     if (ui.ownSettings == null) Text(stringResource(R.string.wtt_inherited))
                     else SettingsSummary(ui.ownSettings)
-                    Text(stringResource(R.string.wtt_edit_settings), style = MaterialTheme.typography.titleSmall)
+                    CodegSectionHeader(title = stringResource(R.string.wtt_edit_settings))
                     settingsLabels.forEach { (key, label) ->
                         if (key in fields) {
                             val value = fields.getValue(key)
                             when {
                                 key in booleanSettings -> Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                                     Text(stringResource(label), modifier = Modifier.weight(1f))
-                                    Switch(value == "true", { checked -> fields = fields + (key to checked.toString()) }, enabled = enabled)
+                                    CodegSwitch(value == "true", { checked -> fields = fields + (key to checked.toString()) }, enabled = enabled)
                                 }
                                 key == "merge_strategy" -> {
                                     var expanded by remember { mutableStateOf(false) }
                                     Box {
-                                        TextButton(enabled = enabled, onClick = { expanded = true }) {
+                                        CodegButton(variant = CodegButtonVariant.Ghost, size = CodegButtonSize.Sm, enabled = enabled, onClick = { expanded = true }) {
                                             Text(stringResource(label) + ": " + stringResource(if (value == "merge") R.string.wtt_merge else R.string.wtt_squash))
                                         }
-                                        DropdownMenu(expanded, { expanded = false }) {
+                                        CodegDropdownMenu(expanded, { expanded = false }) {
                                             listOf("squash" to R.string.wtt_squash, "merge" to R.string.wtt_merge).forEach { (choice, name) ->
-                                                DropdownMenuItem(text = { Text(stringResource(name)) }, onClick = {
-                                                    fields = fields + (key to choice); expanded = false
+                                                CodegMenuItem(text = { Text(stringResource(name)) }, onClick = {
+                                                        fields = fields + (key to choice); expanded = false
                                                 })
                                             }
                                         }
@@ -129,23 +129,25 @@ fun WorkTaskSettingsSheet(ui: WorkTaskUi, viewModel: WorkTaskViewModel) {
                             }
                         }
                     }
-                    TextButton(enabled = enabled && ui.ownSettings != null, onClick = { reset = true }) {
+                    CodegButton(variant = CodegButtonVariant.Destructive, size = CodegButtonSize.Sm, enabled = enabled && ui.ownSettings != null, onClick = { reset = true }) {
                         Text(stringResource(R.string.wtt_reset))
                     }
                 }
             }
         },
-        confirmButton = {
-            TextButton(enabled = enabled && source != null && folder != null && parsed.values.none { it == null }, onClick = {
-                viewModel.saveSettings(folder!!.id, JsonObject(parsed.mapValues { it.value!! }))
+        footer = {
+            CodegButton(variant = CodegButtonVariant.Ghost, size = CodegButtonSize.Sm, enabled = !ui.busy, onClick = viewModel::closeManagement) { Text(stringResource(R.string.wtb_close)) }
+            CodegButton(variant = CodegButtonVariant.Ghost, size = CodegButtonSize.Sm, enabled = enabled && source != null && folder != null && parsed.values.none { it == null }, onClick = {
+                    viewModel.saveSettings(folder!!.id, JsonObject(parsed.mapValues { it.value!! }))
             }) { Text(stringResource(R.string.wtb_save)) }
-        },
-        dismissButton = { TextButton(enabled = !ui.busy, onClick = viewModel::closeManagement) { Text(stringResource(R.string.wtb_close)) } })
-    if (reset && folder != null) AlertDialog(onDismissRequest = { reset = false },
-        title = { Text(stringResource(R.string.wtt_reset)) },
-        text = { Text(stringResource(R.string.wtt_reset_confirm, folder.name)) },
-        confirmButton = { TextButton(enabled = enabled, onClick = { reset = false; viewModel.resetSettings(folder.id) }) { Text(stringResource(R.string.wtt_reset)) } },
-        dismissButton = { TextButton(onClick = { reset = false }) { Text(stringResource(R.string.wtt_cancel)) } })
+    })
+    if (reset && folder != null) CodegDialog(onDismiss = { reset = false },
+        title = stringResource(R.string.wtt_reset),
+        content = { Text(stringResource(R.string.wtt_reset_confirm, folder.name)) },
+        footer = {
+            CodegButton(variant = CodegButtonVariant.Ghost, size = CodegButtonSize.Sm, onClick = { reset = false }) { Text(stringResource(R.string.wtt_cancel)) }
+            CodegButton(variant = CodegButtonVariant.Destructive, size = CodegButtonSize.Sm, enabled = enabled, onClick = { reset = false; viewModel.resetSettings(folder.id) }) { Text(stringResource(R.string.wtt_reset)) }
+    })
 }
 
 @Composable

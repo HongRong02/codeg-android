@@ -1,7 +1,6 @@
 package app.codeg.android.feature.serverlogs
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -17,11 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.codeg.android.R
-import app.codeg.android.core.designsystem.component.CodeBlock
-import app.codeg.android.core.designsystem.component.CodegIconButton
-import app.codeg.android.core.designsystem.component.CodegTopBar
-import app.codeg.android.core.designsystem.component.webSurface
-import app.codeg.android.core.designsystem.theme.CodegShapes
+import app.codeg.android.core.designsystem.component.*
 import app.codeg.android.core.designsystem.theme.CodegTheme
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
@@ -61,11 +56,10 @@ fun ServerLogsScreen(onBack: () -> Unit, viewModel: ServerLogsViewModel = hiltVi
             verticalArrangement = Arrangement.spacedBy(12.dp), contentPadding = PaddingValues(vertical = 12.dp),
         ) {
             item {
-                FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    tabs.forEach { (id, label) ->
-                        FilterChip(selected = tab == id, onClick = { tab = id; viewModel.selectFile(null) }, label = { Text(stringResource(label)) })
-                    }
-                }
+                CodegTabs(selected = tabs.indexOfFirst { it.first == tab }.coerceAtLeast(0),
+                    tabs = tabs.map { stringResource(it.second) },
+                    onSelect = { tab = tabs[it].first; viewModel.selectFile(null) }, modifier = Modifier.fillMaxWidth())
+                // CodegProgress has no indeterminate variant; retain loading semantics.
                 if (ui.loading || ui.fileLoading) LinearProgressIndicator(Modifier.fillMaxWidth(), color = colors.accent)
                 if (!ui.available) Text(stringResource(R.string.logs_stats_unavailable), color = colors.textSecondary)
             }
@@ -84,7 +78,7 @@ fun ServerLogsScreen(onBack: () -> Unit, viewModel: ServerLogsViewModel = hiltVi
                         val levels = listOf(null, "error", "warn", "info", "debug", "trace")
                         val labels = listOf(R.string.logs_stats_all, R.string.logs_stats_error, R.string.logs_stats_warn, R.string.logs_stats_info, R.string.logs_stats_debug, R.string.logs_stats_trace)
                         levels.forEachIndexed { index, level ->
-                            FilterChip(selected = ui.level == level, onClick = { viewModel.setLevel(level) }, label = { Text(stringResource(labels[index])) })
+                            CodegFilterChip(selected = ui.level == level, onClick = { viewModel.setLevel(level) }, label = stringResource(labels[index]), enabled = true)
                         }
                     }
                     Text(stringResource(R.string.logs_stats_recent_limit), color = colors.textSecondary)
@@ -92,8 +86,7 @@ fun ServerLogsScreen(onBack: () -> Unit, viewModel: ServerLogsViewModel = hiltVi
             }
             if ((tab == 0 && LogsSection.RECENT !in ui.unsupported) || (tab == 1 && ui.selectedFile != null && LogsSection.FILES !in ui.unsupported)) {
                 item {
-                    OutlinedTextField(query, { query = it }, modifier = Modifier.fillMaxWidth(), singleLine = true,
-                        label = { Text(stringResource(R.string.logs_stats_search)) })
+                    CodegTextField(query, { query = it }, label = stringResource(R.string.logs_stats_search))
                 }
                 val rawText = if (tab == 0) ui.recent.joinToString("\n") { it.line() } else ui.fileText.orEmpty()
                 val text = filterLogText(rawText, query)
@@ -109,16 +102,15 @@ fun ServerLogsScreen(onBack: () -> Unit, viewModel: ServerLogsViewModel = hiltVi
             if (tab == 1 && ui.selectedFile == null && LogsSection.FILES !in ui.unsupported) {
                 if (ui.files.isEmpty() && !ui.loading) item { Text(stringResource(R.string.logs_stats_empty), color = colors.textSecondary) }
                 items(ui.files, key = { it.name }) { file ->
-                    Column(Modifier.fillMaxWidth().webSurface(CodegShapes.small).clickable { viewModel.selectFile(file.name) }.padding(12.dp)) {
-                        Text(file.name, color = colors.textPrimary)
-                        Text(stringResource(R.string.logs_stats_file_meta, file.sizeBytes, java.time.Instant.ofEpochMilli(file.modifiedMs).toString()), color = colors.textSecondary)
-                    }
+                    CodegListRow(title = file.name,
+                        subtitle = stringResource(R.string.logs_stats_file_meta, file.sizeBytes, java.time.Instant.ofEpochMilli(file.modifiedMs).toString()),
+                        onClick = { viewModel.selectFile(file.name) })
                 }
             }
             if (tab == 2) {
                 if (LogsSection.STATS !in ui.unsupported) ui.stats?.let { stats ->
                     item {
-                        Text(stringResource(R.string.logs_stats_sessions), style = MaterialTheme.typography.titleMedium, color = colors.textPrimary)
+                        CodegSectionHeader(title = stringResource(R.string.logs_stats_sessions))
                         StatRow(stringResource(R.string.logs_stats_conversations), stats.totalConversations)
                         StatRow(stringResource(R.string.logs_stats_messages), stats.totalMessages)
                         stats.byAgent.forEach { StatRow(it.agentType, it.conversationCount) }
@@ -126,10 +118,10 @@ fun ServerLogsScreen(onBack: () -> Unit, viewModel: ServerLogsViewModel = hiltVi
                 }
                 if (LogsSection.TOKENS !in ui.unsupported) {
                     item {
-                        Text(stringResource(R.string.logs_stats_token_usage), style = MaterialTheme.typography.titleMedium, color = colors.textPrimary)
+                        CodegSectionHeader(title = stringResource(R.string.logs_stats_token_usage))
                         FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                             listOf(7 to R.string.logs_stats_week, 30 to R.string.logs_stats_month, null to R.string.logs_stats_all_time).forEach { (days, label) ->
-                                FilterChip(selected = ui.days == days, onClick = { viewModel.setDays(days) }, label = { Text(stringResource(label)) })
+                                CodegFilterChip(selected = ui.days == days, onClick = { viewModel.setDays(days) }, label = stringResource(label), enabled = true)
                             }
                         }
                     }
@@ -144,7 +136,7 @@ fun ServerLogsScreen(onBack: () -> Unit, viewModel: ServerLogsViewModel = hiltVi
                             StatRow(stringResource(R.string.logs_stats_conversations), totals.conversationCount)
                             StatRow(stringResource(R.string.logs_stats_turns), totals.turnCount)
                             if (report.truncated) Text(stringResource(R.string.logs_stats_truncated), color = colors.textSecondary)
-                            Text(stringResource(R.string.logs_stats_daily), style = MaterialTheme.typography.titleSmall, color = colors.textPrimary)
+                            CodegSectionHeader(title = stringResource(R.string.logs_stats_daily))
                             if (report.series.isEmpty()) Text(stringResource(R.string.logs_stats_empty), color = colors.textSecondary)
                         }
                         items(report.series, key = { it.bucketKey }) { point -> StatRow(point.bucketKey, point.totalTokens) }

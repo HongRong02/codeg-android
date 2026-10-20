@@ -2,15 +2,12 @@ package app.codeg.android.feature.automations
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -23,7 +20,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowRight
 import androidx.compose.material.icons.rounded.CalendarToday
-import androidx.compose.material.icons.rounded.CheckCircle
 import androidx.compose.material.icons.rounded.Folder
 import androidx.compose.material.icons.rounded.History
 import androidx.compose.material.icons.rounded.Layers
@@ -32,25 +28,20 @@ import androidx.compose.material.icons.rounded.Refresh
 import androidx.compose.material.icons.rounded.Schedule
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.material3.TextButton
-import androidx.compose.material3.AlertDialog
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -58,12 +49,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.codeg.android.R
 import app.codeg.android.core.common.RelativeTime
-import app.codeg.android.core.designsystem.component.AgentIcon
-import app.codeg.android.core.designsystem.component.CodegIconButton
-import app.codeg.android.core.designsystem.component.CodegSegmented
-import app.codeg.android.core.designsystem.component.CodegTopBar
-import app.codeg.android.core.designsystem.component.webSurface
-import app.codeg.android.core.designsystem.theme.CodegShapes
+import app.codeg.android.core.designsystem.component.*
+import app.codeg.android.core.designsystem.theme.withOpacity
 import app.codeg.android.core.designsystem.theme.CodegTheme
 import app.codeg.android.core.model.Automation
 import app.codeg.android.core.model.AutomationRun
@@ -89,16 +76,22 @@ fun AutomationScreen(
     val selected = ui.selectedAutomation
     if (ui.editorOpen) AutomationEditorSheet(ui, viewModel)
     deleteTarget?.let { target ->
-        AlertDialog(onDismissRequest = { deleteTarget = null },
-            text = { Text(stringResource(R.string.aw_delete_confirm, target.name)) },
-            confirmButton = { TextButton(enabled = !ui.busy, onClick = { viewModel.delete(target); deleteTarget = null }) { Text(stringResource(R.string.aw_confirm)) } },
-            dismissButton = { TextButton(onClick = { deleteTarget = null }) { Text(stringResource(R.string.aw_cancel)) } })
+        CodegDialog(onDismiss = { deleteTarget = null },
+            title = stringResource(R.string.aw_delete),
+            content = { Text(stringResource(R.string.aw_delete_confirm, target.name)) },
+            footer = {
+                CodegButton(variant = CodegButtonVariant.Ghost, size = CodegButtonSize.Sm, onClick = { deleteTarget = null }) { Text(stringResource(R.string.aw_cancel)) }
+                CodegButton(variant = CodegButtonVariant.Destructive, size = CodegButtonSize.Sm, enabled = !ui.busy, onClick = { viewModel.delete(target); deleteTarget = null }) { Text(stringResource(R.string.aw_confirm)) }
+        })
     }
     cancelTarget?.let { target ->
-        AlertDialog(onDismissRequest = { cancelTarget = null },
-            text = { Text(stringResource(R.string.aw_cancel_confirm, target.id, selected?.name.orEmpty())) },
-            confirmButton = { TextButton(enabled = !ui.busy, onClick = { viewModel.cancelRun(target.id); cancelTarget = null }) { Text(stringResource(R.string.aw_confirm)) } },
-            dismissButton = { TextButton(onClick = { cancelTarget = null }) { Text(stringResource(R.string.aw_cancel)) } })
+        CodegDialog(onDismiss = { cancelTarget = null },
+            title = stringResource(R.string.aw_cancel_run),
+            content = { Text(stringResource(R.string.aw_cancel_confirm, target.id, selected?.name.orEmpty())) },
+            footer = {
+                CodegButton(variant = CodegButtonVariant.Ghost, size = CodegButtonSize.Sm, onClick = { cancelTarget = null }) { Text(stringResource(R.string.aw_cancel)) }
+                CodegButton(variant = CodegButtonVariant.Destructive, size = CodegButtonSize.Sm, enabled = !ui.busy, onClick = { viewModel.cancelRun(target.id); cancelTarget = null }) { Text(stringResource(R.string.aw_confirm)) }
+        })
     }
     BackHandler(enabled = selected != null) {
         viewModel.selectAutomation(null)
@@ -126,7 +119,7 @@ fun AutomationScreen(
                 },
                 actions = {
                     if (selected == null && ui.writesSupported) {
-                        TextButton(enabled = !ui.busy && !ui.loading, onClick = { viewModel.openEditor(null) }) { Text(stringResource(R.string.aw_create)) }
+                        CodegButton(variant = CodegButtonVariant.Default, size = CodegButtonSize.Sm, enabled = !ui.busy && !ui.loading, onClick = { viewModel.openEditor(null) }) { Text(stringResource(R.string.aw_create)) }
                     }
                     CodegIconButton(onClick = { viewModel.load() }) {
                         Icon(
@@ -160,9 +153,9 @@ fun AutomationScreen(
                             ui.error?.let { Text(it, color = colors.danger) }
                             if (ui.writesSupported) {
                                 Row {
-                                    TextButton(enabled = !ui.busy, onClick = { viewModel.openEditor(selected) }) { Text(stringResource(R.string.aw_edit)) }
-                                    TextButton(enabled = !ui.busy, onClick = { viewModel.runNow(selected.id) }) { Text(stringResource(R.string.aw_run)) }
-                                    TextButton(enabled = !ui.busy, onClick = { deleteTarget = selected }) { Text(stringResource(R.string.aw_delete)) }
+                                    CodegButton(variant = CodegButtonVariant.Ghost, size = CodegButtonSize.Sm, enabled = !ui.busy, onClick = { viewModel.openEditor(selected) }) { Text(stringResource(R.string.aw_edit)) }
+                                    CodegButton(variant = CodegButtonVariant.Ghost, size = CodegButtonSize.Sm, enabled = !ui.busy, onClick = { viewModel.runNow(selected.id) }) { Text(stringResource(R.string.aw_run)) }
+                                    CodegButton(variant = CodegButtonVariant.Destructive, size = CodegButtonSize.Sm, enabled = !ui.busy, onClick = { deleteTarget = selected }) { Text(stringResource(R.string.aw_delete)) }
                                 }
                             }
                         },
@@ -202,9 +195,9 @@ private fun AutomationListView(
             stringResource(R.string.automations_filter_enabled),
             stringResource(R.string.automations_filter_disabled),
         )
-        CodegSegmented(
-            options = filterOptions,
-            selectedIndex = ui.filter.ordinal,
+        CodegTabs(
+            tabs = filterOptions,
+            selected = ui.filter.ordinal,
             onSelect = { onFilterChanged(AutomationFilter.entries[it]) },
             modifier = Modifier
                 .fillMaxWidth()
@@ -261,27 +254,19 @@ private fun AutomationListItem(
 ) {
     val colors = CodegTheme.colors
 
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .webSurface(CodegShapes.small)
-            .clickable(onClick = onClick)
-            .padding(12.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
-    ) {
-        // Agent Icon with Status Dot overlay
-        Box(contentAlignment = Alignment.BottomEnd) {
+    CodegListRow(title = automation.name, subtitle = formatAutomationSubtitle(automation), onClick = onClick,
+        leading = {
+            Box(contentAlignment = Alignment.BottomEnd) {
             AgentIcon(
                 agent = automation.agentType,
                 size = 28.dp,
             )
             val dotColor = when {
-                !automation.enabled -> colors.textSecondary.copy(alpha = 0.4f)
-                automation.lastRunStatus == "running" -> Color(0xFFF59E0B)
-                automation.lastRunStatus == "succeeded" -> Color(0xFF10B981)
+                !automation.enabled -> colors.textSecondary.withOpacity(0.4f)
+                automation.lastRunStatus == "running" -> colors.textSecondary
+                automation.lastRunStatus == "succeeded" -> colors.accent
                 automation.lastRunStatus == "failed" -> colors.danger
-                else -> Color(0xFF10B981)
+                else -> colors.accent
             }
             Box(
                 modifier = Modifier
@@ -290,41 +275,14 @@ private fun AutomationListItem(
                     .background(dotColor)
             )
         }
-
-        Column(
-            modifier = Modifier.weight(1f),
-            verticalArrangement = Arrangement.spacedBy(2.dp),
-        ) {
-            Text(
-                automation.name,
-                fontSize = 14.sp,
-                fontWeight = FontWeight.Medium,
-                color = if (automation.enabled) colors.textPrimary else colors.textSecondary,
-                maxLines = 1,
-            )
-            val subtitle = formatAutomationSubtitle(automation)
-            if (subtitle.isNotEmpty()) {
-                Text(
-                    subtitle,
-                    fontSize = 12.sp,
-                    color = colors.textSecondary,
-                    maxLines = 1,
-                )
+        },
+        trailing = {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                CodegSwitch(checked = automation.enabled, onCheckedChange = { onToggle() })
+                Icon(Icons.AutoMirrored.Rounded.KeyboardArrowRight, contentDescription = null,
+                    tint = colors.textSecondary, modifier = Modifier.size(18.dp))
             }
-        }
-
-        Switch(
-            checked = automation.enabled,
-            onCheckedChange = { onToggle() },
-        )
-
-        Icon(
-            Icons.AutoMirrored.Rounded.KeyboardArrowRight,
-            contentDescription = null,
-            tint = colors.textSecondary,
-            modifier = Modifier.size(18.dp),
-        )
-    }
+        })
 }
 
 @Composable
@@ -348,177 +306,125 @@ private fun AutomationDetailView(
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         actions()
-        // Top card: Status & Switch
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .webSurface(CodegShapes.small)
-                .padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween,
-        ) {
-            Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                Text(
-                    automation.name,
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    color = colors.textPrimary,
-                )
-                Text(
-                    if (automation.enabled) stringResource(R.string.automations_enabled) else stringResource(R.string.automations_disabled),
-                    fontSize = 13.sp,
-                    color = if (automation.enabled) Color(0xFF10B981) else colors.textSecondary,
-                )
-            }
-            Switch(
-                checked = automation.enabled,
-                onCheckedChange = { onToggleEnabled() },
-            )
+        CodegCard {
+            CodegCardHeader(title = automation.name,
+                description = stringResource(if (automation.enabled) R.string.automations_enabled else R.string.automations_disabled),
+                action = { CodegSwitch(checked = automation.enabled, onCheckedChange = { onToggleEnabled() }) })
         }
 
         // Section: Schedule / Configuration
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .webSurface(CodegShapes.small)
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
-        ) {
-            Text(
-                stringResource(R.string.automations_section_schedule),
-                fontSize = 12.sp,
-                fontWeight = FontWeight.Medium,
-                color = colors.textSecondary,
-            )
+        CodegCard {
+            CodegCardContent {
+                Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                    CodegSectionHeader(title = stringResource(R.string.automations_section_schedule))
 
-            DetailRow(
-                icon = Icons.Rounded.Schedule,
-                label = stringResource(R.string.automations_trigger),
-                value = if (automation.triggerKind == TriggerKind.SCHEDULE && automation.cron != null) {
-                    stringResource(R.string.automations_trigger_schedule) + " (" + automation.cron + ")"
-                } else {
-                    stringResource(R.string.automations_trigger_manual)
-                },
-            )
+                    DetailRow(
+                        icon = Icons.Rounded.Schedule,
+                        label = stringResource(R.string.automations_trigger),
+                        value = if (automation.triggerKind == TriggerKind.SCHEDULE && automation.cron != null) {
+                            stringResource(R.string.automations_trigger_schedule) + " (" + automation.cron + ")"
+                        } else {
+                            stringResource(R.string.automations_trigger_manual)
+                        },
+                    )
 
-            DetailRow(
-                icon = Icons.Rounded.PlayArrow,
-                label = stringResource(R.string.automations_agent),
-                value = automation.agentType.displayName,
-            )
+                    DetailRow(
+                        icon = Icons.Rounded.PlayArrow,
+                        label = stringResource(R.string.automations_agent),
+                        value = automation.agentType.displayName,
+                    )
 
-            if (automation.isolation == IsolationMode.WORKTREE_PER_RUN) {
-                DetailRow(
-                    icon = Icons.Rounded.Layers,
-                    label = stringResource(R.string.automations_isolation),
-                    value = stringResource(R.string.automations_isolation_worktree),
-                )
-            } else {
-                DetailRow(
-                    icon = Icons.Rounded.Folder,
-                    label = stringResource(R.string.automations_isolation),
-                    value = stringResource(R.string.automations_isolation_shared) + (if (automation.branch != null) " (" + automation.branch + ")" else ""),
-                )
-            }
+                    if (automation.isolation == IsolationMode.WORKTREE_PER_RUN) {
+                        DetailRow(
+                            icon = Icons.Rounded.Layers,
+                            label = stringResource(R.string.automations_isolation),
+                            value = stringResource(R.string.automations_isolation_worktree),
+                        )
+                    } else {
+                        DetailRow(
+                            icon = Icons.Rounded.Folder,
+                            label = stringResource(R.string.automations_isolation),
+                            value = stringResource(R.string.automations_isolation_shared) + (if (automation.branch != null) " (" + automation.branch + ")" else ""),
+                        )
+                    }
 
-            if (automation.nextRunAt != null) {
-                DetailRow(
-                    icon = Icons.Rounded.CalendarToday,
-                    label = stringResource(R.string.automations_next_run),
-                    value = formatDateTime(automation.nextRunAt),
-                )
-            }
+                    if (automation.nextRunAt != null) {
+                        DetailRow(
+                            icon = Icons.Rounded.CalendarToday,
+                            label = stringResource(R.string.automations_next_run),
+                            value = formatDateTime(automation.nextRunAt),
+                        )
+                    }
 
-            if (automation.lastRunAt != null) {
-                DetailRow(
-                    icon = Icons.Rounded.History,
-                    label = stringResource(R.string.automations_last_run),
-                    value = RelativeTime.compact(automation.lastRunAt),
-                )
+                    if (automation.lastRunAt != null) {
+                        DetailRow(
+                            icon = Icons.Rounded.History,
+                            label = stringResource(R.string.automations_last_run),
+                            value = RelativeTime.compact(automation.lastRunAt),
+                        )
+                    }
+                }
             }
         }
 
         // Section: Prompt
         val prompt = automation.promptText
         if (prompt.isNotEmpty()) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .webSurface(CodegShapes.small)
-                    .padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-            ) {
-                Text(
-                    stringResource(R.string.automations_section_prompt),
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.Medium,
-                    color = colors.textSecondary,
-                )
-                Text(
-                    prompt,
-                    fontSize = 13.sp,
-                    lineHeight = 18.sp,
-                    color = colors.textPrimary,
-                )
+            CodegCard {
+                CodegCardContent {
+                    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                        CodegSectionHeader(title = stringResource(R.string.automations_section_prompt))
+                        Text(
+                            prompt,
+                            fontSize = 13.sp,
+                            lineHeight = 18.sp,
+                            color = colors.textPrimary,
+                        )
+                    }
+                }
             }
         }
 
         // Section: Run History
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .webSurface(CodegShapes.small)
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
-        ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween,
-            ) {
-                Text(
-                    stringResource(R.string.automations_section_runs),
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.Medium,
-                    color = colors.textSecondary,
-                )
-                CodegIconButton(onClick = onRefreshRuns) {
-                    Icon(
-                        Icons.Rounded.Refresh,
-                        contentDescription = stringResource(R.string.automations_refresh),
-                        modifier = Modifier.size(16.dp),
-                        tint = colors.textSecondary,
-                    )
-                }
-            }
-
-            if (detailLoading && runs.isEmpty()) {
-                Box(
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    CircularProgressIndicator(
-                        modifier = Modifier.size(24.dp),
-                        color = colors.accent,
-                    )
-                }
-            } else if (runs.isEmpty()) {
-                Text(
-                    stringResource(R.string.automations_no_runs),
-                    fontSize = 13.sp,
-                    color = colors.textSecondary,
-                )
-            } else {
-                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                    runs.forEachIndexed { index, run ->
-                        RunHistoryItem(run = run)
-                        if (canCancel && run.status == AutomationRunStatus.RUNNING) {
-                            TextButton(onClick = { onCancelRun(run) }) { Text(stringResource(R.string.aw_cancel_run)) }
+        CodegCard {
+            CodegCardContent {
+                Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                    CodegSectionHeader(title = stringResource(R.string.automations_section_runs), action = {
+                        CodegIconButton(onClick = onRefreshRuns) {
+                            Icon(Icons.Rounded.Refresh, contentDescription = stringResource(R.string.automations_refresh),
+                                modifier = Modifier.size(16.dp), tint = colors.textSecondary)
                         }
-                        if (index < runs.lastIndex) {
-                            HorizontalDivider(color = colors.hairline)
+                    })
+
+                    if (detailLoading && runs.isEmpty()) {
+                        Box(
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp),
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            CircularProgressIndicator(
+                                modifier = Modifier.size(24.dp),
+                                color = colors.accent,
+                            )
+                        }
+                    } else if (runs.isEmpty()) {
+                        Text(
+                            stringResource(R.string.automations_no_runs),
+                            fontSize = 13.sp,
+                            color = colors.textSecondary,
+                        )
+                    } else {
+                        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                            runs.forEachIndexed { index, run ->
+                                RunHistoryItem(run = run)
+                                if (canCancel && run.status == AutomationRunStatus.RUNNING) {
+                                    CodegButton(variant = CodegButtonVariant.Ghost, size = CodegButtonSize.Sm, onClick = { onCancelRun(run) }) { Text(stringResource(R.string.aw_cancel_run)) }
+                                }
+                                if (index < runs.lastIndex) {
+                                    CodegSeparator()
+                                }
+                            }
                         }
                     }
                 }
@@ -530,13 +436,6 @@ private fun AutomationDetailView(
 @Composable
 private fun RunHistoryItem(run: AutomationRun) {
     val colors = CodegTheme.colors
-
-    val statusColor = when (run.status) {
-        AutomationRunStatus.RUNNING -> Color(0xFFF59E0B)
-        AutomationRunStatus.SUCCEEDED -> Color(0xFF10B981)
-        AutomationRunStatus.FAILED -> colors.danger
-        AutomationRunStatus.CANCELLED, AutomationRunStatus.SKIPPED -> colors.textSecondary
-    }
 
     val statusLabel = when (run.status) {
         AutomationRunStatus.RUNNING -> stringResource(R.string.automations_status_running)
@@ -561,18 +460,11 @@ private fun RunHistoryItem(run: AutomationRun) {
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(6.dp),
             ) {
-                Box(
-                    modifier = Modifier
-                        .size(8.dp)
-                        .clip(CircleShape)
-                        .background(statusColor)
-                )
-                Text(
-                    statusLabel,
-                    fontSize = 13.sp,
-                    fontWeight = FontWeight.Medium,
-                    color = statusColor,
-                )
+                CodegBadge(text = statusLabel, variant = when (run.status) {
+                    AutomationRunStatus.FAILED -> CodegBadgeVariant.Destructive
+                    AutomationRunStatus.SUCCEEDED -> CodegBadgeVariant.Default
+                    else -> CodegBadgeVariant.Secondary
+                })
             }
             Text(
                 run.startedAt?.let { RelativeTime.compact(it) } ?: "—",
