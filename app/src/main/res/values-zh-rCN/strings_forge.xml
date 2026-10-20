@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="forge_title">Issues 与 PR</string>
+    <string name="forge_done">完成</string>
+    <string name="forge_token_hint">令牌相关错误请前往 设置 → 版本控制 配置。</string>
+    <string name="forge_issues">Issue</string>
+    <string name="forge_prs">PR</string>
+    <string name="forge_open">开启</string>
+    <string name="forge_closed">已关闭</string>
+    <string name="forge_merged">已合并</string>
+    <string name="forge_new">新建 Issue</string>
+    <string name="forge_incomplete">服务端返回了部分结果。</string>
+    <string name="forge_empty">暂无条目</string>
+    <string name="forge_previous">上一页</string>
+    <string name="forge_next">下一页</string>
+    <string name="forge_refresh">刷新</string>
+    <string name="forge_issue_title">标题</string>
+    <string name="forge_body">正文（可选）</string>
+    <string name="forge_create">创建</string>
+    <string name="forge_cancel">取消</string>
+    <string name="forge_back">返回列表</string>
+    <string name="forge_close_item">关闭条目</string>
+    <string name="forge_reopen">重新开启</string>
+    <string name="forge_existing">已有任务 #%1$d</string>
+    <string name="forge_task">创建任务</string>
+    <string name="forge_mismatch">项目远端已改变，请重新打开面板后再创建任务。</string>
+    <string name="forge_squash">压缩合并</string>
+    <string name="forge_rebase">变基合并</string>
+    <string name="forge_merge">合并 PR</string>
+    <string name="forge_no_patch">无可显示的文本补丁</string>
+    <string name="forge_more_files">加载更多文件</string>
+    <string name="forge_more_comments">加载更多评论</string>
+    <string name="forge_comment">评论</string>
+    <string name="forge_send">发送评论</string>
+    <string name="forge_confirm_target">%1$s #%2$d — %3$s\n%4$s</string>
+    <string name="forge_confirm">确认</string>
+</resources>
