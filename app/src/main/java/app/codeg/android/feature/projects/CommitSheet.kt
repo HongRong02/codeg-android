@@ -66,7 +66,6 @@ fun CommitSheet(
     val context = LocalContext.current
     val toaster = LocalCodegToaster.current
     val failureTitle = stringResource(R.string.t56_operation_failed)
-    val doneTitle = stringResource(R.string.t56_operation_completed)
     val colors = CodegTheme.colors
     val scope = rememberCoroutineScope()
 
@@ -105,7 +104,6 @@ fun CommitSheet(
             try {
                 viewModel.gitCommit(trimmedMessage, selected.toList())
                 committing = false
-                toaster.success(doneTitle)
                 onCommitted(push)
             } catch (e: CancellationException) {
                 throw e
