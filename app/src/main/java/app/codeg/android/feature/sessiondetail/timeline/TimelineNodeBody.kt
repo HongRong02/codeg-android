@@ -94,6 +94,7 @@ fun NodeBody(node: TimelineNode, modifier: Modifier = Modifier) {
         is NodeContent.Footer -> TurnFooter(c.turn, c.questionId, modifier)
         is NodeContent.Plan -> LivePlanView(c.entries, modifier)
         is NodeContent.Thinking -> ThinkingShimmer(modifier)
+        is NodeContent.Interrupted -> InlineTurnError(stringResource(R.string.interrupted_turn), modifier)
         is NodeContent.Error -> InlineTurnError(c.message, modifier)
         is NodeContent.Unsupported -> Text(
             stringResource(R.string.timeline_unsupported_block, c.type),

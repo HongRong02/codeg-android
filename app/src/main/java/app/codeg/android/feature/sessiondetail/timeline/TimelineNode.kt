@@ -41,6 +41,7 @@ sealed interface NodeContent {
     data class Compaction(val before: Int?, val after: Int?, val running: Boolean) : NodeContent
     data class Footer(val turn: MessageTurn, val questionId: String?) : NodeContent
     data class Plan(val entries: List<PlanEntry>) : NodeContent
+    data object Interrupted : NodeContent
     data object Thinking : NodeContent
     data class Error(val message: String) : NodeContent
     data class Unsupported(val type: String) : NodeContent
@@ -74,6 +75,7 @@ data class TimelineNode(
             is NodeContent.Footer -> MarkerKind.Footer
             is NodeContent.Plan -> MarkerKind.Plan
             is NodeContent.Thinking -> MarkerKind.Thinking
+            is NodeContent.Interrupted -> MarkerKind.Error
             is NodeContent.Error -> MarkerKind.Error
             is NodeContent.Unsupported -> MarkerKind.System // reuse the dim system tick
         }
@@ -102,6 +104,7 @@ data class TimelineNode(
             is NodeContent.Footer -> "footer"
             is NodeContent.Plan -> "plan"
             is NodeContent.Thinking -> "thinking"
+            is NodeContent.Interrupted -> "error"
             is NodeContent.Error -> "error"
             is NodeContent.Unsupported -> "unsupported"
         }
@@ -134,8 +137,9 @@ object TranscriptTimeline {
         live: LiveTurnState?,
         agent: AgentType,
         hideTrailingAssistantReply: Boolean = false,
+        interruptedTurnIds: Set<String> = emptySet(),
     ): List<TimelineNode> =
-        withLive(buildPersisted(turns, pending, agent, hideTrailingAssistantReply), live, agent)
+        withLive(buildPersisted(turns, pending, agent, hideTrailingAssistantReply, interruptedTurnIds), live, agent)
 
     /**
      * The persisted + optimistic-pending nodes, with the rail NOT yet terminated.
@@ -153,6 +157,7 @@ object TranscriptTimeline {
         pending: List<MessageTurn>,
         agent: AgentType,
         hideTrailingAssistantReply: Boolean = false,
+        interruptedTurnIds: Set<String> = emptySet(),
     ): List<TimelineNode> {
         val source = if (hideTrailingAssistantReply) turns.dropTrailingAssistantRun() else turns
         val nodes = mutableListOf<TimelineNode>()
@@ -177,6 +182,9 @@ object TranscriptTimeline {
                     while (j < source.size && source[j].role == TurnRole.ASSISTANT) j++
                     val merged = merge(source.subList(i, j))
                     nodes.addAll(assistantNodes(merged, lastUserId, agent))
+                    if (source.subList(i, j).any { it.id in interruptedTurnIds }) {
+                        nodes.add(TimelineNode("${merged.id}#interrupted", NodeContent.Interrupted, agent))
+                    }
                     i = j
                 }
             }
