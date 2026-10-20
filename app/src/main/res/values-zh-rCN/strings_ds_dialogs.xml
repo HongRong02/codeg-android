@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ds_dialogs_cancel">取消</string>
+    <string name="ds_dialogs_close">关闭</string>
+    <string name="ds_dialogs_confirm">确认</string>
+    <string name="ds_dialogs_title">检查更改</string>
+    <string name="ds_dialogs_description">请在继续前检查此操作。</string>
+    <string name="ds_dialogs_message">此操作将影响下方显示的目标。</string>
+    <string name="ds_dialogs_target">task/example</string>
+    <string name="ds_dialogs_dialog">对话框</string>
+    <string name="ds_dialogs_destructive">危险操作确认</string>
+    <string name="ds_dialogs_sheet">底部抽屉</string>
+    <string name="ds_dialogs_full">全屏面板</string>
+    <string name="ds_dialogs_input">输入内容</string>
+</resources>

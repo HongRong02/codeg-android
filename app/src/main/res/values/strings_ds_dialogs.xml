@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ds_dialogs_cancel">Cancel</string>
+    <string name="ds_dialogs_close">Close</string>
+    <string name="ds_dialogs_confirm">Confirm</string>
+    <string name="ds_dialogs_title">Review changes</string>
+    <string name="ds_dialogs_description">Review the operation before continuing.</string>
+    <string name="ds_dialogs_message">This operation affects the target shown below.</string>
+    <string name="ds_dialogs_target">task/example</string>
+    <string name="ds_dialogs_dialog">Dialog</string>
+    <string name="ds_dialogs_destructive">Destructive confirmation</string>
+    <string name="ds_dialogs_sheet">Bottom sheet</string>
+    <string name="ds_dialogs_full">Full screen sheet</string>
+    <string name="ds_dialogs_input">Enter a value</string>
+</resources>

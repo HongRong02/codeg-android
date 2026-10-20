@@ -59,6 +59,18 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 156 |   `val colors` |
 | 157 |   `val web` |
 
+## core/designsystem/component/Cards.kt
+
+| Line | Declaration |
+|---|---|
+| 22 | `@Composable fun CodegCard(modifier: Modifier = Modifier, content: @Composable ColumnScope.() -> Unit)` |
+| 34 | `@Composable fun CodegCardHeader( title: String, description: String? = null, action: @Composable RowScope.() -> Unit = {}, )` |
+| 49 | `@Composable fun CodegCardContent(modifier: Modifier = Modifier, content: @Composable ColumnScope.() -> Unit)` |
+| 54 | `@Composable fun CodegCardFooter(modifier: Modifier = Modifier, content: @Composable RowScope.() -> Unit)` |
+| 59 | `@Composable internal fun T44CardsGallery()` |
+| 71 | `@Composable private fun CardsLightPreview()` |
+| 75 | `@Composable private fun CardsDarkPreview()` |
+
 ## core/designsystem/component/CodeBlock.kt
 
 | Line | Declaration |
@@ -74,6 +86,26 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 120 |   `val clipboard` |
 | 121 |   `val colors` |
 | 122 |   `var copied by remember` |
+
+## core/designsystem/component/Dialogs.kt
+
+| Line | Declaration |
+|---|---|
+| 31 | `@Composable fun CodegDialog( title: String, description: String? = null, onDismiss: () -> Unit, footer: @Composable RowScope.() -> Unit = {}, content: @Composable ColumnScope.() -> Unit = {}, )` |
+| 69 | `@Composable internal fun T44PanelHeading(title: String, description: String?)` |
+| 78 | `@Composable fun CodegConfirmDialog( title: String, message: String, target: String, confirmLabel: String, destructive: Boolean = false, onConfirm: () -> Unit, onDismiss: () -> Unit, )` |
+| 87 |   `val web` |
+| 101 | `@Composable internal fun T44Gallery()` |
+| 102 |   `var panel by remember` |
+| 103 |   `val title` |
+| 104 |   `val description` |
+| 105 |   `val confirm` |
+| 114 |   `val dismiss` |
+| 132 | `@Composable private fun DialogLightPreview()` |
+| 138 | `@Composable private fun DialogDarkPreview()` |
+| 144 | `@Composable private fun ConfirmLightPreview()` |
+| 147 | `@Composable private fun ConfirmDarkPreview()` |
+| 149 | `@Composable private fun T44ConfirmPreview()` |
 
 ## core/designsystem/component/FileViewer.kt
 
@@ -102,6 +134,22 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 75 |   `val shape` |
 | 76 |   `val fill` |
 | 77 |   `val stroke` |
+
+## core/designsystem/component/Sheets.kt
+
+| Line | Declaration |
+|---|---|
+| 29 | `@Composable fun CodegSheet( title: String, description: String? = null, onDismiss: () -> Unit, footer: @Composable ColumnScope.() -> Unit = {}, content: @Composable ColumnScope.() -> Unit, )` |
+| 36 |   `val web` |
+| 66 | `@Composable fun CodegFullScreenSheet( title: String, onDismiss: () -> Unit, actions: @Composable RowScope.() -> Unit = {}, content: @Composable ColumnScope.() -> Unit, )` |
+| 92 | `@Composable internal fun T44SheetSampleContent()` |
+| 93 |   `var value by remember` |
+| 100 | `@Composable private fun SheetLightPreview()` |
+| 103 | `@Composable private fun SheetDarkPreview()` |
+| 105 | `@Composable private fun T44SheetPreview()` |
+| 113 | `@Composable private fun FullSheetLightPreview()` |
+| 116 | `@Composable private fun FullSheetDarkPreview()` |
+| 118 | `@Composable private fun T44FullSheetPreview()` |
 
 ## core/designsystem/component/StateViews.kt
 
