@@ -20,6 +20,13 @@ import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
+import androidx.compose.foundation.interaction.collectIsFocusedAsState
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.draw.alpha
+import app.codeg.android.core.designsystem.theme.CodegShapes
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -35,11 +42,64 @@ import app.codeg.android.core.designsystem.theme.CodegTheme
 import app.codeg.android.core.designsystem.theme.PillShape
 import app.codeg.android.core.designsystem.theme.withOpacity
 
-/**
- * Full-width primary button, matching the web `Button` (default variant):
- * `--primary` fill, pill shape, medium-weight label, 50% opacity when disabled.
- * Shows a spinner while [loading] and disables itself.
- */
+enum class CodegButtonVariant { Default, Secondary, Outline, Ghost, Destructive, Link }
+enum class CodegButtonSize { Default, Sm, Lg, Icon }
+
+@Composable
+fun CodegButton(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    variant: CodegButtonVariant = CodegButtonVariant.Default,
+    size: CodegButtonSize = CodegButtonSize.Default,
+    enabled: Boolean = true,
+    loading: Boolean = false,
+    leadingIcon: (@Composable () -> Unit)? = null,
+    content: @Composable androidx.compose.foundation.layout.RowScope.() -> Unit,
+) {
+    val colors = CodegTheme.colors
+    val web = colors.web
+    val source = remember { MutableInteractionSource() }
+    val pressed by source.collectIsPressedAsState()
+    val focused by source.collectIsFocusedAsState()
+    val background = when (variant) {
+        CodegButtonVariant.Default -> web.primary
+        CodegButtonVariant.Secondary -> web.secondary
+        CodegButtonVariant.Outline -> if (colors.isDark) web.input.withOpacity(.30f) else web.background
+        CodegButtonVariant.Destructive -> web.destructive.withOpacity(if (colors.isDark) .60f else 1f)
+        CodegButtonVariant.Ghost -> if (pressed) web.accent else Color.Transparent
+        CodegButtonVariant.Link -> Color.Transparent
+    }
+    val foreground = when (variant) {
+        CodegButtonVariant.Default, CodegButtonVariant.Destructive -> web.primaryForeground
+        CodegButtonVariant.Secondary -> web.secondaryForeground
+        CodegButtonVariant.Link -> web.primary
+        else -> web.foreground
+    }
+    val shape = CodegShapes.extraSmall
+    val height = when (size) { CodegButtonSize.Sm -> 32.dp; CodegButtonSize.Lg -> 40.dp; else -> 36.dp }
+    val inset = when (size) { CodegButtonSize.Sm -> 12.dp; CodegButtonSize.Lg -> 24.dp; CodegButtonSize.Icon -> 0.dp; else -> 16.dp }
+    androidx.compose.material3.ProvideTextStyle(androidx.compose.ui.text.TextStyle(
+        fontSize = 14.sp, fontWeight = FontWeight.Medium,
+        textDecoration = if (variant == CodegButtonVariant.Link) androidx.compose.ui.text.style.TextDecoration.Underline else null,
+    )) {
+        androidx.compose.runtime.CompositionLocalProvider(androidx.compose.material3.LocalContentColor provides foreground) {
+            Row(modifier.alpha(if (enabled) 1f else .5f)
+                .then(if (size == CodegButtonSize.Icon) Modifier.size(height) else Modifier.heightIn(min = height))
+                .clip(shape).background(background)
+                .then(if (focused || variant == CodegButtonVariant.Outline) Modifier.border(1.dp, if (focused) web.ring else web.input, shape) else Modifier)
+                .clickable(enabled = enabled && !loading, role = Role.Button, interactionSource = source, indication = null, onClick = onClick)
+                .padding(horizontal = inset, vertical = 6.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
+            ) {
+                if (loading) CircularProgressIndicator(Modifier.size(16.dp), color = foreground, strokeWidth = 2.dp)
+                else leadingIcon?.invoke()
+                content()
+            }
+        }
+    }
+}
+
 @Composable
 fun PrimaryButton(
     text: String,
@@ -49,38 +109,8 @@ fun PrimaryButton(
     loading: Boolean = false,
     icon: ImageVector? = null,
 ) {
-    val colors = CodegTheme.colors
-    Button(
-        onClick = onClick,
-        enabled = enabled && !loading,
-        modifier = modifier.fillMaxWidth().heightIn(min = 40.dp),
-        shape = PillShape,
-        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
-        colors = ButtonDefaults.buttonColors(
-            containerColor = colors.accent,
-            contentColor = colors.onAccent,
-            disabledContainerColor = colors.accent.copy(alpha = 0.50f),
-            disabledContentColor = colors.onAccent.copy(alpha = 0.50f),
-        ),
-    ) {
-        if (loading) {
-            CircularProgressIndicator(
-                modifier = Modifier.size(16.dp),
-                color = colors.onAccent,
-                strokeWidth = 2.dp,
-            )
-        } else {
-            if (icon != null) {
-                Icon(icon, contentDescription = null, modifier = Modifier.size(16.dp))
-            }
-            Text(
-                text = text,
-                fontSize = 14.sp,
-                fontWeight = FontWeight.Medium,
-                modifier = Modifier.padding(start = if (icon != null) 8.dp else 0.dp),
-            )
-        }
-    }
+    CodegButton(onClick, modifier.fillMaxWidth(), enabled = enabled, loading = loading,
+        leadingIcon = icon?.let { { Icon(it, null, Modifier.size(16.dp)) } }) { Text(text) }
 }
 
 /**
@@ -179,4 +209,24 @@ fun CodegFilterChip(
             selectedBorderColor = colors.surfaceStroke,
         ),
     )
+}
+
+@androidx.compose.ui.tooling.preview.Preview(name = "Button Light", showBackground = true)
+@androidx.compose.ui.tooling.preview.Preview(name = "Button Dark", showBackground = true, uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES)
+@Composable
+private fun ButtonPreview() {
+    CodegTheme {
+        val label = androidx.compose.ui.res.stringResource(app.codeg.android.R.string.ds_controls_example)
+        CodegButton({}) { Text(label) }
+    }
+}
+
+@androidx.compose.ui.tooling.preview.Preview(name = "PrimaryButton Light", showBackground = true)
+@androidx.compose.ui.tooling.preview.Preview(name = "PrimaryButton Dark", showBackground = true, uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES)
+@Composable
+private fun PrimaryButtonPreview() {
+    CodegTheme {
+        val label = androidx.compose.ui.res.stringResource(app.codeg.android.R.string.ds_controls_example)
+        PrimaryButton(label, {})
+    }
 }

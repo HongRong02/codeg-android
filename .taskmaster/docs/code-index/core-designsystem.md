@@ -48,16 +48,30 @@ Source root: `app/src/main/java/app/codeg/android/`
 
 | Line | Declaration |
 |---|---|
-| 44 | `@Composable fun PrimaryButton( text: String, onClick: () -> Unit, modifier: Modifier = Modifier, enabled: Boolean = true, loading: Boolean = false, icon: ImageVector? = null, )` |
-| 52 |   `val colors` |
-| 92 | `@Composable fun CodegSegmented( options: List<String>, selectedIndex: Int, onSelect: (Int) -> Unit, modifier: Modifier = Modifier, )` |
-| 98 |   `val colors` |
-| 99 |   `val web` |
-| 100 |   `val track` |
-| 101 |   `val tab` |
-| 148 | `@Composable fun CodegFilterChip( label: String, selected: Boolean, onClick: () -> Unit, modifier: Modifier = Modifier, icon: ImageVector? = null, enabled: Boolean = true, )` |
-| 156 |   `val colors` |
-| 157 |   `val web` |
+| 45 | `enum class CodegButtonVariant` |
+| 46 | `enum class CodegButtonSize` |
+| 49 | `@Composable fun CodegButton( onClick: () -> Unit, modifier: Modifier = Modifier, variant: CodegButtonVariant = CodegButtonVariant.Default, size: CodegButtonSize = CodegButtonSize.Default, enabled: Boolean = true, loading: Boolean = false, leadingIcon: (@Composable () -> Unit)? = null, content: @Composable androidx.compose.foundation.layout.RowScope.() -> Unit, )` |
+| 59 |   `val colors` |
+| 60 |   `val web` |
+| 61 |   `val source` |
+| 62 |   `val pressed by source.collectIsPressedAsState()` |
+| 63 |   `val focused by source.collectIsFocusedAsState()` |
+| 64 |   `val background` |
+| 72 |   `val foreground` |
+| 78 |   `val shape` |
+| 79 |   `val height` |
+| 80 |   `val inset` |
+| 104 | `@Composable fun PrimaryButton( text: String, onClick: () -> Unit, modifier: Modifier = Modifier, enabled: Boolean = true, loading: Boolean = false, icon: ImageVector? = null, )` |
+| 122 | `@Composable fun CodegSegmented( options: List<String>, selectedIndex: Int, onSelect: (Int) -> Unit, modifier: Modifier = Modifier, )` |
+| 128 |   `val colors` |
+| 129 |   `val web` |
+| 130 |   `val track` |
+| 131 |   `val tab` |
+| 178 | `@Composable fun CodegFilterChip( label: String, selected: Boolean, onClick: () -> Unit, modifier: Modifier = Modifier, icon: ImageVector? = null, enabled: Boolean = true, )` |
+| 186 |   `val colors` |
+| 187 |   `val web` |
+| 217 | `@Composable private fun ButtonPreview()` |
+| 227 | `@Composable private fun PrimaryButtonPreview()` |
 
 ## core/designsystem/component/CodeBlock.kt
 
@@ -74,6 +88,36 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 120 |   `val clipboard` |
 | 121 |   `val colors` |
 | 122 |   `var copied by remember` |
+
+## core/designsystem/component/Controls.kt
+
+| Line | Declaration |
+|---|---|
+| 34 | `@Composable fun CodegSelect(label: String, value: String, options: List<String>, onSelect: (String) -> Unit, modifier: Modifier = Modifier, enabled: Boolean = true, )` |
+| 39 | `@Composable fun CodegCombobox(label: String, value: String, options: List<String>, onSelect: (String) -> Unit, modifier: Modifier = Modifier, enabled: Boolean = true, )` |
+| 45 | `@Composable private fun ChoiceControl(label: String, value: String, options: List<String>, onSelect: (String) -> Unit, modifier: Modifier, enabled: Boolean, searchable: Boolean, )` |
+| 48 |   `var expanded by remember` |
+| 49 |   `var query by remember` |
+| 50 |   `val web` |
+| 83 | `@Composable fun CodegRadioGroup(options: List<String>, value: String, onSelect: (String) -> Unit, modifier: Modifier = Modifier, enabled: Boolean = true, )` |
+| 86 |   `val web` |
+| 102 | `@Composable fun CodegCheckbox(checked: Boolean, onCheckedChange: (Boolean) -> Unit, modifier: Modifier = Modifier, enabled: Boolean = true, label: String? = null, )` |
+| 105 |   `val web` |
+| 106 |   `val shape` |
+| 119 | `@Composable fun CodegSwitch(checked: Boolean, onCheckedChange: (Boolean) -> Unit, modifier: Modifier = Modifier, enabled: Boolean = true, label: String? = null, )` |
+| 122 |   `val web` |
+| 136 | `@Composable internal fun T45Gallery()` |
+| 137 |   `val example` |
+| 138 |   `val options` |
+| 139 |   `var value by remember` |
+| 140 |   `var text by remember` |
+| 141 |   `var checked by remember` |
+| 179 | `@Composable private fun T45Preview()` |
+| 184 | `@Composable private fun SelectPreview()` |
+| 194 | `@Composable private fun ComboboxPreview()` |
+| 204 | `@Composable private fun RadioGroupPreview()` |
+| 214 | `@Composable private fun CheckboxPreview()` |
+| 224 | `@Composable private fun SwitchPreview()` |
 
 ## core/designsystem/component/FileViewer.kt
 
@@ -174,13 +218,18 @@ Source root: `app/src/main/java/app/codeg/android/`
 
 | Line | Declaration |
 |---|---|
-| 36 | `@Composable fun CodegTextField( value: String, onValueChange: (String) -> Unit, label: String, modifier: Modifier = Modifier, placeholder: String? = null, keyboardType: KeyboardType = KeyboardType.Text, mono: Boolean = false, singleLine: Boolean = true, )` |
-| 46 |   `val colors` |
-| 63 | `@Composable fun SecretField( value: String, onValueChange: (String) -> Unit, label: String, modifier: Modifier = Modifier, )` |
-| 69 |   `var visible by remember` |
-| 94 | `@Composable private fun fieldColors(): TextFieldColors` |
-| 95 |   `val colors` |
-| 96 |   `val web` |
+| 45 | `@Composable fun CodegTextField( value: String, onValueChange: (String) -> Unit, label: String, modifier: Modifier = Modifier, placeholder: String? = null, keyboardType: KeyboardType = KeyboardType.Text, mono: Boolean = false, singleLine: Boolean = true, isError: Boolean = false, supportingText: String? = null, )` |
+| 57 |   `val colors` |
+| 76 | `@Composable fun SecretField( value: String, onValueChange: (String) -> Unit, label: String, modifier: Modifier = Modifier, )` |
+| 82 |   `var visible by remember` |
+| 107 | `@Composable private fun fieldColors(): TextFieldColors` |
+| 108 |   `val colors` |
+| 109 |   `val web` |
+| 127 | `@Composable fun CodegField( label: String, description: String? = null, error: String? = null, modifier: Modifier = Modifier, content: @Composable () -> Unit, )` |
+| 134 |   `val web` |
+| 146 | `@Composable private fun TextFieldPreview()` |
+| 156 | `@Composable private fun FieldPreview()` |
+| 166 | `@Composable private fun SecretFieldPreview()` |
 
 ## core/designsystem/component/TopBar.kt
 
