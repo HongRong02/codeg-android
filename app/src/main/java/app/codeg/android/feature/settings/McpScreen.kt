@@ -29,11 +29,8 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -55,11 +52,15 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import app.codeg.android.core.designsystem.component.CodegTopBar
+import app.codeg.android.core.designsystem.component.CodegIconButton
 import app.codeg.android.R
 import app.codeg.android.core.designsystem.component.CodegFilterChip
 import app.codeg.android.core.designsystem.component.CodegTextField
 import app.codeg.android.core.designsystem.component.EmptyState
 import app.codeg.android.core.designsystem.component.LoadingView
+import app.codeg.android.core.designsystem.theme.CodegShapes
+import app.codeg.android.core.designsystem.theme.withOpacity
 import app.codeg.android.core.designsystem.theme.CodegTheme
 import app.codeg.android.core.model.AgentType
 import app.codeg.android.core.model.LocalMcpServer
@@ -112,12 +113,12 @@ private fun McpRow(s: LocalMcpServer, onEdit: () -> Unit, onDelete: () -> Unit) 
     var menu by remember { mutableStateOf(false) }
     Box {
         Column(
-            Modifier.fillMaxWidth().webSurface(RoundedCornerShape(CodegTheme.dimens.radiusMd))
+            Modifier.fillMaxWidth().webSurface(CodegShapes.extraSmall)
                 .combinedClickable(onClick = onEdit, onLongClick = { menu = true }).padding(14.dp),
             verticalArrangement = Arrangement.spacedBy(3.dp),
         ) {
-            Text(s.id, fontSize = 15.sp, color = colors.textPrimary, maxLines = 1, overflow = TextOverflow.Ellipsis)
-            Text(s.spec.toString(), fontFamily = FontFamily.Monospace, fontSize = 11.sp, color = colors.textTertiary, maxLines = 1, overflow = TextOverflow.Ellipsis)
+            Text(s.id, fontSize = 14.sp, color = colors.textPrimary, maxLines = 1, overflow = TextOverflow.Ellipsis)
+            Text(s.spec.toString(), fontFamily = FontFamily.Monospace, fontSize = 11.sp, color = colors.web.mutedForeground, maxLines = 1, overflow = TextOverflow.Ellipsis)
             if (s.apps.isNotEmpty()) Text(s.apps.joinToString(", "), fontSize = 11.sp, color = colors.accent)
         }
         DropdownMenu(expanded = menu, onDismissRequest = { menu = false }) {
@@ -141,19 +142,19 @@ private fun McpEditor(
 
     Dialog(onDismissRequest = onDismiss, properties = DialogProperties(usePlatformDefaultWidth = false)) {
         Column(Modifier.fillMaxSize().background(colors.bg).windowInsetsPadding(WindowInsets.safeDrawing)) {
-            TopAppBar(
-                title = { Text(if (existing == null) stringResource(R.string.mcp_new_title) else stringResource(R.string.mcp_edit_title), maxLines = 1, overflow = TextOverflow.Ellipsis) },
+            CodegTopBar(
+                title = if (existing == null) stringResource(R.string.mcp_new_title) else stringResource(R.string.mcp_edit_title),
                 navigationIcon = {
-                    IconButton(onClick = onDismiss) { Icon(Icons.Rounded.Close, contentDescription = stringResource(R.string.mcp_close_cd), tint = colors.textPrimary) }
+                    CodegIconButton(onClick = onDismiss) { Icon(Icons.Rounded.Close, contentDescription = stringResource(R.string.mcp_close_cd)) }
                 },
                 actions = {
                     TextButton(onClick = { onSave(id, spec, apps.toList()) { error = it } }, enabled = id.isNotBlank()) {
-                        Text(stringResource(R.string.common_save), fontWeight = FontWeight.SemiBold, color = if (id.isNotBlank()) colors.accent else colors.textTertiary)
+                        Text(stringResource(R.string.common_save), fontWeight = FontWeight.SemiBold, color = if (id.isNotBlank()) colors.accent else colors.web.mutedForeground)
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent, titleContentColor = colors.textPrimary),
+                showDivider = true,
             )
-            Column(Modifier.weight(1f).verticalScroll(rememberScrollState()).padding(horizontal = 16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            Column(Modifier.weight(1f).verticalScroll(rememberScrollState()).padding(horizontal = 16.dp, vertical = 12.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 CodegTextField(id, { id = it }, label = stringResource(R.string.mcp_server_id), mono = true)
                 CodegTextField(spec, { spec = it }, label = stringResource(R.string.mcp_spec_json), mono = true, singleLine = false)
                 Text(stringResource(R.string.mcp_enabled_for), fontSize = 13.sp, fontWeight = FontWeight.SemiBold, color = colors.textSecondary)

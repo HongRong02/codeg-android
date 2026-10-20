@@ -41,6 +41,8 @@ import app.codeg.android.core.designsystem.component.CodegSegmented
 import app.codeg.android.core.designsystem.component.CodegTextField
 import app.codeg.android.core.designsystem.component.PrimaryButton
 import app.codeg.android.core.designsystem.component.SecretField
+import app.codeg.android.core.designsystem.theme.CodegShapes
+import app.codeg.android.core.designsystem.theme.withOpacity
 import app.codeg.android.core.designsystem.theme.CodegTheme
 import app.codeg.android.core.model.AcpAgentInfo
 import app.codeg.android.core.model.PI_CUSTOM_PROVIDER_SENTINEL
@@ -58,7 +60,6 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-private val SuccessGreen = Color(0xFF4CBC75)
 
 private data class PiBanner(val text: String, val isError: Boolean)
 
@@ -297,7 +298,7 @@ fun AgentConfigPiView(agent: AcpAgentInfo, viewModel: AgentsViewModel) {
                                     fontSize = 14.sp, color = colors.textPrimary,
                                 )
                                 status.resolvedPath?.takeIf { it.isNotEmpty() }?.let {
-                                    Text(it, fontFamily = FontFamily.Monospace, fontSize = 11.sp, color = colors.textTertiary, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                                    Text(it, fontFamily = FontFamily.Monospace, fontSize = 11.sp, color = colors.web.mutedForeground, maxLines = 1, overflow = TextOverflow.Ellipsis)
                                 }
                             }
                             else -> Text(stringResource(R.string.agents_pi_not_installed), fontSize = 14.sp, color = colors.textSecondary)
@@ -331,7 +332,7 @@ fun AgentConfigPiView(agent: AcpAgentInfo, viewModel: AgentsViewModel) {
                 ExpandableGroup(stringResource(R.string.agents_pi_advanced)) {
                     CodegTextField(configDir, { configDir = it }, stringResource(R.string.agents_pi_config_dir), placeholder = "~/.pi/agent", mono = true)
                     if (configDir.trim().isNotEmpty()) {
-                        Text(stringResource(R.string.agents_pi_config_dir_warning), fontSize = 11.sp, color = Color(0xFFF0A030))
+                        Text(stringResource(R.string.agents_pi_config_dir_warning), fontSize = 11.sp, color = colors.web.mutedForeground)
                     }
                     CodegTextField(sessionDir, { sessionDir = it }, stringResource(R.string.agents_pi_session_dir), placeholder = "~/.pi/agent/sessions", mono = true)
                     Caption(stringResource(R.string.agents_pi_dirs_caption))
@@ -397,7 +398,7 @@ fun AgentConfigPiView(agent: AcpAgentInfo, viewModel: AgentsViewModel) {
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                 Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
                     Text(stringResource(R.string.agents_pi_trust_title), fontSize = 14.sp, color = colors.textPrimary)
-                    Text(stringResource(R.string.agents_pi_trust_desc), fontSize = 11.sp, color = colors.textTertiary)
+                    Text(stringResource(R.string.agents_pi_trust_desc), fontSize = 11.sp, color = colors.web.mutedForeground)
                 }
                 Switch(
                     checked = trustWorkspace,
@@ -425,9 +426,9 @@ private fun PiActionButton(text: String, busy: Boolean, enabled: Boolean, onClic
 @Composable
 private fun PiResultBanner(banner: PiBanner) {
     val colors = CodegTheme.colors
-    val tint = if (banner.isError) colors.danger else SuccessGreen
+    val tint = if (banner.isError) colors.danger else colors.accent
     Row(
-        Modifier.fillMaxWidth().clip(RoundedCornerShape(14.dp)).background(tint.copy(alpha = 0.12f)).padding(12.dp),
+        Modifier.fillMaxWidth().clip(CodegShapes.extraSmall).background(tint.withOpacity(0.12f)).padding(12.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         Icon(if (banner.isError) Icons.Rounded.ErrorOutline else Icons.Rounded.CheckCircle, contentDescription = null, tint = tint, modifier = Modifier.size(16.dp))

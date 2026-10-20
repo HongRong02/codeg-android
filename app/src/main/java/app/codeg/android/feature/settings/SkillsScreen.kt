@@ -38,11 +38,8 @@ import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -64,6 +61,8 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import app.codeg.android.core.designsystem.component.CodegTopBar
+import app.codeg.android.core.designsystem.component.CodegIconButton
 import app.codeg.android.R
 import app.codeg.android.core.designsystem.component.AgentIcon
 import app.codeg.android.core.designsystem.component.CodegTextField
@@ -71,6 +70,8 @@ import app.codeg.android.core.designsystem.component.EmptyState
 import app.codeg.android.core.designsystem.component.InlineError
 import app.codeg.android.core.designsystem.component.LoadingView
 import app.codeg.android.core.designsystem.markdown.MarkdownContent
+import app.codeg.android.core.designsystem.theme.CodegShapes
+import app.codeg.android.core.designsystem.theme.withOpacity
 import app.codeg.android.core.designsystem.theme.CodegTheme
 import app.codeg.android.core.model.AgentSkillItem
 import app.codeg.android.core.model.AgentType
@@ -173,7 +174,7 @@ private fun AgentFilterBar(agents: List<AgentType>, selected: AgentType?, onSele
                 leadingIcon = { AgentIcon(agent, size = 18.dp) },
                 colors = FilterChipDefaults.filterChipColors(
                     labelColor = colors.textSecondary,
-                    selectedContainerColor = colors.accent.copy(alpha = 0.18f),
+                    selectedContainerColor = colors.accent.withOpacity(0.18f),
                     selectedLabelColor = colors.accent,
                 ),
                 border = FilterChipDefaults.filterChipBorder(
@@ -226,7 +227,7 @@ private fun SkillsArea(
                 item("h-$scope") {
                     Text(
                         "${scope.uppercase()} · ${rows.size}",
-                        fontSize = 11.sp, fontWeight = FontWeight.SemiBold, color = colors.textTertiary,
+                        fontSize = 11.sp, fontWeight = FontWeight.SemiBold, color = colors.web.mutedForeground,
                         modifier = Modifier.padding(start = 4.dp, top = 6.dp),
                     )
                 }
@@ -244,26 +245,26 @@ private fun SkillRow(skill: AgentSkillItem, onClick: () -> Unit, onDelete: () ->
     val colors = CodegTheme.colors
     val isDir = skill.layout == "skill_directory"
     Column(
-        Modifier.fillMaxWidth().webSurface(RoundedCornerShape(CodegTheme.dimens.radiusLg))
+        Modifier.fillMaxWidth().webSurface(CodegShapes.extraSmall)
             .combinedClickable(onClick = onClick, onLongClick = { if (!skill.readOnly) onDelete() }).padding(14.dp),
         verticalArrangement = Arrangement.spacedBy(5.dp),
     ) {
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(7.dp)) {
             Icon(if (isDir) Icons.Rounded.Folder else Icons.Rounded.Description, null, tint = colors.accent, modifier = Modifier.size(15.dp))
-            Text(skill.name.ifEmpty { skill.id }, fontSize = 15.sp, fontWeight = FontWeight.SemiBold, color = colors.textPrimary, maxLines = 1, overflow = TextOverflow.Ellipsis, modifier = Modifier.weight(1f, fill = false))
+            Text(skill.name.ifEmpty { skill.id }, fontSize = 14.sp, fontWeight = FontWeight.SemiBold, color = colors.textPrimary, maxLines = 1, overflow = TextOverflow.Ellipsis, modifier = Modifier.weight(1f, fill = false))
             if (skill.readOnly) {
-                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(2.dp), modifier = Modifier.clip(RoundedCornerShape(50)).background(colors.textPrimary.copy(alpha = 0.06f)).padding(horizontal = 6.dp, vertical = 2.dp)) {
-                    Icon(Icons.Rounded.Lock, null, tint = colors.textTertiary, modifier = Modifier.size(9.dp))
-                    Text(stringResource(R.string.skills_read_only), fontSize = 9.sp, fontWeight = FontWeight.Bold, color = colors.textTertiary)
+                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(2.dp), modifier = Modifier.clip(RoundedCornerShape(50)).background(colors.textPrimary.withOpacity(0.06f)).padding(horizontal = 6.dp, vertical = 2.dp)) {
+                    Icon(Icons.Rounded.Lock, null, tint = colors.web.mutedForeground, modifier = Modifier.size(9.dp))
+                    Text(stringResource(R.string.skills_read_only), fontSize = 9.sp, fontWeight = FontWeight.Bold, color = colors.web.mutedForeground)
                 }
             }
             Spacer(Modifier.weight(1f))
-            Icon(Icons.AutoMirrored.Rounded.KeyboardArrowRight, null, tint = colors.textTertiary, modifier = Modifier.size(16.dp))
+            Icon(Icons.AutoMirrored.Rounded.KeyboardArrowRight, null, tint = colors.web.mutedForeground, modifier = Modifier.size(16.dp))
         }
         skill.description?.takeIf { it.isNotEmpty() }?.let {
             Text(it, fontSize = 13.sp, color = colors.textSecondary, maxLines = 2, overflow = TextOverflow.Ellipsis)
         }
-        Text(skill.path, fontFamily = FontFamily.Monospace, fontSize = 11.sp, color = colors.textTertiary, maxLines = 1, overflow = TextOverflow.Ellipsis)
+        Text(skill.path, fontFamily = FontFamily.Monospace, fontSize = 11.sp, color = colors.web.mutedForeground, maxLines = 1, overflow = TextOverflow.Ellipsis)
     }
 }
 
@@ -271,12 +272,12 @@ private fun SkillRow(skill: AgentSkillItem, onClick: () -> Unit, onDelete: () ->
 private fun RefreshErrorBanner(message: String, onRetry: () -> Unit, onDismiss: () -> Unit) {
     val colors = CodegTheme.colors
     Row(
-        Modifier.fillMaxWidth().clip(RoundedCornerShape(14.dp)).background(colors.danger.copy(alpha = 0.12f)).padding(horizontal = 12.dp, vertical = 10.dp),
+        Modifier.fillMaxWidth().clip(CodegShapes.extraSmall).background(colors.danger.withOpacity(0.12f)).padding(horizontal = 12.dp, vertical = 10.dp),
         verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         Text(message, fontSize = 12.sp, color = colors.danger, modifier = Modifier.weight(1f), maxLines = 2, overflow = TextOverflow.Ellipsis)
         Text(stringResource(R.string.common_retry), fontSize = 12.sp, fontWeight = FontWeight.SemiBold, color = colors.accent, modifier = Modifier.clickable { onRetry() })
-        Icon(Icons.Rounded.Close, stringResource(R.string.common_dismiss), tint = colors.textTertiary, modifier = Modifier.size(16.dp).clickable { onDismiss() })
+        Icon(Icons.Rounded.Close, stringResource(R.string.common_dismiss), tint = colors.web.mutedForeground, modifier = Modifier.size(16.dp).clickable { onDismiss() })
     }
 }
 
@@ -315,15 +316,10 @@ private fun SkillEditorDialog(
 
     Dialog(onDismissRequest = onDismiss, properties = DialogProperties(usePlatformDefaultWidth = false)) {
         Column(Modifier.fillMaxSize().background(colors.bg).windowInsetsPadding(WindowInsets.safeDrawing)) {
-            TopAppBar(
-                title = {
-                    Text(
-                        if (existing == null) stringResource(R.string.skills_new_skill) else if (isReadOnly) stringResource(R.string.skills_view_skill) else stringResource(R.string.skills_edit_skill),
-                        maxLines = 1, overflow = TextOverflow.Ellipsis,
-                    )
-                },
+            CodegTopBar(
+                title = if (existing == null) stringResource(R.string.skills_new_skill) else if (isReadOnly) stringResource(R.string.skills_view_skill) else stringResource(R.string.skills_edit_skill),
                 navigationIcon = {
-                    IconButton(onClick = onDismiss) { Icon(Icons.Rounded.Close, contentDescription = stringResource(R.string.skills_close), tint = colors.textPrimary) }
+                    CodegIconButton(onClick = onDismiss) { Icon(Icons.Rounded.Close, contentDescription = stringResource(R.string.skills_close)) }
                 },
                 actions = {
                     if (!isReadOnly) {
@@ -338,17 +334,17 @@ private fun SkillEditorDialog(
                                 }
                             },
                         ) {
-                            Text(stringResource(R.string.common_save), fontWeight = FontWeight.SemiBold, color = if (canSave) colors.accent else colors.textTertiary)
+                            Text(stringResource(R.string.common_save), fontWeight = FontWeight.SemiBold, color = if (canSave) colors.accent else colors.web.mutedForeground)
                         }
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent, titleContentColor = colors.textPrimary),
+                showDivider = true,
             )
-            Column(Modifier.weight(1f).verticalScroll(rememberScrollState()).padding(horizontal = 16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            Column(Modifier.weight(1f).verticalScroll(rememberScrollState()).padding(horizontal = 16.dp, vertical = 12.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 val scopeWord = if (skillScope == "global") stringResource(R.string.skills_scope_global) else stringResource(R.string.skills_scope_project)
                 Text(
                     if (existing != null) stringResource(R.string.skills_scope_for_agent, scopeWord, agent.displayName) else stringResource(R.string.skills_new_global_for_agent, agent.displayName),
-                    fontSize = 12.sp, color = colors.textTertiary, modifier = Modifier.padding(top = 4.dp),
+                    fontSize = 12.sp, color = colors.web.mutedForeground, modifier = Modifier.padding(top = 4.dp),
                 )
                 if (existing == null) {
                     CodegTextField(skillId, { skillId = it }, label = stringResource(R.string.skills_skill_id), placeholder = stringResource(R.string.skills_skill_id_placeholder), mono = true)
@@ -362,7 +358,7 @@ private fun SkillEditorDialog(
                     }
                     isReadOnly -> {
                         Text(stringResource(R.string.skills_content), fontSize = 13.sp, fontWeight = FontWeight.SemiBold, color = colors.textSecondary)
-                        if (content.isBlank()) Text(stringResource(R.string.skills_no_content), fontSize = 13.sp, color = colors.textTertiary)
+                        if (content.isBlank()) Text(stringResource(R.string.skills_no_content), fontSize = 13.sp, color = colors.web.mutedForeground)
                         else MarkdownContent(content)
                     }
                     else -> CodegTextField(content, { content = it }, label = stringResource(R.string.skills_content_markdown), mono = true, singleLine = false)

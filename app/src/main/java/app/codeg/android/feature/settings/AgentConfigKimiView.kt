@@ -46,6 +46,8 @@ import app.codeg.android.R
 import app.codeg.android.core.designsystem.component.CodegTextField
 import app.codeg.android.core.designsystem.component.PrimaryButton
 import app.codeg.android.core.designsystem.component.SecretField
+import app.codeg.android.core.designsystem.theme.CodegShapes
+import app.codeg.android.core.designsystem.theme.withOpacity
 import app.codeg.android.core.designsystem.theme.CodegTheme
 import app.codeg.android.core.model.AcpAgentInfo
 import app.codeg.android.core.model.KIMI_MODEL_PLACEHOLDER
@@ -65,8 +67,6 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-private val WarnAmber = Color(0xFFF0A030)
-private val SuccessGreen = Color(0xFF4CBC75)
 
 private data class KimiBanner(val text: String, val isError: Boolean)
 
@@ -332,14 +332,14 @@ fun AgentConfigKimiView(agent: AcpAgentInfo, viewModel: AgentsViewModel) {
 @Composable
 private fun KimiGateBanner(present: Boolean, mode: KimiAuthMode) {
     val colors = CodegTheme.colors
-    val tint = if (present) colors.accent else WarnAmber
+    val tint = if (present) colors.accent else colors.web.mutedForeground
     val text = when {
         !present -> stringResource(R.string.agents_kimi_gate_none)
         mode == KimiAuthMode.LOGIN -> stringResource(R.string.agents_kimi_gate_login)
         else -> stringResource(R.string.agents_kimi_gate_apikey)
     }
     Row(
-        Modifier.fillMaxWidth().clip(RoundedCornerShape(8.dp)).background(tint.copy(alpha = 0.10f)).padding(12.dp),
+        Modifier.fillMaxWidth().clip(CodegShapes.extraSmall).background(tint.withOpacity(0.10f)).padding(12.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         Icon(if (present) Icons.Rounded.Verified else Icons.Rounded.WarningAmber, contentDescription = null, tint = tint, modifier = Modifier.size(16.dp))
@@ -350,9 +350,9 @@ private fun KimiGateBanner(present: Boolean, mode: KimiAuthMode) {
 @Composable
 private fun KimiResultBanner(banner: KimiBanner) {
     val colors = CodegTheme.colors
-    val tint = if (banner.isError) colors.danger else SuccessGreen
+    val tint = if (banner.isError) colors.danger else colors.accent
     Row(
-        Modifier.fillMaxWidth().clip(RoundedCornerShape(8.dp)).background(tint.copy(alpha = 0.12f)).padding(12.dp),
+        Modifier.fillMaxWidth().clip(CodegShapes.extraSmall).background(tint.withOpacity(0.12f)).padding(12.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         Icon(if (banner.isError) Icons.Rounded.ErrorOutline else Icons.Rounded.CheckCircle, contentDescription = null, tint = tint, modifier = Modifier.size(16.dp))
@@ -363,5 +363,5 @@ private fun KimiResultBanner(banner: KimiBanner) {
 /** Small tertiary help text used throughout the Kimi (and Pi) panels. */
 @Composable
 internal fun Caption(text: String) {
-    Text(text, fontSize = 11.sp, color = CodegTheme.colors.textTertiary, modifier = Modifier.padding(start = 2.dp))
+    Text(text, fontSize = 11.sp, color = CodegTheme.colors.web.mutedForeground, modifier = Modifier.padding(start = 2.dp))
 }

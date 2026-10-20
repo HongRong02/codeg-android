@@ -29,10 +29,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import app.codeg.android.core.designsystem.component.webSurface
 import app.codeg.android.R
 import app.codeg.android.core.designsystem.component.AgentAvatar
 import app.codeg.android.core.designsystem.component.EmptyState
 import app.codeg.android.core.designsystem.component.LoadingView
+import app.codeg.android.core.designsystem.theme.CodegShapes
+import app.codeg.android.core.designsystem.theme.withOpacity
 import app.codeg.android.core.designsystem.theme.CodegTheme
 import app.codeg.android.core.model.AcpAgentInfo
 import app.codeg.android.core.model.AgentType
@@ -58,16 +61,16 @@ fun AgentsContent(onOpen: (AgentType) -> Unit, viewModel: AgentsViewModel = hilt
 private fun AgentRow(agent: AcpAgentInfo, onToggle: (Boolean) -> Unit, onOpen: () -> Unit) {
     val colors = CodegTheme.colors
     Row(
-        Modifier.fillMaxWidth().clickable(onClick = onOpen).padding(horizontal = 6.dp, vertical = 8.dp).alpha(if (agent.available) 1f else 0.5f),
+        Modifier.fillMaxWidth().webSurface(CodegShapes.extraSmall).clickable(onClick = onOpen).padding(12.dp).alpha(if (agent.available) 1f else 0.5f),
         verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         AgentAvatar(agent.agentType, size = 38.dp)
         Column(Modifier.weight(1f)) {
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                Text(agent.name.ifEmpty { agent.agentType.displayName }, fontSize = 15.sp, color = colors.textPrimary, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                agent.installedVersion?.let { Text("v$it", fontSize = 11.sp, color = colors.textTertiary) }
+                Text(agent.name.ifEmpty { agent.agentType.displayName }, fontSize = 14.sp, color = colors.textPrimary, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                agent.installedVersion?.let { Text("v$it", fontSize = 11.sp, color = colors.web.mutedForeground) }
             }
-            if (agent.description.isNotEmpty()) Text(agent.description, fontSize = 12.sp, color = colors.textTertiary, maxLines = 2, overflow = TextOverflow.Ellipsis)
+            if (agent.description.isNotEmpty()) Text(agent.description, fontSize = 12.sp, color = colors.web.mutedForeground, maxLines = 2, overflow = TextOverflow.Ellipsis)
         }
         Switch(
             checked = agent.enabled,
@@ -78,7 +81,7 @@ private fun AgentRow(agent: AcpAgentInfo, onToggle: (Boolean) -> Unit, onOpen: (
         Icon(
             Icons.AutoMirrored.Rounded.KeyboardArrowRight,
             contentDescription = null,
-            tint = colors.textTertiary,
+            tint = colors.web.mutedForeground,
             modifier = Modifier.size(18.dp),
         )
     }
