@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Theme.bg (dark) from the iOS design system: r=0.039 g=0.043 b=0.051. -->
-    <color name="codeg_bg">#0A0B0D</color>
+    <color name="codeg_bg">#0A0A0A</color>
 </resources>
