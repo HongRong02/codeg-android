@@ -64,16 +64,16 @@ internal fun AutomationEditorSheet(ui: AutomationUiState, viewModel: AutomationV
         }) {
         Column(Modifier.fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(12.dp)) {
-            CodegTextField(name, { name = it }, label = stringResource(R.string.aw_name))
+            CodegTextField(name, { name = it }, label = stringResource(R.string.aw_name), enabled = !ui.busy)
             Choice(stringResource(R.string.aw_project), ui.folders.map { it.id to it.name }, folderId, { folderId = it })
             Choice(stringResource(R.string.aw_agent), AgentType.entries.map { it to it.displayName }, agent, { agent = it })
-            CodegTextField(prompt, { prompt = it }, label = stringResource(R.string.aw_prompt), singleLine = false)
+            CodegTextField(prompt, { prompt = it }, label = stringResource(R.string.aw_prompt), singleLine = false, enabled = !ui.busy)
             CodegSwitch(scheduled, { scheduled = it }, label = stringResource(R.string.aw_scheduled))
             if (scheduled) {
-                CodegTextField(cron, { cron = it }, label = stringResource(R.string.aw_cron))
-                CodegTextField(timezone, { timezone = it }, label = stringResource(R.string.aw_timezone))
-                // CodegProgress has no indeterminate variant; retain loading semantics.
-                if (ui.previewLoading) LinearProgressIndicator(Modifier.fillMaxWidth())
+                CodegTextField(cron, { cron = it }, label = stringResource(R.string.aw_cron), enabled = !ui.busy)
+                CodegTextField(timezone, { timezone = it }, label = stringResource(R.string.aw_timezone), enabled = !ui.busy)
+
+                if (ui.previewLoading) CodegProgress(Modifier.fillMaxWidth())
                 ui.previewError?.let { Text(it, color = CodegTheme.colors.danger) }
                 ui.preview?.let { Text(stringResource(R.string.aw_next, it)) }
             }
@@ -84,13 +84,6 @@ internal fun AutomationEditorSheet(ui: AutomationUiState, viewModel: AutomationV
 
 @Composable
 private fun <T> Choice(label: String, items: List<Pair<T, String>>, selected: T?, onSelect: (T) -> Unit) {
-    var expanded by remember { mutableStateOf(false) }
-    Box {
-        CodegButton(variant = CodegButtonVariant.Ghost, size = CodegButtonSize.Sm, onClick = { expanded = true }) {
-            Text("$label: ${items.firstOrNull { it.first == selected }?.second.orEmpty()}")
-        }
-        CodegDropdownMenu(expanded, { expanded = false }) {
-            items.forEach { (value, title) -> CodegMenuItem(text = { Text(title) }, onClick = { onSelect(value); expanded = false }) }
-        }
-    }
+    CodegSelect(label = label, selected = items.firstOrNull { it.first == selected },
+        options = items, optionLabel = { it.second }, onSelect = { onSelect(it.first) })
 }

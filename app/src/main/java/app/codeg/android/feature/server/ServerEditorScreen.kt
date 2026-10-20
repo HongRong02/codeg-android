@@ -1,5 +1,6 @@
 package app.codeg.android.feature.server
 
+import app.codeg.android.core.designsystem.icon.*
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -10,14 +11,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -37,6 +35,20 @@ fun ServerEditorScreen(
     viewModel: ServerEditorViewModel = hiltViewModel(),
 ) {
     val colors = CodegTheme.colors
+    val toaster = LocalCodegToaster.current
+    val test = viewModel.test
+    val testMessage = when (test) {
+        is TestState.Success -> stringResource(R.string.server_connection_ok, test.version)
+        is TestState.Failure -> stringResource(R.string.server_connection_failed, test.message)
+        else -> null
+    }
+    LaunchedEffect(test) {
+        when (test) {
+            is TestState.Success -> toaster.success(requireNotNull(testMessage))
+            is TestState.Failure -> toaster.error(requireNotNull(testMessage))
+            else -> Unit
+        }
+    }
     Scaffold(
         containerColor = Color.Transparent,
         topBar = {
@@ -44,7 +56,7 @@ fun ServerEditorScreen(
                 title = stringResource(if (viewModel.isEditing) R.string.server_edit else R.string.server_add),
                 navigationIcon = {
                     CodegIconButton(onClick = onDone) {
-                        Icon(Icons.AutoMirrored.Rounded.ArrowBack, contentDescription = stringResource(R.string.common_cancel), tint = colors.textSecondary)
+                        CodegIcon(Lucide.ArrowLeft, contentDescription = stringResource(R.string.common_cancel), tint = colors.textSecondary)
                     }
                 },
                 showDivider = true,
@@ -90,21 +102,7 @@ fun ServerEditorScreen(
                             onClick = { viewModel.save(onDone) },
                             enabled = viewModel.canSave,
                         )
-                        // TODO(T52): CodegToaster for connection test feedback.
-                        when (val test = viewModel.test) {
-                            is TestState.Success -> Text(
-                                stringResource(R.string.server_connection_ok, test.version),
-                                style = MaterialTheme.typography.bodySmall,
-                                color = colors.textPrimary,
-                                fontFamily = FontFamily.Monospace,
-                            )
-                            is TestState.Failure -> Text(
-                                stringResource(R.string.server_connection_failed, test.message),
-                                style = MaterialTheme.typography.bodySmall,
-                                color = colors.danger,
-                            )
-                            else -> Unit
-                        }
+
 
                     }
                 }

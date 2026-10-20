@@ -1,5 +1,6 @@
 package app.codeg.android.feature.main
 
+import app.codeg.android.core.designsystem.icon.*
 import androidx.annotation.StringRes
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.animateFloatAsState
@@ -12,18 +13,6 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Bolt
-import androidx.compose.material.icons.outlined.FolderOpen
-import androidx.compose.material.icons.outlined.Forum
-import androidx.compose.material.icons.outlined.Search
-import androidx.compose.material.icons.outlined.Settings
-import androidx.compose.material.icons.rounded.Bolt
-import androidx.compose.material.icons.rounded.FolderOpen
-import androidx.compose.material.icons.rounded.Forum
-import androidx.compose.material.icons.rounded.Search
-import androidx.compose.material.icons.rounded.Settings
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -35,6 +24,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.geometry.Offset
@@ -89,11 +79,11 @@ enum class HomeTab(
     val icon: ImageVector,
     val selectedIcon: ImageVector,
 ) {
-    CHATS("chats", R.string.tab_chats, Icons.Outlined.Forum, Icons.Rounded.Forum),
-    FOLDERS("folders", R.string.tab_folders, Icons.Outlined.FolderOpen, Icons.Rounded.FolderOpen),
-    ACTIVITY("activity", R.string.tab_activity, Icons.Outlined.Bolt, Icons.Rounded.Bolt),
-    SEARCH("search", R.string.tab_search, Icons.Outlined.Search, Icons.Rounded.Search),
-    SETTINGS("settings", R.string.tab_settings, Icons.Outlined.Settings, Icons.Rounded.Settings),
+    CHATS("chats", R.string.tab_chats, Lucide.MessageSquare, Lucide.MessageSquare),
+    FOLDERS("folders", R.string.tab_folders, Lucide.FolderOpen, Lucide.FolderOpen),
+    ACTIVITY("activity", R.string.tab_activity, Lucide.Zap, Lucide.Zap),
+    SEARCH("search", R.string.tab_search, Lucide.Search, Lucide.Search),
+    SETTINGS("settings", R.string.tab_settings, Lucide.Settings, Lucide.Settings),
 }
 
 private const val ROUTE_SERVERS = "servers"
@@ -203,6 +193,17 @@ fun MainShell(appViewModel: AppViewModel, servers: List<ServerProfile>) {
         app.codeg.android.core.common.DeepLinkBus.consume(route)
     }
 
+    // Keep toast cards above the measured, scroll-driven bottom bar. The content
+    // is measured at full height so reserving overlay space does not move navigation.
+    var bottomBarHeight by remember { mutableStateOf(0) }
+    val toastClearance = if (showBottomBar && !wide) with(density) { bottomBarHeight.toDp() } else 0.dp
+    Box(Modifier.fillMaxSize().padding(bottom = toastClearance)) {
+    CodegToasterHost {
+    Box(Modifier.layout { measurable, constraints ->
+        val extra = with(density) { toastClearance.roundToPx() }
+        val child = measurable.measure(constraints.copy(maxHeight = constraints.maxHeight + extra))
+        layout(child.width, (child.height - extra).coerceAtLeast(0)) { child.placeRelative(0, 0) }
+    }) {
     Scaffold(
         topBar = { app.codeg.android.core.update.UpdateBanner() },
         containerColor = Color.Transparent,
@@ -216,6 +217,7 @@ fun MainShell(appViewModel: AppViewModel, servers: List<ServerProfile>) {
                     // freed strip back to the content (the whole point — reclaim the space);
                     // the bar is drawn at full height and slid down within, clipped away.
                     modifier = Modifier
+                        .onSizeChanged { bottomBarHeight = it.height }
                         .clipToBounds()
                         .layout { measurable, constraints ->
                             val placeable = measurable.measure(constraints)
@@ -372,6 +374,9 @@ fun MainShell(appViewModel: AppViewModel, servers: List<ServerProfile>) {
             }
         }
     }
+    }
+    }
+    }
 }
 
 @Composable
@@ -381,7 +386,7 @@ private fun CodegNavRail(currentRoute: String?, onSelect: (HomeTab) -> Unit) {
             HomeTab.entries.forEach { tab ->
                 CodegListRow(title = stringResource(tab.label), selected = currentRoute == tab.route,
                     onClick = { onSelect(tab) }, leading = {
-                        Icon(if (currentRoute == tab.route) tab.selectedIcon else tab.icon, contentDescription = null)
+                        CodegIcon(if (currentRoute == tab.route) tab.selectedIcon else tab.icon, contentDescription = null)
                     })
             }
         }
@@ -402,7 +407,7 @@ private fun CodegBottomBar(currentRoute: String?, onSelect: (HomeTab) -> Unit, m
                 }, variant = if (selected) CodegButtonVariant.Secondary else CodegButtonVariant.Ghost,
                     size = CodegButtonSize.Sm) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Icon(if (selected) tab.selectedIcon else tab.icon, contentDescription = null, modifier = Modifier.size(18.dp))
+                        CodegIcon(if (selected) tab.selectedIcon else tab.icon, contentDescription = null, modifier = Modifier.size(16.dp))
                         Text(stringResource(tab.label), fontSize = 10.sp, maxLines = 1, overflow = TextOverflow.Ellipsis)
                     }
                 }

@@ -1,21 +1,14 @@
 package app.codeg.android.feature.server
 
+import app.codeg.android.core.designsystem.icon.*
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.ArrowBack
-import androidx.compose.material.icons.rounded.Add
-import androidx.compose.material.icons.rounded.Check
-import androidx.compose.material.icons.rounded.Delete
-import androidx.compose.material.icons.rounded.Dns
-import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -53,7 +46,7 @@ fun ServerListScreen(
                 title = stringResource(R.string.servers_title),
                 navigationIcon = {
                     CodegIconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Rounded.ArrowBack, contentDescription = stringResource(R.string.common_cancel), tint = colors.textSecondary)
+                        CodegIcon(Lucide.ArrowLeft, contentDescription = stringResource(R.string.common_cancel), tint = colors.textSecondary)
                     }
                 },
                 showDivider = true,
@@ -65,14 +58,14 @@ fun ServerListScreen(
                 containerColor = colors.accent,
                 contentColor = colors.onAccent,
             ) {
-                Icon(Icons.Rounded.Add, contentDescription = stringResource(R.string.server_add))
+                CodegIcon(Lucide.Plus, contentDescription = stringResource(R.string.server_add))
             }
         },
     ) { padding ->
         if (servers.isEmpty()) {
             Box(Modifier.fillMaxSize().padding(padding), contentAlignment = Alignment.Center) {
                 EmptyState(
-                    icon = Icons.Rounded.Dns,
+                    icon = Lucide.Server,
                     title = stringResource(R.string.servers_title),
                     message = stringResource(R.string.onboarding_footnote),
                     actionLabel = stringResource(R.string.server_add),
@@ -131,17 +124,17 @@ private fun ServerRow(
         subtitle = profile.baseUrl,
         selected = selected,
         onClick = onClick,
-        leading = { if (selected) Icon(Icons.Rounded.Check, contentDescription = null, tint = colors.accent) },
+        leading = { if (selected) CodegIcon(Lucide.Check, contentDescription = null, tint = colors.accent) },
         trailing = {
             Box {
                 CodegRowMoreButton(onClick = { menuOpen = true }, contentDescription = stringResource(R.string.servers_onboarding_actions))
                 CodegDropdownMenu(expanded = menuOpen, onDismissRequest = { menuOpen = false }) {
                     CodegMenuItem(text = { Text(stringResource(R.string.server_edit)) },
-                        leadingIcon = { Icon(Icons.Rounded.Edit, contentDescription = null) },
+                        leadingIcon = { CodegIcon(Lucide.Pencil, contentDescription = null) },
                         onClick = { menuOpen = false; onEdit() })
                     CodegMenuItem(text = { Text(stringResource(R.string.server_delete)) },
                         variant = CodegMenuItemVariant.Destructive,
-                        leadingIcon = { Icon(Icons.Rounded.Delete, contentDescription = null) },
+                        leadingIcon = { CodegIcon(Lucide.Trash2, contentDescription = null) },
                         onClick = { menuOpen = false; onDelete() })
                 }
             }
