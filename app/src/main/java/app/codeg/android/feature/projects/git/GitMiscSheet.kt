@@ -32,13 +32,18 @@ fun GitMiscSheet(client: CodegClient, path: String, folderId: Int, onDismiss: ()
         model.load(client, path)
         onChanged()
     }
+    val toaster = LocalCodegToaster.current
+    val failureTitle = stringResource(R.string.t56_operation_failed)
+    val doneTitle = stringResource(R.string.t56_operation_completed)
+    LaunchedEffect(ui.error, ui.success) {
+        ui.error?.let { toaster.error(failureTitle, it) }
+        if (ui.success) toaster.success(doneTitle)
+    }
     CodegSheet(title = stringResource(R.string.git_misc_title), onDismiss = { if (!ui.busy) onDismiss() }) {
         Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
             Text(path, color = CodegTheme.colors.textSecondary)
             if (ui.busy) LoadingView(stringResource(R.string.common_loading))
-            // TODO(T52): CodegToaster for operation feedback.
-            ui.error?.let { Text(it, color = CodegTheme.colors.danger) }
-            if (ui.success) Text(stringResource(R.string.git_misc_success), color = CodegTheme.colors.textSecondary)
+            if (ui.remotes.isEmpty() && ui.worktrees.isEmpty()) ui.error?.let { Text(it, color = CodegTheme.colors.danger) }
             CodegButton(size = CodegButtonSize.Sm, variant = CodegButtonVariant.Ghost, onClick = { model.run("load") { model.load(client, path) } }, enabled = !ui.busy) { Text(stringResource(R.string.git_misc_refresh)) }
             if (ui.notRepository) {
                 if ("init" !in ui.hidden) CodegButton(onClick = { mutate("init") { client.gitInit(path) } }, enabled = !ui.busy) { Text(stringResource(R.string.git_misc_init)) }

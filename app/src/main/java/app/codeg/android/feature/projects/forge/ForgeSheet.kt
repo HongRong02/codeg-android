@@ -19,14 +19,17 @@ import app.codeg.android.core.network.displayMessage
 fun ForgeSheet(vm: ForgeViewModel, onDismiss: () -> Unit) {
     val ui by vm.ui.collectAsStateWithLifecycle()
     var newIssue by remember { mutableStateOf(false) }
+    val toaster = LocalCodegToaster.current
+    val context = LocalContext.current
+    val failureTitle = stringResource(R.string.t56_operation_failed)
+    LaunchedEffect(ui.error) { ui.error?.let { toaster.error(failureTitle, it.displayMessage(context)) } }
     CodegFullScreenSheet(title = stringResource(R.string.forge_title), onDismiss = onDismiss) {
         BackHandler(ui.selected != null) { vm.back() }
         ui.error?.let {
-            // TODO(T52): CodegToaster for operation feedback.
             Text(it.displayMessage(LocalContext.current), color = MaterialTheme.colorScheme.error)
             Text(stringResource(R.string.forge_token_hint), style = MaterialTheme.typography.bodySmall)
         }
-        if (ui.busy) CodegSkeleton(Modifier.fillMaxWidth().height(4.dp))
+        if (ui.busy) CodegProgress()
         if (ui.selected != null) {
             ForgeDetail(ui, vm)
         } else {
@@ -85,8 +88,8 @@ private fun ForgeNewIssue(ui: ForgeUi, vm: ForgeViewModel, dismiss: () -> Unit) 
             CodegButton(onClick = dismiss, variant = CodegButtonVariant.Ghost, enabled = !ui.busy) { Text(stringResource(R.string.forge_cancel)) }
             CodegButton(onClick = { vm.createIssue(title, body, labels, dismiss) }, enabled = !ui.busy && title.isNotBlank()) { Text(stringResource(R.string.forge_create)) }
         }) {
-        CodegTextField(title, { if (!ui.busy) title = it }, label = stringResource(R.string.forge_issue_title))
-        CodegTextField(body, { if (!ui.busy) body = it }, label = stringResource(R.string.forge_body), singleLine = false)
+        CodegTextField(title, { if (!ui.busy) title = it }, label = stringResource(R.string.forge_issue_title), enabled = !ui.busy)
+        CodegTextField(body, { if (!ui.busy) body = it }, label = stringResource(R.string.forge_body), enabled = !ui.busy, singleLine = false, minLines = 3, maxLines = 8)
         if (ui.labels.truncated) Text(stringResource(R.string.forge_incomplete))
         ui.labels.labels.forEach { label ->
             CodegFilterChip(label = label.name, selected = label.name in labels,

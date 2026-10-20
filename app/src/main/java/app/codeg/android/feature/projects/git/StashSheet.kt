@@ -20,6 +20,13 @@ fun StashSheet(viewModel: StashViewModel, onDismiss: () -> Unit, onChanged: () -
     var keepIndex by remember { mutableStateOf(false) }
     var confirmation by remember { mutableStateOf<Pair<String, String?>?>(null) }
     val colors = CodegTheme.colors
+    val toaster = LocalCodegToaster.current
+    val failureTitle = stringResource(R.string.t56_operation_failed)
+    val doneTitle = stringResource(R.string.t56_operation_completed)
+    LaunchedEffect(ui.error, ui.result) {
+        ui.error?.let { toaster.error(failureTitle, it) }
+        ui.result?.let { toaster.success(it) }
+    }
     CodegSheet(title = stringResource(R.string.stash_title), onDismiss = { if (!ui.busy) onDismiss() }) {
         Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
             CodegTextField(message, { message = it }, label = stringResource(R.string.stash_message))
@@ -30,9 +37,7 @@ fun StashSheet(viewModel: StashViewModel, onDismiss: () -> Unit, onChanged: () -
                 CodegButton(size = CodegButtonSize.Sm, variant = CodegButtonVariant.Ghost, enabled = !ui.busy && ui.entries.isNotEmpty(), onClick = { confirmation = "clear" to null }) { Text(stringResource(R.string.stash_clear)) }
             }
             if (ui.busy) LoadingView(stringResource(R.string.common_loading))
-            // TODO(T52): CodegToaster for operation feedback.
-            ui.error?.let { Text(it, color = colors.danger) }
-            ui.result?.let { Text(it, color = colors.textSecondary) }
+            if (ui.entries.isEmpty()) ui.error?.let { Text(it, color = colors.danger) }
             if (!ui.busy && ui.entries.isEmpty()) Text(stringResource(R.string.stash_empty), color = colors.textSecondary)
             ui.entries.forEach { entry ->
                 CodegSeparator()
@@ -43,10 +48,12 @@ fun StashSheet(viewModel: StashViewModel, onDismiss: () -> Unit, onChanged: () -
                     CodegButton(size = CodegButtonSize.Sm, variant = CodegButtonVariant.Ghost, enabled = !ui.busy, onClick = { confirmation = "pop" to entry.refName }) { Text(stringResource(R.string.stash_pop)) }
                     CodegButton(size = CodegButtonSize.Sm, variant = CodegButtonVariant.Ghost, enabled = !ui.busy, onClick = { confirmation = "drop" to entry.refName }) { Text(stringResource(R.string.stash_drop)) }
                 }
-                // TODO(T53): CodegCollapsible for stash diff.
                 if (ui.diffRef == entry.refName) {
-                    val files = remember(ui.diff) { UnifiedDiff.parse(ui.diff.orEmpty()) }
-                    if (files != null) DiffView(files) else Text(ui.diff?.takeIf { it.isNotBlank() } ?: stringResource(R.string.stash_no_diff), color = colors.textSecondary)
+                    var expanded by remember(ui.diff) { mutableStateOf(true) }
+                    CodegCollapsible(expanded, { expanded = it }, header = { Text(entry.refName) }) {
+                        val files = remember(ui.diff) { UnifiedDiff.parse(ui.diff.orEmpty()) }
+                        if (files != null) DiffView(files) else Text(ui.diff?.takeIf { it.isNotBlank() } ?: stringResource(R.string.stash_no_diff), color = colors.textSecondary)
+                    }
                 }
             }
         }

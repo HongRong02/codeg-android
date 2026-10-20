@@ -20,13 +20,18 @@ fun MergeOpsSheet(vm: MergeOpsViewModel, client: CodegClient, path: String, bran
     var confirm by remember { mutableStateOf(false) }
     var typed by remember { mutableStateOf("") }
     var hardVerified by remember { mutableStateOf(false) }
+    val toaster = LocalCodegToaster.current
+    val failureTitle = stringResource(R.string.t56_operation_failed)
+    val doneTitle = stringResource(R.string.t56_operation_completed)
+    LaunchedEffect(ui.error, ui.completed) {
+        ui.error?.let { toaster.error(failureTitle, it) }
+        if (ui.completed) toaster.success(doneTitle)
+    }
     CodegSheet(title = stringResource(R.string.gm_title), onDismiss = { if (!ui.busy) onDismiss() }) {
         Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
             Text(stringResource(R.string.gm_current, branch.orEmpty()))
             if (ui.busy) LoadingView(stringResource(R.string.common_loading))
-            // TODO(T52): CodegToaster for operation feedback.
-            ui.error?.let { Text(it, color = app.codeg.android.core.designsystem.theme.CodegTheme.colors.danger) }
-            if (ui.completed) Text(stringResource(R.string.gm_done))
+            if (!ui.ready) ui.error?.let { Text(it, color = app.codeg.android.core.designsystem.theme.CodegTheme.colors.danger) }
             CodegButton(size = CodegButtonSize.Sm, variant = CodegButtonVariant.Ghost, onClick = { vm.refresh(client, path) }, enabled = !ui.busy) { Text(stringResource(R.string.gm_refresh)) }
             if (ui.active || ui.conflicts.isNotEmpty()) {
                 ConflictListScreen(vm, client, path, branch.orEmpty())
@@ -49,18 +54,18 @@ fun MergeOpsSheet(vm: MergeOpsViewModel, client: CodegClient, path: String, bran
     if (confirm) {
         val message = stringResource(when (action) { "merge" -> R.string.gm_confirm_merge; "rebase" -> R.string.gm_confirm_rebase; else -> R.string.gm_confirm_reset }, target, branch.orEmpty(), mode)
         if (action == "reset" && mode == "hard" && !hardVerified) {
-            CodegDialog(title = operationLabel(action), description = message,
-                onDismiss = { confirm = false }, footer = {
-                    CodegButton(onClick = { confirm = false }, variant = CodegButtonVariant.Ghost) { Text(stringResource(R.string.gm_cancel)) }
-                    CodegButton(onClick = { hardVerified = true }, enabled = typed == branch) { Text(stringResource(R.string.gm_confirm)) }
-                }) {
-                Text(stringResource(R.string.gm_hard, branch.orEmpty()))
-                CodegTextField(value = typed, onValueChange = { typed = it }, label = stringResource(R.string.git_misc_branch))
-            }
+            CodegConfirmDialog(title = operationLabel(action), message = message,
+                target = "${branch.orEmpty()} → ${target.trim()}", confirmLabel = stringResource(R.string.gm_confirm),
+                destructive = true, busy = ui.busy, confirmEnabled = typed == branch,
+                onConfirm = { hardVerified = true }, onDismiss = { confirm = false }, content = {
+                    Text(stringResource(R.string.gm_hard, branch.orEmpty()))
+                    CodegTextField(value = typed, onValueChange = { typed = it }, enabled = !ui.busy,
+                        label = stringResource(R.string.git_misc_branch))
+                })
         } else {
             CodegConfirmDialog(title = operationLabel(action), message = message,
                 target = "${branch.orEmpty()} → ${target.trim()}", confirmLabel = stringResource(R.string.gm_confirm),
-                destructive = action == "reset" || action == "rebase",
+                destructive = action == "reset" || action == "rebase", busy = ui.busy,
                 onConfirm = { confirm = false; vm.execute(client, path, action, target.trim(), mode) },
                 onDismiss = { confirm = false })
         }

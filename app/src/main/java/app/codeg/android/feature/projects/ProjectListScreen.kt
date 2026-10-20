@@ -1,6 +1,5 @@
 package app.codeg.android.feature.projects
 
-import app.codeg.android.core.designsystem.theme.CodegShapes
 import app.codeg.android.core.designsystem.component.CodegMenuItem
 import app.codeg.android.core.designsystem.component.CodegDropdownMenu
 import app.codeg.android.core.designsystem.component.CodegButton
@@ -14,31 +13,19 @@ import app.codeg.android.core.designsystem.component.CodegBadgeVariant
 import androidx.compose.foundation.ExperimentalFoundationApi
 import app.codeg.android.feature.projects.groups.*
 import app.codeg.android.core.model.FolderGroup
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowRight
-import androidx.compose.material.icons.rounded.Add
-import androidx.compose.material.icons.rounded.CloudDownload
-import androidx.compose.material.icons.rounded.CreateNewFolder
-import androidx.compose.material.icons.rounded.FolderOpen
-import androidx.compose.material.icons.rounded.WarningAmber
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
@@ -49,10 +36,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -62,12 +47,15 @@ import app.codeg.android.core.common.RelativeTime
 import app.codeg.android.core.designsystem.component.CodegIconButton
 import app.codeg.android.core.designsystem.component.CodegTopBar
 import app.codeg.android.core.designsystem.component.EmptyState
-import app.codeg.android.core.designsystem.component.FolderBadge
 import app.codeg.android.core.designsystem.component.InlineError
 import app.codeg.android.core.designsystem.component.LoadingView
-import app.codeg.android.core.designsystem.theme.withOpacity
 import app.codeg.android.core.designsystem.theme.CodegTheme
 import app.codeg.android.core.model.FolderDetail
+import androidx.compose.runtime.LaunchedEffect
+import app.codeg.android.core.designsystem.component.CodegCollapsible
+import app.codeg.android.core.designsystem.component.CodegFolderBadge
+import app.codeg.android.core.designsystem.component.LocalCodegToaster
+import app.codeg.android.core.designsystem.icon.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -76,6 +64,11 @@ fun ProjectListScreen(
     viewModel: ProjectsViewModel = hiltViewModel(),
 ) {
     val ui by viewModel.ui.collectAsStateWithLifecycle()
+    val toaster = LocalCodegToaster.current
+    val refreshFailed = stringResource(R.string.projects_load_failed)
+    LaunchedEffect(ui.error, ui.hasLoaded) {
+        if (ui.hasLoaded) ui.error?.let { toaster.error(refreshFailed, it) }
+    }
     val colors = CodegTheme.colors
     val importViewModel: app.codeg.android.feature.projects.importsessions.ImportSessionsViewModel = hiltViewModel()
     val importUi by importViewModel.ui.collectAsStateWithLifecycle()
@@ -103,9 +96,10 @@ fun ProjectListScreen(
                             visualSize = 32.dp,
                         ) {
                             Icon(
-                                imageVector = Icons.Rounded.Add,
+                                imageVector = Lucide.Plus,
                                 contentDescription = stringResource(R.string.projects_add),
                                 tint = colors.textSecondary,
+                                modifier = Modifier.size(16.dp),
                             )
                         }
                         CodegDropdownMenu(
@@ -125,9 +119,10 @@ fun ProjectListScreen(
                                 text = { Text(stringResource(R.string.projects_open_folder)) },
                                 leadingIcon = {
                                     Icon(
-                                        imageVector = Icons.Rounded.CreateNewFolder,
+                                        imageVector = Lucide.FolderPlus,
                                         contentDescription = null,
                                         tint = colors.textSecondary,
+                                        modifier = Modifier.size(16.dp),
                                     )
                                 },
                                 onClick = {
@@ -139,9 +134,10 @@ fun ProjectListScreen(
                                 text = { Text(stringResource(R.string.projects_clone_repo)) },
                                 leadingIcon = {
                                     Icon(
-                                        imageVector = Icons.Rounded.CloudDownload,
+                                        imageVector = Lucide.CloudDownload,
                                         contentDescription = null,
                                         tint = colors.textSecondary,
+                                        modifier = Modifier.size(16.dp),
                                     )
                                 },
                                 onClick = {
@@ -169,7 +165,7 @@ fun ProjectListScreen(
                 !ui.hasLoaded && ui.error != null -> {
                     Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                         InlineError(
-                            icon = Icons.Rounded.FolderOpen,
+                            icon = Lucide.FolderOpen,
                             title = stringResource(R.string.projects_load_failed),
                             message = ui.error!!,
                             onRetry = viewModel::refresh,
@@ -179,7 +175,7 @@ fun ProjectListScreen(
                 ui.hasLoaded && ui.folders.isEmpty() && ui.groups.isEmpty() -> {
                     Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                         EmptyState(
-                            icon = Icons.Rounded.FolderOpen,
+                            icon = Lucide.FolderOpen,
                             title = stringResource(R.string.projects_empty_title),
                             message = stringResource(R.string.projects_empty_message),
                             actionLabel = stringResource(R.string.projects_open_folder),
@@ -203,68 +199,29 @@ fun ProjectListScreen(
                             ),
                             verticalArrangement = Arrangement.spacedBy(8.dp),
                         ) {
-                            if (ui.error != null) {
-                                item(key = "refresh-error") {
-                                    // TODO(T52): CodegToaster for refresh errors.
-                                    Row(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .clip(CodegShapes.small)
-                                            .background(colors.danger.withOpacity(0.12f))
-                                            .border(
-                                                CodegTheme.dimens.hairlineWidth,
-                                                colors.danger.withOpacity(0.35f),
-                                                CodegShapes.small,
-                                            )
-                                            .padding(horizontal = 12.dp, vertical = 6.dp),
-                                        verticalAlignment = Alignment.CenterVertically,
-                                    ) {
-                                        Icon(
-                                            Icons.Rounded.WarningAmber,
-                                            contentDescription = null,
-                                            tint = colors.danger,
-                                            modifier = Modifier.size(16.dp),
-                                        )
-                                        Spacer(Modifier.width(8.dp))
-                                        Text(
-                                            text = ui.error!!,
-                                            color = colors.danger,
-                                            style = MaterialTheme.typography.bodySmall,
-                                            maxLines = 2,
-                                            overflow = TextOverflow.Ellipsis,
-                                            modifier = Modifier.weight(1f),
-                                        )
-                                        CodegButton(variant = CodegButtonVariant.Ghost, onClick = viewModel::refresh) {
-                                            Text(
-                                                stringResource(R.string.common_retry),
-                                                color = colors.danger,
-                                            )
-                                        }
-                                    }
-                                }
-                            }
-
                             item(key = "folders-card") {
                                 CodegCard(Modifier.fillMaxWidth()) {
                                     Column {
                                     folderLayout(ui.folders, ui.groups).forEach { entry ->
                                         val group = entry.group
                                         if (group != null) {
-                                            // TODO(T53): CodegCollapsible for project groups.
-                                            CodegSectionHeader(
-                                                title = group.name,
-                                                collapsed = group.id in collapsed,
-                                                onToggle = { collapsed = if (group.id in collapsed) collapsed - group.id else collapsed + group.id },
-                                                action = {
-                                                    if (ui.groupsSupported) {
-                                                        Row {
-                                                            CodegButton(variant = CodegButtonVariant.Ghost, enabled = !ui.isBusy, onClick = { renameGroup = group }) { Text(stringResource(R.string.fg_rename)) }
-                                                            CodegButton(variant = CodegButtonVariant.Ghost, enabled = !ui.isBusy, onClick = { deleteGroup = group }) { Text(stringResource(R.string.fg_delete)) }
-                                                        }
-                                                    }
+                                            CodegCollapsible(
+                                                expanded = group.id !in collapsed,
+                                                onExpandedChange = { expanded -> collapsed = if (expanded) collapsed - group.id else collapsed + group.id },
+                                                header = {
+                                                    CodegSectionHeader(
+                                                        title = group.name,
+                                                        action = {
+                                                            if (ui.groupsSupported) {
+                                                                Row {
+                                                                    CodegButton(variant = CodegButtonVariant.Ghost, enabled = !ui.isBusy, onClick = { renameGroup = group }) { Text(stringResource(R.string.fg_rename)) }
+                                                                    CodegButton(variant = CodegButtonVariant.Ghost, enabled = !ui.isBusy, onClick = { deleteGroup = group }) { Text(stringResource(R.string.fg_delete)) }
+                                                                }
+                                                            }
+                                                        },
+                                                    )
                                                 },
-                                            )
-                                            if (group.id !in collapsed) {
+                                            ) {
                                                 val members = groupMembers(ui.folders, group.id)
                                                 if (members.isEmpty()) Text(stringResource(R.string.fg_empty), Modifier.padding(16.dp), color = colors.textSecondary)
                                                 members.forEach { folder ->
@@ -360,20 +317,19 @@ private fun FolderRow(
 ) {
     val colors = CodegTheme.colors
     val tile = folderTint(folder.color)
-    // TODO(T53): CodegFolderBadge.
     CodegListRow(
         title = folderDisplayName(folder),
         subtitle = folder.path,
         modifier = modifier,
         onClick = onClick,
         onLongClick = onLongClick,
-        leading = { FolderBadge(color = tile, size = 32.dp) },
+        leading = { CodegFolderBadge(name = folderDisplayName(folder), color = tile) },
         trailing = {
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                 folder.gitBranch?.let { BranchPill(it) }
                 if (running > 0) RunningPill(running)
                 else folder.lastOpenedAt?.let { Text(RelativeTime.compact(it), fontSize = 11.sp, color = colors.textSecondary) }
-                Icon(Icons.AutoMirrored.Rounded.KeyboardArrowRight, null, tint = colors.textSecondary, modifier = Modifier.size(18.dp))
+                Icon(Lucide.ChevronRight, null, tint = colors.textSecondary, modifier = Modifier.size(16.dp))
             }
         },
     )

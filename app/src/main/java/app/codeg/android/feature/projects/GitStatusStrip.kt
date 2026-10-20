@@ -1,40 +1,27 @@
 package app.codeg.android.feature.projects
 
 import app.codeg.android.core.designsystem.theme.CodegShapes
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.CheckCircle
-import androidx.compose.material.icons.rounded.Close
-import androidx.compose.material.icons.rounded.ErrorOutline
-import androidx.compose.material.icons.rounded.WarningAmber
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Icon
-import app.codeg.android.core.designsystem.component.CodegIconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.codeg.android.R
-import app.codeg.android.core.designsystem.theme.withOpacity
 import app.codeg.android.core.designsystem.theme.CodegTheme
 import app.codeg.android.core.designsystem.component.webSurface
+import androidx.compose.runtime.*
+import app.codeg.android.core.designsystem.component.CodegSpinner
+import app.codeg.android.core.designsystem.component.LocalCodegToaster
+import app.codeg.android.core.designsystem.component.ToastId
+import app.codeg.android.core.designsystem.component.ToastType
 
-/**
- * Shown atop the Changes / Commits tabs: a busy row while a git operation runs,
- * otherwise the most recent [GitBanner] (dismissible). Flat tinted surfaces (not
- * glass) so it reads as a colored strip on the light backdrop. Port of iOS
- * `GitStatusStrip`.
- */
+/** Persistent busy status; completed operations are delivered through the app toaster. */
 @Composable
 internal fun GitStatusStrip(
     busy: Boolean,
@@ -43,40 +30,43 @@ internal fun GitStatusStrip(
     onDismissBanner: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val toaster = LocalCodegToaster.current
+    val working = busyTitle ?: stringResource(R.string.git_working)
+    var loadingToast by remember { mutableStateOf<ToastId?>(null) }
+    LaunchedEffect(busy, banner) {
+        val feedback = banner
+        if (feedback != null) {
+            val type = when (feedback.kind) {
+                GitBannerKind.SUCCESS -> ToastType.Success
+                GitBannerKind.WARNING -> ToastType.Warning
+                GitBannerKind.ERROR -> ToastType.Error
+            }
+            val id = loadingToast
+            if (id != null) toaster.update(id, type, feedback.message)
+            else when (feedback.kind) {
+                GitBannerKind.SUCCESS -> toaster.success(feedback.message)
+                GitBannerKind.WARNING -> toaster.warning(feedback.message)
+                GitBannerKind.ERROR -> toaster.error(feedback.message)
+            }
+            loadingToast = null
+            onDismissBanner()
+        } else if (busy && loadingToast == null) {
+            loadingToast = toaster.loading(working)
+        } else if (!busy) {
+            loadingToast?.let(toaster::dismiss)
+            loadingToast = null
+        }
+    }
+    DisposableEffect(toaster) {
+        onDispose { loadingToast?.let(toaster::dismiss) }
+    }
     val colors = CodegTheme.colors
-    when {
-        busy -> Row(
-            modifier.fillMaxWidth().webSurface(CodegShapes.small).padding(horizontal = 14.dp, vertical = 11.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(10.dp),
-        ) {
-            CircularProgressIndicator(Modifier.size(16.dp), color = colors.accent, strokeWidth = 2.dp)
-            Text(busyTitle ?: stringResource(R.string.git_working), fontSize = 12.sp, color = colors.textSecondary)
-        }
-
-        // TODO(T52): CodegToaster for transient Git operation feedback.
-        banner != null -> {
-            val tint = when (banner.kind) {
-                GitBannerKind.SUCCESS -> colors.accent
-                GitBannerKind.WARNING -> colors.textSecondary
-                GitBannerKind.ERROR -> colors.danger
-            }
-            val icon = when (banner.kind) {
-                GitBannerKind.SUCCESS -> Icons.Rounded.CheckCircle
-                GitBannerKind.WARNING -> Icons.Rounded.WarningAmber
-                GitBannerKind.ERROR -> Icons.Rounded.ErrorOutline
-            }
-            Row(
-                modifier.fillMaxWidth().clip(CodegShapes.small).background(tint.withOpacity(0.12f)).border(1.dp, tint.withOpacity(0.35f), CodegShapes.small).padding(start = 14.dp, top = 8.dp, bottom = 8.dp, end = 6.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(10.dp),
-            ) {
-                Icon(icon, contentDescription = null, tint = tint, modifier = Modifier.size(16.dp))
-                Text(banner.message, fontSize = 12.sp, color = colors.textSecondary, modifier = Modifier.weight(1f), maxLines = 3)
-                CodegIconButton(onClick = onDismissBanner) {
-                    Icon(Icons.Rounded.Close, contentDescription = stringResource(R.string.git_dismiss), tint = colors.textSecondary, modifier = Modifier.size(15.dp))
-                }
-            }
-        }
+    if (busy) Row(
+        modifier.fillMaxWidth().webSurface(CodegShapes.small).padding(horizontal = 14.dp, vertical = 11.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(10.dp),
+    ) {
+        CodegSpinner()
+        Text(working, fontSize = 12.sp, color = colors.textSecondary)
     }
 }

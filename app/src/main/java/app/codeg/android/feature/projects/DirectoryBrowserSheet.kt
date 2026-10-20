@@ -8,12 +8,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowRight
-import androidx.compose.material.icons.rounded.ArrowUpward
-import androidx.compose.material.icons.rounded.Folder
-import androidx.compose.material.icons.rounded.Home
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import app.codeg.android.core.designsystem.component.CodegIconButton
@@ -37,6 +31,8 @@ import app.codeg.android.R
 import app.codeg.android.core.designsystem.theme.CodegTheme
 import app.codeg.android.core.model.DirectoryEntry
 import kotlinx.coroutines.launch
+import app.codeg.android.core.designsystem.component.CodegSpinner
+import app.codeg.android.core.designsystem.icon.*
 
 /** Full-screen server-filesystem browser used by Open Folder + Clone. Port of iOS `DirectoryBrowserView`. */
 @OptIn(ExperimentalMaterial3Api::class)
@@ -70,22 +66,22 @@ fun DirectoryBrowserSheet(
         actions = {
             CodegButton(onClick = { onSelect(path) }, enabled = path.isNotEmpty()) { Text(confirmLabel) }
             CodegIconButton(onClick = { scope.launch { path = loadHome() } }) {
-                Icon(Icons.Rounded.Home, contentDescription = stringResource(R.string.dirbrowser_home), tint = colors.textSecondary)
+                Icon(Lucide.Home, contentDescription = stringResource(R.string.dirbrowser_home), tint = colors.textSecondary, modifier = Modifier.size(16.dp))
             }
         },
     ) {
         Text(path, fontFamily = FontFamily.Monospace, fontSize = 12.sp, color = colors.textSecondary, maxLines = 1, overflow = TextOverflow.Ellipsis, modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 4.dp))
             Box(Modifier.fillMaxWidth()) {
                 if (loading) {
-                    Box(Modifier.fillMaxWidth().padding(24.dp), contentAlignment = Alignment.Center) { CircularProgressIndicator(color = colors.accent) }
+                    Box(Modifier.fillMaxWidth().padding(24.dp), contentAlignment = Alignment.Center) { CodegSpinner(size = 24.dp) }
                 } else {
                     Column(Modifier.fillMaxWidth()) {
                         val parent = path.substringBeforeLast('/', "")
                         if (parent.isNotEmpty() && parent != path) {
-                            BrowserRow("..", hasChildren = false, icon = Icons.Rounded.ArrowUpward) { path = parent }
+                            BrowserRow("..", hasChildren = false, icon = Lucide.ArrowUp) { path = parent }
                         }
                         dirs.forEach { entry ->
-                            BrowserRow(entry.name, entry.hasChildren, Icons.Rounded.Folder) { path = entry.path }
+                            BrowserRow(entry.name, entry.hasChildren, Lucide.Folder) { path = entry.path }
                         }
                     }
                 }
@@ -99,9 +95,9 @@ private fun BrowserRow(name: String, hasChildren: Boolean, icon: ImageVector, on
     CodegListRow(
         title = name,
         onClick = onClick,
-        leading = { Icon(icon, null, tint = colors.accent, modifier = Modifier.size(20.dp)) },
+        leading = { Icon(icon, null, tint = colors.accent, modifier = Modifier.size(16.dp)) },
         trailing = {
-            if (hasChildren) Icon(Icons.AutoMirrored.Rounded.KeyboardArrowRight, null, tint = colors.textSecondary, modifier = Modifier.size(18.dp))
+            if (hasChildren) Icon(Lucide.ChevronRight, null, tint = colors.textSecondary, modifier = Modifier.size(16.dp))
         },
     )
 }

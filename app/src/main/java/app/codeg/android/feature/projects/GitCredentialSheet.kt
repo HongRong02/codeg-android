@@ -8,8 +8,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Key
 import app.codeg.android.core.designsystem.component.CodegCheckbox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
@@ -42,6 +40,9 @@ import app.codeg.android.core.model.GitCredentials
 import app.codeg.android.core.network.displayMessage
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.launch
+import androidx.compose.runtime.LaunchedEffect
+import app.codeg.android.core.designsystem.component.LocalCodegToaster
+import app.codeg.android.core.designsystem.icon.*
 
 /**
  * Prompts for git remote credentials when a push/pull/fetch fails to authenticate,
@@ -58,6 +59,8 @@ fun GitCredentialSheet(
     prompt: GitCredentialPrompt,
 ) {
     val context = LocalContext.current
+    val toaster = LocalCodegToaster.current
+    val failureTitle = stringResource(R.string.t56_operation_failed)
     val colors = CodegTheme.colors
     val scope = rememberCoroutineScope()
     val uriHandler = LocalUriHandler.current
@@ -68,6 +71,9 @@ fun GitCredentialSheet(
     var saveCredentials by remember { mutableStateOf(true) }
     var submitting by remember { mutableStateOf(false) }
     var error by remember { mutableStateOf<String?>(null) }
+    LaunchedEffect(error) {
+        error?.let { toaster.error(failureTitle, it); error = null }
+    }
 
     val hostLabel = prompt.host ?: "github.com"
     val serverUrl = prompt.host?.let { "https://$it" } ?: "https://github.com"
@@ -121,7 +127,7 @@ fun GitCredentialSheet(
         PrimaryButton(
             text = stringResource(R.string.cred_authenticate),
             onClick = { submit() },
-            icon = Icons.Rounded.Key,
+            icon = Lucide.KeyRound,
             enabled = canSubmit,
             loading = submitting,
         )
@@ -156,8 +162,7 @@ fun GitCredentialSheet(
                     Text(stringResource(R.string.cred_save), fontSize = 14.sp, color = colors.textPrimary)
                 }
             }
-            // TODO(T52): CodegToaster for operation errors.
-            error?.let { Banner(it, colors.danger, colors.danger) }
+
         }
     }
 }

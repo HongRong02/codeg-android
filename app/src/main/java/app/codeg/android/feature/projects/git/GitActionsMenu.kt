@@ -1,8 +1,6 @@
 package app.codeg.android.feature.projects.git
 
 import androidx.compose.foundation.layout.Box
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.MoreVert
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -20,6 +18,10 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import app.codeg.android.R
 import app.codeg.android.core.designsystem.component.*
 import app.codeg.android.feature.projects.ProjectDetailViewModel
+import androidx.compose.foundation.layout.size
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import app.codeg.android.core.designsystem.icon.*
 
 /**
  * Shared insertion point for the project Git actions added by T17–T20. Each task
@@ -99,7 +101,7 @@ fun GitActionsMenu(onSwitchBranch: () -> Unit, enabled: Boolean = true) {
     var expanded by remember { mutableStateOf(false) }
     Box {
         CodegIconButton(onClick = { expanded = true }, enabled = enabled) {
-            Icon(Icons.Rounded.MoreVert, contentDescription = stringResource(R.string.project_detail_actions))
+            Icon(Lucide.EllipsisVertical, contentDescription = stringResource(R.string.project_detail_actions), modifier = Modifier.size(16.dp))
         }
         CodegDropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
             // T05: existing branch picker

@@ -20,14 +20,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.CallSplit
-import androidx.compose.material.icons.rounded.Cloud
-import androidx.compose.material.icons.rounded.CloudDownload
-import androidx.compose.material.icons.rounded.CloudOff
-import androidx.compose.material.icons.rounded.CloudUpload
-import androidx.compose.material.icons.rounded.History
-import androidx.compose.material.icons.rounded.Sync
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -60,6 +52,7 @@ import app.codeg.android.core.model.GitPushInfo
 import app.codeg.android.core.network.ApiError
 import app.codeg.android.core.network.CodegClient
 import java.time.OffsetDateTime
+import app.codeg.android.core.designsystem.icon.*
 
 /**
  * A folder's commit history (git_log) plus a sync header (branch → remote, with
@@ -117,15 +110,15 @@ fun FolderCommitsView(viewModel: ProjectDetailViewModel, client: CodegClient, ro
                 r.isFailure -> {
                     val e = r.exceptionOrNull()
                     if (!isRepo) {
-                        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { EmptyState(Icons.Rounded.History, stringResource(R.string.commits_not_a_git_repo), stringResource(R.string.commits_not_a_git_repo_message)) }
+                        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { EmptyState(Lucide.History, stringResource(R.string.commits_not_a_git_repo), stringResource(R.string.commits_not_a_git_repo_message)) }
                     } else {
-                        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { InlineError(Icons.Rounded.History, stringResource(R.string.commits_load_failed), e?.message ?: stringResource(R.string.commits_error), onRetry = { result = null }) }
+                        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { InlineError(Lucide.History, stringResource(R.string.commits_load_failed), e?.message ?: stringResource(R.string.commits_error), onRetry = { result = null }) }
                     }
                 }
                 else -> {
                     val log = r.getOrNull() ?: GitLogResult()
                     if (log.entries.isEmpty()) {
-                        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { EmptyState(Icons.Rounded.History, stringResource(R.string.commits_empty_title), stringResource(R.string.commits_empty_message)) }
+                        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { EmptyState(Lucide.History, stringResource(R.string.commits_empty_title), stringResource(R.string.commits_empty_message)) }
                     } else {
                         LazyColumn(Modifier.fillMaxSize(), contentPadding = PaddingValues(horizontal = 12.dp, vertical = 4.dp)) {
                             items(log.entries, key = { it.fullHash }) { entry -> CommitRow(entry) { commit = entry } }
@@ -157,7 +150,7 @@ private fun SyncHeader(
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-            Icon(Icons.AutoMirrored.Rounded.CallSplit, contentDescription = null, tint = colors.textSecondary, modifier = Modifier.size(14.dp))
+            Icon(Lucide.GitFork, contentDescription = null, tint = colors.textSecondary, modifier = Modifier.size(16.dp))
             Text(branch ?: "—", fontSize = 12.sp, fontWeight = FontWeight.Medium, color = colors.textPrimary, fontFamily = FontFamily.Monospace)
             if (trackingRemote != null) {
                 Text("→", fontSize = 12.sp, color = colors.textSecondary)
@@ -169,9 +162,9 @@ private fun SyncHeader(
             }
         }
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            SyncButton(Icons.Rounded.CloudDownload, stringResource(R.string.sync_pull), enabled = hasRemote && !busy, onClick = onPull, modifier = Modifier.weight(1f))
-            SyncButton(Icons.Rounded.CloudUpload, stringResource(R.string.sync_push), enabled = hasRemote && !busy, onClick = onPush, badge = unpushed.takeIf { it > 0 }, modifier = Modifier.weight(1f))
-            SyncButton(Icons.Rounded.Sync, stringResource(R.string.sync_fetch), enabled = hasRemote && !busy, onClick = onFetch, modifier = Modifier.weight(1f))
+            SyncButton(Lucide.CloudDownload, stringResource(R.string.sync_pull), enabled = hasRemote && !busy, onClick = onPull, modifier = Modifier.weight(1f))
+            SyncButton(Lucide.CloudUpload, stringResource(R.string.sync_push), enabled = hasRemote && !busy, onClick = onPush, badge = unpushed.takeIf { it > 0 }, modifier = Modifier.weight(1f))
+            SyncButton(Lucide.RefreshCw, stringResource(R.string.sync_fetch), enabled = hasRemote && !busy, onClick = onFetch, modifier = Modifier.weight(1f))
         }
     }
 }
@@ -204,7 +197,7 @@ private fun CommitRow(entry: GitLogEntry, onClick: () -> Unit) {
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                 CodegBadge(text = entry.hash, variant = CodegBadgeVariant.Outline)
                 entry.pushed?.let { pushed ->
-                    Icon(if (pushed) Icons.Rounded.Cloud else Icons.Rounded.CloudOff, null, tint = colors.textSecondary, modifier = Modifier.size(14.dp))
+                    Icon(if (pushed) Lucide.CloudCheck else Lucide.CloudOff, null, tint = colors.textSecondary, modifier = Modifier.size(16.dp))
                 }
             }
         },
@@ -236,7 +229,7 @@ private fun CommitDetail(client: CodegClient, rootPath: String, entry: GitLogEnt
                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     Text(entry.author, fontSize = 12.sp, color = colors.textSecondary)
                     Text(relativeDate(entry.date), fontSize = 12.sp, color = colors.textSecondary)
-                    entry.pushed?.let { Icon(if (it) Icons.Rounded.Cloud else Icons.Rounded.CloudOff, null, tint = colors.textSecondary, modifier = Modifier.size(13.dp)) }
+                    entry.pushed?.let { Icon(if (it) Lucide.CloudCheck else Lucide.CloudOff, null, tint = colors.textSecondary, modifier = Modifier.size(16.dp)) }
                 }
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(entry.fullHash, fontFamily = FontFamily.Monospace, fontSize = 12.sp, color = colors.textSecondary, maxLines = 1, modifier = Modifier.weight(1f, fill = false))
@@ -269,7 +262,6 @@ private fun CommitDetail(client: CodegClient, rootPath: String, entry: GitLogEnt
         }
     }
 }
-
 
 private fun relativeDate(iso: String): String =
     runCatching { RelativeTime.compact(OffsetDateTime.parse(iso).toInstant()) }.getOrDefault(iso.take(10))

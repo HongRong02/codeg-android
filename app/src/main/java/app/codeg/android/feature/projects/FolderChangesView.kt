@@ -13,12 +13,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.Undo
-import androidx.compose.material.icons.rounded.Add
-import androidx.compose.material.icons.rounded.CheckCircle
-import androidx.compose.material.icons.rounded.DeleteOutline
-import androidx.compose.material.icons.rounded.Difference
 import app.codeg.android.core.designsystem.component.CodegConfirmDialog
 import app.codeg.android.core.designsystem.component.CodegSheet
 import app.codeg.android.core.designsystem.component.CodegListRow
@@ -51,6 +45,7 @@ import app.codeg.android.core.model.GitChange
 import app.codeg.android.core.model.GitStatusEntry
 import app.codeg.android.core.network.ApiError
 import app.codeg.android.core.network.CodegClient
+import app.codeg.android.core.designsystem.icon.*
 
 /**
  * Working-tree changes (git_status) with a per-file working diff, a commit
@@ -98,15 +93,15 @@ fun FolderChangesView(
                 r.isFailure -> {
                     val e = r.exceptionOrNull()
                     if (e is ApiError.Server && e.code == "not_a_git_repository") {
-                        Centered { EmptyState(Icons.Rounded.Difference, stringResource(R.string.commits_not_a_git_repo), stringResource(R.string.commits_not_a_git_repo_message)) }
+                        Centered { EmptyState(Lucide.FileDiff, stringResource(R.string.commits_not_a_git_repo), stringResource(R.string.commits_not_a_git_repo_message)) }
                     } else {
-                        Centered { InlineError(Icons.Rounded.Difference, stringResource(R.string.changes_load_failed), e?.message ?: stringResource(R.string.files_error), onRetry = { result = null }) }
+                        Centered { InlineError(Lucide.FileDiff, stringResource(R.string.changes_load_failed), e?.message ?: stringResource(R.string.files_error), onRetry = { result = null }) }
                     }
                 }
                 else -> {
                     val entries = r.getOrDefault(emptyList())
                     if (entries.isEmpty()) {
-                        Centered { EmptyState(Icons.Rounded.CheckCircle, stringResource(R.string.changes_clean_title), stringResource(R.string.changes_clean_message)) }
+                        Centered { EmptyState(Lucide.CircleCheckBig, stringResource(R.string.changes_clean_title), stringResource(R.string.changes_clean_message)) }
                     } else {
                         LazyColumn(Modifier.fillMaxSize(), contentPadding = PaddingValues(horizontal = 12.dp, vertical = 4.dp)) {
                             items(entries, key = { it.file }) { entry ->
@@ -123,7 +118,7 @@ fun FolderChangesView(
             PrimaryButton(
                 text = stringResource(R.string.changes_commit_button),
                 onClick = onCommit,
-                icon = Icons.Rounded.CheckCircle,
+                icon = Lucide.CircleCheckBig,
                 enabled = !ui.gitBusy,
                 modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
             )
@@ -176,12 +171,12 @@ private fun FileActions(
             GitChangeBadge(entry.change)
             Text(entry.path.substringAfterLast('/'), fontWeight = FontWeight.SemiBold, color = colors.textPrimary, maxLines = 1, overflow = TextOverflow.Ellipsis)
         }
-        ActionRow(Icons.Rounded.Difference, stringResource(R.string.changes_action_view_diff), colors.textPrimary, onViewDiff)
-        ActionRow(Icons.Rounded.Add, stringResource(R.string.changes_action_stage), colors.textPrimary, onStage)
+        ActionRow(Lucide.FileDiff, stringResource(R.string.changes_action_view_diff), colors.textPrimary, onViewDiff)
+        ActionRow(Lucide.Plus, stringResource(R.string.changes_action_stage), colors.textPrimary, onStage)
         if (entry.change == GitChange.UNTRACKED) {
-            ActionRow(Icons.Rounded.DeleteOutline, stringResource(R.string.changes_action_delete), colors.danger, onDelete)
+            ActionRow(Lucide.Trash2, stringResource(R.string.changes_action_delete), colors.danger, onDelete)
         } else {
-            ActionRow(Icons.AutoMirrored.Rounded.Undo, stringResource(R.string.changes_action_discard), colors.danger, onDiscard)
+            ActionRow(Lucide.Undo2, stringResource(R.string.changes_action_discard), colors.danger, onDiscard)
         }
     }
 }
@@ -191,7 +186,7 @@ private fun ActionRow(icon: androidx.compose.ui.graphics.vector.ImageVector, lab
     CodegListRow(
         title = label,
         onClick = onClick,
-        leading = { Icon(icon, contentDescription = null, tint = tint, modifier = Modifier.size(20.dp)) },
+        leading = { Icon(icon, contentDescription = null, tint = tint, modifier = Modifier.size(16.dp)) },
     )
 }
 
@@ -216,10 +211,10 @@ private fun WorkingDiff(client: CodegClient, rootPath: String, file: String) {
     val r = result
     when {
         r == null -> Centered { LoadingView(stringResource(R.string.common_loading)) }
-        r.isFailure -> Centered { InlineError(Icons.Rounded.Difference, stringResource(R.string.changes_diff_load_failed), r.exceptionOrNull()?.message ?: stringResource(R.string.files_error), onRetry = { result = null }) }
+        r.isFailure -> Centered { InlineError(Lucide.FileDiff, stringResource(R.string.changes_diff_load_failed), r.exceptionOrNull()?.message ?: stringResource(R.string.files_error), onRetry = { result = null }) }
         else -> {
             val files = UnifiedDiff.parse(r.getOrDefault(""))
-            if (files == null) Centered { EmptyState(Icons.Rounded.Difference, stringResource(R.string.changes_no_diff_title), stringResource(R.string.changes_no_diff_message)) }
+            if (files == null) Centered { EmptyState(Lucide.FileDiff, stringResource(R.string.changes_no_diff_title), stringResource(R.string.changes_no_diff_message)) }
             else LazyColumn(Modifier.fillMaxSize().padding(horizontal = 12.dp, vertical = 8.dp)) { item { DiffView(files) } }
         }
     }

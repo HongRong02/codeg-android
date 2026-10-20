@@ -23,11 +23,16 @@ fun BranchManageSheet(viewModel: BranchManageViewModel, onDismiss: () -> Unit) {
     var force by remember { mutableStateOf(false) }
     var deleteReady by remember { mutableStateOf(false) }
     val colors = CodegTheme.colors
+    val toaster = LocalCodegToaster.current
+    val failureTitle = stringResource(R.string.t56_operation_failed)
+    val doneTitle = stringResource(R.string.t56_operation_completed)
+    LaunchedEffect(ui.error, ui.completed) {
+        ui.error?.let { toaster.error(failureTitle, it) }
+        if (ui.completed) toaster.success(doneTitle)
+    }
     CodegSheet(title = stringResource(R.string.bm_title), onDismiss = { if (!ui.busy) onDismiss() }) {
         Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-            // TODO(T52): CodegToaster for operation feedback.
-            ui.error?.let { Text(it, color = colors.danger) }
-            if (ui.completed) Text(stringResource(R.string.bm_done), color = colors.textSecondary)
+            if (ui.branches.isEmpty()) ui.error?.let { Text(it, color = colors.danger) }
             ui.conflict?.let { Text(stringResource(R.string.bm_conflicts, it.joinToString("\n")), color = colors.danger) }
             if (ui.busy) LoadingView(stringResource(R.string.common_loading))
             CodegButton(size = CodegButtonSize.Sm, variant = CodegButtonVariant.Ghost, onClick = { viewModel.refresh() }, enabled = !ui.busy) { Text(stringResource(R.string.bm_refresh)) }
@@ -49,14 +54,15 @@ fun BranchManageSheet(viewModel: BranchManageViewModel, onDismiss: () -> Unit) {
                     }
                 }
             }
-            // TODO(T53): CodegCollapsible for branch comparison.
             ui.diff?.let { raw ->
-                CodegSectionHeader(title = stringResource(R.string.bm_comparison, ui.diffBranch.orEmpty()))
-                val files = remember(raw) { UnifiedDiff.parse(raw) }
-                when {
-                    raw.isBlank() -> Text(stringResource(R.string.bm_no_diff), color = colors.textSecondary)
-                    files.isNullOrEmpty() -> Text(raw, color = colors.textPrimary)
-                    else -> DiffView(files)
+                var expanded by remember(raw) { mutableStateOf(true) }
+                CodegCollapsible(expanded, { expanded = it }, header = { CodegSectionHeader(title = stringResource(R.string.bm_comparison, ui.diffBranch.orEmpty())) }) {
+                    val files = remember(raw) { UnifiedDiff.parse(raw) }
+                    when {
+                        raw.isBlank() -> Text(stringResource(R.string.bm_no_diff), color = colors.textSecondary)
+                        files.isNullOrEmpty() -> Text(raw, color = colors.textPrimary)
+                        else -> DiffView(files)
+                    }
                 }
             }
         }
@@ -64,17 +70,17 @@ fun BranchManageSheet(viewModel: BranchManageViewModel, onDismiss: () -> Unit) {
     deleting?.let { branch ->
         val message = stringResource(if (branch.isRemote) R.string.bm_confirm_remote else R.string.bm_confirm_local, branch.name)
         if (!deleteReady) {
-            CodegDialog(title = stringResource(R.string.bm_delete), description = message,
-                onDismiss = { deleting = null }, footer = {
-                    CodegButton(onClick = { deleting = null }, variant = CodegButtonVariant.Ghost) { Text(stringResource(R.string.bm_cancel)) }
-                    CodegButton(onClick = { deleteReady = true }) { Text(stringResource(R.string.bm_delete)) }
-                }) {
-                CodegCheckbox(checked = force, onCheckedChange = { force = it }, label = stringResource(R.string.bm_force))
-            }
+            CodegConfirmDialog(title = stringResource(R.string.bm_delete), message = message,
+                target = branch.name, confirmLabel = stringResource(R.string.bm_delete), destructive = true,
+                busy = ui.busy, onConfirm = { deleteReady = true }, onDismiss = { deleting = null },
+                content = {
+                    CodegCheckbox(checked = force, onCheckedChange = { force = it }, enabled = !ui.busy,
+                        label = stringResource(R.string.bm_force))
+                })
         } else {
             CodegConfirmDialog(title = stringResource(R.string.bm_delete), message = message,
                 target = branch.name, confirmLabel = stringResource(R.string.bm_delete), destructive = true,
-                onConfirm = { deleting = null; viewModel.delete(branch, force) }, onDismiss = { deleting = null })
+                busy = ui.busy, onConfirm = { deleting = null; viewModel.delete(branch, force) }, onDismiss = { deleting = null })
         }
     }
     if (ui.credentialsRequested) {

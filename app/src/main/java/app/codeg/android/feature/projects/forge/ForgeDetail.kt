@@ -69,7 +69,7 @@ internal fun ForgeDetail(ui: ForgeUi, vm: ForgeViewModel, modifier: Modifier = M
             }
             if (ui.comments.has_next) run { CodegButton(variant = CodegButtonVariant.Ghost, onClick = vm::moreComments, enabled = !ui.busy) { Text(stringResource(R.string.forge_more_comments)) } }
         }
-        CodegTextField(comment, { if (!ui.busy) comment = it }, label = stringResource(R.string.forge_comment), modifier = Modifier.fillMaxWidth(), singleLine = false)
+        CodegTextField(comment, { if (!ui.busy) comment = it }, label = stringResource(R.string.forge_comment), enabled = !ui.busy, modifier = Modifier.fillMaxWidth(), singleLine = false, minLines = 3, maxLines = 8)
         CodegButton(variant = CodegButtonVariant.Ghost, onClick = { vm.comment(comment) { comment = "" } }, enabled = !ui.busy && comment.isNotBlank()) { Text(stringResource(R.string.forge_send)) }
     }
     confirmation?.let { action ->
@@ -80,6 +80,7 @@ internal fun ForgeDetail(ui: ForgeUi, vm: ForgeViewModel, modifier: Modifier = M
             target = "#${row.number} ${row.title}",
             confirmLabel = stringResource(R.string.forge_confirm),
             destructive = action == "merge" || row.state == "open",
+            busy = ui.busy,
             onConfirm = { confirmation = null; if (action == "merge") vm.merge(method) else vm.setState() },
             onDismiss = { confirmation = null },
         )
