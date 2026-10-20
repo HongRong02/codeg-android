@@ -31,12 +31,19 @@
 | P-006 设置首页暗色 | ✅ | B04-1 | `shots/r1-settings-dark.png`：行透明，不再出现深色方块 |
 | P-070 外观 → 主题分段标签暗色 | ✅ | B04-5 | `shots/r1-settings-dark.png`（外观页）：选中项只有一层底色加边框 |
 | P-070 外观 → 预览"主按钮" | ⚠️ | | 仍是胶囊形，网页端按钮为 `rounded-md`（第 2 轮处理） |
+| P-039 项目详情暗色 | ✅ | B04-4、B04-5 | `shots/r1-project-dark.png`：项目头像显示文件夹图标；"文件/更改/提交"标签选中项只有一层 |
+| P-033 文件夹页暗色 | ✅ | B04-1 | `shots/r1-folders-dark.png`：卡片紧凑 |
+| P-047 Git 操作菜单暗色 | ✅ | B04-3 | `shots/r1-gitmenu-dark.png`：菜单与屏幕右边缘留有边距 |
+| P-033 删除分组确认（只取消） | ✅ | B04-2 | `shots/r1-confirm-dark.png`：显示目标"Mobile"；按钮垂直对齐，取消为 outline，删除为暗色 destructive；取消后分组保留 |
+| P-005 底栏滚动收起/恢复 | ❌ | B10 | 往下滚收起、往上滚恢复 ✅；但列表已在顶部而底栏处于收起状态时（滚动后进子页面再返回、切换标签）无法恢复，只能先往下滚再往上滚 |
 
 ## 待归档的 bug（测试结束后按区域写成 bug 单）
 - ~~B01 区域 app/main~~ 已由 `fix/B01-app` 修复并复测通过；：首次配置流程缺少 Toast 宿主（`A/app/CodegApp.kt` 的 `OnboardingRoot`，或把宿主上移到 `CodegApp` 根部）。来源：T58。
 - B02 区域 misc（core/update）：debug 版不应检查/提示正式版更新（或按 applicationId 区分）。来源：T41。
 - B04 区域 designsystem（`ListRows.kt`，可能还有 `Cards.kt`）：`CodegListRow` 默认带实心背景，放进卡片后暗色下显示为深色方块；行应透明，按下/选中才显示 `--accent`。另外列表型卡片上下多余空白。网页端设置首页对应的是左侧紧凑导航列表（`localhost:3082/settings`），不是带内边距的卡片。修法二选一：`CodegCard` 增加无内边距的列表用法，或者在调用处去掉。来源：T44/T49/T57、T48/T56。
 
+- B10 区域 main（`MainShell.kt` 底栏收起逻辑）：列表回到顶部或返回/切换页面时，底栏应自动恢复显示。来源：T58。
+- ~~B04/B05/B06/B07/B08~~ 已由 `fix/B04-designsystem` 修复并复测通过；
 - B05 区域 designsystem（`Dialogs.kt`）：确认框 footer 两个按钮未垂直对齐；取消按钮应为 outline。来源：T44。
 - B06 区域 designsystem（`Menus.kt`）：下拉菜单贴屏幕边缘，缺少碰撞边距（网页端 radix `collisionPadding`）。来源：T43。
 
