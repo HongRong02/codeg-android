@@ -28,7 +28,7 @@
 ## 开发任务（测试文档模式）
 - **不要触发 CI、不要本地 gradle**（本地也没有 JDK/SDK），不要运行 `gen_code_index.py`、不要提交 `.taskmaster/docs/code-index/`。协调方会在你交付后编译。
 - 写测试文档 `.taskmaster/docs/tests/Txx-<短名>.md`（按同目录的 `TEMPLATE.md`），和代码一起提交。
-- 没人实时替你编译，所以要格外注意：import 完整、`@Composable` 调用位置正确、`when` 分支穷尽、可见性正确、不声明和已有符号同名的公开函数（先在 code-index 里搜）、只用项目里已有的 API（拿不准就 grep 现有用法或 `~/.gradle` 缓存）。
+- 没人实时替你编译，所以要格外注意：import 完整、`@Composable` 调用位置正确、`when` 分支穷尽、可见性正确、调用标了实验性 API 的组件（如 `CodegTopBar`）时加 `@OptIn(ExperimentalMaterial3Api::class)`、不声明和已有符号同名的公开函数（先在 code-index 里搜）、只用项目里已有的 API（拿不准就 grep 现有用法或 `~/.gradle` 缓存）。
 - 有纯逻辑（解析、映射、状态推导）就在 `app/src/test/java/app/codeg/android/` 对应包下加 JVM 单测。
 - 推送：`git push -u origin HEAD:task/Txx-<短名>`。协调方如果把编译日志或检查意见发回给你，在同一分支上修改并重新推送。
 

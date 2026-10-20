@@ -25,18 +25,18 @@
 │     └─ T54 顶栏/状态视图 🔗　← 硬：无　⇠ 软：T51（同上）　冲突域：component/TopBar.kt、StateViews.kt（签名不变）
 │
 ├─ L3 设计系统收尾　[并行 ×2｜⟂]　门禁：L2 全部 🔗（T60 需要看到 T47–T50 的真实调用点）
-│  ├─ T59 组件预览页(debug) + DS 内部图标→lucide　🔄　← 硬：T43–T46、T51–T54
+│  ├─ T59 组件预览页(debug) + DS 内部图标→lucide　🔗　← 硬：T43–T46、T51–T54
 │  │     冲突域：feature/devgallery/**、MainActivity.kt(debug 入口)、component/{Menus,Sheets,Cards,Tabs,Toasts,Collapsible,Avatar,
 │  │             InputGroup,ImagePreview,Command,FolderBadge,TopBar,StateViews}.kt(只改图标)；共享追加点：MainShell 路由表 +1
-│  └─ T60 补齐 DS 接口缺口　🔄　← 硬：T43–T54（L2 报告的缺口：TextField enabled/IME/插槽、不确定进度、Spinner、
+│  └─ T60 补齐 DS 接口缺口　🔗　← 硬：T43–T54（L2 报告的缺口：TextField enabled/IME/插槽、不确定进度、Spinner、
 │        ConfirmDialog busy/content、泛型 Select、FilterChip 统一、ListRow 多行）
 │        冲突域：component/{TextFields,Feedback,Dialogs,Controls,Badges,Buttons,ListRows}.kt
 │
-├─ L4 页面接入：图标 / Toast / T53 组件 / 例外清理　[并行 ×4｜⟂ 按 feature 目录]　门禁：T60 🔗（T59 不阻塞，可同时在跑）
-│  ├─ T55 会话　📝　← 硬：T47、T51、T52、T53、T60　冲突域：同 T47
-│  ├─ T56 项目　📝　← 硬：T48、T51、T52、T53、T60　冲突域：同 T48
-│  ├─ T57 设置　📝　← 硬：T49、T51、T52、T53、T60　冲突域：同 T49
-│  └─ T58 其余 + 挂 CodegToasterHost　📝　← 硬：T50、T51、T52、T53、T60　冲突域：同 T50（MainShell 路由表不动）
+├─ L4 页面接入：图标 / Toast / T53 组件 / 例外清理　[并行 ×4｜⟂ 按 feature 目录]　门禁：T60 🔗 ✔（sit run 39423213750）
+│  ├─ T55 会话　🔄　← 硬：T47、T51、T52、T53、T60　冲突域：同 T47
+│  ├─ T56 项目　🔄　← 硬：T48、T51、T52、T53、T60　冲突域：同 T48
+│  ├─ T57 设置　🔄　← 硬：T49、T51、T52、T53、T60　冲突域：同 T49
+│  └─ T58 其余 + 挂 CodegToasterHost　🔄　← 硬：T50、T51、T52、T53、T60　冲突域：同 T50（MainShell 路由表不动）
 │
 │  关键路径：L2 组 A（T47–T50）→ T60 → T55–T58
 │
@@ -64,9 +64,12 @@
 | T52 | 🔗 | f072fcae-f347-4364-a502-9ad5161833f4 | 67 | task/T52-ds-toasts | 同上 |
 | T53 | 🔗 | 788c0647-a1cd-414c-a4c8-51819f9c721e | 68 | task/T53-ds-misc | 同上 |
 | T54 | 🔗 | 77981623-a22f-4ca7-99d2-5f8961749644 | 69 | task/T54-ds-topbar-states | 同上 |
-| T59 | 🔄 | dd63bb97-f84a-44ec-adc6-ac120bdcac5d | 70 | task/T59-ds-gallery | 测试文档模式 |
-| T60 | 🔄 | a6f5dc95-75fd-42bd-88f5-5e7599115b8e | 71 | task/T60-ds-gaps | 同上 |
-| T55–T58 | 📝 | | | | T60 合入 sit 后派发 |
+| T59 | 🔗 | dd63bb97-f84a-44ec-adc6-ac120bdcac5d | 70 | task/T59-ds-gallery | 到货编译缺 `@OptIn(ExperimentalMaterial3Api)`，协调方在原分支修复 |
+| T60 | 🔗 | a6f5dc95-75fd-42bd-88f5-5e7599115b8e | 71 | task/T60-ds-gaps | 同上 |
+| T55 | 🔄 | 4c2690d7-16c0-4867-ad35-9b1b16e7bbc1 | 73 | task/T55-ui2-sessions | 测试文档模式 |
+| T56 | 🔄 | e4ec5ff0-204a-4e3e-9b7f-f3557f1c7f3f | 74 | task/T56-ui2-projects | 同上 |
+| T57 | 🔄 | dd4875ba-3aa7-4367-b2f1-a14ddad43363 | 75 | task/T57-ui2-settings | 同上 |
+| T58 | 🔄 | 0d341a39-49d1-4307-97a9-4f19b56fc4b2 | 76 | task/T58-ui2-misc | 同上 |
 
 ## 修复记录
 
@@ -74,6 +77,7 @@
 |---|---|---|---|---|
 
 ## 复盘
+- 到货编译拦下的两次失败都是小问题（漏 import、漏 @OptIn），由协调方在原分支修好，各花 1 轮 CI。可以在 CONVENTIONS 的编译风险清单里加上 `@OptIn` 这一条。
 - L1：T43–T46 用的是旧的 CI 模式，11 次 verify，平均 4–5 分钟一次。
 - L2：T47–T50 报告了 DS 缺口（TextField 无 enabled/IME、无不确定进度、ConfirmDialog 无 busy、Select 只支持字符串），在 L3 增加 T60。教训：L1 组件的需求应当先扫描各页面的真实用法（参数清单）再定签名。
 - L1：T45 和 T46 都声明了 `CodegFilterChip`，是重载、编译通过。教训：冲突域应该按"符号"而不只是按文件来划分，第二阶段要统一成一个版本。
