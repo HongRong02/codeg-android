@@ -7,6 +7,8 @@ import androidx.lifecycle.viewModelScope
 import app.codeg.android.core.data.ServerRepository
 import app.codeg.android.core.datastore.ServerProfile
 import app.codeg.android.core.model.ConversationSummary
+import app.codeg.android.core.model.FolderGroup
+import app.codeg.android.core.network.ApiError
 import app.codeg.android.core.model.FolderDetail
 import app.codeg.android.core.network.CodegClient
 import app.codeg.android.core.network.displayMessage
@@ -74,13 +76,44 @@ class ProjectsViewModel @Inject constructor(
                 val conv = async { runCatching { c.listConversations() }.getOrDefault(emptyList()) }
                 f.await() to conv.await()
             }
+            val groups = try {
+                c.listFolderGroups()
+            } catch (e: CancellationException) { throw e
+            } catch (e: Exception) {
+                if (!unsupported(e)) throw e
+                null
+            }
             _ui.update {
-                it.copy(folders = result.first, conversations = result.second, hasLoaded = true, loading = false, refreshing = false)
+                it.copy(groups = groups.orEmpty(), groupsSupported = groups != null, folders = result.first, conversations = result.second, hasLoaded = true, loading = false, refreshing = false)
             }
         } catch (e: CancellationException) {
             throw e
         } catch (e: Exception) {
             _ui.update { it.copy(loading = false, refreshing = false, error = e.displayMessage(appContext)) }
+        }
+    }
+
+    private fun unsupported(e: Exception): Boolean = e is ApiError.Server &&
+        (e.status == 404 || e.code?.contains("unknown") == true ||
+            e.serverMessage.contains("unknown command", ignoreCase = true))
+
+    fun editGroup(action: suspend (CodegClient) -> Unit) {
+        val c = client ?: return
+        if (_ui.value.isBusy) return
+        _ui.update { it.copy(editing = true, error = null) }
+        viewModelScope.launch {
+            try {
+                action(c)
+                fetch(initial = false)
+            } catch (e: CancellationException) { throw e
+            } catch (e: Exception) {
+                _ui.update {
+                    if (unsupported(e)) it.copy(groupsSupported = false)
+                    else it.copy(error = e.displayMessage(appContext))
+                }
+            } finally {
+                _ui.update { it.copy(editing = false) }
+            }
         }
     }
 
@@ -120,6 +153,9 @@ class ProjectsViewModel @Inject constructor(
 }
 
 data class ProjectsUiState(
+    val groups: List<FolderGroup> = emptyList(),
+    val groupsSupported: Boolean = false,
+    val editing: Boolean = false,
     val folders: List<FolderDetail> = emptyList(),
     val conversations: List<ConversationSummary> = emptyList(),
     val loading: Boolean = false,
@@ -127,7 +163,7 @@ data class ProjectsUiState(
     val hasLoaded: Boolean = false,
     val error: String? = null,
 ) {
-    val isBusy: Boolean get() = loading || refreshing
+    val isBusy: Boolean get() = loading || refreshing || editing
     fun runningCount(folderId: Int): Int =
         conversations.count { it.folderId == folderId && it.status.isLive }
 }

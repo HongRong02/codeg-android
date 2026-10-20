@@ -25,4 +25,6 @@ data class FolderDetail(
     val color: String = "",
     val parentId: Int? = null,
     val isChat: Boolean = false,
+    val alias: String? = null,
+    val groupId: Int? = null,
 )
