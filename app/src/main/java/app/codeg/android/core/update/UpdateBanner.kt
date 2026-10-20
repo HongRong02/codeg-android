@@ -12,6 +12,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -23,6 +24,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.codeg.android.R
 import app.codeg.android.core.designsystem.theme.CodegTheme
+import app.codeg.android.core.designsystem.theme.CodegShapes
 import java.io.File
 
 @Composable
@@ -30,7 +32,7 @@ fun UpdateBanner(viewModel: UpdateViewModel = hiltViewModel()) {
     val state by viewModel.ui.collectAsStateWithLifecycle()
     val context = LocalContext.current
     var showNotes by remember { mutableStateOf(false) }
-    var pendingPermission by remember { mutableStateOf(false) }
+    var pendingPermission by rememberSaveable { mutableStateOf(false) }
     fun install(file: File) {
         try {
             val uri = FileProvider.getUriForFile(context, "${context.packageName}.updates", file)
@@ -66,8 +68,8 @@ fun UpdateBanner(viewModel: UpdateViewModel = hiltViewModel()) {
         val update = state.update
         if (update != null && state.dismissed != update.versionCode) {
             Row(Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 4.dp)
-                .clip(MaterialTheme.shapes.small)
-                .border(1.dp, colors.accent, MaterialTheme.shapes.small)
+                .clip(CodegShapes.extraSmall)
+                .border(1.dp, colors.accent, CodegShapes.extraSmall)
                 .padding(horizontal = 14.dp, vertical = 4.dp), verticalAlignment = Alignment.CenterVertically) {
                 Text(stringResource(R.string.update_available, update.versionName), color = colors.textPrimary, modifier = Modifier.weight(1f))
                 TextButton(onClick = { showNotes = true }) { Text(stringResource(R.string.update_action)) }

@@ -7,7 +7,7 @@ import io.ktor.client.statement.bodyAsText
 import kotlinx.coroutines.CancellationException
 import kotlinx.serialization.json.*
 
- data class AppUpdate(
+data class AppUpdate(
     val versionName: String,
     val versionCode: Int,
     val notes: String,

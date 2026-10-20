@@ -1,6 +1,5 @@
 package app.codeg.android.core.update
 
-import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
@@ -10,7 +9,10 @@ import androidx.lifecycle.viewModelScope
 import app.codeg.android.BuildConfig
 import app.codeg.android.R
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -20,7 +22,7 @@ import java.io.File
 import javax.inject.Inject
 import javax.inject.Singleton
 
- data class UpdateUi(
+data class UpdateUi(
     val update: AppUpdate? = null,
     val dismissed: Int? = null,
     val checking: Boolean = false,
@@ -39,6 +41,7 @@ class UpdateRepository @Inject constructor(
     private val mutable = MutableStateFlow(UpdateUi())
     val state = mutable.asStateFlow()
     private val checker = UpdateChecker()
+    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
     private var started = false
     private val lastCheck = longPreferencesKey("apk_update_last_check")
 
@@ -46,40 +49,44 @@ class UpdateRepository @Inject constructor(
         if (mutable.value.checking) return
         if (!manual && started) return
         started = true
-        mutable.value = mutable.value.copy(checking = true, message = null)
+        mutable.update { it.copy(checking = true, message = null) }
         try {
             val now = System.currentTimeMillis()
             val previous = preferences.data.first()[lastCheck] ?: 0L
             if (!manual && now >= previous && now - previous < 6 * 60 * 60 * 1000L) return
             preferences.edit { it[lastCheck] = now }
             val update = checker.check(BuildConfig.VERSION_CODE, manual)
-            mutable.value = mutable.value.copy(update = update, message = if (manual && update == null) R.string.update_latest else null)
+            mutable.update { it.copy(update = update, message = if (manual && update == null) R.string.update_latest else null) }
         } catch (e: CancellationException) {
             throw e
         } catch (_: Exception) {
-            if (manual) mutable.value = mutable.value.copy(message = R.string.update_check_failed)
+            if (manual) mutable.update { it.copy(message = R.string.update_check_failed) }
         } finally {
-            mutable.value = mutable.value.copy(checking = false)
+            mutable.update { it.copy(checking = false) }
         }
     }
 
-    fun dismiss() { mutable.value = mutable.value.copy(dismissed = mutable.value.update?.versionCode) }
-    fun installerHandled() { mutable.value = mutable.value.copy(installer = null) }
-    fun installFailed() { mutable.value = mutable.value.copy(message = R.string.update_install_failed) }
+    fun dismiss() { mutable.update { it.copy(dismissed = it.update?.versionCode) } }
+    fun installerHandled() { mutable.update { it.copy(installer = null) } }
+    fun installFailed() { mutable.update { it.copy(message = R.string.update_install_failed) } }
 
-    suspend fun download() {
+    fun download() {
+        scope.launch { downloadInBackground() }
+    }
+
+    private suspend fun downloadInBackground() {
         val update = mutable.value.update ?: return
         if (mutable.value.downloading) return
-        mutable.value = mutable.value.copy(downloading = true, progress = null, message = null)
+        mutable.update { it.copy(downloading = true, progress = null, message = null) }
         try {
-            val file = downloader.download(update) { progress -> mutable.value = mutable.value.copy(progress = progress) }
-            mutable.value = mutable.value.copy(installer = file)
+            val file = downloader.download(update) { progress -> mutable.update { it.copy(progress = progress) } }
+            mutable.update { it.copy(installer = file) }
         } catch (e: CancellationException) {
             throw e
         } catch (_: Exception) {
-            mutable.value = mutable.value.copy(message = R.string.update_download_failed)
+            mutable.update { it.copy(message = R.string.update_download_failed) }
         } finally {
-            mutable.value = mutable.value.copy(downloading = false)
+            mutable.update { it.copy(downloading = false) }
         }
     }
 }
@@ -88,7 +95,7 @@ class UpdateRepository @Inject constructor(
 class UpdateViewModel @Inject constructor(private val repository: UpdateRepository) : ViewModel() {
     val ui = repository.state
     fun check(manual: Boolean = false) { viewModelScope.launch { repository.check(manual) } }
-    fun download() { viewModelScope.launch { repository.download() } }
+    fun download() = repository.download()
     fun dismiss() = repository.dismiss()
     fun installerHandled() = repository.installerHandled()
     fun installFailed() = repository.installFailed()
