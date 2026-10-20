@@ -36,8 +36,8 @@ import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
+import app.codeg.android.core.designsystem.component.CodegTopBar
+import app.codeg.android.core.designsystem.component.CodegIconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -61,6 +61,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.codeg.android.R
 import app.codeg.android.core.designsystem.component.CodegFilterChip
 import app.codeg.android.core.designsystem.component.CodegTextField
+import app.codeg.android.core.designsystem.theme.CodegShapes
+import app.codeg.android.core.designsystem.theme.withOpacity
 import app.codeg.android.core.designsystem.theme.CodegTheme
 import app.codeg.android.core.model.ChatEventCatalog
 import app.codeg.android.core.model.ChatLanguageCatalog
@@ -76,12 +78,12 @@ fun ChatGlobalSettingsDialog(onDismiss: () -> Unit, viewModel: ChatGlobalSetting
 
     Dialog(onDismissRequest = onDismiss, properties = DialogProperties(usePlatformDefaultWidth = false)) {
         Column(Modifier.fillMaxSize().background(colors.bg).windowInsetsPadding(WindowInsets.safeDrawing)) {
-            TopAppBar(
-                title = { Text(stringResource(R.string.chatglobal_title), maxLines = 1, overflow = TextOverflow.Ellipsis) },
+            CodegTopBar(
+                title = stringResource(R.string.chatglobal_title),
                 navigationIcon = {
-                    IconButton(onClick = onDismiss) { Icon(Icons.Rounded.Close, contentDescription = stringResource(R.string.chatglobal_close_cd), tint = colors.textPrimary) }
+                    CodegIconButton(onClick = onDismiss) { Icon(Icons.Rounded.Close, contentDescription = stringResource(R.string.chatglobal_close_cd), tint = colors.textPrimary) }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent, titleContentColor = colors.textPrimary),
+                showDivider = true,
             )
             if (ui.loading) {
                 Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { CircularProgressIndicator(color = colors.accent) }
@@ -96,7 +98,7 @@ fun ChatGlobalSettingsDialog(onDismiss: () -> Unit, viewModel: ChatGlobalSetting
                             onClick = { viewModel.setCommandPrefix(prefixField) },
                             modifier = Modifier.padding(top = 8.dp),
                             shape = RoundedCornerShape(8.dp),
-                            colors = ButtonDefaults.filledTonalButtonColors(containerColor = colors.accent.copy(alpha = 0.14f), contentColor = colors.accent),
+                            colors = ButtonDefaults.filledTonalButtonColors(containerColor = colors.accent.withOpacity(0.14f), contentColor = colors.accent),
                         ) {
                             Text(stringResource(R.string.chatglobal_save_prefix))
                         }
@@ -113,13 +115,13 @@ fun ChatGlobalSettingsDialog(onDismiss: () -> Unit, viewModel: ChatGlobalSetting
 
                     // Event filter.
                     GlobalSection(stringResource(R.string.chatglobal_forwarded_events_title), stringResource(R.string.chatglobal_forwarded_events_subtitle)) {
-                        Column(Modifier.fillMaxWidth().webSurface(RoundedCornerShape(CodegTheme.dimens.radiusMd))) {
+                        Column(Modifier.fillMaxWidth().webSurface(CodegShapes.extraSmall)) {
                             ChatEventCatalog.all.forEachIndexed { index, item ->
-                                if (index > 0) HorizontalDivider(thickness = Dp.Hairline, color = colors.textPrimary.copy(alpha = 0.06f))
+                                if (index > 0) HorizontalDivider(thickness = Dp.Hairline, color = colors.web.border)
                                 Row(Modifier.fillMaxWidth().padding(horizontal = 14.dp, vertical = 11.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                                     Column(Modifier.weight(1f)) {
                                         Text(item.label, fontSize = 14.sp, color = colors.textPrimary)
-                                        item.note?.let { Text(it, fontSize = 11.sp, color = colors.textTertiary) }
+                                        item.note?.let { Text(it, fontSize = 11.sp, color = colors.web.mutedForeground) }
                                     }
                                     Switch(checked = ui.enabledEvents.contains(item.id), onCheckedChange = { viewModel.toggleEvent(item.id, it) }, colors = SwitchDefaults.colors(checkedTrackColor = colors.accent, checkedThumbColor = colors.onAccent))
                                 }
@@ -131,7 +133,7 @@ fun ChatGlobalSettingsDialog(onDismiss: () -> Unit, viewModel: ChatGlobalSetting
                     GlobalSection(stringResource(R.string.chatglobal_webhooks_title), stringResource(R.string.chatglobal_webhooks_subtitle)) {
                         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                             ui.webhooks.forEachIndexed { index, hook ->
-                                Row(Modifier.fillMaxWidth().webSurface(RoundedCornerShape(CodegTheme.dimens.radiusMd)).padding(start = 12.dp, top = 4.dp, bottom = 4.dp, end = 4.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                                Row(Modifier.fillMaxWidth().webSurface(CodegShapes.extraSmall).padding(start = 12.dp, top = 4.dp, bottom = 4.dp, end = 4.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                                     Text(hook.url, fontSize = 12.sp, fontFamily = FontFamily.Monospace, color = colors.textPrimary, modifier = Modifier.weight(1f), maxLines = 1, overflow = TextOverflow.Ellipsis)
                                     Switch(checked = hook.enabled, onCheckedChange = { viewModel.setWebhookEnabled(index, it) }, colors = SwitchDefaults.colors(checkedTrackColor = colors.accent, checkedThumbColor = colors.onAccent))
                                     IconButton(onClick = { viewModel.removeWebhook(index) }) {
@@ -146,7 +148,7 @@ fun ChatGlobalSettingsDialog(onDismiss: () -> Unit, viewModel: ChatGlobalSetting
                                     enabled = newWebhook.isNotBlank(),
                                     modifier = Modifier.size(48.dp),
                                     shape = RoundedCornerShape(14.dp),
-                                    colors = IconButtonDefaults.filledIconButtonColors(containerColor = colors.accent.copy(alpha = 0.16f), contentColor = colors.accent),
+                                    colors = IconButtonDefaults.filledIconButtonColors(containerColor = colors.accent.withOpacity(0.16f), contentColor = colors.accent),
                                 ) {
                                     Icon(Icons.Rounded.Add, stringResource(R.string.chatglobal_add_webhook_cd))
                                 }
@@ -166,8 +168,8 @@ fun ChatGlobalSettingsDialog(onDismiss: () -> Unit, viewModel: ChatGlobalSetting
 private fun GlobalSection(title: String, subtitle: String, content: @Composable () -> Unit) {
     val colors = CodegTheme.colors
     Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-        Text(title, fontSize = 11.sp, fontWeight = FontWeight.SemiBold, color = colors.textTertiary, modifier = Modifier.padding(start = 4.dp))
+        Text(title, fontSize = 11.sp, fontWeight = FontWeight.SemiBold, color = colors.web.mutedForeground, modifier = Modifier.padding(start = 4.dp))
         content()
-        Text(subtitle, fontSize = 11.sp, color = colors.textTertiary, modifier = Modifier.padding(start = 4.dp))
+        Text(subtitle, fontSize = 11.sp, color = colors.web.mutedForeground, modifier = Modifier.padding(start = 4.dp))
     }
 }

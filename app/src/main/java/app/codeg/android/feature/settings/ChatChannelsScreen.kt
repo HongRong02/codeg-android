@@ -55,8 +55,8 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
+import app.codeg.android.core.designsystem.component.CodegTopBar
+import app.codeg.android.core.designsystem.component.CodegIconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -89,6 +89,9 @@ import app.codeg.android.core.designsystem.component.EmptyState
 import app.codeg.android.core.designsystem.component.InlineError
 import app.codeg.android.core.designsystem.component.LoadingView
 import app.codeg.android.core.designsystem.component.SecretField
+import app.codeg.android.core.designsystem.theme.PillShape
+import app.codeg.android.core.designsystem.theme.CodegShapes
+import app.codeg.android.core.designsystem.theme.withOpacity
 import app.codeg.android.core.designsystem.theme.CodegTheme
 import app.codeg.android.core.model.ChannelConfig
 import app.codeg.android.core.model.ChannelConnectionStatus
@@ -121,14 +124,14 @@ internal fun channelIcon(type: ChannelType): ImageVector = when (type) {
 internal fun statusTint(status: ChannelConnectionStatus): Color = when (status) {
     ChannelConnectionStatus.CONNECTED -> Color(0xFF4DC762)
     ChannelConnectionStatus.CONNECTING -> Color(0xFFFF9E4D)
-    ChannelConnectionStatus.DISCONNECTED -> CodegTheme.colors.textTertiary
+    ChannelConnectionStatus.DISCONNECTED -> CodegTheme.colors.web.mutedForeground
     ChannelConnectionStatus.ERROR -> CodegTheme.colors.danger
 }
 
 @Composable
 internal fun ChannelTypeAvatar(type: ChannelType, size: Dp) {
     val tint = channelTint(type)
-    Box(Modifier.size(size).clip(CircleShape).background(tint.copy(alpha = 0.16f)), contentAlignment = Alignment.Center) {
+    Box(Modifier.size(size).clip(CircleShape).background(tint.withOpacity(0.16f)), contentAlignment = Alignment.Center) {
         Icon(channelIcon(type), null, tint = tint, modifier = Modifier.size(size * 0.5f))
     }
 }
@@ -137,8 +140,8 @@ internal fun ChannelTypeAvatar(type: ChannelType, size: Dp) {
 internal fun ChannelStatusPill(status: ChannelConnectionStatus) {
     val tint = statusTint(status)
     Text(
-        status.label, fontSize = 10.sp, fontWeight = FontWeight.SemiBold, color = tint,
-        modifier = Modifier.clip(RoundedCornerShape(50)).background(tint.copy(alpha = 0.14f)).padding(horizontal = 7.dp, vertical = 2.dp),
+        status.label, fontSize = 12.sp, fontWeight = FontWeight.SemiBold, color = tint,
+        modifier = Modifier.clip(PillShape).background(tint.withOpacity(0.14f)).padding(horizontal = 7.dp, vertical = 2.dp),
     )
 }
 
@@ -168,7 +171,7 @@ fun ChatChannelsContent(viewModel: ChatChannelsViewModel = hiltViewModel()) {
                 }
             else -> LazyColumn(
                 Modifier.fillMaxSize(),
-                contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 12.dp, vertical = 8.dp),
+                contentPadding = androidx.compose.foundation.layout.PaddingValues(start = 12.dp, end = 12.dp, top = 12.dp, bottom = 88.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 if (ui.refreshError != null) {
@@ -196,19 +199,19 @@ fun ChatChannelsContent(viewModel: ChatChannelsViewModel = hiltViewModel()) {
                 }
                 item("general") {
                     Spacer(Modifier.height(8.dp))
-                    Text(stringResource(R.string.cc_section_general), fontSize = 11.sp, fontWeight = FontWeight.SemiBold, color = colors.textTertiary, modifier = Modifier.padding(start = 4.dp, bottom = 6.dp))
+                    Text(stringResource(R.string.cc_section_general), fontSize = 11.sp, fontWeight = FontWeight.SemiBold, color = colors.web.mutedForeground, modifier = Modifier.padding(start = 4.dp, bottom = 6.dp))
                     Row(
-                        Modifier.fillMaxWidth().webSurface(RoundedCornerShape(CodegTheme.dimens.radiusLg)).clickable { showGlobal = true }.padding(13.dp),
+                        Modifier.fillMaxWidth().webSurface(CodegShapes.small).clickable { showGlobal = true }.padding(13.dp),
                         verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(13.dp),
                     ) {
-                        Box(Modifier.size(40.dp).clip(RoundedCornerShape(8.dp)).background(colors.accent.copy(alpha = 0.16f)), contentAlignment = Alignment.Center) {
+                        Box(Modifier.size(40.dp).clip(RoundedCornerShape(8.dp)).background(colors.accent.withOpacity(0.16f)), contentAlignment = Alignment.Center) {
                             Icon(Icons.Rounded.Tune, null, tint = colors.accent, modifier = Modifier.size(20.dp))
                         }
                         Column(Modifier.weight(1f)) {
-                            Text(stringResource(R.string.cc_message_settings), fontSize = 15.sp, fontWeight = FontWeight.SemiBold, color = colors.textPrimary)
-                            Text(stringResource(R.string.cc_message_settings_subtitle), fontSize = 12.sp, color = colors.textSecondary, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                            Text(stringResource(R.string.cc_message_settings), fontSize = 14.sp, fontWeight = FontWeight.SemiBold, color = colors.textPrimary)
+                            Text(stringResource(R.string.cc_message_settings_subtitle), fontSize = 12.sp, color = colors.web.mutedForeground, maxLines = 1, overflow = TextOverflow.Ellipsis)
                         }
-                        Icon(Icons.AutoMirrored.Rounded.KeyboardArrowRight, null, tint = colors.textTertiary, modifier = Modifier.size(16.dp))
+                        Icon(Icons.AutoMirrored.Rounded.KeyboardArrowRight, null, tint = colors.web.mutedForeground, modifier = Modifier.size(16.dp))
                     }
                 }
             }
@@ -217,7 +220,7 @@ fun ChatChannelsContent(viewModel: ChatChannelsViewModel = hiltViewModel()) {
         // Add FAB.
         FloatingActionButton(
             onClick = { editor = ChannelEditorTarget.Add },
-            modifier = Modifier.align(Alignment.BottomEnd).padding(20.dp),
+            modifier = Modifier.align(Alignment.BottomEnd).padding(16.dp),
             containerColor = colors.accent,
             contentColor = colors.onAccent,
         ) { Icon(Icons.Rounded.Add, contentDescription = stringResource(R.string.cc_add_channel)) }
@@ -264,9 +267,9 @@ fun ChatChannelsContent(viewModel: ChatChannelsViewModel = hiltViewModel()) {
             onDismissRequest = { pendingDelete = null },
             containerColor = colors.bgElevated,
             title = { Text(stringResource(R.string.cc_delete_channel), color = colors.textPrimary) },
-            text = { Text(stringResource(R.string.cc_delete_channel_message, channel.name), color = colors.textSecondary) },
+            text = { Text(stringResource(R.string.cc_delete_channel_message, channel.name), color = colors.web.mutedForeground) },
             confirmButton = { TextButton(onClick = { viewModel.delete(channel); pendingDelete = null }) { Text(stringResource(R.string.common_delete), color = colors.danger) } },
-            dismissButton = { TextButton(onClick = { pendingDelete = null }) { Text(stringResource(R.string.common_cancel), color = colors.textSecondary) } },
+            dismissButton = { TextButton(onClick = { pendingDelete = null }) { Text(stringResource(R.string.common_cancel), color = colors.web.mutedForeground) } },
         )
     }
 }
@@ -284,19 +287,19 @@ private fun ChannelRow(
     val colors = CodegTheme.colors
     val summary = remember(channel.configJson, channel.channelType) { ChannelConfig.parse(channel.configJson).summary(channel.channelType) }
     Row(
-        Modifier.fillMaxWidth().webSurface(RoundedCornerShape(CodegTheme.dimens.radiusLg))
-            .combinedClickable(onClick = onOpen, onLongClick = onDelete).padding(12.dp),
+        Modifier.fillMaxWidth().webSurface(CodegShapes.small)
+            .combinedClickable(onClick = onOpen, onLongClick = onDelete).padding(16.dp),
         verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         ChannelTypeAvatar(channel.channelType, 40.dp)
         Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(3.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(7.dp)) {
-                Text(channel.name, fontSize = 15.sp, fontWeight = FontWeight.SemiBold, color = colors.textPrimary, maxLines = 1, overflow = TextOverflow.Ellipsis, modifier = Modifier.weight(1f, fill = false))
+                Text(channel.name, fontSize = 14.sp, fontWeight = FontWeight.SemiBold, color = colors.textPrimary, maxLines = 1, overflow = TextOverflow.Ellipsis, modifier = Modifier.weight(1f, fill = false))
                 ChannelStatusPill(status)
             }
-            if (summary.isNotEmpty()) Text(summary, fontSize = 12.sp, color = colors.textSecondary, maxLines = 1, overflow = TextOverflow.Ellipsis)
+            if (summary.isNotEmpty()) Text(summary, fontSize = 12.sp, color = colors.web.mutedForeground, maxLines = 1, overflow = TextOverflow.Ellipsis)
             if (channel.dailyReportEnabled && channel.dailyReportTime != null) {
-                Text(stringResource(R.string.cc_daily_report_at, channel.dailyReportTime ?: ""), fontSize = 11.sp, color = colors.textTertiary)
+                Text(stringResource(R.string.cc_daily_report_at, channel.dailyReportTime ?: ""), fontSize = 11.sp, color = colors.web.mutedForeground)
             }
         }
         Switch(
@@ -312,12 +315,12 @@ private fun ChannelRow(
 private fun ChatRefreshBanner(message: String, onRetry: () -> Unit, onDismiss: () -> Unit) {
     val colors = CodegTheme.colors
     Row(
-        Modifier.fillMaxWidth().clip(RoundedCornerShape(14.dp)).background(colors.danger.copy(alpha = 0.12f)).padding(horizontal = 12.dp, vertical = 10.dp),
+        Modifier.fillMaxWidth().clip(RoundedCornerShape(14.dp)).background(colors.danger.withOpacity(0.12f)).padding(horizontal = 12.dp, vertical = 10.dp),
         verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         Text(message, fontSize = 12.sp, color = colors.danger, modifier = Modifier.weight(1f), maxLines = 2, overflow = TextOverflow.Ellipsis)
         Text(stringResource(R.string.common_retry), fontSize = 12.sp, fontWeight = FontWeight.SemiBold, color = colors.accent, modifier = Modifier.clickable { onRetry() })
-        Icon(Icons.Rounded.Close, stringResource(R.string.common_dismiss), tint = colors.textTertiary, modifier = Modifier.size(16.dp).clickable { onDismiss() })
+        Icon(Icons.Rounded.Close, stringResource(R.string.common_dismiss), tint = colors.web.mutedForeground, modifier = Modifier.size(16.dp).clickable { onDismiss() })
     }
 }
 
@@ -338,15 +341,15 @@ private fun ChatChannelDetailDialog(
 
     Dialog(onDismissRequest = onDismiss, properties = DialogProperties(usePlatformDefaultWidth = false)) {
         Column(Modifier.fillMaxSize().background(colors.bg).windowInsetsPadding(WindowInsets.safeDrawing)) {
-            TopAppBar(
-                title = { Text(channel.name, maxLines = 1, overflow = TextOverflow.Ellipsis) },
+            CodegTopBar(
+                title = channel.name,
                 navigationIcon = {
-                    IconButton(onClick = onDismiss) { Icon(Icons.Rounded.Close, contentDescription = stringResource(R.string.cc_close), tint = colors.textPrimary) }
+                    CodegIconButton(onClick = onDismiss) { Icon(Icons.Rounded.Close, contentDescription = stringResource(R.string.cc_close), tint = colors.textPrimary) }
                 },
                 actions = {
                     TextButton(onClick = onEdit) { Text(stringResource(R.string.common_edit), fontWeight = FontWeight.SemiBold, color = colors.accent) }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent, titleContentColor = colors.textPrimary),
+                showDivider = true,
             )
             Column(Modifier.weight(1f).verticalScroll(rememberScrollState()).padding(horizontal = 16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
                 // Header.
@@ -356,9 +359,9 @@ private fun ChatChannelDetailDialog(
                         Text(channel.name, fontSize = 18.sp, fontWeight = FontWeight.SemiBold, color = colors.textPrimary)
                         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                             Box(Modifier.size(7.dp).clip(CircleShape).background(statusTint(detail.status)))
-                            Text(detail.status.label, fontSize = 12.sp, color = colors.textSecondary)
-                            Text("·", color = colors.textTertiary)
-                            Text(channel.channelType.displayName, fontSize = 12.sp, color = colors.textTertiary)
+                            Text(detail.status.label, fontSize = 12.sp, color = colors.web.mutedForeground)
+                            Text("·", color = colors.web.mutedForeground)
+                            Text(channel.channelType.displayName, fontSize = 12.sp, color = colors.web.mutedForeground)
                         }
                     }
                 }
@@ -366,14 +369,14 @@ private fun ChatChannelDetailDialog(
                 // Status / enable.
                 DetailSection(stringResource(R.string.cc_section_status)) {
                     SettingRow {
-                        Text(stringResource(R.string.cc_enabled), fontSize = 15.sp, color = colors.textPrimary, modifier = Modifier.weight(1f))
+                        Text(stringResource(R.string.cc_enabled), fontSize = 14.sp, color = colors.textPrimary, modifier = Modifier.weight(1f))
                         Switch(checked = channel.enabled, onCheckedChange = { viewModel.setEnabled(channel, it) }, colors = SwitchDefaults.colors(checkedTrackColor = colors.accent, checkedThumbColor = colors.onAccent))
                     }
                     if (channel.dailyReportEnabled && channel.dailyReportTime != null) {
                         Divider()
                         SettingRow {
-                            Text(stringResource(R.string.cc_daily_report), fontSize = 15.sp, color = colors.textPrimary, modifier = Modifier.weight(1f))
-                            Text(channel.dailyReportTime!!, fontSize = 14.sp, fontFamily = FontFamily.Monospace, color = colors.textSecondary)
+                            Text(stringResource(R.string.cc_daily_report), fontSize = 14.sp, color = colors.textPrimary, modifier = Modifier.weight(1f))
+                            Text(channel.dailyReportTime!!, fontSize = 14.sp, fontFamily = FontFamily.Monospace, color = colors.web.mutedForeground)
                         }
                     }
                 }
@@ -392,7 +395,7 @@ private fun ChatChannelDetailDialog(
                         ActionButton(stringResource(R.string.cc_send_test_message), Icons.AutoMirrored.Rounded.Send, colors.accent, enabled = !detail.busy && detail.status == ChannelConnectionStatus.CONNECTED) { viewModel.test() }
                         if (detail.busy) Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                             CircularProgressIndicator(color = colors.accent, modifier = Modifier.size(16.dp))
-                            Text(stringResource(R.string.cc_working), fontSize = 12.sp, color = colors.textSecondary)
+                            Text(stringResource(R.string.cc_working), fontSize = 12.sp, color = colors.web.mutedForeground)
                         }
                     }
                 }
@@ -400,7 +403,7 @@ private fun ChatChannelDetailDialog(
                 // Config.
                 DetailSection(stringResource(R.string.cc_section_configuration)) {
                     SettingRow {
-                        Text(stringResource(R.string.cc_config), fontSize = 15.sp, color = colors.textSecondary)
+                        Text(stringResource(R.string.cc_config), fontSize = 14.sp, color = colors.web.mutedForeground)
                         Spacer(Modifier.weight(1f))
                         Text(ChannelConfig.parse(channel.configJson).summary(channel.channelType), fontSize = 13.sp, fontFamily = FontFamily.Monospace, color = colors.textPrimary)
                     }
@@ -410,7 +413,7 @@ private fun ChatChannelDetailDialog(
                 if (channel.channelType.secretLabel != null) {
                     DetailSection(stringResource(R.string.cc_section_token)) {
                         SettingRow {
-                            Text(if (detail.hasToken) stringResource(R.string.cc_secret_is_set, channel.channelType.secretLabel ?: "") else stringResource(R.string.cc_no_token_set), fontSize = 15.sp, color = colors.textPrimary, modifier = Modifier.weight(1f))
+                            Text(if (detail.hasToken) stringResource(R.string.cc_secret_is_set, channel.channelType.secretLabel ?: "") else stringResource(R.string.cc_no_token_set), fontSize = 14.sp, color = colors.textPrimary, modifier = Modifier.weight(1f))
                             if (detail.hasToken) Text(stringResource(R.string.common_remove), fontSize = 14.sp, color = colors.danger, modifier = Modifier.clickable { confirmRemoveToken = true })
                         }
                     }
@@ -419,7 +422,7 @@ private fun ChatChannelDetailDialog(
                 // Recent messages.
                 DetailSection(stringResource(R.string.cc_section_recent_messages)) {
                     if (detail.messages.isEmpty()) {
-                        Text(stringResource(R.string.cc_no_messages_yet), fontSize = 13.sp, color = colors.textTertiary, modifier = Modifier.padding(16.dp))
+                        Text(stringResource(R.string.cc_no_messages_yet), fontSize = 13.sp, color = colors.web.mutedForeground, modifier = Modifier.padding(16.dp))
                     } else {
                         detail.messages.take(20).forEachIndexed { index, msg ->
                             if (index > 0) Divider()
@@ -439,9 +442,9 @@ private fun ChatChannelDetailDialog(
             onDismissRequest = { confirmRemoveToken = false },
             containerColor = colors.bgElevated,
             title = { Text(stringResource(R.string.cc_remove_token), color = colors.textPrimary) },
-            text = { Text(stringResource(R.string.cc_remove_token_message), color = colors.textSecondary) },
+            text = { Text(stringResource(R.string.cc_remove_token_message), color = colors.web.mutedForeground) },
             confirmButton = { TextButton(onClick = { viewModel.removeToken(); confirmRemoveToken = false }) { Text(stringResource(R.string.common_remove), color = colors.danger) } },
-            dismissButton = { TextButton(onClick = { confirmRemoveToken = false }) { Text(stringResource(R.string.common_cancel), color = colors.textSecondary) } },
+            dismissButton = { TextButton(onClick = { confirmRemoveToken = false }) { Text(stringResource(R.string.common_cancel), color = colors.web.mutedForeground) } },
         )
     }
 
@@ -450,7 +453,7 @@ private fun ChatChannelDetailDialog(
             onDismissRequest = { viewModel.dismissActionError() },
             containerColor = colors.bgElevated,
             title = { Text(stringResource(R.string.cc_something_went_wrong), color = colors.textPrimary) },
-            text = { Text(err, color = colors.textSecondary) },
+            text = { Text(err, color = colors.web.mutedForeground) },
             confirmButton = { TextButton(onClick = { viewModel.dismissActionError() }) { Text(stringResource(R.string.common_ok), color = colors.accent) } },
         )
     }
@@ -464,7 +467,7 @@ private fun ChatChannelDetailDialog(
 private fun MessageLogRow(message: ChatChannelMessageLog) {
     val colors = CodegTheme.colors
     Row(Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 11.dp), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-        Text(if (message.isInbound) "↙" else "↗", fontSize = 13.sp, fontWeight = FontWeight.Bold, color = if (message.failed) colors.danger else colors.textSecondary)
+        Text(if (message.isInbound) "↙" else "↗", fontSize = 13.sp, fontWeight = FontWeight.Bold, color = if (message.failed) colors.danger else colors.web.mutedForeground)
         Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
             Text(message.contentPreview.ifEmpty { "(${message.messageType})" }, fontSize = 13.sp, color = colors.textPrimary, maxLines = 2, overflow = TextOverflow.Ellipsis)
             if (message.failed && !message.errorDetail.isNullOrEmpty()) Text(message.errorDetail!!, fontSize = 11.sp, color = colors.danger, maxLines = 1, overflow = TextOverflow.Ellipsis)
@@ -480,7 +483,7 @@ private fun ActionButton(title: String, icon: ImageVector, tint: Color, enabled:
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(14.dp),
         colors = ButtonDefaults.filledTonalButtonColors(
-            containerColor = tint.copy(alpha = 0.14f),
+            containerColor = tint.withOpacity(0.14f),
             contentColor = tint,
         ),
     ) {
@@ -494,8 +497,8 @@ private fun ActionButton(title: String, icon: ImageVector, tint: Color, enabled:
 private fun DetailSection(title: String, content: @Composable () -> Unit) {
     val colors = CodegTheme.colors
     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-        Text(title, fontSize = 11.sp, fontWeight = FontWeight.SemiBold, color = colors.textTertiary, modifier = Modifier.padding(start = 4.dp))
-        Column(Modifier.fillMaxWidth().webSurface(RoundedCornerShape(CodegTheme.dimens.radiusLg))) { content() }
+        Text(title, fontSize = 11.sp, fontWeight = FontWeight.SemiBold, color = colors.web.mutedForeground, modifier = Modifier.padding(start = 4.dp))
+        Column(Modifier.fillMaxWidth().webSurface(CodegShapes.small)) { content() }
     }
 }
 
@@ -506,7 +509,7 @@ private fun SettingRow(content: @Composable androidx.compose.foundation.layout.R
 
 @Composable
 private fun Divider() {
-    HorizontalDivider(modifier = Modifier.padding(start = 16.dp), thickness = Dp.Hairline, color = CodegTheme.colors.textPrimary.copy(alpha = 0.06f))
+    HorizontalDivider(modifier = Modifier.padding(start = 16.dp), thickness = Dp.Hairline, color = CodegTheme.colors.web.border)
 }
 
 // endregion
@@ -552,28 +555,28 @@ private fun WeixinQRDialog(channelId: Int, viewModel: ChatChannelsViewModel, onC
 
     Dialog(onDismissRequest = onDismiss, properties = DialogProperties(usePlatformDefaultWidth = false)) {
         Column(Modifier.fillMaxSize().background(colors.bg).windowInsetsPadding(WindowInsets.safeDrawing)) {
-            TopAppBar(
-                title = { Text(stringResource(R.string.cc_connect_wechat), maxLines = 1, overflow = TextOverflow.Ellipsis) },
+            CodegTopBar(
+                title = stringResource(R.string.cc_connect_wechat),
                 navigationIcon = {
-                    IconButton(onClick = onDismiss) { Icon(Icons.Rounded.Close, contentDescription = stringResource(R.string.common_cancel), tint = colors.textPrimary) }
+                    CodegIconButton(onClick = onDismiss) { Icon(Icons.Rounded.Close, contentDescription = stringResource(R.string.common_cancel), tint = colors.textPrimary) }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent, titleContentColor = colors.textPrimary),
+                showDivider = true,
             )
             Column(Modifier.fillMaxSize().padding(24.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(20.dp)) {
                 Spacer(Modifier.weight(1f))
                 Box(Modifier.size(240.dp).clip(RoundedCornerShape(18.dp)).background(Color.White), contentAlignment = Alignment.Center) {
                     when (phase) {
                         QrPhase.CONFIRMED -> Icon(Icons.Rounded.Bolt, null, tint = Color(0xFF1AB833), modifier = Modifier.size(64.dp))
-                        QrPhase.EXPIRED, QrPhase.FAILED -> Icon(Icons.Rounded.Refresh, null, tint = Color.Black.copy(alpha = 0.4f), modifier = Modifier.size(56.dp))
+                        QrPhase.EXPIRED, QrPhase.FAILED -> Icon(Icons.Rounded.Refresh, null, tint = Color.Black.withOpacity(0.4f), modifier = Modifier.size(56.dp))
                         else -> image?.let { Image(it, stringResource(R.string.cc_qr_code), Modifier.size(210.dp)) } ?: CircularProgressIndicator(color = Color.Black)
                     }
                 }
-                Text(statusText, fontSize = 14.sp, color = colors.textSecondary)
+                Text(statusText, fontSize = 14.sp, color = colors.web.mutedForeground)
                 if (phase == QrPhase.EXPIRED || phase == QrPhase.FAILED) {
                     FilledTonalButton(
                         onClick = { attempt++ },
                         shape = RoundedCornerShape(14.dp),
-                        colors = ButtonDefaults.filledTonalButtonColors(containerColor = colors.accent.copy(alpha = 0.14f), contentColor = colors.accent),
+                        colors = ButtonDefaults.filledTonalButtonColors(containerColor = colors.accent.withOpacity(0.14f), contentColor = colors.accent),
                     ) {
                         Icon(Icons.Rounded.Refresh, null, modifier = Modifier.size(18.dp))
                         Spacer(Modifier.width(8.dp))
@@ -581,7 +584,7 @@ private fun WeixinQRDialog(channelId: Int, viewModel: ChatChannelsViewModel, onC
                     }
                 }
                 Spacer(Modifier.weight(1f))
-                Text(stringResource(R.string.cc_wechat_scan_instruction), fontSize = 12.sp, color = colors.textTertiary, modifier = Modifier.padding(horizontal = 16.dp))
+                Text(stringResource(R.string.cc_wechat_scan_instruction), fontSize = 12.sp, color = colors.web.mutedForeground, modifier = Modifier.padding(horizontal = 16.dp))
             }
         }
     }
@@ -669,25 +672,25 @@ private fun ChatChannelEditorDialog(existing: ChatChannelInfo?, viewModel: ChatC
 
     Dialog(onDismissRequest = onDismiss, properties = DialogProperties(usePlatformDefaultWidth = false)) {
         Column(Modifier.fillMaxSize().background(colors.bg).windowInsetsPadding(WindowInsets.safeDrawing)) {
-            TopAppBar(
-                title = { Text(if (isEdit) stringResource(R.string.cc_edit_channel) else stringResource(R.string.cc_add_channel), maxLines = 1, overflow = TextOverflow.Ellipsis) },
+            CodegTopBar(
+                title = if (isEdit) stringResource(R.string.cc_edit_channel) else stringResource(R.string.cc_add_channel),
                 navigationIcon = {
-                    IconButton(onClick = onDismiss) { Icon(Icons.Rounded.Close, contentDescription = stringResource(R.string.common_cancel), tint = colors.textPrimary) }
+                    CodegIconButton(onClick = onDismiss) { Icon(Icons.Rounded.Close, contentDescription = stringResource(R.string.common_cancel), tint = colors.textPrimary) }
                 },
                 actions = {
                     TextButton(onClick = { save() }, enabled = canSave) {
-                        Text(stringResource(R.string.common_save), fontWeight = FontWeight.SemiBold, color = if (canSave) colors.accent else colors.textTertiary)
+                        Text(stringResource(R.string.common_save), fontWeight = FontWeight.SemiBold, color = if (canSave) colors.accent else colors.web.mutedForeground)
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent, titleContentColor = colors.textPrimary),
+                showDivider = true,
             )
             Column(Modifier.weight(1f).verticalScroll(rememberScrollState()).padding(horizontal = 16.dp), verticalArrangement = Arrangement.spacedBy(14.dp)) {
                 Spacer(Modifier.height(2.dp))
                 CodegTextField(name, { name = it }, label = stringResource(R.string.server_name), placeholder = stringResource(R.string.cc_name_placeholder))
                 // Type selector (immutable on edit).
-                Text(stringResource(R.string.cc_type), fontSize = 13.sp, fontWeight = FontWeight.SemiBold, color = colors.textSecondary)
+                Text(stringResource(R.string.cc_type), fontSize = 13.sp, fontWeight = FontWeight.SemiBold, color = colors.web.mutedForeground)
                 if (isEdit) {
-                    Text(type.displayName, fontSize = 14.sp, color = colors.textSecondary)
+                    Text(type.displayName, fontSize = 14.sp, color = colors.web.mutedForeground)
                 } else {
                     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                         for (t in ChannelType.entries) {
@@ -696,7 +699,7 @@ private fun ChatChannelEditorDialog(existing: ChatChannelInfo?, viewModel: ChatC
                     }
                 }
                 // Config.
-                Text(stringResource(R.string.cc_configuration), fontSize = 13.sp, fontWeight = FontWeight.SemiBold, color = colors.textSecondary)
+                Text(stringResource(R.string.cc_configuration), fontSize = 13.sp, fontWeight = FontWeight.SemiBold, color = colors.web.mutedForeground)
                 if (rawMode) {
                     CodegTextField(rawText, { rawText = it }, label = stringResource(R.string.cc_spec_json), mono = true, singleLine = false)
                     if (normalizedObjectJson(rawText) == null) Text(stringResource(R.string.cc_must_be_json_object), fontSize = 12.sp, color = colors.danger)
@@ -714,17 +717,17 @@ private fun ChatChannelEditorDialog(existing: ChatChannelInfo?, viewModel: ChatC
                 }
                 // Auth.
                 if (type.secretLabel != null) {
-                    Text(stringResource(R.string.server_section_auth), fontSize = 13.sp, fontWeight = FontWeight.SemiBold, color = colors.textSecondary)
+                    Text(stringResource(R.string.server_section_auth), fontSize = 13.sp, fontWeight = FontWeight.SemiBold, color = colors.web.mutedForeground)
                     SecretField(token, { token = it }, label = if (isEdit && hasToken) stringResource(R.string.cc_keep_current) else type.secretLabel!!)
-                    if (isEdit && hasToken) Text(stringResource(R.string.cc_leave_blank_secret, type.secretLabel ?: ""), fontSize = 12.sp, color = colors.textTertiary)
+                    if (isEdit && hasToken) Text(stringResource(R.string.cc_leave_blank_secret, type.secretLabel ?: ""), fontSize = 12.sp, color = colors.web.mutedForeground)
                 } else {
                     Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                        Icon(Icons.Rounded.QrCode, null, tint = colors.textSecondary, modifier = Modifier.size(18.dp))
-                        Text(stringResource(R.string.cc_wechat_connects_after_saving), fontSize = 12.sp, color = colors.textSecondary)
+                        Icon(Icons.Rounded.QrCode, null, tint = colors.web.mutedForeground, modifier = Modifier.size(18.dp))
+                        Text(stringResource(R.string.cc_wechat_connects_after_saving), fontSize = 12.sp, color = colors.web.mutedForeground)
                     }
                 }
                 // Daily report.
-                Text(stringResource(R.string.cc_daily_report_title), fontSize = 13.sp, fontWeight = FontWeight.SemiBold, color = colors.textSecondary)
+                Text(stringResource(R.string.cc_daily_report_title), fontSize = 13.sp, fontWeight = FontWeight.SemiBold, color = colors.web.mutedForeground)
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(stringResource(R.string.cc_enabled), fontSize = 14.sp, color = colors.textPrimary, modifier = Modifier.weight(1f))
                     Switch(checked = dailyEnabled, onCheckedChange = { dailyEnabled = it }, colors = SwitchDefaults.colors(checkedTrackColor = colors.accent, checkedThumbColor = colors.onAccent))
