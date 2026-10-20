@@ -1,6 +1,24 @@
 package app.codeg.android.feature.settings
 
-import androidx.compose.foundation.layout.imePadding
+import app.codeg.android.core.designsystem.component.CodegBadge
+import app.codeg.android.core.designsystem.component.CodegBadgeVariant
+import app.codeg.android.core.designsystem.component.CodegListRow
+import app.codeg.android.core.designsystem.component.CodegButton
+import app.codeg.android.core.designsystem.component.CodegButtonVariant
+import app.codeg.android.core.designsystem.component.CodegCard
+import app.codeg.android.core.designsystem.component.CodegCardHeader
+import app.codeg.android.core.designsystem.component.CodegConfirmDialog
+import app.codeg.android.core.designsystem.component.CodegDialog
+import app.codeg.android.core.designsystem.component.CodegFilterChip
+import app.codeg.android.core.designsystem.component.CodegFullScreenSheet
+import app.codeg.android.core.designsystem.component.CodegSeparator
+import app.codeg.android.core.designsystem.component.CodegSwitch
+import app.codeg.android.core.designsystem.component.CodegTextField
+import app.codeg.android.core.designsystem.component.EmptyState
+import app.codeg.android.core.designsystem.component.InlineError
+import app.codeg.android.core.designsystem.component.LoadingView
+import app.codeg.android.core.designsystem.component.SecretField
+import app.codeg.android.core.designsystem.component.webSurface
 import android.graphics.BitmapFactory
 import android.util.Base64
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -13,22 +31,16 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.Chat
 import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowRight
@@ -41,23 +53,12 @@ import androidx.compose.material.icons.rounded.NotificationsActive
 import androidx.compose.material.icons.rounded.QrCode
 import androidx.compose.material.icons.rounded.Refresh
 import androidx.compose.material.icons.rounded.Tune
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FilledTonalButton
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Switch
-import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import app.codeg.android.core.designsystem.component.CodegTopBar
-import app.codeg.android.core.designsystem.component.CodegIconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -79,17 +80,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.codeg.android.R
-import app.codeg.android.core.designsystem.component.CodegFilterChip
-import app.codeg.android.core.designsystem.component.CodegTextField
-import app.codeg.android.core.designsystem.component.EmptyState
-import app.codeg.android.core.designsystem.component.InlineError
-import app.codeg.android.core.designsystem.component.LoadingView
-import app.codeg.android.core.designsystem.component.SecretField
 import app.codeg.android.core.designsystem.theme.PillShape
 import app.codeg.android.core.designsystem.theme.CodegShapes
 import app.codeg.android.core.designsystem.theme.withOpacity
@@ -105,7 +98,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
-import app.codeg.android.core.designsystem.component.webSurface
 
 // region Visuals
 
@@ -129,6 +121,7 @@ internal fun statusTint(status: ChannelConnectionStatus): Color = when (status) 
     ChannelConnectionStatus.ERROR -> CodegTheme.colors.danger
 }
 
+// TODO(T53): CodegAvatar
 @Composable
 internal fun ChannelTypeAvatar(type: ChannelType, size: Dp) {
     val tint = channelTint(type)
@@ -139,11 +132,12 @@ internal fun ChannelTypeAvatar(type: ChannelType, size: Dp) {
 
 @Composable
 internal fun ChannelStatusPill(status: ChannelConnectionStatus) {
-    val tint = statusTint(status)
-    Text(
-        status.label, fontSize = 12.sp, fontWeight = FontWeight.SemiBold, color = tint,
-        modifier = Modifier.clip(PillShape).background(tint.withOpacity(0.14f)).padding(horizontal = 7.dp, vertical = 2.dp),
-    )
+    CodegBadge(text = status.label, variant = when (status) {
+        ChannelConnectionStatus.CONNECTED -> CodegBadgeVariant.Default
+        ChannelConnectionStatus.CONNECTING -> CodegBadgeVariant.Secondary
+        ChannelConnectionStatus.DISCONNECTED -> CodegBadgeVariant.Outline
+        ChannelConnectionStatus.ERROR -> CodegBadgeVariant.Destructive
+    })
 }
 
 // endregion
@@ -165,11 +159,11 @@ fun ChatChannelsContent(viewModel: ChatChannelsViewModel = hiltViewModel()) {
     Box(Modifier.fillMaxSize()) {
         when {
             ui.phase == ChatChannelsPhase.LOADING && ui.channels.isEmpty() ->
-                Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { LoadingView(stringResource(R.string.cc_loading_channels)) }
+            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { LoadingView(stringResource(R.string.cc_loading_channels)) }
             ui.phase == ChatChannelsPhase.FAILED && ui.channels.isEmpty() ->
-                Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    InlineError(Icons.Rounded.NotificationsActive, stringResource(R.string.cc_couldnt_load), ui.error ?: stringResource(R.string.cc_unknown_error), onRetry = { viewModel.load() })
-                }
+            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                InlineError(Icons.Rounded.NotificationsActive, stringResource(R.string.cc_couldnt_load), ui.error ?: stringResource(R.string.cc_unknown_error), onRetry = { viewModel.load() })
+            }
             else -> LazyColumn(
                 Modifier.fillMaxSize(),
                 contentPadding = androidx.compose.foundation.layout.PaddingValues(start = 12.dp, end = 12.dp, top = 12.dp, bottom = 88.dp),
@@ -219,12 +213,7 @@ fun ChatChannelsContent(viewModel: ChatChannelsViewModel = hiltViewModel()) {
         }
 
         // Add FAB.
-        FloatingActionButton(
-            onClick = { editor = ChannelEditorTarget.Add },
-            modifier = Modifier.align(Alignment.BottomEnd).padding(16.dp),
-            containerColor = colors.accent,
-            contentColor = colors.onAccent,
-        ) { Icon(Icons.Rounded.Add, contentDescription = stringResource(R.string.cc_add_channel)) }
+        CodegButton(onClick = { editor = ChannelEditorTarget.Add }, modifier = Modifier.align(Alignment.BottomEnd).padding(16.dp), variant = CodegButtonVariant.Default) { Icon(Icons.Rounded.Add, contentDescription = stringResource(R.string.cc_add_channel)) }
 
         // Transient toast → Material Snackbar.
         val snackbarHostState = remember { SnackbarHostState() }
@@ -264,14 +253,7 @@ fun ChatChannelsContent(viewModel: ChatChannelsViewModel = hiltViewModel()) {
 
     // Delete confirm.
     pendingDelete?.let { channel ->
-        AlertDialog(
-            onDismissRequest = { pendingDelete = null },
-            containerColor = colors.bgElevated,
-            title = { Text(stringResource(R.string.cc_delete_channel), color = colors.textPrimary) },
-            text = { Text(stringResource(R.string.cc_delete_channel_message, channel.name), color = colors.web.mutedForeground) },
-            confirmButton = { TextButton(onClick = { viewModel.delete(channel); pendingDelete = null }) { Text(stringResource(R.string.common_delete), color = colors.danger) } },
-            dismissButton = { TextButton(onClick = { pendingDelete = null }) { Text(stringResource(R.string.common_cancel), color = colors.web.mutedForeground) } },
-        )
+        CodegConfirmDialog(title = stringResource(R.string.cc_delete_channel), message = stringResource(R.string.cc_delete_channel_message, channel.name), target = channel.name, confirmLabel = stringResource(R.string.common_delete), destructive = true, onConfirm = { viewModel.delete(channel); pendingDelete = null }, onDismiss = { pendingDelete = null })
     }
 }
 
@@ -287,29 +269,20 @@ private fun ChannelRow(
 ) {
     val colors = CodegTheme.colors
     val summary = remember(channel.configJson, channel.channelType) { ChannelConfig.parse(channel.configJson).summary(channel.channelType) }
-    Row(
-        Modifier.fillMaxWidth().webSurface(CodegShapes.small)
-            .combinedClickable(onClick = onOpen, onLongClick = onDelete).padding(16.dp),
-        verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp),
-    ) {
-        ChannelTypeAvatar(channel.channelType, 40.dp)
-        Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(3.dp)) {
-            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(7.dp)) {
-                Text(channel.name, fontSize = 14.sp, fontWeight = FontWeight.SemiBold, color = colors.textPrimary, maxLines = 1, overflow = TextOverflow.Ellipsis, modifier = Modifier.weight(1f, fill = false))
+    CodegListRow(title = channel.name, subtitle = summary.takeIf { it.isNotEmpty() },
+        onClick = onOpen, onLongClick = onDelete,
+        leading = { ChannelTypeAvatar(channel.channelType, 40.dp) },
+        trailing = {
+            Column(horizontalAlignment = Alignment.End) {
                 ChannelStatusPill(status)
+                if (channel.dailyReportEnabled && channel.dailyReportTime != null) {
+                    Text(stringResource(R.string.cc_daily_report_at, channel.dailyReportTime ?: ""),
+                        fontSize = 11.sp, color = colors.web.mutedForeground)
+                }
             }
-            if (summary.isNotEmpty()) Text(summary, fontSize = 12.sp, color = colors.web.mutedForeground, maxLines = 1, overflow = TextOverflow.Ellipsis)
-            if (channel.dailyReportEnabled && channel.dailyReportTime != null) {
-                Text(stringResource(R.string.cc_daily_report_at, channel.dailyReportTime ?: ""), fontSize = 11.sp, color = colors.web.mutedForeground)
-            }
-        }
-        Switch(
-            checked = channel.enabled,
-            onCheckedChange = onToggle,
-            enabled = !toggling,
-            colors = SwitchDefaults.colors(checkedTrackColor = colors.accent, checkedThumbColor = colors.onAccent),
-        )
-    }
+            CodegSwitch(checked = channel.enabled, onCheckedChange = onToggle, enabled = !toggling)
+        }, onMoreClick = onDelete)
+
 }
 
 @Composable
@@ -340,125 +313,107 @@ private fun ChatChannelDetailDialog(
     var showQR by remember { mutableStateOf(false) }
     var confirmRemoveToken by remember { mutableStateOf(false) }
 
-    Dialog(onDismissRequest = onDismiss, properties = DialogProperties(usePlatformDefaultWidth = false)) {
-        Column(Modifier.fillMaxSize().background(colors.bg).windowInsetsPadding(WindowInsets.safeDrawing)) {
-            CodegTopBar(
-                title = channel.name,
-                navigationIcon = {
-                    CodegIconButton(onClick = onDismiss) { Icon(Icons.Rounded.Close, contentDescription = stringResource(R.string.cc_close), tint = colors.textPrimary) }
-                },
-                actions = {
-                    TextButton(onClick = onEdit) { Text(stringResource(R.string.common_edit), fontWeight = FontWeight.SemiBold, color = colors.accent) }
-                },
-                showDivider = true,
-            )
-            Column(Modifier.weight(1f).verticalScroll(rememberScrollState()).padding(horizontal = 16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
-                // Header.
-                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp), modifier = Modifier.padding(top = 4.dp)) {
-                    ChannelTypeAvatar(channel.channelType, 44.dp)
-                    Column(verticalArrangement = Arrangement.spacedBy(3.dp)) {
-                        Text(channel.name, fontSize = 18.sp, fontWeight = FontWeight.SemiBold, color = colors.textPrimary)
-                        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                            Box(Modifier.size(7.dp).clip(CircleShape).background(statusTint(detail.status)))
-                            Text(detail.status.label, fontSize = 12.sp, color = colors.web.mutedForeground)
-                            Text("·", color = colors.web.mutedForeground)
-                            Text(channel.channelType.displayName, fontSize = 12.sp, color = colors.web.mutedForeground)
-                        }
-                    }
-                }
+    CodegFullScreenSheet(title = channel.name, onDismiss = onDismiss, actions = {
+        CodegButton(onClick = onEdit, variant = CodegButtonVariant.Ghost) { Text(stringResource(R.string.common_edit), fontWeight = FontWeight.SemiBold) }
+    }) {
 
-                // Status / enable.
-                DetailSection(stringResource(R.string.cc_section_status)) {
-                    SettingRow {
-                        Text(stringResource(R.string.cc_enabled), fontSize = 14.sp, color = colors.textPrimary, modifier = Modifier.weight(1f))
-                        Switch(checked = channel.enabled, onCheckedChange = { viewModel.setEnabled(channel, it) }, colors = SwitchDefaults.colors(checkedTrackColor = colors.accent, checkedThumbColor = colors.onAccent))
-                    }
-                    if (channel.dailyReportEnabled && channel.dailyReportTime != null) {
-                        Divider()
-                        SettingRow {
-                            Text(stringResource(R.string.cc_daily_report), fontSize = 14.sp, color = colors.textPrimary, modifier = Modifier.weight(1f))
-                            Text(channel.dailyReportTime!!, fontSize = 14.sp, fontFamily = FontFamily.Monospace, color = colors.web.mutedForeground)
-                        }
-                    }
-                }
-
-                // Connection actions.
-                DetailSection(stringResource(R.string.cc_section_connection)) {
-                    Column(Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                        when {
-                            channel.channelType == ChannelType.WEIXIN ->
-                                ActionButton(stringResource(R.string.cc_scan_qr_to_connect), Icons.Rounded.QrCode, colors.accent, enabled = !detail.busy) { showQR = true }
-                            detail.status == ChannelConnectionStatus.CONNECTED ->
-                                ActionButton(stringResource(R.string.cc_disconnect), Icons.Rounded.Bolt, colors.danger, enabled = !detail.busy) { viewModel.disconnect() }
-                            else ->
-                                ActionButton(stringResource(R.string.cc_connect), Icons.Rounded.Bolt, colors.accent, enabled = !detail.busy) { viewModel.connect() }
-                        }
-                        ActionButton(stringResource(R.string.cc_send_test_message), Icons.AutoMirrored.Rounded.Send, colors.accent, enabled = !detail.busy && detail.status == ChannelConnectionStatus.CONNECTED) { viewModel.test() }
-                        if (detail.busy) Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                            CircularProgressIndicator(color = colors.accent, modifier = Modifier.size(16.dp))
-                            Text(stringResource(R.string.cc_working), fontSize = 12.sp, color = colors.web.mutedForeground)
-                        }
+        Column(Modifier.padding(horizontal = 16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
+            // Header.
+            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp), modifier = Modifier.padding(top = 4.dp)) {
+                ChannelTypeAvatar(channel.channelType, 44.dp)
+                Column(verticalArrangement = Arrangement.spacedBy(3.dp)) {
+                    Text(channel.name, fontSize = 18.sp, fontWeight = FontWeight.SemiBold, color = colors.textPrimary)
+                    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                        Box(Modifier.size(7.dp).clip(CircleShape).background(statusTint(detail.status)))
+                        Text(detail.status.label, fontSize = 12.sp, color = colors.web.mutedForeground)
+                        Text("·", color = colors.web.mutedForeground)
+                        Text(channel.channelType.displayName, fontSize = 12.sp, color = colors.web.mutedForeground)
                     }
                 }
-
-                // Config.
-                DetailSection(stringResource(R.string.cc_section_configuration)) {
-                    SettingRow {
-                        Text(stringResource(R.string.cc_config), fontSize = 14.sp, color = colors.web.mutedForeground)
-                        Spacer(Modifier.weight(1f))
-                        Text(ChannelConfig.parse(channel.configJson).summary(channel.channelType), fontSize = 13.sp, fontFamily = FontFamily.Monospace, color = colors.textPrimary)
-                    }
-                }
-
-                // Token.
-                if (channel.channelType.secretLabel != null) {
-                    DetailSection(stringResource(R.string.cc_section_token)) {
-                        SettingRow {
-                            Text(if (detail.hasToken) stringResource(R.string.cc_secret_is_set, channel.channelType.secretLabel ?: "") else stringResource(R.string.cc_no_token_set), fontSize = 14.sp, color = colors.textPrimary, modifier = Modifier.weight(1f))
-                            if (detail.hasToken) Text(stringResource(R.string.common_remove), fontSize = 14.sp, color = colors.danger, modifier = Modifier.clickable { confirmRemoveToken = true })
-                        }
-                    }
-                }
-
-                // Recent messages.
-                DetailSection(stringResource(R.string.cc_section_recent_messages)) {
-                    if (detail.messages.isEmpty()) {
-                        Text(stringResource(R.string.cc_no_messages_yet), fontSize = 13.sp, color = colors.web.mutedForeground, modifier = Modifier.padding(16.dp))
-                    } else {
-                        detail.messages.take(20).forEachIndexed { index, msg ->
-                            if (index > 0) Divider()
-                            MessageLogRow(msg)
-                        }
-                    }
-                }
-                Spacer(Modifier.height(24.dp))
             }
+
+            // Status / enable.
+            DetailSection(stringResource(R.string.cc_section_status)) {
+                SettingRow {
+                    Text(stringResource(R.string.cc_enabled), fontSize = 14.sp, color = colors.textPrimary, modifier = Modifier.weight(1f))
+                    CodegSwitch(checked = channel.enabled, onCheckedChange = { viewModel.setEnabled(channel, it) })
+                }
+                if (channel.dailyReportEnabled && channel.dailyReportTime != null) {
+                    Divider()
+                    SettingRow {
+                        Text(stringResource(R.string.cc_daily_report), fontSize = 14.sp, color = colors.textPrimary, modifier = Modifier.weight(1f))
+                        Text(channel.dailyReportTime!!, fontSize = 14.sp, fontFamily = FontFamily.Monospace, color = colors.web.mutedForeground)
+                    }
+                }
+            }
+
+            // Connection actions.
+            DetailSection(stringResource(R.string.cc_section_connection)) {
+                Column(Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                    when {
+                        channel.channelType == ChannelType.WEIXIN ->
+                        ActionButton(stringResource(R.string.cc_scan_qr_to_connect), Icons.Rounded.QrCode, colors.accent, enabled = !detail.busy) { showQR = true }
+                        detail.status == ChannelConnectionStatus.CONNECTED ->
+                        ActionButton(stringResource(R.string.cc_disconnect), Icons.Rounded.Bolt, colors.danger, enabled = !detail.busy) { viewModel.disconnect() }
+                        else ->
+                        ActionButton(stringResource(R.string.cc_connect), Icons.Rounded.Bolt, colors.accent, enabled = !detail.busy) { viewModel.connect() }
+                    }
+                    ActionButton(stringResource(R.string.cc_send_test_message), Icons.AutoMirrored.Rounded.Send, colors.accent, enabled = !detail.busy && detail.status == ChannelConnectionStatus.CONNECTED) { viewModel.test() }
+                    if (detail.busy) Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        CircularProgressIndicator(color = colors.accent, modifier = Modifier.size(16.dp))
+                        Text(stringResource(R.string.cc_working), fontSize = 12.sp, color = colors.web.mutedForeground)
+                    }
+                }
+            }
+
+            // Config.
+            DetailSection(stringResource(R.string.cc_section_configuration)) {
+                SettingRow {
+                    Text(stringResource(R.string.cc_config), fontSize = 14.sp, color = colors.web.mutedForeground)
+                    Spacer(Modifier.weight(1f))
+                    Text(ChannelConfig.parse(channel.configJson).summary(channel.channelType), fontSize = 13.sp, fontFamily = FontFamily.Monospace, color = colors.textPrimary)
+                }
+            }
+
+            // Token.
+            if (channel.channelType.secretLabel != null) {
+                DetailSection(stringResource(R.string.cc_section_token)) {
+                    SettingRow {
+                        Text(if (detail.hasToken) stringResource(R.string.cc_secret_is_set, channel.channelType.secretLabel ?: "") else stringResource(R.string.cc_no_token_set), fontSize = 14.sp, color = colors.textPrimary, modifier = Modifier.weight(1f))
+                        if (detail.hasToken) Text(stringResource(R.string.common_remove), fontSize = 14.sp, color = colors.danger, modifier = Modifier.clickable { confirmRemoveToken = true })
+                    }
+                }
+            }
+
+            // Recent messages.
+            DetailSection(stringResource(R.string.cc_section_recent_messages)) {
+                if (detail.messages.isEmpty()) {
+                    Text(stringResource(R.string.cc_no_messages_yet), fontSize = 13.sp, color = colors.web.mutedForeground, modifier = Modifier.padding(16.dp))
+                } else {
+                    detail.messages.take(20).forEachIndexed { index, msg ->
+                        if (index > 0) Divider()
+                        MessageLogRow(msg)
+                    }
+                }
+            }
+            Spacer(Modifier.height(24.dp))
         }
     }
 
     if (showQR) WeixinQRDialog(channelId = channel.id, viewModel = viewModel, onConnected = { viewModel.qrConnected() }, onDismiss = { showQR = false })
 
     if (confirmRemoveToken) {
-        AlertDialog(
-            onDismissRequest = { confirmRemoveToken = false },
-            containerColor = colors.bgElevated,
-            title = { Text(stringResource(R.string.cc_remove_token), color = colors.textPrimary) },
-            text = { Text(stringResource(R.string.cc_remove_token_message), color = colors.web.mutedForeground) },
-            confirmButton = { TextButton(onClick = { viewModel.removeToken(); confirmRemoveToken = false }) { Text(stringResource(R.string.common_remove), color = colors.danger) } },
-            dismissButton = { TextButton(onClick = { confirmRemoveToken = false }) { Text(stringResource(R.string.common_cancel), color = colors.web.mutedForeground) } },
-        )
+        CodegConfirmDialog(title = stringResource(R.string.cc_remove_token), message = stringResource(R.string.cc_remove_token_message), target = channel.name, confirmLabel = stringResource(R.string.common_remove), destructive = true, onConfirm = { viewModel.removeToken(); confirmRemoveToken = false }, onDismiss = { confirmRemoveToken = false })
     }
 
     detail.actionError?.let { err ->
-        AlertDialog(
-            onDismissRequest = { viewModel.dismissActionError() },
-            containerColor = colors.bgElevated,
-            title = { Text(stringResource(R.string.cc_something_went_wrong), color = colors.textPrimary) },
-            text = { Text(err, color = colors.web.mutedForeground) },
-            confirmButton = { TextButton(onClick = { viewModel.dismissActionError() }) { Text(stringResource(R.string.common_ok), color = colors.accent) } },
-        )
+        CodegDialog(title = stringResource(R.string.cc_something_went_wrong), onDismiss = { viewModel.dismissActionError() }, footer = {
+
+            CodegButton(onClick = { viewModel.dismissActionError() }, variant = CodegButtonVariant.Ghost) { Text(stringResource(R.string.common_ok)) }
+        }, content = { Text(err, color = colors.web.mutedForeground) })
     }
 
+    // TODO(T52): CodegToaster
     detail.toast?.let { toast ->
         LaunchedEffect(toast) { delay(3000); viewModel.dismissDetailToast() }
     }
@@ -478,16 +433,7 @@ private fun MessageLogRow(message: ChatChannelMessageLog) {
 
 @Composable
 private fun ActionButton(title: String, icon: ImageVector, tint: Color, enabled: Boolean, onClick: () -> Unit) {
-    FilledTonalButton(
-        onClick = onClick,
-        enabled = enabled,
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(14.dp),
-        colors = ButtonDefaults.filledTonalButtonColors(
-            containerColor = tint.withOpacity(0.14f),
-            contentColor = tint,
-        ),
-    ) {
+    CodegButton(onClick = onClick, enabled = enabled, modifier = Modifier.fillMaxWidth(), variant = CodegButtonVariant.Secondary) {
         Icon(icon, null, modifier = Modifier.size(18.dp))
         Spacer(Modifier.width(8.dp))
         Text(title, fontWeight = FontWeight.Medium)
@@ -496,10 +442,9 @@ private fun ActionButton(title: String, icon: ImageVector, tint: Color, enabled:
 
 @Composable
 private fun DetailSection(title: String, content: @Composable () -> Unit) {
-    val colors = CodegTheme.colors
-    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-        Text(title, fontSize = 11.sp, fontWeight = FontWeight.SemiBold, color = colors.web.mutedForeground, modifier = Modifier.padding(start = 4.dp))
-        Column(Modifier.fillMaxWidth().webSurface(CodegShapes.small)) { content() }
+    CodegCard {
+        CodegCardHeader(title = title)
+        content()
     }
 }
 
@@ -510,7 +455,7 @@ private fun SettingRow(content: @Composable androidx.compose.foundation.layout.R
 
 @Composable
 private fun Divider() {
-    HorizontalDivider(modifier = Modifier.padding(start = 16.dp), thickness = Dp.Hairline, color = CodegTheme.colors.web.border)
+    CodegSeparator(modifier = Modifier.padding(start = 16.dp))
 }
 
 // endregion
@@ -520,6 +465,7 @@ private fun Divider() {
 private enum class QrPhase { LOADING, SHOWING, SCANNED, EXPIRED, CONFIRMED, FAILED }
 
 @OptIn(ExperimentalMaterial3Api::class)
+// TODO(T53): CodegImagePreviewDialog; retain QR polling lifecycle.
 @Composable
 private fun WeixinQRDialog(channelId: Int, viewModel: ChatChannelsViewModel, onConnected: () -> Unit, onDismiss: () -> Unit) {
     val colors = CodegTheme.colors
@@ -554,39 +500,27 @@ private fun WeixinQRDialog(channelId: Int, viewModel: ChatChannelsViewModel, onC
         phase = QrPhase.EXPIRED; statusText = qrExpiredText
     }
 
-    Dialog(onDismissRequest = onDismiss, properties = DialogProperties(usePlatformDefaultWidth = false)) {
-        Column(Modifier.fillMaxSize().background(colors.bg).windowInsetsPadding(WindowInsets.safeDrawing)) {
-            CodegTopBar(
-                title = stringResource(R.string.cc_connect_wechat),
-                navigationIcon = {
-                    CodegIconButton(onClick = onDismiss) { Icon(Icons.Rounded.Close, contentDescription = stringResource(R.string.common_cancel), tint = colors.textPrimary) }
-                },
-                showDivider = true,
-            )
-            Column(Modifier.fillMaxSize().padding(24.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(20.dp)) {
-                Spacer(Modifier.weight(1f))
-                Box(Modifier.size(240.dp).clip(RoundedCornerShape(18.dp)).background(Color.White), contentAlignment = Alignment.Center) {
-                    when (phase) {
-                        QrPhase.CONFIRMED -> Icon(Icons.Rounded.Bolt, null, tint = Color(0xFF1AB833), modifier = Modifier.size(64.dp))
-                        QrPhase.EXPIRED, QrPhase.FAILED -> Icon(Icons.Rounded.Refresh, null, tint = Color.Black.withOpacity(0.4f), modifier = Modifier.size(56.dp))
-                        else -> image?.let { Image(it, stringResource(R.string.cc_qr_code), Modifier.size(210.dp)) } ?: CircularProgressIndicator(color = Color.Black)
-                    }
+    CodegFullScreenSheet(title = stringResource(R.string.cc_connect_wechat), onDismiss = onDismiss) {
+
+        Column(Modifier.fillMaxWidth().height(androidx.compose.ui.platform.LocalConfiguration.current.screenHeightDp.dp * 0.75f).padding(24.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(20.dp)) {
+            Spacer(Modifier.weight(1f))
+            Box(Modifier.size(240.dp).clip(RoundedCornerShape(18.dp)).background(Color.White), contentAlignment = Alignment.Center) {
+                when (phase) {
+                    QrPhase.CONFIRMED -> Icon(Icons.Rounded.Bolt, null, tint = Color(0xFF1AB833), modifier = Modifier.size(64.dp))
+                    QrPhase.EXPIRED, QrPhase.FAILED -> Icon(Icons.Rounded.Refresh, null, tint = Color.Black.withOpacity(0.4f), modifier = Modifier.size(56.dp))
+                    else -> image?.let { Image(it, stringResource(R.string.cc_qr_code), Modifier.size(210.dp)) } ?: CircularProgressIndicator(color = Color.Black)
                 }
-                Text(statusText, fontSize = 14.sp, color = colors.web.mutedForeground)
-                if (phase == QrPhase.EXPIRED || phase == QrPhase.FAILED) {
-                    FilledTonalButton(
-                        onClick = { attempt++ },
-                        shape = RoundedCornerShape(14.dp),
-                        colors = ButtonDefaults.filledTonalButtonColors(containerColor = colors.accent.withOpacity(0.14f), contentColor = colors.accent),
-                    ) {
-                        Icon(Icons.Rounded.Refresh, null, modifier = Modifier.size(18.dp))
-                        Spacer(Modifier.width(8.dp))
-                        Text(stringResource(R.string.cc_refresh_qr_code))
-                    }
-                }
-                Spacer(Modifier.weight(1f))
-                Text(stringResource(R.string.cc_wechat_scan_instruction), fontSize = 12.sp, color = colors.web.mutedForeground, modifier = Modifier.padding(horizontal = 16.dp))
             }
+            Text(statusText, fontSize = 14.sp, color = colors.web.mutedForeground)
+            if (phase == QrPhase.EXPIRED || phase == QrPhase.FAILED) {
+                CodegButton(onClick = { attempt++ }, variant = CodegButtonVariant.Secondary) {
+                    Icon(Icons.Rounded.Refresh, null, modifier = Modifier.size(18.dp))
+                    Spacer(Modifier.width(8.dp))
+                    Text(stringResource(R.string.cc_refresh_qr_code))
+                }
+            }
+            Spacer(Modifier.weight(1f))
+            Text(stringResource(R.string.cc_wechat_scan_instruction), fontSize = 12.sp, color = colors.web.mutedForeground, modifier = Modifier.padding(horizontal = 16.dp))
         }
     }
 }
@@ -671,72 +605,63 @@ private fun ChatChannelEditorDialog(existing: ChatChannelInfo?, viewModel: ChatC
         }
     }
 
-    Dialog(onDismissRequest = onDismiss, properties = DialogProperties(usePlatformDefaultWidth = false, decorFitsSystemWindows = false)) {
-        Column(Modifier.fillMaxSize().background(colors.bg).windowInsetsPadding(WindowInsets.safeDrawing).imePadding()) {
-            CodegTopBar(
-                title = if (isEdit) stringResource(R.string.cc_edit_channel) else stringResource(R.string.cc_add_channel),
-                navigationIcon = {
-                    CodegIconButton(onClick = onDismiss) { Icon(Icons.Rounded.Close, contentDescription = stringResource(R.string.common_cancel), tint = colors.textPrimary) }
-                },
-                actions = {
-                    TextButton(onClick = { save() }, enabled = canSave) {
-                        Text(stringResource(R.string.common_save), fontWeight = FontWeight.SemiBold, color = if (canSave) colors.accent else colors.web.mutedForeground)
-                    }
-                },
-                showDivider = true,
-            )
-            Column(Modifier.weight(1f).verticalScroll(rememberScrollState()).padding(horizontal = 16.dp), verticalArrangement = Arrangement.spacedBy(14.dp)) {
-                Spacer(Modifier.height(2.dp))
-                CodegTextField(name, { name = it }, label = stringResource(R.string.server_name), placeholder = stringResource(R.string.cc_name_placeholder))
-                // Type selector (immutable on edit).
-                Text(stringResource(R.string.cc_type), fontSize = 13.sp, fontWeight = FontWeight.SemiBold, color = colors.web.mutedForeground)
-                if (isEdit) {
-                    Text(type.displayName, fontSize = 14.sp, color = colors.web.mutedForeground)
-                } else {
-                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                        for (t in ChannelType.entries) {
-                            CodegFilterChip(label = t.displayName, selected = t == type, onClick = { type = t })
-                        }
+    CodegFullScreenSheet(title = if (isEdit) stringResource(R.string.cc_edit_channel) else stringResource(R.string.cc_add_channel), onDismiss = onDismiss, actions = {
+        CodegButton(onClick = { save() }, enabled = canSave, variant = CodegButtonVariant.Default) {
+            Text(stringResource(R.string.common_save), fontWeight = FontWeight.SemiBold)
+        }
+    }) {
+
+        Column(Modifier.padding(horizontal = 16.dp), verticalArrangement = Arrangement.spacedBy(14.dp)) {
+            Spacer(Modifier.height(2.dp))
+            CodegTextField(name, { name = it }, label = stringResource(R.string.server_name), placeholder = stringResource(R.string.cc_name_placeholder))
+            // Type selector (immutable on edit).
+            Text(stringResource(R.string.cc_type), fontSize = 13.sp, fontWeight = FontWeight.SemiBold, color = colors.web.mutedForeground)
+            if (isEdit) {
+                Text(type.displayName, fontSize = 14.sp, color = colors.web.mutedForeground)
+            } else {
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    for (t in ChannelType.entries) {
+                        CodegFilterChip(label = t.displayName, selected = t == type, onClick = { type = t })
                     }
                 }
-                // Config.
-                Text(stringResource(R.string.cc_configuration), fontSize = 13.sp, fontWeight = FontWeight.SemiBold, color = colors.web.mutedForeground)
-                if (rawMode) {
-                    CodegTextField(rawText, { rawText = it }, label = stringResource(R.string.cc_spec_json), mono = true, singleLine = false)
-                    if (normalizedObjectJson(rawText) == null) Text(stringResource(R.string.cc_must_be_json_object), fontSize = 12.sp, color = colors.danger)
-                } else when (type) {
-                    ChannelType.TELEGRAM -> CodegTextField(chatId, { chatId = it }, label = stringResource(R.string.cc_chat_id), placeholder = "-100123456789", mono = true)
-                    ChannelType.LARK -> {
-                        CodegTextField(appId, { appId = it }, label = stringResource(R.string.cc_app_id), placeholder = "cli_xxxxx", mono = true)
-                        CodegTextField(chatId, { chatId = it }, label = stringResource(R.string.cc_chat_id), placeholder = "oc_xxxxx", mono = true)
-                    }
-                    ChannelType.WEIXIN -> CodegTextField(baseUrl, { baseUrl = it }, label = stringResource(R.string.cc_base_url), placeholder = ChannelConfig.WEIXIN_DEFAULT_BASE_URL, mono = true)
-                }
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(stringResource(R.string.cc_edit_raw_json), fontSize = 14.sp, color = colors.textPrimary, modifier = Modifier.weight(1f))
-                    Switch(checked = rawMode, onCheckedChange = { on -> if (on && rawText.trim().isEmpty()) rawText = currentConfig().toJson(type); rawMode = on }, colors = SwitchDefaults.colors(checkedTrackColor = colors.accent, checkedThumbColor = colors.onAccent))
-                }
-                // Auth.
-                if (type.secretLabel != null) {
-                    Text(stringResource(R.string.server_section_auth), fontSize = 13.sp, fontWeight = FontWeight.SemiBold, color = colors.web.mutedForeground)
-                    SecretField(token, { token = it }, label = if (isEdit && hasToken) stringResource(R.string.cc_keep_current) else type.secretLabel!!)
-                    if (isEdit && hasToken) Text(stringResource(R.string.cc_leave_blank_secret, type.secretLabel ?: ""), fontSize = 12.sp, color = colors.web.mutedForeground)
-                } else {
-                    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                        Icon(Icons.Rounded.QrCode, null, tint = colors.web.mutedForeground, modifier = Modifier.size(18.dp))
-                        Text(stringResource(R.string.cc_wechat_connects_after_saving), fontSize = 12.sp, color = colors.web.mutedForeground)
-                    }
-                }
-                // Daily report.
-                Text(stringResource(R.string.cc_daily_report_title), fontSize = 13.sp, fontWeight = FontWeight.SemiBold, color = colors.web.mutedForeground)
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(stringResource(R.string.cc_enabled), fontSize = 14.sp, color = colors.textPrimary, modifier = Modifier.weight(1f))
-                    Switch(checked = dailyEnabled, onCheckedChange = { dailyEnabled = it }, colors = SwitchDefaults.colors(checkedTrackColor = colors.accent, checkedThumbColor = colors.onAccent))
-                }
-                if (dailyEnabled) CodegTextField(dailyTime, { dailyTime = it }, label = stringResource(R.string.cc_time_hhmm), placeholder = "18:00", mono = true, keyboardType = KeyboardType.Number)
-                error?.let { Text(it, fontSize = 13.sp, color = colors.danger) }
-                Spacer(Modifier.height(24.dp))
             }
+            // Config.
+            Text(stringResource(R.string.cc_configuration), fontSize = 13.sp, fontWeight = FontWeight.SemiBold, color = colors.web.mutedForeground)
+            if (rawMode) {
+                CodegTextField(rawText, { rawText = it }, label = stringResource(R.string.cc_spec_json), mono = true, singleLine = false)
+                if (normalizedObjectJson(rawText) == null) Text(stringResource(R.string.cc_must_be_json_object), fontSize = 12.sp, color = colors.danger)
+            } else when (type) {
+                ChannelType.TELEGRAM -> CodegTextField(chatId, { chatId = it }, label = stringResource(R.string.cc_chat_id), placeholder = "-100123456789", mono = true)
+                ChannelType.LARK -> {
+                    CodegTextField(appId, { appId = it }, label = stringResource(R.string.cc_app_id), placeholder = "cli_xxxxx", mono = true)
+                    CodegTextField(chatId, { chatId = it }, label = stringResource(R.string.cc_chat_id), placeholder = "oc_xxxxx", mono = true)
+                }
+                ChannelType.WEIXIN -> CodegTextField(baseUrl, { baseUrl = it }, label = stringResource(R.string.cc_base_url), placeholder = ChannelConfig.WEIXIN_DEFAULT_BASE_URL, mono = true)
+            }
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(stringResource(R.string.cc_edit_raw_json), fontSize = 14.sp, color = colors.textPrimary, modifier = Modifier.weight(1f))
+                CodegSwitch(checked = rawMode, onCheckedChange = { on -> if (on && rawText.trim().isEmpty()) rawText = currentConfig().toJson(type); rawMode = on })
+            }
+            // Auth.
+            if (type.secretLabel != null) {
+                Text(stringResource(R.string.server_section_auth), fontSize = 13.sp, fontWeight = FontWeight.SemiBold, color = colors.web.mutedForeground)
+                SecretField(token, { token = it }, label = if (isEdit && hasToken) stringResource(R.string.cc_keep_current) else type.secretLabel!!)
+                if (isEdit && hasToken) Text(stringResource(R.string.cc_leave_blank_secret, type.secretLabel ?: ""), fontSize = 12.sp, color = colors.web.mutedForeground)
+            } else {
+                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Icon(Icons.Rounded.QrCode, null, tint = colors.web.mutedForeground, modifier = Modifier.size(18.dp))
+                    Text(stringResource(R.string.cc_wechat_connects_after_saving), fontSize = 12.sp, color = colors.web.mutedForeground)
+                }
+            }
+            // Daily report.
+            Text(stringResource(R.string.cc_daily_report_title), fontSize = 13.sp, fontWeight = FontWeight.SemiBold, color = colors.web.mutedForeground)
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(stringResource(R.string.cc_enabled), fontSize = 14.sp, color = colors.textPrimary, modifier = Modifier.weight(1f))
+                CodegSwitch(checked = dailyEnabled, onCheckedChange = { dailyEnabled = it })
+            }
+            if (dailyEnabled) CodegTextField(dailyTime, { dailyTime = it }, label = stringResource(R.string.cc_time_hhmm), placeholder = "18:00", mono = true, keyboardType = KeyboardType.Number)
+            error?.let { Text(it, fontSize = 13.sp, color = colors.danger) }
+            Spacer(Modifier.height(24.dp))
         }
     }
 }

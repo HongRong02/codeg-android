@@ -1,13 +1,19 @@
 package app.codeg.android.feature.settings.customskills
 
-import androidx.compose.foundation.background
+import app.codeg.android.core.designsystem.component.AgentIcon
+import app.codeg.android.core.designsystem.component.CodegButton
+import app.codeg.android.core.designsystem.component.CodegButtonVariant
+import app.codeg.android.core.designsystem.component.CodegCard
+import app.codeg.android.core.designsystem.component.CodegCheckbox
+import app.codeg.android.core.designsystem.component.CodegConfirmDialog
+import app.codeg.android.core.designsystem.component.CodegFullScreenSheet
+import app.codeg.android.core.designsystem.component.CodegRadioGroup
+import app.codeg.android.core.designsystem.component.CodegSkeleton
+import app.codeg.android.core.designsystem.component.CodegSwitch
+import app.codeg.android.core.designsystem.component.CodegTextField
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -16,15 +22,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.codeg.android.R
-import app.codeg.android.core.designsystem.component.*
-import app.codeg.android.core.designsystem.theme.CodegShapes
 import app.codeg.android.core.designsystem.theme.CodegTheme
-import app.codeg.android.core.model.AgentType
 import app.codeg.android.core.model.AgentSkillItem
 import app.codeg.android.core.model.CustomSkill
 import app.codeg.android.core.model.ExpertLinkState
@@ -37,13 +38,13 @@ fun CustomSkillsEntry(onClosed: () -> Unit, viewModel: CustomSkillsViewModel = h
     val ui by viewModel.ui.collectAsStateWithLifecycle()
     var open by remember { mutableStateOf(false) }
     if (ui.supported) {
-        TextButton(onClick = { open = true; viewModel.refresh() }, modifier = Modifier.fillMaxWidth()) {
-            Text(stringResource(R.string.custom_skills_title), color = CodegTheme.colors.accent)
+        CodegButton(onClick = { open = true; viewModel.refresh() }, modifier = Modifier.fillMaxWidth(), variant = CodegButtonVariant.Ghost) {
+            Text(stringResource(R.string.custom_skills_title))
         }
     }
     if (ui.error != null && !open) {
         CustomSkillsError(ui.error)
-        TextButton(enabled = !ui.loading, onClick = viewModel::refresh) { Text(stringResource(R.string.common_retry)) }
+        CodegButton(enabled = !ui.loading, onClick = viewModel::refresh, variant = CodegButtonVariant.Ghost) { Text(stringResource(R.string.common_retry)) }
     }
     if (open && ui.supported) {
         CustomSkillsPage(ui, viewModel) { open = false; onClosed() }
@@ -60,44 +61,45 @@ private fun CustomSkillsPage(ui: CustomSkillsUi, viewModel: CustomSkillsViewMode
     var importing by remember { mutableStateOf(false) }
     CustomSkillsFrame(stringResource(R.string.custom_skills_title), onDismiss) {
         Row(Modifier.fillMaxWidth().padding(horizontal = 12.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            TextButton(enabled = !ui.busy && !ui.loading, onClick = { editor = EditorTarget(EditorMode.CREATE) }) {
+            CodegButton(enabled = !ui.busy && !ui.loading, onClick = { editor = EditorTarget(EditorMode.CREATE) }, variant = CodegButtonVariant.Ghost) {
                 Text(stringResource(R.string.custom_skills_create))
             }
-            TextButton(enabled = !ui.busy && !ui.loading && ui.agents.isNotEmpty(), onClick = { importing = true }) {
+            CodegButton(enabled = !ui.busy && !ui.loading && ui.agents.isNotEmpty(), onClick = { importing = true }, variant = CodegButtonVariant.Ghost) {
                 Text(stringResource(R.string.custom_skills_import))
             }
-            TextButton(enabled = !ui.busy && !ui.loading, onClick = viewModel::refresh) {
+            CodegButton(enabled = !ui.busy && !ui.loading, onClick = viewModel::refresh, variant = CodegButtonVariant.Ghost) {
                 Text(stringResource(R.string.common_retry))
             }
         }
         CustomSkillsError(ui.error)
-        if (ui.loading || ui.busy) LinearProgressIndicator(Modifier.fillMaxWidth(), color = CodegTheme.colors.accent)
-        LazyColumn(Modifier.weight(1f), contentPadding = PaddingValues(12.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+        if (ui.loading || ui.busy) CodegSkeleton(Modifier.fillMaxWidth().height(4.dp))
+        LazyColumn(Modifier.heightIn(max = androidx.compose.ui.platform.LocalConfiguration.current.screenHeightDp.dp * 0.65f), contentPadding = PaddingValues(12.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
             if (ui.skills.isEmpty() && !ui.loading) item {
                 Text(stringResource(R.string.custom_skills_empty), color = CodegTheme.colors.textSecondary)
             }
             items(ui.skills, key = { it.id }) { skill ->
-                Column(Modifier.fillMaxWidth().webSurface(CodegShapes.extraSmall).padding(12.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                    Text(skill.name.ifBlank { skill.id }, color = CodegTheme.colors.textPrimary, style = MaterialTheme.typography.titleMedium)
-                    if (skill.name.isNotBlank() && skill.name != skill.id) Text(skill.id, color = CodegTheme.colors.textSecondary)
-                    skill.description?.takeIf { it.isNotBlank() }?.let { Text(it, color = CodegTheme.colors.textSecondary) }
-                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                        TextButton(enabled = !ui.busy && !ui.loading, onClick = { editor = EditorTarget(EditorMode.EDIT, skill.id) }) { Text(stringResource(R.string.custom_skills_edit)) }
-                        TextButton(enabled = !ui.busy && !ui.loading, onClick = { editor = EditorTarget(EditorMode.DUPLICATE, skill.id) }) { Text(stringResource(R.string.custom_skills_duplicate)) }
-                        TextButton(enabled = !ui.busy && !ui.loading, onClick = { deleting = skill }) { Text(stringResource(R.string.common_delete), color = CodegTheme.colors.danger) }
-                    }
-                    ui.agents.forEach { agent ->
-                        val status = ui.statuses.find { it.expertId == skill.id && it.agentType == agent }
-                        val enabled = status?.state == ExpertLinkState.LINKED_TO_CODEG
-                        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                            AgentIcon(agent, size = 20.dp)
-                            Column(Modifier.weight(1f)) {
-                                Text(agent.displayName, color = CodegTheme.colors.textPrimary)
-                                Text(stringResource(linkStateLabel(status?.state)), color = CodegTheme.colors.textSecondary, style = MaterialTheme.typography.bodySmall)
+                CodegCard(modifier = Modifier.fillMaxWidth()) {
+                    Column(Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        Text(skill.name.ifBlank { skill.id }, color = CodegTheme.colors.textPrimary, style = MaterialTheme.typography.titleMedium)
+                        if (skill.name.isNotBlank() && skill.name != skill.id) Text(skill.id, color = CodegTheme.colors.textSecondary)
+                        skill.description?.takeIf { it.isNotBlank() }?.let { Text(it, color = CodegTheme.colors.textSecondary) }
+                        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                            CodegButton(enabled = !ui.busy && !ui.loading, onClick = { editor = EditorTarget(EditorMode.EDIT, skill.id) }, variant = CodegButtonVariant.Ghost) { Text(stringResource(R.string.custom_skills_edit)) }
+                            CodegButton(enabled = !ui.busy && !ui.loading, onClick = { editor = EditorTarget(EditorMode.DUPLICATE, skill.id) }, variant = CodegButtonVariant.Ghost) { Text(stringResource(R.string.custom_skills_duplicate)) }
+                            CodegButton(enabled = !ui.busy && !ui.loading, onClick = { deleting = skill }, variant = CodegButtonVariant.Ghost) { Text(stringResource(R.string.common_delete)) }
+                        }
+                        ui.agents.forEach { agent ->
+                            val status = ui.statuses.find { it.expertId == skill.id && it.agentType == agent }
+                            val enabled = status?.state == ExpertLinkState.LINKED_TO_CODEG
+                            Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                                AgentIcon(agent, size = 20.dp)
+                                Column(Modifier.weight(1f)) {
+                                    Text(agent.displayName, color = CodegTheme.colors.textPrimary)
+                                    Text(stringResource(linkStateLabel(status?.state)), color = CodegTheme.colors.textSecondary, style = MaterialTheme.typography.bodySmall)
+                                }
+                                val switchLabel = stringResource(R.string.custom_skills_link_label, skill.id, agent.displayName)
+                                CodegSwitch(modifier = Modifier.semantics { contentDescription = switchLabel }, checked = enabled, enabled = !ui.busy && !ui.loading && (enabled || canEnableCustomSkill(status?.state)), onCheckedChange = { viewModel.toggle(skill.id, agent, it) })
                             }
-                            val switchLabel = stringResource(R.string.custom_skills_link_label, skill.id, agent.displayName)
-                            Switch(modifier = Modifier.semantics { contentDescription = switchLabel }, checked = enabled, enabled = !ui.busy && !ui.loading && (enabled || canEnableCustomSkill(status?.state)),
-                                onCheckedChange = { viewModel.toggle(skill.id, agent, it) })
                         }
                     }
                 }
@@ -107,13 +109,14 @@ private fun CustomSkillsPage(ui: CustomSkillsUi, viewModel: CustomSkillsViewMode
     editor?.let { target -> CustomSkillsEditor(target, ui, viewModel) { editor = null } }
     if (importing) CustomSkillsImport(ui, viewModel) { importing = false }
     deleting?.let { skill ->
-        AlertDialog(
-            onDismissRequest = { deleting = null },
-            containerColor = CodegTheme.colors.bgElevated,
-            title = { Text(stringResource(R.string.common_delete)) },
-            text = { Text(stringResource(R.string.custom_skills_delete_confirm, skill.id)) },
-            confirmButton = { TextButton(onClick = { viewModel.delete(skill.id); deleting = null }) { Text(stringResource(R.string.common_delete), color = CodegTheme.colors.danger) } },
-            dismissButton = { TextButton(onClick = { deleting = null }) { Text(stringResource(R.string.common_cancel)) } },
+        CodegConfirmDialog(
+            title = stringResource(R.string.common_delete),
+            message = stringResource(R.string.custom_skills_delete_confirm, skill.id),
+            target = skill.id,
+            confirmLabel = stringResource(R.string.common_delete),
+            destructive = true,
+            onConfirm = { if (!ui.busy) { viewModel.delete(skill.id); deleting = null } },
+            onDismiss = { deleting = null },
         )
     }
 }
@@ -150,7 +153,7 @@ private fun CustomSkillsEditor(target: EditorTarget, ui: CustomSkillsUi, viewMod
         EditorMode.DUPLICATE -> R.string.custom_skills_duplicate
     }
     CustomSkillsFrame(stringResource(title), { if (!ui.busy) onDismiss() }) {
-        Column(Modifier.weight(1f).verticalScroll(rememberScrollState()).padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+        Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
             if (target.mode == EditorMode.DUPLICATE) Text(stringResource(R.string.custom_skills_source, target.id), color = CodegTheme.colors.textSecondary)
             if (target.mode == EditorMode.EDIT) Text(target.id, color = CodegTheme.colors.textSecondary)
             else CodegTextField(id, { id = it }, label = stringResource(R.string.custom_skills_id), mono = true)
@@ -159,18 +162,18 @@ private fun CustomSkillsEditor(target: EditorTarget, ui: CustomSkillsUi, viewMod
                 CodegTextField(content, { content = it }, label = stringResource(R.string.custom_skills_content), mono = true, singleLine = false)
             }
             CustomSkillsError(error ?: ui.error)
-            if (!loaded && !loading) TextButton(onClick = { retry++ }) { Text(stringResource(R.string.common_retry)) }
-            TextButton(enabled = loaded && !loading && !ui.busy && !ui.loading && id.trim().isNotEmpty() &&
+            if (!loaded && !loading) CodegButton(onClick = { retry++ }, variant = CodegButtonVariant.Ghost) { Text(stringResource(R.string.common_retry)) }
+            CodegButton(enabled = loaded && !loading && !ui.busy && !ui.loading && id.trim().isNotEmpty() &&
                 (target.mode == EditorMode.DUPLICATE || content.isNotBlank()), onClick = {
-                val savedId = id.trim()
-                val savedContent = content
-                scope.launch {
-                    val ok = if (target.mode == EditorMode.DUPLICATE) viewModel.duplicate(target.id, savedId)
-                    else viewModel.save(savedId, savedContent, target.mode == EditorMode.CREATE)
-                    if (ok) onDismiss()
-                }
-            }) { Text(stringResource(R.string.common_save)) }
-            if (ui.busy) LinearProgressIndicator(Modifier.fillMaxWidth(), color = CodegTheme.colors.accent)
+                    val savedId = id.trim()
+                    val savedContent = content
+                    scope.launch {
+                        val ok = if (target.mode == EditorMode.DUPLICATE) viewModel.duplicate(target.id, savedId)
+                        else viewModel.save(savedId, savedContent, target.mode == EditorMode.CREATE)
+                        if (ok) onDismiss()
+                    }
+                }, variant = CodegButtonVariant.Default) { Text(stringResource(R.string.common_save)) }
+            if (ui.busy) CodegSkeleton(Modifier.fillMaxWidth().height(4.dp))
         }
     }
 }
@@ -195,19 +198,17 @@ private fun CustomSkillsImport(ui: CustomSkillsUi, viewModel: CustomSkillsViewMo
     }
     CustomSkillsFrame(stringResource(R.string.custom_skills_import), { if (!ui.busy) onDismiss() }) {
         CustomSkillsError(error ?: ui.error)
-        LazyColumn(Modifier.weight(1f), contentPadding = PaddingValues(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            items(ui.agents) { item ->
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    RadioButton(selected = item == agent, enabled = !ui.busy, onClick = { agent = item })
-                    Text(item.displayName, color = CodegTheme.colors.textPrimary)
-                }
+        LazyColumn(Modifier.heightIn(max = androidx.compose.ui.platform.LocalConfiguration.current.screenHeightDp.dp * 0.65f), contentPadding = PaddingValues(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            item {
+                CodegRadioGroup(options = ui.agents.map { it.displayName }, value = agent?.displayName.orEmpty(),
+                    enabled = !ui.busy, onSelect = { name -> agent = ui.agents.firstOrNull { it.displayName == name } })
             }
             if (loading) item { CircularProgressIndicator(color = CodegTheme.colors.accent) }
-            if (error != null && !loading) item { TextButton(onClick = { retry++ }) { Text(stringResource(R.string.common_retry)) } }
+            if (error != null && !loading) item { CodegButton(onClick = { retry++ }, variant = CodegButtonVariant.Ghost) { Text(stringResource(R.string.common_retry)) } }
             if (!loading && error == null && candidates.isEmpty()) item { Text(stringResource(R.string.custom_skills_import_empty), color = CodegTheme.colors.textSecondary) }
             items(candidates, key = { it.id }) { skill ->
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Checkbox(checked = skill.id in selected, enabled = !ui.busy && !loading, onCheckedChange = { checked -> selected = if (checked) selected + skill.id else selected - skill.id })
+                    CodegCheckbox(checked = skill.id in selected, enabled = !ui.busy && !loading, onCheckedChange = { checked -> selected = if (checked) selected + skill.id else selected - skill.id })
                     Column {
                         Text(skill.name.ifBlank { skill.id }, color = CodegTheme.colors.textPrimary)
                         Text(skill.id, color = CodegTheme.colors.textSecondary)
@@ -215,12 +216,12 @@ private fun CustomSkillsImport(ui: CustomSkillsUi, viewModel: CustomSkillsViewMo
                 }
             }
         }
-        TextButton(enabled = !ui.busy && !loading && selected.isNotEmpty(), onClick = {
-            val current = agent ?: return@TextButton
+        CodegButton(enabled = !ui.busy && !loading && selected.isNotEmpty(), onClick = {
+            val current = agent ?: return@CodegButton
             val ids = selected.toList()
             scope.launch { if (viewModel.importFromAgent(current, ids)) onDismiss() }
-        }, modifier = Modifier.fillMaxWidth()) { Text(stringResource(R.string.custom_skills_import_selected, selected.size)) }
-        if (ui.busy) LinearProgressIndicator(Modifier.fillMaxWidth(), color = CodegTheme.colors.accent)
+        }, modifier = Modifier.fillMaxWidth(), variant = CodegButtonVariant.Default) { Text(stringResource(R.string.custom_skills_import_selected, selected.size)) }
+        if (ui.busy) CodegSkeleton(Modifier.fillMaxWidth().height(4.dp))
     }
 }
 
@@ -232,12 +233,8 @@ private fun CustomSkillsError(error: String?) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun CustomSkillsFrame(title: String, onDismiss: () -> Unit, content: @Composable ColumnScope.() -> Unit) {
-    Dialog(onDismissRequest = onDismiss, properties = DialogProperties(usePlatformDefaultWidth = false, decorFitsSystemWindows = false)) {
-        Column(Modifier.fillMaxSize().background(CodegTheme.colors.bg).windowInsetsPadding(WindowInsets.safeDrawing).imePadding()) {
-            CodegTopBar(title = title, navigationIcon = {
-                CodegIconButton(onClick = onDismiss) { Icon(Icons.Rounded.Close, contentDescription = stringResource(R.string.common_cancel)) }
-            }, showDivider = true)
-            content()
-        }
+    CodegFullScreenSheet(title = title, onDismiss = onDismiss) {
+
+        content()
     }
 }

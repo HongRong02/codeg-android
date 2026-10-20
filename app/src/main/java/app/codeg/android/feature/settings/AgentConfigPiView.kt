@@ -1,5 +1,15 @@
 package app.codeg.android.feature.settings
 
+import app.codeg.android.core.model.AgentType
+import app.codeg.android.core.designsystem.component.CodegConfirmDialog
+import app.codeg.android.core.designsystem.component.CodegButton
+import app.codeg.android.core.designsystem.component.CodegButtonVariant
+import app.codeg.android.core.designsystem.component.CodegSeparator
+import app.codeg.android.core.designsystem.component.CodegSwitch
+import app.codeg.android.core.designsystem.component.CodegTabs
+import app.codeg.android.core.designsystem.component.CodegTextField
+import app.codeg.android.core.designsystem.component.PrimaryButton
+import app.codeg.android.core.designsystem.component.SecretField
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -8,18 +18,13 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.CheckCircle
 import androidx.compose.material.icons.rounded.ErrorOutline
 import androidx.compose.material.icons.rounded.Refresh
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.Switch
-import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -31,17 +36,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.codeg.android.R
-import app.codeg.android.core.designsystem.component.CodegSegmented
-import app.codeg.android.core.designsystem.component.CodegTextField
-import app.codeg.android.core.designsystem.component.PrimaryButton
-import app.codeg.android.core.designsystem.component.SecretField
 import app.codeg.android.core.designsystem.theme.CodegShapes
 import app.codeg.android.core.designsystem.theme.withOpacity
 import app.codeg.android.core.designsystem.theme.CodegTheme
@@ -60,7 +60,6 @@ import app.codeg.android.core.network.displayMessage
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-
 
 private data class PiBanner(val text: String, val isError: Boolean)
 
@@ -90,6 +89,7 @@ fun AgentConfigPiView(agent: AcpAgentInfo, viewModel: AgentsViewModel) {
     var validating by remember { mutableStateOf(false) }
     var piStatus by remember { mutableStateOf<PiCommandValidation?>(null) }
     var checkingPi by remember { mutableStateOf(true) }
+    var confirmUninstall by remember { mutableStateOf(false) }
     var piOp by remember { mutableStateOf<String?>(null) } // "install" / "uninstall" / null
     var savingRuntime by remember { mutableStateOf(false) }
 
@@ -117,7 +117,7 @@ fun AgentConfigPiView(agent: AcpAgentInfo, viewModel: AgentsViewModel) {
     val providerHasKey = effectiveProvider.isNotEmpty() && authProviders.contains(effectiveProvider)
     val customIncomplete = mode == PiRuntimeMode.CUSTOM && command.trim().isEmpty()
     val credsIncomplete = effectiveProvider.isEmpty() || modelText.trim().isEmpty() ||
-        (isCustomProvider && customBaseUrl.trim().isEmpty())
+    (isCustomProvider && customBaseUrl.trim().isEmpty())
     // Built-ins, plus a loaded provider not in the curated list (never drop a pre-existing default).
     val providerOptions = if (
         selectedProvider.isNotEmpty() && selectedProvider != PI_CUSTOM_PROVIDER_SENTINEL &&
@@ -280,13 +280,9 @@ fun AgentConfigPiView(agent: AcpAgentInfo, viewModel: AgentsViewModel) {
     Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
         // ---- Runtime card ----
         FormSection(stringResource(R.string.agents_pi_runtime_section), footer = stringResource(R.string.agents_pi_runtime_footer)) {
-            CodegSegmented(
-                options = listOf(stringResource(R.string.agents_pi_mode_default), stringResource(R.string.agents_pi_mode_custom)),
-                selectedIndex = if (mode == PiRuntimeMode.DEFAULT) 0 else 1,
-                onSelect = { mode = if (it == 0) PiRuntimeMode.DEFAULT else PiRuntimeMode.CUSTOM },
-            )
+            CodegTabs(tabs = listOf(stringResource(R.string.agents_pi_mode_default), stringResource(R.string.agents_pi_mode_custom)), selected = if (mode == PiRuntimeMode.DEFAULT) 0 else 1, onSelect = { mode = if (it == 0) PiRuntimeMode.DEFAULT else PiRuntimeMode.CUSTOM })
             Caption(stringResource(if (mode == PiRuntimeMode.DEFAULT) R.string.agents_pi_mode_default_caption else R.string.agents_pi_mode_custom_caption))
-            HorizontalDivider(color = colors.hairline)
+            CodegSeparator()
 
             if (mode == PiRuntimeMode.DEFAULT) {
                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -311,7 +307,7 @@ fun AgentConfigPiView(agent: AcpAgentInfo, viewModel: AgentsViewModel) {
                     }
                     if (!checkingPi) {
                         if (piStatus?.found == true) {
-                            PiActionButton(stringResource(R.string.agents_pi_uninstall), busy = piOp == "uninstall", enabled = piOp == null) { handlePiOp(install = false) }
+                            PiActionButton(stringResource(R.string.agents_pi_uninstall), busy = piOp == "uninstall", enabled = piOp == null) { confirmUninstall = true }
                         } else {
                             PiActionButton(stringResource(R.string.agents_pi_install), busy = piOp == "install", enabled = piOp == null) { handlePiOp(install = true) }
                         }
@@ -341,7 +337,7 @@ fun AgentConfigPiView(agent: AcpAgentInfo, viewModel: AgentsViewModel) {
                 }
             }
 
-            HorizontalDivider(color = colors.hairline)
+            CodegSeparator()
             if (customIncomplete) Caption(stringResource(R.string.agents_pi_runtime_incomplete))
             PrimaryButton(
                 text = stringResource(R.string.agents_pi_save_runtime),
@@ -357,7 +353,7 @@ fun AgentConfigPiView(agent: AcpAgentInfo, viewModel: AgentsViewModel) {
                 label = stringResource(R.string.agents_pi_provider),
                 value = selectedProvider,
                 options = listOf(PI_CUSTOM_PROVIDER_SENTINEL to stringResource(R.string.agents_pi_provider_custom)) +
-                    providerOptions.map { it.first to it.second },
+                providerOptions.map { it.first to it.second },
                 onSelect = { value ->
                     selectedProvider = value
                     if (value == PI_CUSTOM_PROVIDER_SENTINEL && customId.trim().isEmpty()) {
@@ -402,26 +398,30 @@ fun AgentConfigPiView(agent: AcpAgentInfo, viewModel: AgentsViewModel) {
                     Text(stringResource(R.string.agents_pi_trust_title), fontSize = 14.sp, color = colors.textPrimary)
                     Text(stringResource(R.string.agents_pi_trust_desc), fontSize = 11.sp, color = colors.web.mutedForeground)
                 }
-                Switch(
-                    checked = trustWorkspace,
-                    onCheckedChange = { toggleTrust(it) },
-                    enabled = !savingTrust,
-                    colors = SwitchDefaults.colors(checkedTrackColor = colors.accent, checkedThumbColor = colors.onAccent),
-                )
+                CodegSwitch(checked = trustWorkspace, onCheckedChange = { toggleTrust(it) }, enabled = !savingTrust)
             }
             Caption(stringResource(R.string.agents_pi_trust_caption))
         }
 
+        // TODO(T52): CodegToaster
         banner?.let { PiResultBanner(it) }
+        if (confirmUninstall) CodegConfirmDialog(
+            title = stringResource(R.string.agents_pi_uninstall),
+            message = stringResource(R.string.settings_delete_target_message),
+            target = AgentType.PI.displayName,
+            confirmLabel = stringResource(R.string.agents_pi_uninstall), destructive = true,
+            onDismiss = { confirmUninstall = false },
+            onConfirm = { confirmUninstall = false; if (piOp == null) handlePiOp(install = false) },
+        )
     }
 }
 
 @Composable
 private fun PiActionButton(text: String, busy: Boolean, enabled: Boolean, onClick: () -> Unit) {
     val colors = CodegTheme.colors
-    OutlinedButton(onClick = onClick, enabled = enabled && !busy) {
+    CodegButton(onClick = onClick, enabled = enabled && !busy, variant = CodegButtonVariant.Outline) {
         if (busy) CircularProgressIndicator(Modifier.size(16.dp), strokeWidth = 2.dp, color = colors.accent)
-        else Text(text, color = colors.accent)
+        else Text(text)
     }
 }
 

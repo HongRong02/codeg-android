@@ -1,37 +1,34 @@
 package app.codeg.android.feature.settings
 
-import androidx.compose.foundation.layout.imePadding
+import app.codeg.android.core.designsystem.component.CodegButton
+import app.codeg.android.core.designsystem.component.CodegButtonVariant
+import app.codeg.android.core.designsystem.component.CodegConfirmDialog
+import app.codeg.android.core.designsystem.component.CodegDropdownMenu
+import app.codeg.android.core.designsystem.component.CodegFilterChip
+import app.codeg.android.core.designsystem.component.CodegFullScreenSheet
+import app.codeg.android.core.designsystem.component.CodegListRow
+import app.codeg.android.core.designsystem.component.CodegMenuItem
+import app.codeg.android.core.designsystem.component.CodegTextField
+import app.codeg.android.core.designsystem.component.EmptyState
+import app.codeg.android.core.designsystem.component.LoadingView
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
-import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeDrawing
-import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Check
-import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.Memory
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -41,33 +38,18 @@ import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import app.codeg.android.core.designsystem.component.CodegTopBar
-import app.codeg.android.core.designsystem.component.CodegIconButton
 import app.codeg.android.R
-import app.codeg.android.core.designsystem.component.CodegFilterChip
-import app.codeg.android.core.designsystem.component.CodegTextField
-import app.codeg.android.core.designsystem.component.EmptyState
-import app.codeg.android.core.designsystem.component.LoadingView
-import app.codeg.android.core.designsystem.theme.CodegShapes
-import app.codeg.android.core.designsystem.theme.withOpacity
 import app.codeg.android.core.designsystem.theme.CodegTheme
 import app.codeg.android.core.model.AgentType
 import app.codeg.android.core.model.LocalMcpServer
 import app.codeg.android.feature.settings.mcpmarket.McpMarketViewModel
 import app.codeg.android.feature.settings.mcpmarket.McpMarketSheet
-import app.codeg.android.core.designsystem.component.webSurface
 
 private const val SPEC_TEMPLATE = "{\n  \"type\": \"stdio\",\n  \"command\": \"\",\n  \"args\": []\n}"
 
@@ -86,7 +68,7 @@ fun McpContent(viewModel: McpViewModel = hiltViewModel()) {
             ui.loading && ui.servers.isEmpty() -> Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { LoadingView(stringResource(R.string.common_loading)) }
             else -> LazyColumn(Modifier.fillMaxSize(), contentPadding = androidx.compose.foundation.layout.PaddingValues(start = 12.dp, end = 12.dp, top = 8.dp, bottom = 88.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
                 if (marketUi.available) {
-                    item("market") { TextButton(onClick = { marketOpen = true }) { Text(stringResource(R.string.mcp_market_title)) } }
+                    item("market") { CodegButton(onClick = { marketOpen = true }, variant = CodegButtonVariant.Ghost) { Text(stringResource(R.string.mcp_market_title)) } }
                 }
                 if (ui.servers.isEmpty() && !ui.loading) {
                     item("empty") { Box(Modifier.fillMaxWidth().padding(40.dp), contentAlignment = Alignment.Center) { EmptyState(Icons.Rounded.Memory, stringResource(R.string.mcp_empty_title), stringResource(R.string.mcp_empty_subtitle)) } }
@@ -95,12 +77,7 @@ fun McpContent(viewModel: McpViewModel = hiltViewModel()) {
             }
         }
         if (!(ui.loading && ui.servers.isEmpty())) {
-            FloatingActionButton(
-                onClick = { editor = McpEditorTarget(null) },
-                modifier = Modifier.align(Alignment.BottomEnd).padding(16.dp),
-                containerColor = colors.accent,
-                contentColor = colors.onAccent,
-            ) { Icon(Icons.Rounded.Add, contentDescription = stringResource(R.string.mcp_new_cd)) }
+            CodegButton(onClick = { editor = McpEditorTarget(null) }, modifier = Modifier.align(Alignment.BottomEnd).padding(16.dp), variant = CodegButtonVariant.Default) { Icon(Icons.Rounded.Add, contentDescription = stringResource(R.string.mcp_new_cd)) }
         }
     }
 
@@ -124,20 +101,24 @@ private data class McpEditorTarget(val server: LocalMcpServer?)
 private fun McpRow(s: LocalMcpServer, onEdit: () -> Unit, onDelete: () -> Unit) {
     val colors = CodegTheme.colors
     var menu by remember { mutableStateOf(false) }
+    var deleting by remember { mutableStateOf(false) }
     Box {
-        Column(
-            Modifier.fillMaxWidth().webSurface(CodegShapes.extraSmall)
-                .combinedClickable(onClick = onEdit, onLongClick = { menu = true }).padding(14.dp),
-            verticalArrangement = Arrangement.spacedBy(3.dp),
-        ) {
-            Text(s.id, fontSize = 14.sp, color = colors.textPrimary, maxLines = 1, overflow = TextOverflow.Ellipsis)
-            Text(s.spec.toString(), fontFamily = FontFamily.Monospace, fontSize = 11.sp, color = colors.web.mutedForeground, maxLines = 1, overflow = TextOverflow.Ellipsis)
-            if (s.apps.isNotEmpty()) Text(s.apps.joinToString(", "), fontSize = 11.sp, color = colors.accent)
-        }
-        DropdownMenu(expanded = menu, onDismissRequest = { menu = false }) {
-            DropdownMenuItem(text = { Text(stringResource(R.string.common_delete)) }, onClick = { menu = false; onDelete() })
+        CodegListRow(title = s.id,
+            subtitle = listOf(s.spec.toString(), s.apps.joinToString(", ")).filter { it.isNotEmpty() }.joinToString(" · "),
+            onClick = onEdit, onLongClick = { menu = true }, onMoreClick = { menu = true })
+        CodegDropdownMenu(expanded = menu, onDismissRequest = { menu = false }) {
+            CodegMenuItem(text = { Text(stringResource(R.string.common_delete)) }, onClick = { menu = false; deleting = true })
         }
     }
+    if (deleting) CodegConfirmDialog(
+        title = stringResource(R.string.common_delete),
+        message = stringResource(R.string.settings_delete_target_message),
+        target = s.id,
+        confirmLabel = stringResource(R.string.common_delete),
+        destructive = true,
+        onConfirm = { deleting = false; onDelete() },
+        onDismiss = { deleting = false },
+    )
 }
 
 @OptIn(ExperimentalLayoutApi::class, ExperimentalMaterial3Api::class)
@@ -153,37 +134,28 @@ private fun McpEditor(
     val apps: SnapshotStateList<String> = remember { existing?.apps.orEmpty().toMutableStateList() }
     var error by remember { mutableStateOf<String?>(null) }
 
-    Dialog(onDismissRequest = onDismiss, properties = DialogProperties(usePlatformDefaultWidth = false, decorFitsSystemWindows = false)) {
-        Column(Modifier.fillMaxSize().background(colors.bg).windowInsetsPadding(WindowInsets.safeDrawing).imePadding()) {
-            CodegTopBar(
-                title = if (existing == null) stringResource(R.string.mcp_new_title) else stringResource(R.string.mcp_edit_title),
-                navigationIcon = {
-                    CodegIconButton(onClick = onDismiss) { Icon(Icons.Rounded.Close, contentDescription = stringResource(R.string.mcp_close_cd)) }
-                },
-                actions = {
-                    TextButton(onClick = { onSave(id, spec, apps.toList()) { error = it } }, enabled = id.isNotBlank()) {
-                        Text(stringResource(R.string.common_save), fontWeight = FontWeight.SemiBold, color = if (id.isNotBlank()) colors.accent else colors.web.mutedForeground)
-                    }
-                },
-                showDivider = true,
-            )
-            Column(Modifier.weight(1f).verticalScroll(rememberScrollState()).padding(horizontal = 16.dp, vertical = 12.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                CodegTextField(id, { id = it }, label = stringResource(R.string.mcp_server_id), mono = true)
-                CodegTextField(spec, { spec = it }, label = stringResource(R.string.mcp_spec_json), mono = true, singleLine = false)
-                Text(stringResource(R.string.mcp_enabled_for), fontSize = 13.sp, fontWeight = FontWeight.SemiBold, color = colors.textSecondary)
-                FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                    for (agent in AgentType.entries) {
-                        val on = apps.contains(agent.wire)
-                        CodegFilterChip(
-                            label = agent.shortName,
-                            selected = on,
-                            onClick = { if (on) apps.remove(agent.wire) else apps.add(agent.wire) },
-                            icon = if (on) Icons.Rounded.Check else null,
-                        )
-                    }
+    CodegFullScreenSheet(title = if (existing == null) stringResource(R.string.mcp_new_title) else stringResource(R.string.mcp_edit_title), onDismiss = onDismiss, actions = {
+        CodegButton(onClick = { onSave(id, spec, apps.toList()) { error = it } }, enabled = id.isNotBlank(), variant = CodegButtonVariant.Default) {
+            Text(stringResource(R.string.common_save), fontWeight = FontWeight.SemiBold)
+        }
+    }) {
+
+        Column(Modifier.padding(horizontal = 16.dp, vertical = 12.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            CodegTextField(id, { id = it }, label = stringResource(R.string.mcp_server_id), mono = true)
+            CodegTextField(spec, { spec = it }, label = stringResource(R.string.mcp_spec_json), mono = true, singleLine = false)
+            Text(stringResource(R.string.mcp_enabled_for), fontSize = 13.sp, fontWeight = FontWeight.SemiBold, color = colors.textSecondary)
+            FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                for (agent in AgentType.entries) {
+                    val on = apps.contains(agent.wire)
+                    CodegFilterChip(
+                        label = agent.shortName,
+                        selected = on,
+                        onClick = { if (on) apps.remove(agent.wire) else apps.add(agent.wire) },
+                        icon = if (on) Icons.Rounded.Check else null,
+                    )
                 }
-                error?.let { Text(it, fontSize = 13.sp, color = colors.danger) }
             }
+            error?.let { Text(it, fontSize = 13.sp, color = colors.danger) }
         }
     }
 }
