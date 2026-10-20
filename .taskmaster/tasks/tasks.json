@@ -526,6 +526,17 @@
         "dependencies": [],
         "priority": "low",
         "subtasks": []
+      },
+      {
+        "id": "41",
+        "title": "T41 APK 自动更新",
+        "description": "main 合并后 CI 自动发布 dev 签名 APK 到 GitHub Release；App 检查、提示、下载、调起安装。",
+        "details": "需求文档：.taskmaster/docs/tasks/T41-apk-auto-update.md（先读 .taskmaster/docs/CONVENTIONS.md，再只读这一份需求文档及其中列出的代码位置；不要通读 PRD 或其它文件）。改动范围、代码定位、验收标准都在需求文档里。",
+        "testStrategy": "",
+        "status": "in-progress",
+        "dependencies": [],
+        "priority": "high",
+        "subtasks": []
       }
     ],
     "metadata": {
