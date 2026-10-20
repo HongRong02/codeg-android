@@ -1,5 +1,17 @@
 package app.codeg.android.feature.settings
 
+import kotlinx.coroutines.delay
+import app.codeg.android.core.designsystem.theme.withOpacity
+import app.codeg.android.core.designsystem.theme.CodegShapes
+import androidx.compose.ui.draw.clip
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.getValue
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.background
+import app.codeg.android.core.designsystem.component.LocalCodegToaster
+import app.codeg.android.core.designsystem.component.CodegSpinner
+import app.codeg.android.core.designsystem.icon.*
 import app.codeg.android.core.model.AgentType
 import app.codeg.android.core.designsystem.component.CodegConfirmDialog
 import app.codeg.android.core.designsystem.component.CodegButton
@@ -11,39 +23,26 @@ import app.codeg.android.core.designsystem.component.CodegTextField
 import app.codeg.android.core.designsystem.component.PrimaryButton
 import app.codeg.android.core.designsystem.component.SecretField
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.CheckCircle
-import androidx.compose.material.icons.rounded.ErrorOutline
-import androidx.compose.material.icons.rounded.Refresh
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.codeg.android.R
-import app.codeg.android.core.designsystem.theme.CodegShapes
-import app.codeg.android.core.designsystem.theme.withOpacity
 import app.codeg.android.core.designsystem.theme.CodegTheme
 import app.codeg.android.core.model.AcpAgentInfo
 import app.codeg.android.core.model.PI_CUSTOM_PROVIDER_SENTINEL
@@ -58,7 +57,6 @@ import app.codeg.android.core.model.piCustomApiProtocols
 import app.codeg.android.core.model.piThinkingLevels
 import app.codeg.android.core.network.displayMessage
 import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 private data class PiBanner(val text: String, val isError: Boolean)
@@ -166,7 +164,6 @@ fun AgentConfigPiView(agent: AcpAgentInfo, viewModel: AgentsViewModel) {
         piStatus = try { viewModel.validatePiCommand("pi") } catch (_: Exception) { PiCommandValidation() }
         checkingPi = false
     }
-    LaunchedEffect(banner) { if (banner != null) { delay(4000); banner = null } }
 
     fun detectPi() {
         scope.launch {
@@ -303,7 +300,7 @@ fun AgentConfigPiView(agent: AcpAgentInfo, viewModel: AgentsViewModel) {
                         }
                     }
                     IconButton(onClick = { detectPi() }, enabled = !checkingPi && piOp == null) {
-                        Icon(Icons.Rounded.Refresh, contentDescription = stringResource(R.string.agents_pi_recheck), tint = colors.textSecondary)
+                        Icon(Lucide.RefreshCw, contentDescription = stringResource(R.string.agents_pi_recheck), tint = colors.textSecondary, modifier = Modifier.size(16.dp))
                     }
                     if (!checkingPi) {
                         if (piStatus?.found == true) {
@@ -319,7 +316,7 @@ fun AgentConfigPiView(agent: AcpAgentInfo, viewModel: AgentsViewModel) {
                     PiActionButton(stringResource(R.string.agents_pi_validate), busy = validating, enabled = !validating && command.trim().isNotEmpty()) { handleValidate() }
                     validation?.let { v ->
                         val tint = if (v.found) colors.accent else colors.danger
-                        Icon(if (v.found) Icons.Rounded.CheckCircle else Icons.Rounded.ErrorOutline, contentDescription = null, tint = tint, modifier = Modifier.size(16.dp))
+                        Icon(if (v.found) Lucide.CheckCircle else Lucide.CircleAlert, contentDescription = null, tint = tint, modifier = Modifier.size(16.dp))
                         Text(
                             if (v.found) listOfNotNull(v.resolvedPath, v.version?.let { "($it)" }).joinToString(" ") else stringResource(R.string.agents_pi_command_not_found),
                             fontSize = 11.sp, color = if (v.found) colors.textSecondary else colors.danger, maxLines = 2, overflow = TextOverflow.Ellipsis,
@@ -403,8 +400,13 @@ fun AgentConfigPiView(agent: AcpAgentInfo, viewModel: AgentsViewModel) {
             Caption(stringResource(R.string.agents_pi_trust_caption))
         }
 
-        // TODO(T52): CodegToaster
-        banner?.let { PiResultBanner(it) }
+        val toaster = LocalCodegToaster.current
+        LaunchedEffect(banner) {
+            banner?.let {
+                if (it.isError) toaster.error(it.text) else toaster.success(it.text)
+                banner = null
+            }
+        }
         if (confirmUninstall) CodegConfirmDialog(
             title = stringResource(R.string.agents_pi_uninstall),
             message = stringResource(R.string.settings_delete_target_message),
@@ -420,23 +422,11 @@ fun AgentConfigPiView(agent: AcpAgentInfo, viewModel: AgentsViewModel) {
 private fun PiActionButton(text: String, busy: Boolean, enabled: Boolean, onClick: () -> Unit) {
     val colors = CodegTheme.colors
     CodegButton(onClick = onClick, enabled = enabled && !busy, variant = CodegButtonVariant.Outline) {
-        if (busy) CircularProgressIndicator(Modifier.size(16.dp), strokeWidth = 2.dp, color = colors.accent)
+        if (busy) CodegSpinner(size = 16.dp)
         else Text(text)
     }
 }
 
-@Composable
-private fun PiResultBanner(banner: PiBanner) {
-    val colors = CodegTheme.colors
-    val tint = if (banner.isError) colors.danger else colors.accent
-    Row(
-        Modifier.fillMaxWidth().clip(CodegShapes.extraSmall).background(tint.withOpacity(0.12f)).padding(12.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-    ) {
-        Icon(if (banner.isError) Icons.Rounded.ErrorOutline else Icons.Rounded.CheckCircle, contentDescription = null, tint = tint, modifier = Modifier.size(16.dp))
-        Text(banner.text, fontSize = 12.sp, color = if (banner.isError) colors.danger else colors.textSecondary)
-    }
-}
 
 @Composable
 private fun piThinkingLabel(level: String): String = stringResource(

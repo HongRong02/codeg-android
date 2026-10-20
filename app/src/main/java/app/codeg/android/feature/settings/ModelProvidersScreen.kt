@@ -1,5 +1,9 @@
 package app.codeg.android.feature.settings
 
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.getValue
+import androidx.compose.foundation.layout.size
+import app.codeg.android.core.designsystem.icon.*
 import app.codeg.android.core.designsystem.component.CodegButton
 import app.codeg.android.core.designsystem.component.CodegButtonVariant
 import app.codeg.android.core.designsystem.component.CodegConfirmDialog
@@ -21,17 +25,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Add
-import androidx.compose.material.icons.rounded.Memory
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -55,7 +54,7 @@ fun ModelProvidersContent(viewModel: ModelProvidersViewModel = hiltViewModel()) 
             ui.loading && ui.providers.isEmpty() -> Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { LoadingView(stringResource(R.string.common_loading)) }
             else -> LazyColumn(Modifier.fillMaxSize(), contentPadding = androidx.compose.foundation.layout.PaddingValues(start = 12.dp, end = 12.dp, top = 12.dp, bottom = 88.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 if (ui.providers.isEmpty() && !ui.loading) {
-                    item("empty") { Box(Modifier.fillMaxWidth().padding(40.dp), contentAlignment = Alignment.Center) { EmptyState(Icons.Rounded.Memory, stringResource(R.string.providers_empty_title), stringResource(R.string.providers_empty_subtitle)) } }
+                    item("empty") { Box(Modifier.fillMaxWidth().padding(40.dp), contentAlignment = Alignment.Center) { EmptyState(Lucide.Cpu, stringResource(R.string.providers_empty_title), stringResource(R.string.providers_empty_subtitle)) } }
                 }
                 for (agent in ui.supportedAgents) {
                     val group = ui.providers.filter { it.agentType == agent }
@@ -69,7 +68,7 @@ fun ModelProvidersContent(viewModel: ModelProvidersViewModel = hiltViewModel()) 
             }
         }
         if (!(ui.loading && ui.providers.isEmpty())) {
-            CodegButton(onClick = { editor = ProviderEditorTarget(null) }, modifier = Modifier.align(Alignment.BottomEnd).padding(16.dp), variant = CodegButtonVariant.Default) { Icon(Icons.Rounded.Add, contentDescription = stringResource(R.string.providers_new_cd)) }
+            CodegButton(onClick = { editor = ProviderEditorTarget(null) }, modifier = Modifier.align(Alignment.BottomEnd).padding(16.dp), variant = CodegButtonVariant.Default) { Icon(Lucide.Plus, contentDescription = stringResource(R.string.providers_new_cd), modifier = Modifier.size(16.dp)) }
         }
     }
 

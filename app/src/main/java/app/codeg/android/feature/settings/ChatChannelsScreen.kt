@@ -1,5 +1,22 @@
 package app.codeg.android.feature.settings
 
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.graphics.drawscope.inset
+import androidx.compose.ui.graphics.painter.Painter
+import app.codeg.android.core.designsystem.theme.PillShape
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.getValue
+import androidx.compose.foundation.combinedClickable
+import app.codeg.android.core.designsystem.component.CodegDialog
+import app.codeg.android.core.designsystem.component.LocalCodegToaster
+import app.codeg.android.core.designsystem.component.CodegAvatar
+import app.codeg.android.core.designsystem.component.CodegImagePreviewDialog
+import app.codeg.android.core.designsystem.component.CodegPreviewImage
+import androidx.compose.ui.graphics.painter.BitmapPainter
+import androidx.compose.ui.graphics.vector.rememberVectorPainter
+import app.codeg.android.core.designsystem.component.CodegSpinner
+import app.codeg.android.core.designsystem.icon.*
 import app.codeg.android.core.designsystem.component.CodegBadge
 import app.codeg.android.core.designsystem.component.CodegBadgeVariant
 import app.codeg.android.core.designsystem.component.CodegListRow
@@ -8,7 +25,6 @@ import app.codeg.android.core.designsystem.component.CodegButtonVariant
 import app.codeg.android.core.designsystem.component.CodegCard
 import app.codeg.android.core.designsystem.component.CodegCardHeader
 import app.codeg.android.core.designsystem.component.CodegConfirmDialog
-import app.codeg.android.core.designsystem.component.CodegDialog
 import app.codeg.android.core.designsystem.component.CodegFilterChip
 import app.codeg.android.core.designsystem.component.CodegFullScreenSheet
 import app.codeg.android.core.designsystem.component.CodegSeparator
@@ -25,7 +41,6 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -41,31 +56,14 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.Chat
-import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowRight
-import androidx.compose.material.icons.automirrored.rounded.Send
-import androidx.compose.material.icons.rounded.Add
-import androidx.compose.material.icons.rounded.Bolt
-import androidx.compose.material.icons.rounded.Close
-import androidx.compose.material.icons.rounded.Forum
-import androidx.compose.material.icons.rounded.NotificationsActive
-import androidx.compose.material.icons.rounded.QrCode
-import androidx.compose.material.icons.rounded.Refresh
-import androidx.compose.material.icons.rounded.Tune
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -83,7 +81,6 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.codeg.android.R
-import app.codeg.android.core.designsystem.theme.PillShape
 import app.codeg.android.core.designsystem.theme.CodegShapes
 import app.codeg.android.core.designsystem.theme.withOpacity
 import app.codeg.android.core.designsystem.theme.CodegTheme
@@ -101,33 +98,44 @@ import kotlinx.serialization.json.JsonObject
 
 // region Visuals
 
+@Composable
 internal fun channelTint(type: ChannelType): Color = when (type) {
-    ChannelType.LARK -> Color(0xFF338CFF)
-    ChannelType.TELEGRAM -> Color(0xFF26A6F2)
-    ChannelType.WEIXIN -> Color(0xFF1AB833)
+    ChannelType.LARK -> CodegTheme.colors.web.primary
+    ChannelType.TELEGRAM -> CodegTheme.colors.web.primary
+    ChannelType.WEIXIN -> CodegTheme.colors.web.primary
 }
 
 internal fun channelIcon(type: ChannelType): ImageVector = when (type) {
-    ChannelType.LARK -> Icons.Rounded.Forum
-    ChannelType.TELEGRAM -> Icons.AutoMirrored.Rounded.Send
-    ChannelType.WEIXIN -> Icons.AutoMirrored.Rounded.Chat
+    ChannelType.LARK -> Lucide.MessageSquare
+    ChannelType.TELEGRAM -> Lucide.Send
+    ChannelType.WEIXIN -> Lucide.MessageSquare
 }
 
 @Composable
 internal fun statusTint(status: ChannelConnectionStatus): Color = when (status) {
-    ChannelConnectionStatus.CONNECTED -> Color(0xFF4DC762)
-    ChannelConnectionStatus.CONNECTING -> Color(0xFFFF9E4D)
+    ChannelConnectionStatus.CONNECTED -> CodegTheme.colors.web.primary
+    ChannelConnectionStatus.CONNECTING -> CodegTheme.colors.web.mutedForeground
     ChannelConnectionStatus.DISCONNECTED -> CodegTheme.colors.web.mutedForeground
     ChannelConnectionStatus.ERROR -> CodegTheme.colors.danger
 }
 
-// TODO(T53): CodegAvatar
 @Composable
 internal fun ChannelTypeAvatar(type: ChannelType, size: Dp) {
-    val tint = channelTint(type)
-    Box(Modifier.size(size).clip(CircleShape).background(tint.withOpacity(0.16f)), contentAlignment = Alignment.Center) {
-        Icon(channelIcon(type), null, tint = tint, modifier = Modifier.size(size * 0.5f))
+    val source = rememberVectorPainter(channelIcon(type))
+    val tint = CodegTheme.colors.web.primary
+    // Avatar accepts loaded painters; preserve the icon inset and apply the theme tint here.
+    val painter = remember(source, tint) {
+        object : Painter() {
+            override val intrinsicSize get() = source.intrinsicSize
+            override fun DrawScope.onDraw() {
+                inset(this.size.width * 0.25f, this.size.height * 0.25f) {
+                    val iconSize = this.size
+                    with(source) { draw(size = iconSize, colorFilter = ColorFilter.tint(tint)) }
+                }
+            }
+        }
     }
+    CodegAvatar(fallbackText = type.name, painter = painter, size = size)
 }
 
 @Composable
@@ -162,7 +170,7 @@ fun ChatChannelsContent(viewModel: ChatChannelsViewModel = hiltViewModel()) {
             Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { LoadingView(stringResource(R.string.cc_loading_channels)) }
             ui.phase == ChatChannelsPhase.FAILED && ui.channels.isEmpty() ->
             Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                InlineError(Icons.Rounded.NotificationsActive, stringResource(R.string.cc_couldnt_load), ui.error ?: stringResource(R.string.cc_unknown_error), onRetry = { viewModel.load() })
+                InlineError(Lucide.BellRing, stringResource(R.string.cc_couldnt_load), ui.error ?: stringResource(R.string.cc_unknown_error), onRetry = { viewModel.load() })
             }
             else -> LazyColumn(
                 Modifier.fillMaxSize(),
@@ -175,7 +183,7 @@ fun ChatChannelsContent(viewModel: ChatChannelsViewModel = hiltViewModel()) {
                 if (ui.channels.isEmpty()) {
                     item("empty") {
                         EmptyState(
-                            Icons.Rounded.NotificationsActive, stringResource(R.string.cc_no_chat_channels),
+                            Lucide.BellRing, stringResource(R.string.cc_no_chat_channels),
                             stringResource(R.string.cc_empty_subtitle),
                             actionLabel = stringResource(R.string.cc_add_channel), onAction = { editor = ChannelEditorTarget.Add },
                         )
@@ -200,30 +208,28 @@ fun ChatChannelsContent(viewModel: ChatChannelsViewModel = hiltViewModel()) {
                         verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(13.dp),
                     ) {
                         Box(Modifier.size(40.dp).clip(RoundedCornerShape(8.dp)).background(colors.accent.withOpacity(0.16f)), contentAlignment = Alignment.Center) {
-                            Icon(Icons.Rounded.Tune, null, tint = colors.accent, modifier = Modifier.size(20.dp))
+                            Icon(Lucide.SlidersHorizontal, null, tint = colors.accent, modifier = Modifier.size(16.dp))
                         }
                         Column(Modifier.weight(1f)) {
                             Text(stringResource(R.string.cc_message_settings), fontSize = 14.sp, fontWeight = FontWeight.SemiBold, color = colors.textPrimary)
                             Text(stringResource(R.string.cc_message_settings_subtitle), fontSize = 12.sp, color = colors.web.mutedForeground, maxLines = 1, overflow = TextOverflow.Ellipsis)
                         }
-                        Icon(Icons.AutoMirrored.Rounded.KeyboardArrowRight, null, tint = colors.web.mutedForeground, modifier = Modifier.size(16.dp))
+                        Icon(Lucide.ChevronRight, null, tint = colors.web.mutedForeground, modifier = Modifier.size(16.dp))
                     }
                 }
             }
         }
 
         // Add FAB.
-        CodegButton(onClick = { editor = ChannelEditorTarget.Add }, modifier = Modifier.align(Alignment.BottomEnd).padding(16.dp), variant = CodegButtonVariant.Default) { Icon(Icons.Rounded.Add, contentDescription = stringResource(R.string.cc_add_channel)) }
+        CodegButton(onClick = { editor = ChannelEditorTarget.Add }, modifier = Modifier.align(Alignment.BottomEnd).padding(16.dp), variant = CodegButtonVariant.Default) { Icon(Lucide.Plus, contentDescription = stringResource(R.string.cc_add_channel), modifier = Modifier.size(16.dp)) }
 
-        // Transient toast → Material Snackbar.
-        val snackbarHostState = remember { SnackbarHostState() }
+        val toaster = LocalCodegToaster.current
         LaunchedEffect(ui.toast) {
             ui.toast?.let {
-                snackbarHostState.showSnackbar(it)
+                if (ui.toastIsError) toaster.error(it) else toaster.success(it)
                 viewModel.dismissToast()
             }
         }
-        SnackbarHost(snackbarHostState, modifier = Modifier.align(Alignment.BottomCenter))
     }
 
     // Detail dialog.
@@ -294,7 +300,7 @@ private fun ChatRefreshBanner(message: String, onRetry: () -> Unit, onDismiss: (
     ) {
         Text(message, fontSize = 12.sp, color = colors.danger, modifier = Modifier.weight(1f), maxLines = 2, overflow = TextOverflow.Ellipsis)
         Text(stringResource(R.string.common_retry), fontSize = 12.sp, fontWeight = FontWeight.SemiBold, color = colors.accent, modifier = Modifier.clickable { onRetry() })
-        Icon(Icons.Rounded.Close, stringResource(R.string.common_dismiss), tint = colors.web.mutedForeground, modifier = Modifier.size(16.dp).clickable { onDismiss() })
+        Icon(Lucide.X, stringResource(R.string.common_dismiss), tint = colors.web.mutedForeground, modifier = Modifier.clickable { onDismiss() }.padding(16.dp).size(16.dp))
     }
 }
 
@@ -352,15 +358,15 @@ private fun ChatChannelDetailDialog(
                 Column(Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
                     when {
                         channel.channelType == ChannelType.WEIXIN ->
-                        ActionButton(stringResource(R.string.cc_scan_qr_to_connect), Icons.Rounded.QrCode, colors.accent, enabled = !detail.busy) { showQR = true }
+                        ActionButton(stringResource(R.string.cc_scan_qr_to_connect), Lucide.QrCode, colors.accent, enabled = !detail.busy) { showQR = true }
                         detail.status == ChannelConnectionStatus.CONNECTED ->
-                        ActionButton(stringResource(R.string.cc_disconnect), Icons.Rounded.Bolt, colors.danger, enabled = !detail.busy) { viewModel.disconnect() }
+                        ActionButton(stringResource(R.string.cc_disconnect), Lucide.Zap, colors.danger, enabled = !detail.busy) { viewModel.disconnect() }
                         else ->
-                        ActionButton(stringResource(R.string.cc_connect), Icons.Rounded.Bolt, colors.accent, enabled = !detail.busy) { viewModel.connect() }
+                        ActionButton(stringResource(R.string.cc_connect), Lucide.Zap, colors.accent, enabled = !detail.busy) { viewModel.connect() }
                     }
-                    ActionButton(stringResource(R.string.cc_send_test_message), Icons.AutoMirrored.Rounded.Send, colors.accent, enabled = !detail.busy && detail.status == ChannelConnectionStatus.CONNECTED) { viewModel.test() }
+                    ActionButton(stringResource(R.string.cc_send_test_message), Lucide.Send, colors.accent, enabled = !detail.busy && detail.status == ChannelConnectionStatus.CONNECTED) { viewModel.test() }
                     if (detail.busy) Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                        CircularProgressIndicator(color = colors.accent, modifier = Modifier.size(16.dp))
+                        CodegSpinner(size = 16.dp)
                         Text(stringResource(R.string.cc_working), fontSize = 12.sp, color = colors.web.mutedForeground)
                     }
                 }
@@ -406,16 +412,18 @@ private fun ChatChannelDetailDialog(
         CodegConfirmDialog(title = stringResource(R.string.cc_remove_token), message = stringResource(R.string.cc_remove_token_message), target = channel.name, confirmLabel = stringResource(R.string.common_remove), destructive = true, onConfirm = { viewModel.removeToken(); confirmRemoveToken = false }, onDismiss = { confirmRemoveToken = false })
     }
 
-    detail.actionError?.let { err ->
-        CodegDialog(title = stringResource(R.string.cc_something_went_wrong), onDismiss = { viewModel.dismissActionError() }, footer = {
-
-            CodegButton(onClick = { viewModel.dismissActionError() }, variant = CodegButtonVariant.Ghost) { Text(stringResource(R.string.common_ok)) }
-        }, content = { Text(err, color = colors.web.mutedForeground) })
+    val toaster = LocalCodegToaster.current
+    LaunchedEffect(detail.actionError) {
+        detail.actionError?.let {
+            toaster.error(it)
+            viewModel.dismissActionError()
+        }
     }
-
-    // TODO(T52): CodegToaster
-    detail.toast?.let { toast ->
-        LaunchedEffect(toast) { delay(3000); viewModel.dismissDetailToast() }
+    LaunchedEffect(detail.toast) {
+        detail.toast?.let {
+            toaster.success(it)
+            viewModel.dismissDetailToast()
+        }
     }
 }
 
@@ -434,7 +442,7 @@ private fun MessageLogRow(message: ChatChannelMessageLog) {
 @Composable
 private fun ActionButton(title: String, icon: ImageVector, tint: Color, enabled: Boolean, onClick: () -> Unit) {
     CodegButton(onClick = onClick, enabled = enabled, modifier = Modifier.fillMaxWidth(), variant = CodegButtonVariant.Secondary) {
-        Icon(icon, null, modifier = Modifier.size(18.dp))
+        Icon(icon, null, modifier = Modifier.size(16.dp))
         Spacer(Modifier.width(8.dp))
         Text(title, fontWeight = FontWeight.Medium)
     }
@@ -465,7 +473,7 @@ private fun Divider() {
 private enum class QrPhase { LOADING, SHOWING, SCANNED, EXPIRED, CONFIRMED, FAILED }
 
 @OptIn(ExperimentalMaterial3Api::class)
-// TODO(T53): CodegImagePreviewDialog; retain QR polling lifecycle.
+// Keep the QR lifecycle in this sheet; preview only the decoded image.
 @Composable
 private fun WeixinQRDialog(channelId: Int, viewModel: ChatChannelsViewModel, onConnected: () -> Unit, onDismiss: () -> Unit) {
     val colors = CodegTheme.colors
@@ -475,12 +483,14 @@ private fun WeixinQRDialog(channelId: Int, viewModel: ChatChannelsViewModel, onC
     val connectedText = stringResource(R.string.cc_connected)
     val qrExpiredText = stringResource(R.string.cc_qr_expired)
     val scannedConfirmText = stringResource(R.string.cc_scanned_confirm)
+    var preview by remember { mutableStateOf(false) }
     var attempt by remember { mutableStateOf(0) }
     var phase by remember { mutableStateOf(QrPhase.LOADING) }
     var statusText by remember { mutableStateOf(loadingQrText) }
     var image by remember { mutableStateOf<androidx.compose.ui.graphics.ImageBitmap?>(null) }
 
     LaunchedEffect(attempt) {
+        preview = false
         phase = QrPhase.LOADING; statusText = loadingQrText; image = null
         val qr = viewModel.weixinQrcode()
         if (qr == null) { phase = QrPhase.FAILED; statusText = couldntLoadQrText; return@LaunchedEffect }
@@ -506,15 +516,15 @@ private fun WeixinQRDialog(channelId: Int, viewModel: ChatChannelsViewModel, onC
             Spacer(Modifier.weight(1f))
             Box(Modifier.size(240.dp).clip(RoundedCornerShape(18.dp)).background(Color.White), contentAlignment = Alignment.Center) {
                 when (phase) {
-                    QrPhase.CONFIRMED -> Icon(Icons.Rounded.Bolt, null, tint = Color(0xFF1AB833), modifier = Modifier.size(64.dp))
-                    QrPhase.EXPIRED, QrPhase.FAILED -> Icon(Icons.Rounded.Refresh, null, tint = Color.Black.withOpacity(0.4f), modifier = Modifier.size(56.dp))
-                    else -> image?.let { Image(it, stringResource(R.string.cc_qr_code), Modifier.size(210.dp)) } ?: CircularProgressIndicator(color = Color.Black)
+                    QrPhase.CONFIRMED -> Icon(Lucide.Zap, null, tint = colors.web.primary, modifier = Modifier.size(64.dp))
+                    QrPhase.EXPIRED, QrPhase.FAILED -> Icon(Lucide.RefreshCw, null, tint = Color.Black.withOpacity(0.4f), modifier = Modifier.size(56.dp))
+                    else -> image?.let { Image(it, stringResource(R.string.cc_qr_code), Modifier.size(210.dp).clickable { preview = true }) } ?: CodegSpinner()
                 }
             }
             Text(statusText, fontSize = 14.sp, color = colors.web.mutedForeground)
             if (phase == QrPhase.EXPIRED || phase == QrPhase.FAILED) {
                 CodegButton(onClick = { attempt++ }, variant = CodegButtonVariant.Secondary) {
-                    Icon(Icons.Rounded.Refresh, null, modifier = Modifier.size(18.dp))
+                    Icon(Lucide.RefreshCw, null, modifier = Modifier.size(16.dp))
                     Spacer(Modifier.width(8.dp))
                     Text(stringResource(R.string.cc_refresh_qr_code))
                 }
@@ -522,6 +532,15 @@ private fun WeixinQRDialog(channelId: Int, viewModel: ChatChannelsViewModel, onC
             Spacer(Modifier.weight(1f))
             Text(stringResource(R.string.cc_wechat_scan_instruction), fontSize = 12.sp, color = colors.web.mutedForeground, modifier = Modifier.padding(horizontal = 16.dp))
         }
+    }
+    LaunchedEffect(phase) {
+        if (phase != QrPhase.SHOWING && phase != QrPhase.SCANNED) preview = false
+    }
+    if (preview && (phase == QrPhase.SHOWING || phase == QrPhase.SCANNED)) image?.let { bitmap ->
+        CodegImagePreviewDialog(
+            images = listOf(CodegPreviewImage(BitmapPainter(bitmap), stringResource(R.string.cc_qr_code))),
+            onDismiss = { preview = false },
+        )
     }
 }
 
@@ -649,7 +668,7 @@ private fun ChatChannelEditorDialog(existing: ChatChannelInfo?, viewModel: ChatC
                 if (isEdit && hasToken) Text(stringResource(R.string.cc_leave_blank_secret, type.secretLabel ?: ""), fontSize = 12.sp, color = colors.web.mutedForeground)
             } else {
                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    Icon(Icons.Rounded.QrCode, null, tint = colors.web.mutedForeground, modifier = Modifier.size(18.dp))
+                    Icon(Lucide.QrCode, null, tint = colors.web.mutedForeground, modifier = Modifier.size(16.dp))
                     Text(stringResource(R.string.cc_wechat_connects_after_saving), fontSize = 12.sp, color = colors.web.mutedForeground)
                 }
             }

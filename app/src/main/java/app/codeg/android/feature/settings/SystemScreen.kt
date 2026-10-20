@@ -1,5 +1,7 @@
 package app.codeg.android.feature.settings
 
+import androidx.compose.runtime.getValue
+import app.codeg.android.core.designsystem.component.CodegSpinner
 import app.codeg.android.core.designsystem.component.CodegButton
 import app.codeg.android.core.designsystem.component.CodegCard
 import app.codeg.android.core.designsystem.component.CodegSwitch
@@ -14,10 +16,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -80,7 +80,7 @@ fun SystemContent(viewModel: SystemViewModel = hiltViewModel()) {
 private fun PillButton(label: String, loading: Boolean, onClick: () -> Unit) {
     val colors = CodegTheme.colors
     CodegButton(onClick = onClick, enabled = !loading) {
-        if (loading) CircularProgressIndicator(Modifier.size(16.dp), strokeWidth = 2.dp, color = colors.onAccent)
+        if (loading) CodegSpinner(size = 16.dp)
         else Text(label, fontSize = 14.sp, fontWeight = FontWeight.SemiBold)
     }
 }

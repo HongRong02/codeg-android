@@ -71,7 +71,7 @@ class ChatChannelsViewModel @Inject constructor(
         _ui.value.statuses[channel.id] ?: ChannelConnectionStatus.DISCONNECTED
 
     fun dismissRefreshError() = _ui.update { it.copy(refreshError = null) }
-    fun dismissToast() = _ui.update { it.copy(toast = null) }
+    fun dismissToast() = _ui.update { it.copy(toast = null, toastIsError = false) }
 
     /** Instant enable/disable from the list row. Disabling a connected channel
      *  disconnects it first (web parity), then persists; reconciles by id. */
@@ -132,9 +132,9 @@ class ChatChannelsViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 c.deleteChatChannel(channel.id)
-                _ui.update { it.copy(toast = appContext.getString(R.string.cc_toast_deleted, channel.name)) }
+                _ui.update { it.copy(toast = appContext.getString(R.string.cc_toast_deleted, channel.name), toastIsError = false) }
             } catch (e: Exception) {
-                _ui.update { it.copy(channels = previous, toast = appContext.getString(R.string.cc_toast_delete_failed, e.displayMessage(appContext))) }
+                _ui.update { it.copy(channels = previous, toast = appContext.getString(R.string.cc_toast_delete_failed, e.displayMessage(appContext)), toastIsError = true) }
             }
         }
     }
@@ -172,8 +172,8 @@ class ChatChannelsViewModel @Inject constructor(
         updateDetail { if (it.channelId == channelId) it.copy(status = status) else it }
     }
 
-    fun connect() = detailAction("Connecting…", poll = true) { c, id -> c.connectChatChannel(id) }
-    fun disconnect() = detailAction("Disconnected.") { c, id -> c.disconnectChatChannel(id) }
+    fun connect() = detailAction(appContext.getString(R.string.settings_ui2_connect_requested), poll = true) { c, id -> c.connectChatChannel(id) }
+    fun disconnect() = detailAction(appContext.getString(R.string.settings_ui2_disconnected)) { c, id -> c.disconnectChatChannel(id) }
     fun test() = detailAction(appContext.getString(R.string.cc_test_message_sent)) { c, id -> c.testChatChannel(id) }
 
     private fun detailAction(note: String, poll: Boolean = false, op: suspend (CodegClient, Int) -> Unit) {
@@ -258,5 +258,6 @@ data class ChatChannelsUiState(
     val refreshError: String? = null,
     val error: String? = null,
     val toast: String? = null,
+    val toastIsError: Boolean = false,
     val detail: ChannelDetailState? = null,
 )

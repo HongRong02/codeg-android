@@ -1,5 +1,7 @@
 package app.codeg.android.feature.settings
 
+import androidx.compose.runtime.getValue
+import app.codeg.android.core.designsystem.component.CodegSpinner
 import app.codeg.android.core.designsystem.component.CodegBadge
 import app.codeg.android.core.designsystem.component.CodegBadgeVariant
 import app.codeg.android.core.designsystem.component.CodegButton
@@ -19,10 +21,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -105,12 +105,12 @@ private fun Pill(label: String, loading: Boolean, onClick: () -> Unit, filled: B
     val colors = CodegTheme.colors
     if (filled) {
         CodegButton(onClick = onClick, enabled = !loading) {
-            if (loading) CircularProgressIndicator(Modifier.size(15.dp), strokeWidth = 2.dp, color = colors.onAccent)
+            if (loading) CodegSpinner(size = 15.dp)
             else Text(label, fontSize = 14.sp, fontWeight = FontWeight.SemiBold)
         }
     } else {
         CodegButton(onClick = onClick, enabled = !loading, variant = CodegButtonVariant.Secondary) {
-            if (loading) CircularProgressIndicator(Modifier.size(15.dp), strokeWidth = 2.dp, color = colors.accent)
+            if (loading) CodegSpinner(size = 15.dp)
             else Text(label, fontSize = 14.sp, fontWeight = FontWeight.SemiBold)
         }
     }

@@ -1,5 +1,9 @@
 package app.codeg.android.feature.settings
 
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.getValue
+import androidx.compose.foundation.layout.size
+import app.codeg.android.core.designsystem.icon.*
 import app.codeg.android.core.designsystem.component.CodegButton
 import app.codeg.android.core.designsystem.component.CodegButtonVariant
 import app.codeg.android.core.designsystem.component.CodegConfirmDialog
@@ -22,18 +26,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Add
-import androidx.compose.material.icons.rounded.Check
-import androidx.compose.material.icons.rounded.Memory
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
@@ -71,13 +69,13 @@ fun McpContent(viewModel: McpViewModel = hiltViewModel()) {
                     item("market") { CodegButton(onClick = { marketOpen = true }, variant = CodegButtonVariant.Ghost) { Text(stringResource(R.string.mcp_market_title)) } }
                 }
                 if (ui.servers.isEmpty() && !ui.loading) {
-                    item("empty") { Box(Modifier.fillMaxWidth().padding(40.dp), contentAlignment = Alignment.Center) { EmptyState(Icons.Rounded.Memory, stringResource(R.string.mcp_empty_title), stringResource(R.string.mcp_empty_subtitle)) } }
+                    item("empty") { Box(Modifier.fillMaxWidth().padding(40.dp), contentAlignment = Alignment.Center) { EmptyState(Lucide.Cpu, stringResource(R.string.mcp_empty_title), stringResource(R.string.mcp_empty_subtitle)) } }
                 }
                 items(ui.servers, key = { it.id }) { s -> McpRow(s, onEdit = { editor = McpEditorTarget(s) }, onDelete = { viewModel.delete(s) }) }
             }
         }
         if (!(ui.loading && ui.servers.isEmpty())) {
-            CodegButton(onClick = { editor = McpEditorTarget(null) }, modifier = Modifier.align(Alignment.BottomEnd).padding(16.dp), variant = CodegButtonVariant.Default) { Icon(Icons.Rounded.Add, contentDescription = stringResource(R.string.mcp_new_cd)) }
+            CodegButton(onClick = { editor = McpEditorTarget(null) }, modifier = Modifier.align(Alignment.BottomEnd).padding(16.dp), variant = CodegButtonVariant.Default) { Icon(Lucide.Plus, contentDescription = stringResource(R.string.mcp_new_cd), modifier = Modifier.size(16.dp)) }
         }
     }
 
@@ -151,7 +149,7 @@ private fun McpEditor(
                         label = agent.shortName,
                         selected = on,
                         onClick = { if (on) apps.remove(agent.wire) else apps.add(agent.wire) },
-                        icon = if (on) Icons.Rounded.Check else null,
+                        icon = if (on) Lucide.Check else null,
                     )
                 }
             }

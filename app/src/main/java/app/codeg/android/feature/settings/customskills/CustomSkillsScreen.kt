@@ -1,5 +1,6 @@
 package app.codeg.android.feature.settings.customskills
 
+import app.codeg.android.core.designsystem.component.CodegSpinner
 import app.codeg.android.core.designsystem.component.AgentIcon
 import app.codeg.android.core.designsystem.component.CodegButton
 import app.codeg.android.core.designsystem.component.CodegButtonVariant
@@ -157,7 +158,7 @@ private fun CustomSkillsEditor(target: EditorTarget, ui: CustomSkillsUi, viewMod
             if (target.mode == EditorMode.DUPLICATE) Text(stringResource(R.string.custom_skills_source, target.id), color = CodegTheme.colors.textSecondary)
             if (target.mode == EditorMode.EDIT) Text(target.id, color = CodegTheme.colors.textSecondary)
             else CodegTextField(id, { id = it }, label = stringResource(R.string.custom_skills_id), mono = true)
-            if (loading) CircularProgressIndicator(color = CodegTheme.colors.accent)
+            if (loading) CodegSpinner()
             if (loaded && target.mode != EditorMode.DUPLICATE) {
                 CodegTextField(content, { content = it }, label = stringResource(R.string.custom_skills_content), mono = true, singleLine = false)
             }
@@ -203,7 +204,7 @@ private fun CustomSkillsImport(ui: CustomSkillsUi, viewModel: CustomSkillsViewMo
                 CodegRadioGroup(options = ui.agents.map { it.displayName }, value = agent?.displayName.orEmpty(),
                     enabled = !ui.busy, onSelect = { name -> agent = ui.agents.firstOrNull { it.displayName == name } })
             }
-            if (loading) item { CircularProgressIndicator(color = CodegTheme.colors.accent) }
+            if (loading) item { CodegSpinner() }
             if (error != null && !loading) item { CodegButton(onClick = { retry++ }, variant = CodegButtonVariant.Ghost) { Text(stringResource(R.string.common_retry)) } }
             if (!loading && error == null && candidates.isEmpty()) item { Text(stringResource(R.string.custom_skills_import_empty), color = CodegTheme.colors.textSecondary) }
             items(candidates, key = { it.id }) { skill ->

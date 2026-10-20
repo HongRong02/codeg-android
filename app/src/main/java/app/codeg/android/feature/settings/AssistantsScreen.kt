@@ -1,5 +1,11 @@
 package app.codeg.android.feature.settings
 
+import app.codeg.android.core.designsystem.theme.withOpacity
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.background
+import app.codeg.android.core.designsystem.component.CodegAvatar
+import app.codeg.android.core.designsystem.component.CodegSpinner
+import app.codeg.android.core.designsystem.icon.*
 import app.codeg.android.core.designsystem.component.CodegButton
 import app.codeg.android.core.designsystem.component.CodegButtonVariant
 import app.codeg.android.core.designsystem.component.CodegCard
@@ -9,13 +15,9 @@ import app.codeg.android.core.designsystem.component.CodegIconButton
 import app.codeg.android.core.designsystem.component.CodegSkeleton
 import app.codeg.android.core.designsystem.component.CodegSwitch
 import app.codeg.android.core.designsystem.component.CodegTextField
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -29,7 +31,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.codeg.android.R
 import app.codeg.android.core.designsystem.theme.CodegTheme
-import app.codeg.android.core.designsystem.theme.withOpacity
 import app.codeg.android.core.model.*
 import app.codeg.android.core.model.wire.AssistantDraft
 
@@ -54,15 +55,18 @@ fun AssistantsContent(viewModel: AssistantsViewModel = hiltViewModel()) {
                 CodegCard(modifier = Modifier.fillMaxWidth()) {
                     Column(Modifier.padding(12.dp)) {
                         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                            val tint = when (row.avatar.color) {
-                                "red", "pink" -> colors.danger
-                                "slate" -> colors.textSecondary
-                                else -> colors.accent
-                            }
-                            // TODO(T53): CodegAvatar
-                            Box(Modifier.size(40.dp).background(tint.withOpacity(0.16f), CircleShape), contentAlignment = Alignment.Center) {
-                                val glyph = if (row.avatar.kind == "emoji") row.avatar.emoji.orEmpty() else assistantMonogram(row.name)
-                                Text(glyph, color = tint, fontSize = 20.sp)
+                            if (row.avatar.kind == "emoji") {
+                                // CodegAvatar fallback truncates multi-code-point emoji; preserve the supplied glyph.
+                                val tint = when (row.avatar.color) {
+                                    "red", "pink" -> colors.web.destructive
+                                    "slate" -> colors.web.mutedForeground
+                                    else -> colors.web.primary
+                                }
+                                Box(Modifier.size(40.dp).background(tint.withOpacity(0.16f), CircleShape), contentAlignment = Alignment.Center) {
+                                    Text(row.avatar.emoji.orEmpty(), color = tint, fontSize = 20.sp)
+                                }
+                            } else {
+                                CodegAvatar(fallbackText = row.name, size = 40.dp)
                             }
                             Column(Modifier.weight(1f)) {
                                 Text(row.name, color = colors.textPrimary, maxLines = 1, overflow = TextOverflow.Ellipsis)
@@ -71,10 +75,10 @@ fun AssistantsContent(viewModel: AssistantsViewModel = hiltViewModel()) {
                             }
                         }
                         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-                            CodegIconButton(onClick = { viewModel.move(row, -1) }, enabled = index > 0 && !ui.busy && !ui.loading) { Icon(Icons.Rounded.ArrowUpward, stringResource(R.string.assistants_up)) }
-                            CodegIconButton(onClick = { viewModel.move(row, 1) }, enabled = index < ui.rows.lastIndex && !ui.busy && !ui.loading) { Icon(Icons.Rounded.ArrowDownward, stringResource(R.string.assistants_down)) }
-                            CodegIconButton(onClick = { viewModel.edit(row) }, enabled = !ui.busy && !ui.loading) { Icon(Icons.Rounded.Edit, stringResource(R.string.assistants_edit)) }
-                            CodegIconButton(onClick = { deleting = row }, enabled = !ui.busy && !ui.loading) { Icon(Icons.Rounded.Delete, stringResource(R.string.assistants_delete), tint = colors.danger) }
+                            CodegIconButton(onClick = { viewModel.move(row, -1) }, enabled = index > 0 && !ui.busy && !ui.loading) { Icon(Lucide.ArrowUp, stringResource(R.string.assistants_up), modifier = Modifier.size(16.dp)) }
+                            CodegIconButton(onClick = { viewModel.move(row, 1) }, enabled = index < ui.rows.lastIndex && !ui.busy && !ui.loading) { Icon(Lucide.ArrowDown, stringResource(R.string.assistants_down), modifier = Modifier.size(16.dp)) }
+                            CodegIconButton(onClick = { viewModel.edit(row) }, enabled = !ui.busy && !ui.loading) { Icon(Lucide.Pencil, stringResource(R.string.assistants_edit), modifier = Modifier.size(16.dp)) }
+                            CodegIconButton(onClick = { deleting = row }, enabled = !ui.busy && !ui.loading) { Icon(Lucide.Trash2, stringResource(R.string.assistants_delete), tint = colors.danger, modifier = Modifier.size(16.dp)) }
                         }
                     }
                 }
@@ -143,7 +147,7 @@ private fun AssistantEditor(ui: AssistantsUi, vm: AssistantsViewModel) {
                 old.labelSnapshot.options.forEach { Text("${it.name}: ${it.valueLabel}", color = colors.textSecondary) }
                 CodegButton(onClick = { agentTouched = true; old.agentType.let(vm::probeAgent) }, enabled = !ui.busy, variant = CodegButtonVariant.Ghost) { Text(stringResource(R.string.assistants_configure)) }
             }
-            if (ui.probing) CircularProgressIndicator(color = colors.accent)
+            if (ui.probing) CodegSpinner()
             ui.optionsError?.let {
                 Text(it, color = colors.danger)
                 CodegButton(onClick = { agent?.let(vm::probeAgent) }, enabled = !ui.busy, variant = CodegButtonVariant.Ghost) { Text(stringResource(R.string.assistants_retry)) }
@@ -176,7 +180,7 @@ private fun AssistantEditor(ui: AssistantsUi, vm: AssistantsViewModel) {
 
 @Composable
 private fun AssistantField(value: String, onChange: (String) -> Unit, label: Int, enabled: Boolean, singleLine: Boolean = true) {
-    CodegTextField(value = value, onValueChange = { if (enabled) (onChange)(it) }, label = stringResource(label), modifier = Modifier.fillMaxWidth(), singleLine = singleLine)
+    CodegTextField(value = value, onValueChange = { if (enabled) (onChange)(it) }, label = stringResource(label), modifier = Modifier.fillMaxWidth(), singleLine = singleLine, enabled = enabled)
 }
 
 @Composable

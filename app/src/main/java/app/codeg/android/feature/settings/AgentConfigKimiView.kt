@@ -1,5 +1,11 @@
 package app.codeg.android.feature.settings
 
+import kotlinx.coroutines.delay
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.getValue
+import app.codeg.android.core.designsystem.component.LocalCodegToaster
+import app.codeg.android.core.designsystem.component.CodegSpinner
+import app.codeg.android.core.designsystem.icon.*
 import app.codeg.android.core.designsystem.component.CodegButton
 import app.codeg.android.core.designsystem.component.CodegButtonVariant
 import app.codeg.android.core.designsystem.component.CodegDropdownMenu
@@ -17,21 +23,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.CheckCircle
-import androidx.compose.material.icons.rounded.ErrorOutline
-import androidx.compose.material.icons.rounded.Verified
-import androidx.compose.material.icons.rounded.WarningAmber
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -58,7 +56,6 @@ import app.codeg.android.core.model.kimiInterfaceMeta
 import app.codeg.android.core.model.kimiInterfaceTypes
 import app.codeg.android.core.network.displayMessage
 import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 private data class KimiBanner(val text: String, val isError: Boolean)
@@ -106,10 +103,6 @@ fun AgentConfigKimiView(agent: AcpAgentInfo, viewModel: AgentsViewModel) {
     val effectiveBaseUrl = if (isKimi) kimiBaseUrlForRegion(region, baseUrl) else baseUrl.trim()
     val liveConfig = KimiManagedConfig.parse(agent.configJson)
 
-    // Auto-dismiss the result banner after 4s.
-    LaunchedEffect(banner) {
-        if (banner != null) { delay(4000); banner = null }
-    }
 
     // Strings captured for use inside coroutines.
     val savedMsg = stringResource(R.string.agents_kimi_saved)
@@ -193,8 +186,13 @@ fun AgentConfigKimiView(agent: AcpAgentInfo, viewModel: AgentsViewModel) {
 
     FormSection(stringResource(R.string.agents_kimi_section), footer = stringResource(R.string.agents_kimi_footer)) {
         KimiGateBanner(present = liveConfig.credentialPresent == true, mode = mode)
-        // TODO(T52): CodegToaster
-        banner?.let { KimiResultBanner(it) }
+        val toaster = LocalCodegToaster.current
+        LaunchedEffect(banner) {
+            banner?.let {
+                if (it.isError) toaster.error(it.text) else toaster.success(it.text)
+                banner = null
+            }
+        }
         CodegSeparator()
 
         SelectField(
@@ -266,7 +264,7 @@ fun AgentConfigKimiView(agent: AcpAgentInfo, viewModel: AgentsViewModel) {
             CodegTextField(modelId, { modelId = it }, stringResource(R.string.agents_kimi_model), placeholder = KIMI_MODEL_PLACEHOLDER, mono = true)
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 CodegButton(onClick = { fetchModels() }, enabled = !saving && !fetchingModels, variant = CodegButtonVariant.Outline) {
-                    if (fetchingModels) CircularProgressIndicator(Modifier.size(16.dp), strokeWidth = 2.dp, color = colors.accent)
+                    if (fetchingModels) CodegSpinner(size = 16.dp)
                     else Text(stringResource(R.string.agents_kimi_fetch))
                 }
                 if (models.isNotEmpty()) {
@@ -321,23 +319,11 @@ private fun KimiGateBanner(present: Boolean, mode: KimiAuthMode) {
         Modifier.fillMaxWidth().clip(CodegShapes.extraSmall).background(tint.withOpacity(0.10f)).padding(12.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        Icon(if (present) Icons.Rounded.Verified else Icons.Rounded.WarningAmber, contentDescription = null, tint = tint, modifier = Modifier.size(16.dp))
+        Icon(if (present) Lucide.BadgeCheck else Lucide.TriangleAlert, contentDescription = null, tint = tint, modifier = Modifier.size(16.dp))
         Text(text, fontSize = 12.sp, color = colors.textSecondary)
     }
 }
 
-@Composable
-private fun KimiResultBanner(banner: KimiBanner) {
-    val colors = CodegTheme.colors
-    val tint = if (banner.isError) colors.danger else colors.accent
-    Row(
-        Modifier.fillMaxWidth().clip(CodegShapes.extraSmall).background(tint.withOpacity(0.12f)).padding(12.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-    ) {
-        Icon(if (banner.isError) Icons.Rounded.ErrorOutline else Icons.Rounded.CheckCircle, contentDescription = null, tint = tint, modifier = Modifier.size(16.dp))
-        Text(banner.text, fontSize = 12.sp, color = if (banner.isError) colors.danger else colors.textSecondary)
-    }
-}
 
 /** Small tertiary help text used throughout the Kimi (and Pi) panels. */
 @Composable

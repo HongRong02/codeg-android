@@ -1,5 +1,9 @@
 package app.codeg.android.feature.settings
 
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.getValue
+import app.codeg.android.core.designsystem.component.CodegSpinner
+import app.codeg.android.core.designsystem.icon.*
 import app.codeg.android.core.designsystem.component.CodegConfirmDialog
 import app.codeg.android.core.designsystem.component.CodegButton
 import app.codeg.android.core.designsystem.component.CodegButtonSize
@@ -25,19 +29,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Add
-import androidx.compose.material.icons.rounded.Delete
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -65,7 +63,7 @@ fun ChatGlobalSettingsDialog(onDismiss: () -> Unit, viewModel: ChatGlobalSetting
     CodegFullScreenSheet(title = stringResource(R.string.chatglobal_title), onDismiss = onDismiss) {
 
         if (ui.loading) {
-            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { CircularProgressIndicator(color = colors.accent) }
+            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { CodegSpinner() }
         } else {
             Column(Modifier.padding(horizontal = 16.dp), verticalArrangement = Arrangement.spacedBy(20.dp)) {
                 Spacer(Modifier.height(2.dp))
@@ -113,14 +111,14 @@ fun ChatGlobalSettingsDialog(onDismiss: () -> Unit, viewModel: ChatGlobalSetting
                                 Text(hook.url, fontSize = 12.sp, fontFamily = FontFamily.Monospace, color = colors.textPrimary, modifier = Modifier.weight(1f), maxLines = 1, overflow = TextOverflow.Ellipsis)
                                 CodegSwitch(checked = hook.enabled, onCheckedChange = { viewModel.setWebhookEnabled(index, it) })
                                 IconButton(onClick = { removingWebhook = index to hook.url }) {
-                                    Icon(Icons.Rounded.Delete, stringResource(R.string.common_remove), tint = colors.danger, modifier = Modifier.size(18.dp))
+                                    Icon(Lucide.Trash2, stringResource(R.string.common_remove), tint = colors.danger, modifier = Modifier.size(16.dp))
                                 }
                             }
                         }
                         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                             Box(Modifier.weight(1f)) { CodegTextField(newWebhook, { newWebhook = it }, label = "https://…", mono = true) }
                             CodegButton(onClick = { viewModel.addWebhook(newWebhook); newWebhook = "" }, enabled = newWebhook.isNotBlank(), modifier = Modifier.size(48.dp), variant = CodegButtonVariant.Secondary, size = CodegButtonSize.Icon) {
-                                Icon(Icons.Rounded.Add, stringResource(R.string.chatglobal_add_webhook_cd))
+                                Icon(Lucide.Plus, stringResource(R.string.chatglobal_add_webhook_cd), modifier = Modifier.size(16.dp))
                             }
                         }
                     }

@@ -1,5 +1,7 @@
 package app.codeg.android.feature.settings.mcpmarket
 
+import app.codeg.android.core.designsystem.component.CodegInputGroup
+import app.codeg.android.core.designsystem.icon.*
 import app.codeg.android.core.designsystem.component.CodegListRow
 import app.codeg.android.core.designsystem.component.CodegButton
 import app.codeg.android.core.designsystem.component.CodegButtonVariant
@@ -36,11 +38,12 @@ fun McpMarketSheet(viewModel: McpMarketViewModel, onDismiss: () -> Unit, onInsta
             val detail = ui.detail
             if (detail == null) {
                 item {
-                    MarketSelect(ui.providers.find { it.id == ui.provider }?.name ?: stringResource(R.string.mcp_market_source), ui.providers.map { it.id to it.name }, !ui.loading) { viewModel.provider(it) }
+                    MarketSelect(stringResource(R.string.mcp_market_source), ui.provider.orEmpty(), ui.providers.map { it.id to it.name }, !ui.loading) { viewModel.provider(it) }
                 }
                 item {
-                    // TODO(T53): CodegInputGroup
-                    CodegTextField(ui.query, viewModel::query, stringResource(R.string.mcp_market_query))
+                    CodegInputGroup(value = ui.query, onValueChange = viewModel::query,
+                        placeholder = stringResource(R.string.mcp_market_query), enabled = !ui.loading,
+                        leading = { Icon(Lucide.Search, null, Modifier.size(16.dp)) })
                     CodegButton(onClick = { viewModel.search() }, enabled = !ui.loading, variant = CodegButtonVariant.Ghost) { Text(stringResource(R.string.mcp_market_search)) }
                 }
                 items(ui.items, key = { it.provider_id + ":" + it.server_id }) { server ->
@@ -53,7 +56,7 @@ fun McpMarketSheet(viewModel: McpMarketViewModel, onDismiss: () -> Unit, onInsta
             } else {
                 item { CodegButton(onClick = viewModel::back, enabled = !ui.installing, variant = CodegButtonVariant.Ghost) { Text(stringResource(R.string.mcp_market_back)) } }
                 item { Text(detail.description, color = colors.textPrimary) }
-                item { MarketSelect(ui.option?.label.orEmpty(), detail.install_options.map { it.id to "${it.label} · ${it.protocol}" }, !ui.installing) { id -> detail.install_options.find { it.id == id }?.let(viewModel::option) } }
+                item { MarketSelect(stringResource(R.string.mcp_market_install), ui.option?.id.orEmpty(), detail.install_options.map { it.id to "${it.label} · ${it.protocol}" }, !ui.installing) { id -> detail.install_options.find { it.id == id }?.let(viewModel::option) } }
                 items(ui.option?.parameters.orEmpty(), key = { it.key }) { field ->
                     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                         val label = field.label + if (field.required) " *" else ""
@@ -61,7 +64,7 @@ fun McpMarketSheet(viewModel: McpMarketViewModel, onDismiss: () -> Unit, onInsta
                         if (field.secret) SecretField(value, { if (!ui.installing) viewModel.field(field.key, it) }, label)
                         else if (field.enum_values.isNotEmpty() || field.kind == "boolean") {
                             val choices = field.enum_values.ifEmpty { listOf("true", "false") }
-                            MarketSelect("$label: $value", choices.map { it to it }, !ui.installing) { viewModel.field(field.key, it) }
+                            MarketSelect(label, value, choices.map { it to it }, !ui.installing) { viewModel.field(field.key, it) }
                         } else CodegTextField(value, { if (!ui.installing) viewModel.field(field.key, it) }, label, placeholder = field.placeholder, singleLine = field.kind != "json")
                         field.description?.let { Text(it, color = colors.textSecondary) }
                         field.location?.let { Text(it, color = colors.textSecondary) }
@@ -94,6 +97,6 @@ fun McpMarketSheet(viewModel: McpMarketViewModel, onDismiss: () -> Unit, onInsta
 }
 
 @Composable
-private fun MarketSelect(label: String, choices: List<Pair<String, String>>, enabled: Boolean, onSelect: (String) -> Unit) {
-    app.codeg.android.feature.settings.SettingsChoice(label, label, choices, enabled, onSelect)
+private fun MarketSelect(label: String, value: String, choices: List<Pair<String, String>>, enabled: Boolean, onSelect: (String) -> Unit) {
+    app.codeg.android.feature.settings.SettingsChoice(label, value, choices, enabled, onSelect)
 }

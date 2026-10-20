@@ -1,5 +1,16 @@
 package app.codeg.android.feature.settings
 
+import androidx.compose.ui.draw.rotate
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.getValue
+import androidx.compose.foundation.clickable
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.AnimatedVisibility
+import app.codeg.android.core.designsystem.component.webSurface
+import app.codeg.android.core.designsystem.component.CodegSelect
+import app.codeg.android.core.designsystem.component.CodegCollapsible
+import app.codeg.android.core.designsystem.component.CodegSpinner
+import app.codeg.android.core.designsystem.icon.*
 import app.codeg.android.core.designsystem.component.AgentAvatar
 import app.codeg.android.core.designsystem.component.CodegButton
 import app.codeg.android.core.designsystem.component.CodegButtonVariant
@@ -18,12 +29,8 @@ import app.codeg.android.core.designsystem.component.CopyButton
 import app.codeg.android.core.designsystem.component.LoadingView
 import app.codeg.android.core.designsystem.component.PrimaryButton
 import app.codeg.android.core.designsystem.component.SecretField
-import app.codeg.android.core.designsystem.component.webSurface
 import androidx.annotation.StringRes
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -39,25 +46,16 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Delete
-import androidx.compose.material.icons.rounded.ExpandMore
-import androidx.compose.material.icons.rounded.Refresh
-import androidx.compose.material.icons.rounded.Warning
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -193,7 +191,7 @@ private fun AgentHeader(state: AgentDetailState, onToggle: (Boolean) -> Unit) {
             }
             if (!agent.available) {
                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                    Icon(Icons.Rounded.Warning, contentDescription = null, tint = colors.danger, modifier = Modifier.size(16.dp))
+                    Icon(Lucide.TriangleAlert, contentDescription = null, tint = colors.danger, modifier = Modifier.size(16.dp))
                     Text(stringResource(R.string.agents_detail_unavailable), fontSize = 12.sp, color = colors.danger)
                 }
             }
@@ -755,15 +753,15 @@ private fun CursorStatusRow(auth: CursorAuthStatus?, loading: Boolean, onRefresh
                     .padding(horizontal = 6.dp, vertical = 2.dp),
             )
         }
-        IconButton(onClick = onRefresh, enabled = !loading, modifier = Modifier.size(32.dp)) {
+        IconButton(onClick = onRefresh, enabled = !loading, modifier = Modifier.size(48.dp)) {
             if (loading) {
-                CircularProgressIndicator(color = colors.accent, strokeWidth = 2.dp, modifier = Modifier.size(16.dp))
+                CodegSpinner(size = 16.dp)
             } else {
                 Icon(
-                    Icons.Rounded.Refresh,
+                    Lucide.RefreshCw,
                     contentDescription = stringResource(R.string.agents_cursor_refresh),
                     tint = colors.accent,
-                    modifier = Modifier.size(18.dp),
+                    modifier = Modifier.size(16.dp),
                 )
             }
         }
@@ -789,13 +787,13 @@ private fun RuleEditor(
                 CodegTextField(value = rule, onValueChange = { v -> onChange(rules.toMutableList().also { it[index] = v }) }, label = label, modifier = Modifier.weight(1f), singleLine = true, mono = true, placeholder = placeholder)
                 IconButton(
                     onClick = { onChange(rules.toMutableList().also { it.removeAt(index) }) },
-                    modifier = Modifier.size(36.dp),
+                    modifier = Modifier.size(48.dp),
                 ) {
                     Icon(
-                        Icons.Rounded.Delete,
+                        Lucide.Trash2,
                         contentDescription = stringResource(R.string.common_delete),
                         tint = tone,
-                        modifier = Modifier.size(18.dp),
+                        modifier = Modifier.size(16.dp),
                     )
                 }
             }
@@ -861,10 +859,10 @@ internal fun FormSection(title: String, footer: String? = null, content: @Compos
 
 @Composable
 internal fun <T> SelectField(label: String, value: T, options: List<Pair<T, String>>, onSelect: (T) -> Unit) {
-    val keys = options.indices.map { it.toString() }
-    val selected = options.indexOfFirst { it.first == value }.takeIf { it >= 0 }?.toString().orEmpty()
-    SettingsChoice(label, selected, options.mapIndexed { index, option -> index.toString() to option.second },
-        enabled = options.isNotEmpty()) { key -> keys.indexOf(key).takeIf { it >= 0 }?.let { onSelect(options[it].first) } }
+    CodegSelect(
+        label = label, selected = options.firstOrNull { it.first == value }, options = options,
+        optionLabel = { it.second }, onSelect = { onSelect(it.first) }, enabled = options.isNotEmpty(),
+    )
 }
 
 @Composable
@@ -902,21 +900,15 @@ private fun ToggleRow(title: String, checked: Boolean, onChange: (Boolean) -> Un
         trailing = { CodegSwitch(checked = checked, onCheckedChange = onChange) })
 }
 
-// TODO(T53): CodegCollapsible
 @Composable
 internal fun ColumnScope.ExpandableGroup(title: String, content: @Composable ColumnScope.() -> Unit) {
     val colors = CodegTheme.colors
     var open by remember { mutableStateOf(false) }
-    val rotation by animateFloatAsState(if (open) 180f else 0f, label = "chevron")
-    Row(
-        Modifier.fillMaxWidth().heightIn(min = 48.dp).clickable { open = !open },
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween,
-    ) {
-        Text(title, fontSize = 13.sp, color = colors.textSecondary)
-        Icon(Icons.Rounded.ExpandMore, contentDescription = null, tint = colors.web.mutedForeground, modifier = Modifier.size(20.dp).rotate(rotation))
-    }
-    AnimatedVisibility(open) {
+    CodegCollapsible(expanded = open, onExpandedChange = { open = it }, header = {
+        Box(Modifier.fillMaxWidth().heightIn(min = 48.dp), contentAlignment = Alignment.CenterStart) {
+            Text(title, fontSize = 13.sp, color = colors.web.mutedForeground)
+        }
+    }) {
         Column(verticalArrangement = Arrangement.spacedBy(12.dp)) { content() }
     }
 }
@@ -927,12 +919,10 @@ private fun TonalAction(text: String, onClick: () -> Unit) {
     CodegButton(onClick = onClick, variant = CodegButtonVariant.Secondary) { Text(text) }
 }
 
-// TODO(T53): CodegCollapsible
 @Composable
 private fun AdvancedSection(state: AgentDetailState, vm: AgentsViewModel) {
     val colors = CodegTheme.colors
     var open by remember { mutableStateOf(false) }
-    val rotation by animateFloatAsState(if (open) 180f else 0f, label = "advanced")
     val label = when (state.agentType) {
         AgentType.CODEX, AgentType.GROK -> "config.toml"
         AgentType.CURSOR -> "cli-config.json"
@@ -945,25 +935,16 @@ private fun AdvancedSection(state: AgentDetailState, vm: AgentsViewModel) {
         else -> state.draft.configText
     }
 
-    Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-        Row(
-            Modifier.fillMaxWidth().webSurface(CodegShapes.extraSmall)
-                .clickable { open = !open }.padding(14.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween,
-        ) {
-            Column {
-                Text(stringResource(R.string.agents_advanced), fontSize = 14.sp, color = colors.textPrimary)
-                Text(label, fontFamily = FontFamily.Monospace, fontSize = 11.sp, color = colors.web.mutedForeground)
-            }
-            Icon(Icons.Rounded.ExpandMore, contentDescription = null, tint = colors.web.mutedForeground, modifier = Modifier.size(20.dp).rotate(rotation))
+    CodegCollapsible(expanded = open, onExpandedChange = { open = it }, header = {
+        Column(Modifier.fillMaxWidth().heightIn(min = 48.dp).padding(14.dp)) {
+            Text(stringResource(R.string.agents_advanced), fontSize = 14.sp, color = colors.web.foreground)
+            Text(label, fontFamily = FontFamily.Monospace, fontSize = 11.sp, color = colors.web.mutedForeground)
         }
-        AnimatedVisibility(open) {
-            Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                CodegTextField(value = text, onValueChange = vm::editRawConfig, label = stringResource(R.string.agents_advanced), modifier = Modifier.fillMaxWidth().heightIn(min = 160.dp), singleLine = false, mono = true)
-                state.configError?.let { Text(it, fontSize = 11.sp, color = colors.danger, modifier = Modifier.padding(start = 4.dp)) }
-                Text(stringResource(R.string.agents_advanced_override_hint), fontSize = 11.sp, color = colors.web.mutedForeground, modifier = Modifier.padding(start = 4.dp))
-            }
+    }) {
+        Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+            CodegTextField(value = text, onValueChange = vm::editRawConfig, label = stringResource(R.string.agents_advanced), modifier = Modifier.fillMaxWidth().heightIn(min = 160.dp), singleLine = false, mono = true)
+            state.configError?.let { Text(it, fontSize = 11.sp, color = colors.web.destructive, modifier = Modifier.padding(start = 4.dp)) }
+            Text(stringResource(R.string.agents_advanced_override_hint), fontSize = 11.sp, color = colors.web.mutedForeground, modifier = Modifier.padding(start = 4.dp))
         }
     }
 }
