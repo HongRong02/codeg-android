@@ -1,0 +1,4 @@
+<resources>
+    <string name="shell_nav_press_back_again">Press back again to exit</string>
+    <string name="shell_nav_no_handler">No app can open this link</string>
+</resources>
