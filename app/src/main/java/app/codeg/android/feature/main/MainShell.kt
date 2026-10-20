@@ -120,7 +120,7 @@ fun MainShell(appViewModel: AppViewModel, servers: List<ServerProfile>) {
     // scrolling back down slides it in and restores the label. The bar lives in this
     // shared Scaffold while the scroll happens in each tab's LazyColumn, so a
     // NestedScrollConnection on the content picks up every tab's scroll for free.
-    var barsVisible by remember { mutableStateOf(true) }
+    var barsVisible by remember(backStackEntry) { mutableStateOf(true) }
     val density = LocalDensity.current
     // 0 = fully shown, 1 = fully hidden. Collapsing the bar's *reported* height (not
     // just translating it) is what lets the Scaffold hand the freed strip back to the
@@ -130,13 +130,10 @@ fun MainShell(appViewModel: AppViewModel, servers: List<ServerProfile>) {
         animationSpec = tween(durationMillis = 280),
         label = "bottomBarCollapse",
     )
-    // Accumulate the scroll the list *actually consumed* and flip fully open/closed
-    // once it passes a small threshold, resetting the accumulator on each direction
-    // change so a deliberate nudge toggles but jitter doesn't. Keying off consumed
-    // (not the raw gesture) means a short, non-scrolling list — or over-dragging past
-    // the top/bottom edge — never toggles the bar. Keyed to currentRoute so it resets
-    // per tab.
-    val barConnection = remember(currentRoute, density) {
+    // Consumed scroll drives normal direction changes. Unconsumed downward
+    // scroll means the list reached its top (including short lists), so reveal
+    // immediately. Reset with the navigation entry to isolate outgoing scrolls.
+    val barConnection = remember(backStackEntry, density) {
         val threshold = with(density) { 6.dp.toPx() }
         object : NestedScrollConnection {
             var acc = 0f
@@ -145,8 +142,13 @@ fun MainShell(appViewModel: AppViewModel, servers: List<ServerProfile>) {
                 available: Offset,
                 source: NestedScrollSource,
             ): Offset {
+                if (available.y > 0f) {
+                    barsVisible = true
+                    acc = 0f
+                    return Offset.Zero
+                }
                 val dy = consumed.y
-                if (dy == 0f) return Offset.Zero // list didn't move → leave the bar alone
+                if (dy == 0f) return Offset.Zero
                 if ((dy < 0f && acc > 0f) || (dy > 0f && acc < 0f)) acc = 0f
                 acc += dy
                 if (acc < -threshold && barsVisible) {
@@ -158,10 +160,8 @@ fun MainShell(appViewModel: AppViewModel, servers: List<ServerProfile>) {
             }
         }
     }
-    // Any route change — switching tabs or pushing a full-screen detail — reveals the bar.
-    LaunchedEffect(currentRoute) { barsVisible = true }
-
     val onTab: (HomeTab) -> Unit = { tab ->
+        barsVisible = true
         nav.navigate(tab.route) {
             popUpTo(nav.graph.findStartDestination().id) { saveState = true }
             launchSingleTop = true
