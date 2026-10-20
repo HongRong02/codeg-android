@@ -1,6 +1,23 @@
 package app.codeg.android.shell.server
 
-import androidx.compose.foundation.clickable
+import android.content.res.Configuration
+import androidx.compose.ui.tooling.preview.Preview
+import app.codeg.android.shell.display.ShellTheme
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsFocusedAsState
+import androidx.compose.foundation.border
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.selected
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -37,36 +54,64 @@ internal fun ServerManager(feature: ServerFeature, host: ShellHost, onClose: () 
         ServerEditor(feature, host, editing, onDone = { adding = false; editing = null }, onCancel = { adding = false; editing = null })
         return
     }
-    Surface(Modifier.fillMaxSize()) {
-        Column(Modifier.safeDrawingPadding().padding(24.dp).verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-            Text(stringResource(R.string.shell_server_switch), style = MaterialTheme.typography.headlineSmall)
-            profiles.forEach { profile ->
-                Card {
-                    Column(Modifier.fillMaxWidth().clickable(enabled = !busy) {
-                        busy = true
-                        scope.launch {
-                            try { feature.select(profile.id); onClose() } catch (_: java.io.IOException) { failed = true } finally { busy = false }
-                        }
-                    }.padding(16.dp)) {
-                        Text(profile.name.ifBlank { profile.baseUrl }, style = MaterialTheme.typography.titleMedium)
-                        Text(profile.baseUrl)
-                        if (serverOrigin(profile.baseUrl) == current && feature.selectedId == profile.id) Text(stringResource(R.string.shell_server_current))
-                        Row {
-                            TextButton(enabled = !busy, onClick = { editing = profile }) { Text(stringResource(R.string.shell_server_edit)) }
-                            TextButton(enabled = !busy, onClick = { deleting = profile }) { Text(stringResource(R.string.shell_server_delete)) }
-                        }
-                    }
+    Surface(Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
+        Column(Modifier.safeDrawingPadding().padding(horizontal = 24.dp)) {
+            Row(
+                Modifier.fillMaxWidth().padding(vertical = 8.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                IconButton(enabled = !busy, onClick = onClose) {
+                    Icon(Icons.Default.Close, contentDescription = stringResource(R.string.shell_server_close))
                 }
+                Text(
+                    stringResource(R.string.shell_server_title),
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.SemiBold,
+                )
             }
-            if (failed) Text(stringResource(R.string.shell_server_storage_error), color = MaterialTheme.colorScheme.error)
-            Button(enabled = !busy, onClick = { adding = true }) { Text(stringResource(R.string.shell_server_add)) }
-            TextButton(enabled = !busy, onClick = onClose) { Text(stringResource(R.string.shell_server_close)) }
+            Column(
+                Modifier.weight(1f).verticalScroll(rememberScrollState()).padding(vertical = 16.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
+                profiles.forEach { profile ->
+                    ServerCard(
+                        profile = profile,
+                        selected = serverOrigin(profile.baseUrl) == current && feature.selectedId == profile.id,
+                        enabled = !busy,
+                        onSelect = {
+                            busy = true
+                            scope.launch {
+                                try { feature.select(profile.id); onClose() }
+                                catch (_: java.io.IOException) { failed = true }
+                                finally { busy = false }
+                            }
+                        },
+                        onEdit = { editing = profile },
+                        onDelete = { deleting = profile },
+                    )
+                }
+                if (failed) Text(
+                    stringResource(R.string.shell_server_storage_error),
+                    color = MaterialTheme.colorScheme.error,
+                    style = MaterialTheme.typography.bodySmall,
+                )
+            }
+            Button(
+                enabled = !busy, onClick = { adding = true }, shape = ServerPill,
+                modifier = Modifier.fillMaxWidth().padding(vertical = 16.dp).heightIn(min = 48.dp),
+            ) { Text(stringResource(R.string.shell_server_add)) }
         }
     }
     deleting?.let { profile ->
-        AlertDialog(onDismissRequest = { if (!busy) deleting = null }, title = { Text(stringResource(R.string.shell_server_delete)) },
+        AlertDialog(shape = ServerPill, containerColor = MaterialTheme.colorScheme.surface,
+            onDismissRequest = { if (!busy) deleting = null }, title = { Text(stringResource(R.string.shell_server_delete)) },
             text = { Text(stringResource(R.string.shell_server_delete_confirm, profile.name.ifBlank { profile.baseUrl })) },
-            confirmButton = { TextButton(enabled = !busy, onClick = {
+            confirmButton = { Button(
+                enabled = !busy, shape = ServerPill,
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.error,
+                    contentColor = MaterialTheme.colorScheme.onError,
+                ), onClick = {
                 busy = true
                 scope.launch {
                     try {
@@ -76,7 +121,8 @@ internal fun ServerManager(feature: ServerFeature, host: ShellHost, onClose: () 
                     } catch (_: java.io.IOException) { failed = true; deleting = null } finally { busy = false }
                 }
             }) { Text(stringResource(R.string.shell_server_delete)) } },
-            dismissButton = { TextButton(enabled = !busy, onClick = { deleting = null }) { Text(stringResource(R.string.shell_server_cancel)) } })
+            dismissButton = { OutlinedButton(enabled = !busy, shape = ServerPill,
+                border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline), onClick = { deleting = null }) { Text(stringResource(R.string.shell_server_cancel)) } })
     }
 }
 
@@ -96,15 +142,24 @@ internal fun ServerEditor(feature: ServerFeature, host: ShellHost, profile: Serv
             finally { busy = false }
         }
     }
-    Surface(Modifier.fillMaxSize()) {
+    Surface(Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
         Column(Modifier.safeDrawingPadding().imePadding().padding(24.dp).verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(16.dp)) {
-            Text(stringResource(R.string.shell_server_add), style = MaterialTheme.typography.headlineSmall)
-            OutlinedTextField(address, { address = it; error = null }, enabled = !busy, singleLine = true,
-                label = { Text(stringResource(R.string.shell_server_address)) }, modifier = Modifier.fillMaxWidth())
-            OutlinedTextField(name, { name = it }, enabled = !busy, singleLine = true,
-                label = { Text(stringResource(R.string.shell_server_name)) }, modifier = Modifier.fillMaxWidth())
-            error?.let { Text(stringResource(it), color = MaterialTheme.colorScheme.error) }
-            Button(enabled = !busy, onClick = {
+            Text(
+                stringResource(if (profile == null) R.string.shell_server_add else R.string.shell_server_edit_title),
+                style = MaterialTheme.typography.headlineSmall,
+                fontWeight = FontWeight.SemiBold,
+            )
+            ServerInput(
+                value = address, onValueChange = { address = it; error = null },
+                label = stringResource(R.string.shell_server_address), enabled = !busy,
+                error = error?.let { stringResource(it) }, keyboardType = KeyboardType.Uri,
+            )
+            ServerInput(
+                value = name, onValueChange = { name = it },
+                label = stringResource(R.string.shell_server_name), enabled = !busy,
+            )
+            Button(enabled = !busy, shape = ServerPill,
+                modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp), onClick = {
                 val origin = serverOrigin(address)
                 if (origin == null) { error = R.string.shell_server_invalid; return@Button }
                 val value = ServerProfile(profile?.id ?: UUID.randomUUID().toString(), name.trim(), origin)
@@ -115,14 +170,149 @@ internal fun ServerEditor(feature: ServerFeature, host: ShellHost, profile: Serv
                     if (problem == null) persist(value) else { error = problem; pending = value }
                 }
             }) { Text(stringResource(if (busy) R.string.shell_server_checking else R.string.shell_server_save)) }
-            onCancel?.let { TextButton(enabled = !busy, onClick = it) { Text(stringResource(R.string.shell_server_cancel)) } }
+            onCancel?.let { OutlinedButton(
+                enabled = !busy, shape = ServerPill,
+                modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp),
+                border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline), onClick = it) { Text(stringResource(R.string.shell_server_cancel)) } }
         }
     }
     pending?.let { value ->
-        AlertDialog(onDismissRequest = { if (!busy) pending = null }, title = { Text(stringResource(R.string.shell_server_probe_failed)) },
+        AlertDialog(shape = ServerPill, containerColor = MaterialTheme.colorScheme.surface,
+            onDismissRequest = { if (!busy) pending = null }, title = { Text(stringResource(R.string.shell_server_probe_failed)) },
             text = { Text(stringResource(error ?: R.string.shell_server_unreachable)) },
-            confirmButton = { TextButton(enabled = !busy, onClick = { persist(value) }) { Text(stringResource(R.string.shell_server_save_anyway)) } },
-            dismissButton = { TextButton(enabled = !busy, onClick = { pending = null }) { Text(stringResource(R.string.shell_server_cancel)) } })
+            confirmButton = { Button(enabled = !busy, shape = ServerPill, onClick = { persist(value) }) { Text(stringResource(R.string.shell_server_save_anyway)) } },
+            dismissButton = { OutlinedButton(enabled = !busy, shape = ServerPill,
+                border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline), onClick = { pending = null }) { Text(stringResource(R.string.shell_server_cancel)) } })
+    }
+}
+
+// Match the web rounded-2xl card and rounded-4xl controls using shared theme tokens.
+private val ServerPill = RoundedCornerShape(32.dp)
+
+@Composable
+private fun ServerCard(
+    profile: ServerProfile,
+    selected: Boolean,
+    enabled: Boolean,
+    onSelect: () -> Unit,
+    onEdit: () -> Unit,
+    onDelete: () -> Unit,
+) {
+    var menuOpen by remember(profile.id) { mutableStateOf(false) }
+    val title = profile.name.ifBlank { profile.baseUrl }
+    Card(
+        onClick = onSelect, enabled = enabled,
+        modifier = Modifier.fillMaxWidth().semantics { this.selected = selected },
+        shape = RoundedCornerShape(16.dp),
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+    ) {
+        Row(Modifier.fillMaxWidth().padding(16.dp), verticalAlignment = Alignment.Top) {
+            Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Text(title, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Medium)
+                Text(profile.baseUrl, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                if (selected) Surface(
+                    shape = ServerPill,
+                    color = MaterialTheme.colorScheme.secondary,
+                    contentColor = MaterialTheme.colorScheme.onSecondary,
+                ) {
+                    Text(
+                        stringResource(R.string.shell_server_current),
+                        Modifier.padding(horizontal = 10.dp, vertical = 4.dp),
+                        style = MaterialTheme.typography.labelSmall,
+                    )
+                }
+            }
+            Box {
+                IconButton(enabled = enabled, onClick = { menuOpen = true }) {
+                    Icon(Icons.Default.MoreVert, contentDescription = stringResource(R.string.shell_server_more, title))
+                }
+                DropdownMenu(expanded = menuOpen && enabled, onDismissRequest = { menuOpen = false }) {
+                    DropdownMenuItem(
+                        text = { Text(stringResource(R.string.shell_server_edit)) },
+                        onClick = { menuOpen = false; onEdit() },
+                    )
+                    DropdownMenuItem(
+                        text = { Text(stringResource(R.string.shell_server_delete), color = MaterialTheme.colorScheme.error) },
+                        onClick = { menuOpen = false; onDelete() },
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun ServerInput(
+    value: String,
+    onValueChange: (String) -> Unit,
+    label: String,
+    enabled: Boolean,
+    error: String? = null,
+    keyboardType: KeyboardType = KeyboardType.Text,
+) {
+    val interaction = remember { MutableInteractionSource() }
+    val focused by interaction.collectIsFocusedAsState()
+    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        Text(label, style = MaterialTheme.typography.labelLarge)
+        OutlinedTextField(
+            value = value, onValueChange = onValueChange, enabled = enabled, singleLine = true,
+            shape = ServerPill, interactionSource = interaction, isError = error != null,
+            keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
+            modifier = Modifier.fillMaxWidth().semantics { contentDescription = label }.then(
+                if (focused) Modifier.border(
+                    3.dp,
+                    (if (error != null) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primary).copy(alpha = 0.3f),
+                    ServerPill,
+                ) else Modifier,
+            ),
+            colors = OutlinedTextFieldDefaults.colors(
+                unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+                focusedBorderColor = MaterialTheme.colorScheme.primary,
+            ),
+        )
+        error?.let { message ->
+            Text(
+                message, modifier = Modifier.padding(horizontal = 16.dp),
+                color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall,
+            )
+        }
+    }
+}
+
+/** Preview uses the same card/fields and ShellTheme as the live screens. */
+@Preview(name = "Server controls · light", showBackground = true, widthDp = 360, locale = "zh")
+@Preview(name = "Server controls · dark", showBackground = true, widthDp = 360, locale = "zh", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Preview(name = "Server controls · English", showBackground = true, widthDp = 360, locale = "en")
+@Composable
+private fun ServerControlsPreview() {
+    ShellTheme {
+        Surface(color = MaterialTheme.colorScheme.background) {
+            Column(Modifier.padding(24.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                Text(stringResource(R.string.shell_server_title), style = MaterialTheme.typography.titleLarge)
+                ServerCard(
+                    ServerProfile("preview", "T13Test", "http://127.0.0.1:3082"),
+                    selected = true, enabled = true, onSelect = {}, onEdit = {}, onDelete = {},
+                )
+                ServerInput(
+                    value = "ftp://example.com", onValueChange = {},
+                    label = stringResource(R.string.shell_server_address), enabled = true,
+                    error = stringResource(R.string.shell_server_invalid),
+                )
+                ServerInput(
+                    value = "T13Test", onValueChange = {},
+                    label = stringResource(R.string.shell_server_name), enabled = true,
+                )
+                Button(onClick = {}, shape = ServerPill, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp)) {
+                    Text(stringResource(R.string.shell_server_add))
+                }
+                OutlinedButton(
+                    onClick = {}, shape = ServerPill,
+                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
+                    modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp),
+                ) { Text(stringResource(R.string.shell_server_cancel)) }
+            }
+        }
     }
 }
 

@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="shell_server_switch">切换服务器</string>
-    <string name="shell_server_current">当前选中</string>
+    <string name="shell_server_current">当前</string>
     <string name="shell_server_edit">编辑</string>
     <string name="shell_server_delete">删除</string>
     <string name="shell_server_delete_confirm">删除服务器 %1$s？</string>
     <string name="shell_server_storage_error">无法保存服务器设置，请重试。</string>
-    <string name="shell_server_add">服务器设置</string>
+    <string name="shell_server_add">添加服务器</string>
     <string name="shell_server_close">关闭</string>
     <string name="shell_server_cancel">取消</string>
     <string name="shell_server_address">服务器地址</string>
@@ -19,4 +19,7 @@
     <string name="shell_server_timeout">连接超时，请检查地址和网络。</string>
     <string name="shell_server_certificate">TLS 证书验证失败，请检查服务器证书。</string>
     <string name="shell_server_unreachable">无法连接服务器，请检查地址和网络。</string>
+    <string name="shell_server_title">服务器</string>
+    <string name="shell_server_edit_title">编辑服务器</string>
+    <string name="shell_server_more">%1$s 的更多操作</string>
 </resources>

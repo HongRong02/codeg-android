@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="shell_server_switch">Switch server</string>
-    <string name="shell_server_current">Selected</string>
+    <string name="shell_server_current">Current</string>
     <string name="shell_server_edit">Edit</string>
     <string name="shell_server_delete">Delete</string>
     <string name="shell_server_delete_confirm">Delete server %1$s?</string>
     <string name="shell_server_storage_error">Could not save server settings. Please try again.</string>
-    <string name="shell_server_add">Server settings</string>
+    <string name="shell_server_add">Add server</string>
     <string name="shell_server_close">Close</string>
     <string name="shell_server_cancel">Cancel</string>
     <string name="shell_server_address">Server address</string>
@@ -19,4 +19,7 @@
     <string name="shell_server_timeout">Connection timed out. Check the address and network.</string>
     <string name="shell_server_certificate">TLS certificate verification failed. Check the server certificate.</string>
     <string name="shell_server_unreachable">Could not connect to the server. Check the address and network.</string>
+    <string name="shell_server_title">Servers</string>
+    <string name="shell_server_edit_title">Edit server</string>
+    <string name="shell_server_more">More actions for %1$s</string>
 </resources>
