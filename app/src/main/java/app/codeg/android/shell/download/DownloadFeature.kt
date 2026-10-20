@@ -1,6 +1,5 @@
 package app.codeg.android.shell.download
 
-import android.app.AlertDialog
 import android.content.ContentValues
 import android.content.Intent
 import android.net.Uri
@@ -11,24 +10,44 @@ import android.webkit.CookieManager
 import android.webkit.JavascriptInterface
 import android.webkit.URLUtil
 import android.webkit.WebView
-import android.widget.Toast
-import app.codeg.android.R
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import app.codeg.android.shell.ShellFeature
 import app.codeg.android.shell.ShellHost
 import java.io.OutputStream
 import java.util.UUID
+import kotlin.coroutines.resume
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.coroutines.withContext
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.json.JSONObject
-import kotlin.coroutines.resume
 
 /** Downloads remain private pending MediaStore rows until the complete stream is written. */
 class DownloadFeature : ShellFeature {
+    private var notice by androidx.compose.runtime.mutableStateOf<DownloadNotice?>(null)
+
+    @androidx.compose.runtime.Composable
+    override fun Overlay(host: ShellHost) {
+        notice?.let { current ->
+            DownloadToast(current, onDismiss = { if (notice === current) notice = null }) {
+                try {
+                    host.activity.startActivity(Intent(Intent.ACTION_VIEW)
+                        .setDataAndType(current.uri, current.mime)
+                        .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION))
+                    if (notice === current) notice = null
+                } catch (e: Exception) { failure(host, e) }
+            }
+        }
+    }
+
+    private fun showNotice(host: ShellHost, value: DownloadNotice) = host.activity.runOnUiThread {
+        if (!host.activity.isFinishing && !host.activity.isDestroyed) notice = value
+    }
+
     private val client = OkHttpClient.Builder().followRedirects(false).followSslRedirects(false).build()
     @Volatile private var key = ""
     @Volatile private var bridgeServer: String? = null
@@ -207,7 +226,7 @@ class DownloadFeature : ShellFeature {
         }) ?: error("Cannot create download")
         val output = try { resolver.openOutputStream(uri) ?: error("Cannot open download") }
         catch (e: Exception) { resolver.delete(uri, null, null); throw e }
-        host.activity.runOnUiThread { Toast.makeText(host.activity, host.activity.getString(R.string.shell_download_started, name), Toast.LENGTH_SHORT).show() }
+        showNotice(host, DownloadNotice(DownloadStatus.Loading, name))
         return SavedFile(host, uri, output, name, mime)
     }
 
@@ -216,20 +235,13 @@ class DownloadFeature : ShellFeature {
         fun finish() {
             output.close()
             host.activity.contentResolver.update(uri, ContentValues().apply { put(MediaStore.Downloads.IS_PENDING, 0) }, null, null)
-            host.activity.runOnUiThread {
-                if (!host.activity.isFinishing && !host.activity.isDestroyed) AlertDialog.Builder(host.activity)
-                    .setMessage(host.activity.getString(R.string.shell_download_saved, name))
-                    .setPositiveButton(R.string.shell_download_open) { _, _ ->
-                        try { host.activity.startActivity(Intent(Intent.ACTION_VIEW).setDataAndType(uri, mime).addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)) }
-                        catch (e: Exception) { failure(host, e) }
-                    }.setNegativeButton(android.R.string.ok, null).show()
-            }
+            showNotice(host, DownloadNotice(DownloadStatus.Success, name, uri, mime))
         }
     }
 
-    private fun failure(host: ShellHost, error: Exception) = host.activity.runOnUiThread {
-        Toast.makeText(host.activity, host.activity.getString(R.string.shell_download_failed, error.message ?: error.javaClass.simpleName), Toast.LENGTH_LONG).show()
-    }
+    private fun failure(host: ShellHost, error: Exception) = showNotice(
+        host, DownloadNotice(DownloadStatus.Error, error.message ?: error.javaClass.simpleName),
+    )
 }
 
 internal fun origin(url: String?): String? = url?.toHttpUrlOrNull()?.let { "${it.scheme}://${it.host}:${it.port}" }

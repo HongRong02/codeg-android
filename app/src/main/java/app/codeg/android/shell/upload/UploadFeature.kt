@@ -8,18 +8,32 @@ import android.webkit.WebView
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.InsertDriveFile
+import androidx.compose.material.icons.outlined.PhotoCamera
+import androidx.compose.material.icons.outlined.PhotoLibrary
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.content.FileProvider
@@ -180,23 +194,40 @@ class UploadFeature : ShellFeature {
     @Composable
     override fun Overlay(host: ShellHost) {
         if (!menu) return
-        ModalBottomSheet(onDismissRequest = { complete(null) }) {
-            Column(Modifier.fillMaxWidth().padding(16.dp)) {
-                Text(stringResource(R.string.shell_upload_title))
+        ModalBottomSheet(
+            onDismissRequest = { complete(null) },
+            containerColor = MaterialTheme.colorScheme.surface,
+            contentColor = MaterialTheme.colorScheme.onSurface,
+        ) {
+            // ModalBottomSheet consumes the navigation bar inset; keep an extra visual gutter.
+            Column(Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp, bottom = 16.dp)) {
+                Text(
+                    stringResource(R.string.shell_upload_title),
+                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 10.dp),
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
                 if (isVisual() || mimeTypes.contentEquals(arrayOf("*/*"))) {
-                    TextButton(onClick = { openPhotos() }, modifier = Modifier.fillMaxWidth()) {
-                        Text(stringResource(R.string.shell_upload_gallery))
-                    }
+                    UploadOption(Icons.Outlined.PhotoLibrary, stringResource(R.string.shell_upload_gallery)) { openPhotos() }
                 }
                 if (canTakePhoto()) {
-                    TextButton(onClick = { takePhoto(host) }, modifier = Modifier.fillMaxWidth()) {
-                        Text(stringResource(R.string.shell_upload_camera))
-                    }
+                    UploadOption(Icons.Outlined.PhotoCamera, stringResource(R.string.shell_upload_camera)) { takePhoto(host) }
                 }
-                TextButton(onClick = { openDocuments() }, modifier = Modifier.fillMaxWidth()) {
-                    Text(stringResource(R.string.shell_upload_files))
-                }
+                UploadOption(Icons.AutoMirrored.Outlined.InsertDriveFile, stringResource(R.string.shell_upload_files)) { openDocuments() }
             }
+        }
+    }
+
+    @Composable
+    private fun UploadOption(icon: ImageVector, label: String, onClick: () -> Unit) {
+        Row(
+            Modifier.fillMaxWidth().height(48.dp).clip(RoundedCornerShape(12.dp))
+                .clickable(onClick = onClick).padding(horizontal = 12.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(10.dp),
+        ) {
+            Icon(icon, contentDescription = null, modifier = Modifier.size(16.dp))
+            Text(label, style = MaterialTheme.typography.bodyMedium)
         }
     }
 
