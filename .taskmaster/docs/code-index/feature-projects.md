@@ -149,13 +149,6 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 179 | `private fun sortItems(items: List<DirectoryItem>): List<DirectoryItem>` |
 | 182 | `private fun formatBytes(bytes: Long): String` |
 
-## feature/projects/git/GitActionsMenu.kt
-
-| Line | Declaration |
-|---|---|
-| 21 | `@Composable fun GitActionsMenu(onSwitchBranch: () -> Unit, enabled: Boolean = true)` |
-| 22 |   `var expanded by remember` |
-
 ## feature/projects/GitChangeVisuals.kt
 
 | Line | Declaration |
@@ -321,3 +314,45 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 125 |   `val error: String?` |
 | 127 |   `val isBusy: Boolean get()` |
 | 128 |   `fun runningCount(folderId: Int): Int` |
+
+## feature/projects/git/BranchManageSheet.kt
+
+| Line | Declaration |
+|---|---|
+| 23 | `@Composable fun BranchManageSheet(viewModel: BranchManageViewModel, onDismiss: () -> Unit)` |
+| 24 |   `val ui by viewModel.ui.collectAsStateWithLifecycle()` |
+| 25 |   `var deleting by remember` |
+| 26 |   `var force by remember` |
+| 27 |   `val colors` |
+
+## feature/projects/git/BranchManageViewModel.kt
+
+| Line | Declaration |
+|---|---|
+| 15 | `class BranchManageViewModel(private val client: CodegClient, private val path: String) : ViewModel()` |
+| 16 |   `data class Ui( val branches: List<BranchManageEntry> = emptyList(), val busy: Boolean = false, val supported: Boolean = true, val hiddenActions: Set<String> = emptySet(), val error: String? = null, val completed: Boolean = false, val conflict: List<String>? = null, val diff: String? = null, val diffBranch: String? = null, val credentialsRequested: Boolean = false, )` |
+| 28 |   `private val state` |
+| 29 |   `val ui` |
+| 30 |   `private var credentials: CompletableDeferred<GitCredentials?>?` |
+| 34 |   `private suspend fun load()` |
+| 47 |   `fun refresh()` |
+| 49 |   `fun delete(branch: BranchManageEntry, force: Boolean)` |
+| 56 |   `fun update(branch: BranchManageEntry)` |
+| 62 |   `fun compare(branch: BranchManageEntry)` |
+| 67 |   `fun submitCredentials(value: GitCredentials?)` |
+| 69 |   `private suspend fun <T> withCredentials(body: suspend (GitCredentials?) -> T): T` |
+| 85 |   `private fun run(action: String, body: suspend () -> Unit)` |
+
+## feature/projects/git/GitActionsMenu.kt
+
+| Line | Declaration |
+|---|---|
+| 27 | `@Composable fun GitActionsMenu(onSwitchBranch: () -> Unit, enabled: Boolean = true)` |
+| 28 |   `val project: ProjectDetailViewModel` |
+| 29 |   `val projectUi by project.ui.collectAsStateWithLifecycle()` |
+| 30 |   `val client` |
+| 31 |   `val path` |
+| 32 |   `var showManage by remember(client, path)` |
+| 33 |   `val manager: BranchManageViewModel?` |
+| 39 |   `val manageUi` |
+| 43 |   `var expanded by remember` |

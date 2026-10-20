@@ -150,14 +150,19 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 927 |   `suspend fun describeAgentOptions(agentType: AgentType, workingDir: String?): AgentOptionsSnapshot` |
 | 930 |   `suspend fun acpSetMode(connectionId: String, modeId: String)` |
 | 934 |   `suspend fun acpSetConfigOption(connectionId: String, configId: String, valueId: String)` |
-| 948 |   `private suspend fun send(path: String, bodyJson: String): String` |
-| 982 |   `private inline fun <reified T> encode(body: T): String` |
-| 985 |   `private fun <T> decode(text: String, deserializer: DeserializationStrategy<T>): T` |
-| 991 |   `companion object` |
-| 993 |     `fun normalizeBaseUrl(raw: String): String` |
-| 1001 |     `fun decodeConnectionId(text: String): String` |
-| 1017 |     `fun decodeAgentList(text: String): List<AcpAgentInfo>` |
-| 1034 |     `fun isJsonNull(text: String): Boolean` |
+| 943 |   `suspend fun gitListManagedBranches(path: String): List<app.codeg.android.core.model.BranchManageEntry>` |
+| 948 |   `suspend fun gitDeleteBranch(path: String, branch: String, force: Boolean): String` |
+| 951 |   `suspend fun gitDeleteRemoteBranch(path: String, remote: String, branch: String, credentials: GitCredentials? = null)` |
+| 955 |   `suspend fun gitUpdateBranch(path: String, branch: String, isRemote: Boolean, credentials: GitCredentials? = null): GitPullResult` |
+| 958 |   `suspend fun gitDiffWithBranch(path: String, branch: String): String` |
+| 968 |   `private suspend fun send(path: String, bodyJson: String): String` |
+| 1002 |   `private inline fun <reified T> encode(body: T): String` |
+| 1005 |   `private fun <T> decode(text: String, deserializer: DeserializationStrategy<T>): T` |
+| 1011 |   `companion object` |
+| 1013 |     `fun normalizeBaseUrl(raw: String): String` |
+| 1021 |     `fun decodeConnectionId(text: String): String` |
+| 1037 |     `fun decodeAgentList(text: String): List<AcpAgentInfo>` |
+| 1054 |     `fun isJsonNull(text: String): Boolean` |
 
 ## core/network/CodegClientFactory.kt
 
