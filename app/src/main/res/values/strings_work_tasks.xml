@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="work_tasks_title">Work tasks</string>
+    <string name="work_tasks_refresh">Refresh</string>
+    <string name="work_tasks_attention">Needs attention: %1$d</string>
+    <string name="work_tasks_loading">Loading work tasks…</string>
+    <string name="work_tasks_error">Unable to load work tasks</string>
+    <string name="work_tasks_retry">Retry</string>
+    <string name="work_tasks_unavailable">This server does not support work tasks.</string>
+    <string name="work_tasks_empty">No work tasks</string>
+    <string name="work_tasks_empty_hint">Tasks created on the web will appear here.</string>
+    <string name="work_tasks_agent">Agent: %1$s</string>
+    <string name="work_tasks_unknown_agent">Not configured</string>
+    <string name="work_tasks_updated">Updated: %1$s</string>
+    <string name="work_tasks_events">Event timeline (latest 500)</string>
+    <string name="work_tasks_no_events">No events</string>
+    <string name="work_tasks_event_meta">%1$s · %2$s</string>
+    <string name="work_tasks_files">Changed files</string>
+    <string name="work_tasks_no_files">No changed files</string>
+    <string name="work_tasks_file_stats">%1$s  +%2$d / −%3$d</string>
+    <string name="work_tasks_diff">Diff</string>
+    <string name="work_tasks_no_diff">No diff available</string>
+</resources>

@@ -84,6 +84,7 @@ private enum class SettingsLeaf(@StringRes val titleRes: Int, val icon: ImageVec
     SKILLS(R.string.settings_leaf_skills, Icons.Rounded.Extension, R.string.settings_group_ai_agents, true),
     MCP(R.string.settings_leaf_mcp, Icons.Rounded.Memory, R.string.settings_group_ai_agents, true),
     VERSION_CONTROL(R.string.settings_leaf_version_control, Icons.Rounded.Difference, R.string.settings_group_integrations, true),
+    WORK_TASKS(R.string.work_tasks_title, Icons.Rounded.Schedule, R.string.settings_group_integrations, true),
     AUTOMATIONS(R.string.automations_title, Icons.Rounded.Schedule, R.string.settings_group_integrations, true),
     CHAT_CHANNELS(R.string.settings_leaf_chat_channels, Icons.AutoMirrored.Rounded.Chat, R.string.settings_group_integrations, true),
     SYSTEM(R.string.settings_leaf_system, Icons.Rounded.Settings, R.string.settings_group_system, true),
@@ -95,6 +96,7 @@ private enum class SettingsLeaf(@StringRes val titleRes: Int, val icon: ImageVec
 @Composable
 fun SettingsScreen(
     onOpenAutomations: () -> Unit = {},
+    onOpenWorkTasks: () -> Unit = {},
     viewModel: SettingsViewModel = hiltViewModel(),
 ) {
     var leaf by remember { mutableStateOf<SettingsLeaf?>(null) }
@@ -134,6 +136,7 @@ fun SettingsScreen(
                         }
                     },
                     onOpenAutomations = onOpenAutomations,
+                    onOpenWorkTasks = onOpenWorkTasks,
                 )
                 SettingsLeaf.APPEARANCE -> AppearanceSettings(viewModel)
                 SettingsLeaf.LANGUAGE -> LanguageContent()
@@ -158,14 +161,16 @@ fun SettingsScreen(
 }
 
 @Composable
-private fun SettingsRoot(onSelect: (SettingsLeaf) -> Unit, onOpenAutomations: () -> Unit) {
+private fun SettingsRoot(onSelect: (SettingsLeaf) -> Unit, onOpenAutomations: () -> Unit, onOpenWorkTasks: () -> Unit) {
+    val workTasks: app.codeg.android.feature.worktasks.WorkTaskViewModel = hiltViewModel()
+    val workTaskUi by workTasks.ui.collectAsStateWithLifecycle()
     val colors = CodegTheme.colors
     Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(horizontal = 12.dp, vertical = 8.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
         for (group in SettingsLeaf.entries.map { it.groupRes }.distinct()) {
             Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
                 Text(stringResource(group), fontSize = 12.sp, fontWeight = FontWeight.Medium, color = colors.textSecondary, modifier = Modifier.padding(start = 12.dp, bottom = 4.dp))
                 Column(Modifier.fillMaxWidth().webSurface(CodegShapes.small)) {
-                    val leaves = SettingsLeaf.entries.filter { it.groupRes == group }
+                    val leaves = SettingsLeaf.entries.filter { it.groupRes == group && (it != SettingsLeaf.WORK_TASKS || workTaskUi.supported) }
                     leaves.forEachIndexed { index, l ->
                         ListItem(
                             headlineContent = { Text(stringResource(l.titleRes), fontSize = 14.sp) },
@@ -183,7 +188,9 @@ private fun SettingsRoot(onSelect: (SettingsLeaf) -> Unit, onOpenAutomations: ()
                                 headlineColor = colors.textPrimary,
                             ),
                             modifier = Modifier.clickable {
-                                if (l == SettingsLeaf.AUTOMATIONS) {
+                                if (l == SettingsLeaf.WORK_TASKS) {
+                                    onOpenWorkTasks()
+                                } else if (l == SettingsLeaf.AUTOMATIONS) {
                                     onOpenAutomations()
                                 } else {
                                     onSelect(l)

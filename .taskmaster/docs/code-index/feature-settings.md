@@ -757,22 +757,24 @@ Source root: `app/src/main/java/app/codeg/android/`
 | Line | Declaration |
 |---|---|
 | 76 | `private enum class SettingsLeaf(@StringRes val titleRes: Int, val icon: ImageVector, @StringRes val groupRes: Int, val implemented: Boolean)` |
-| 96 | `@Composable fun SettingsScreen( onOpenAutomations: () -> Unit = {}, viewModel: SettingsViewModel = hiltViewModel(), )` |
-| 100 |   `var leaf by remember` |
-| 102 |   `var agentDetail by remember` |
-| 103 |   `val inAgentDetail` |
-| 161 | `@Composable private fun SettingsRoot(onSelect: (SettingsLeaf) -> Unit, onOpenAutomations: () -> Unit)` |
-| 162 |   `val colors` |
-| 205 | `@Composable private fun AppearanceSettings(viewModel: SettingsViewModel)` |
-| 206 |   `val colors` |
-| 207 |   `val settings by viewModel.settings.collectAsStateWithLifecycle()` |
-| 255 | `@Composable private fun AboutScreen(viewModel: SettingsViewModel)` |
-| 256 |   `val colors` |
-| 257 |   `val about by viewModel.about.collectAsStateWithLifecycle()` |
-| 258 |   `val context` |
-| 259 |   `val appVersion` |
-| 275 | `@Composable private fun ComingSoon(@StringRes title: Int)` |
-| 276 |   `val colors` |
+| 97 | `@Composable fun SettingsScreen( onOpenAutomations: () -> Unit = {}, onOpenWorkTasks: () -> Unit = {}, viewModel: SettingsViewModel = hiltViewModel(), )` |
+| 102 |   `var leaf by remember` |
+| 104 |   `var agentDetail by remember` |
+| 105 |   `val inAgentDetail` |
+| 164 | `@Composable private fun SettingsRoot(onSelect: (SettingsLeaf) -> Unit, onOpenAutomations: () -> Unit, onOpenWorkTasks: () -> Unit)` |
+| 165 |   `val workTasks: app.codeg.android.feature.worktasks.WorkTaskViewModel` |
+| 166 |   `val workTaskUi by workTasks.ui.collectAsStateWithLifecycle()` |
+| 167 |   `val colors` |
+| 212 | `@Composable private fun AppearanceSettings(viewModel: SettingsViewModel)` |
+| 213 |   `val colors` |
+| 214 |   `val settings by viewModel.settings.collectAsStateWithLifecycle()` |
+| 262 | `@Composable private fun AboutScreen(viewModel: SettingsViewModel)` |
+| 263 |   `val colors` |
+| 264 |   `val about by viewModel.about.collectAsStateWithLifecycle()` |
+| 265 |   `val context` |
+| 266 |   `val appVersion` |
+| 282 | `@Composable private fun ComingSoon(@StringRes title: Int)` |
+| 283 |   `val colors` |
 
 ## feature/settings/SettingsViewModel.kt
 

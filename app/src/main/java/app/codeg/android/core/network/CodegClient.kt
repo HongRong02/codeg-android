@@ -1092,6 +1092,28 @@ class CodegClient(
 
     // endregion
 
+    // region work-tasks
+
+    suspend fun workTaskList(): List<app.codeg.android.core.model.WorkTask> =
+        decode(send("work_task_list", encode(app.codeg.android.core.model.wire.WorkTaskListBody())), ListSerializer(app.codeg.android.core.model.WorkTask.serializer()))
+
+    suspend fun workTaskAttentionCount(): Long =
+        decode(send("work_task_attention_count", encode(EmptyBody)), Long.serializer())
+
+    suspend fun workTaskGet(id: Int): app.codeg.android.core.model.WorkTask =
+        decode(send("work_task_get", encode(app.codeg.android.core.model.wire.WorkTaskIdBody(id))), app.codeg.android.core.model.WorkTask.serializer())
+
+    suspend fun workTaskEvents(id: Int): List<app.codeg.android.core.model.WorkTaskEvent> =
+        decode(send("work_task_events", encode(app.codeg.android.core.model.wire.WorkTaskEventsBody(id))), ListSerializer(app.codeg.android.core.model.WorkTaskEvent.serializer()))
+
+    suspend fun workTaskChangedFiles(id: Int): List<app.codeg.android.core.model.WorkTaskChangedFile> =
+        decode(send("work_task_changed_files", encode(app.codeg.android.core.model.wire.WorkTaskIdBody(id))), ListSerializer(app.codeg.android.core.model.WorkTaskChangedFile.serializer()))
+
+    suspend fun workTaskDiff(id: Int, file: String? = null): String =
+        decode(send("work_task_diff", encode(app.codeg.android.core.model.wire.WorkTaskDiffBody(id, file))), String.serializer())
+
+    // endregion
+
     // region Transport
 
     /**

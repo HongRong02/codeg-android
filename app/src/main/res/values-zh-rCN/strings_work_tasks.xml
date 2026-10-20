@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="work_tasks_title">工作任务</string>
+    <string name="work_tasks_refresh">刷新</string>
+    <string name="work_tasks_attention">待关注：%1$d</string>
+    <string name="work_tasks_loading">正在加载工作任务…</string>
+    <string name="work_tasks_error">无法加载工作任务</string>
+    <string name="work_tasks_retry">重试</string>
+    <string name="work_tasks_unavailable">此服务器不支持工作任务。</string>
+    <string name="work_tasks_empty">暂无工作任务</string>
+    <string name="work_tasks_empty_hint">网页端创建的工作任务将显示在这里。</string>
+    <string name="work_tasks_agent">Agent：%1$s</string>
+    <string name="work_tasks_unknown_agent">未配置</string>
+    <string name="work_tasks_updated">更新时间：%1$s</string>
+    <string name="work_tasks_events">事件时间线（最近 500 条）</string>
+    <string name="work_tasks_no_events">暂无事件</string>
+    <string name="work_tasks_event_meta">%1$s · %2$s</string>
+    <string name="work_tasks_files">改动文件</string>
+    <string name="work_tasks_no_files">暂无改动文件</string>
+    <string name="work_tasks_file_stats">%1$s  +%2$d / −%3$d</string>
+    <string name="work_tasks_diff">差异</string>
+    <string name="work_tasks_no_diff">暂无可用差异</string>
+</resources>
