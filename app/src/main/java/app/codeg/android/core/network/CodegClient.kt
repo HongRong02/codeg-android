@@ -968,6 +968,26 @@ class CodegClient(
 
     // endregion
 
+    // region git-branches
+    suspend fun gitListManagedBranches(path: String): List<app.codeg.android.core.model.BranchManageEntry> =
+        app.codeg.android.core.model.parseManagedBranches(
+            CodegJson.response.parseToJsonElement(send("git_list_branches", encode(app.codeg.android.core.model.wire.BranchManageListBody(path))))
+        )
+
+    suspend fun gitDeleteBranch(path: String, branch: String, force: Boolean): String =
+        decodeBareString(send("git_delete_branch", encode(app.codeg.android.core.model.wire.BranchDeleteBody(path, branch, force))))
+
+    suspend fun gitDeleteRemoteBranch(path: String, remote: String, branch: String, credentials: GitCredentials? = null) {
+        send("git_delete_remote_branch", encode(app.codeg.android.core.model.wire.BranchRemoteDeleteBody(path, remote, branch, credentials)))
+    }
+
+    suspend fun gitUpdateBranch(path: String, branch: String, isRemote: Boolean, credentials: GitCredentials? = null): GitPullResult =
+        decode(send("git_update_branch", encode(app.codeg.android.core.model.wire.BranchUpdateBody(path, branch, isRemote, credentials))), GitPullResult.serializer())
+
+    suspend fun gitDiffWithBranch(path: String, branch: String): String =
+        decodeBareString(send("git_diff_with_branch", encode(app.codeg.android.core.model.wire.BranchCompareBody(path, branch))))
+    // endregion
+
     // region Transport
 
     /**

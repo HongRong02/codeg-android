@@ -1,0 +1,21 @@
+<resources>
+    <string name="bm_title">Manage branches</string>
+    <string name="bm_done">Operation completed</string>
+    <string name="bm_conflicts">Resolve merge conflicts before continuing:\n%1$s</string>
+    <string name="bm_refresh">Refresh</string>
+    <string name="bm_empty">No branches</string>
+    <string name="bm_tracking">Ahead %1$d · Behind %2$d</string>
+    <string name="bm_update">Update</string>
+    <string name="bm_compare">Compare</string>
+    <string name="bm_delete">Delete</string>
+    <string name="bm_confirm_remote">Delete remote branch %1$s? This also deletes it from the remote server.</string>
+    <string name="bm_confirm_local">Delete local branch %1$s?</string>
+    <string name="bm_force">Force delete (including unmerged commits)</string>
+    <string name="bm_cancel">Cancel</string>
+    <string name="bm_credentials">Git remote credentials</string>
+    <string name="bm_username">Username</string>
+    <string name="bm_password">Password or token</string>
+    <string name="bm_retry">Retry</string>
+    <string name="bm_no_diff">No differences</string>
+    <string name="bm_comparison">Compare HEAD with %1$s</string>
+</resources>

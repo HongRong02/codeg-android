@@ -1,0 +1,21 @@
+<resources>
+    <string name="bm_title">分支管理</string>
+    <string name="bm_done">操作完成</string>
+    <string name="bm_conflicts">继续前请先解决合并冲突：\n%1$s</string>
+    <string name="bm_refresh">刷新</string>
+    <string name="bm_empty">暂无分支</string>
+    <string name="bm_tracking">领先 %1$d · 落后 %2$d</string>
+    <string name="bm_update">更新</string>
+    <string name="bm_compare">比较</string>
+    <string name="bm_delete">删除</string>
+    <string name="bm_confirm_remote">删除远程分支 %1$s？这也会删除远程服务器上的该分支。</string>
+    <string name="bm_confirm_local">删除本地分支 %1$s？</string>
+    <string name="bm_force">强制删除（包括未合并提交）</string>
+    <string name="bm_cancel">取消</string>
+    <string name="bm_credentials">Git 远程凭据</string>
+    <string name="bm_username">用户名</string>
+    <string name="bm_password">密码或令牌</string>
+    <string name="bm_retry">重试</string>
+    <string name="bm_no_diff">没有差异</string>
+    <string name="bm_comparison">比较 HEAD 与 %1$s</string>
+</resources>
