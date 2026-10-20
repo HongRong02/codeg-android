@@ -5,6 +5,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
@@ -25,17 +26,12 @@ import androidx.compose.material.icons.rounded.Folder
 import androidx.compose.material.icons.rounded.Forum
 import androidx.compose.material.icons.rounded.Inbox
 import androidx.compose.material.icons.rounded.PushPin
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -54,23 +50,27 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.compose.foundation.layout.Column
-import app.codeg.android.core.model.ConversationTag
-import app.codeg.android.feature.sessions.tags.ConversationTagFilter
-import app.codeg.android.feature.sessions.tags.ConversationTagSheet
 import app.codeg.android.R
 import app.codeg.android.core.datastore.ServerProfile
+import app.codeg.android.core.designsystem.component.CodegButton
+import app.codeg.android.core.designsystem.component.CodegButtonVariant
+import app.codeg.android.core.designsystem.component.CodegDropdownMenu
 import app.codeg.android.core.designsystem.component.CodegIconButton
+import app.codeg.android.core.designsystem.component.CodegMenuItem
+import app.codeg.android.core.designsystem.component.CodegMenuSeparator
 import app.codeg.android.core.designsystem.component.CodegTopBar
 import app.codeg.android.core.designsystem.component.EmptyState
 import app.codeg.android.core.designsystem.component.InlineError
-import app.codeg.android.core.designsystem.component.webSurface
 import app.codeg.android.core.designsystem.component.LoadingView
+import app.codeg.android.core.designsystem.component.webSurface
 import app.codeg.android.core.designsystem.theme.CodegTheme
-import app.codeg.android.core.designsystem.theme.withOpacity
 import app.codeg.android.core.designsystem.theme.colorFromHex
+import app.codeg.android.core.designsystem.theme.withOpacity
 import app.codeg.android.core.model.ConversationSummary
+import app.codeg.android.core.model.ConversationTag
 import app.codeg.android.feature.main.LocalBarsVisible
+import app.codeg.android.feature.sessions.tags.ConversationTagFilter
+import app.codeg.android.feature.sessions.tags.ConversationTagSheet
 
 /**
  * The Chats tab: the grouped session list for the selected server (Pinned /
@@ -104,6 +104,7 @@ fun SessionListScreen(
     // re-runs the grouping flow; rememberSaveable keeps the fold state across
     // rotation / process death.
     var collapsed by rememberSaveable { mutableStateOf(emptySet<String>()) }
+    // TODO(T52): CodegToaster for list errors.
     val colors = CodegTheme.colors
     val selectedName = servers.firstOrNull { it.id == selectedId }?.name
         ?: stringResource(R.string.app_name)
@@ -351,9 +352,8 @@ private fun RefreshErrorBanner(
             overflow = TextOverflow.Ellipsis,
             modifier = Modifier.weight(1f),
         )
-        TextButton(
+        CodegButton(variant = CodegButtonVariant.Ghost,
             onClick = onRetry,
-            colors = ButtonDefaults.textButtonColors(contentColor = colors.accent),
         ) {
             Text(stringResource(R.string.common_retry))
         }
@@ -403,9 +403,9 @@ private fun ServerSwitcher(
                 modifier = Modifier.size(20.dp),
             )
         }
-        DropdownMenu(expanded = open, onDismissRequest = { open = false }) {
+        CodegDropdownMenu(expanded = open, onDismissRequest = { open = false }) {
             servers.forEach { server ->
-                DropdownMenuItem(
+                CodegMenuItem(
                     text = { Text(server.name) },
                     onClick = {
                         open = false
@@ -423,8 +423,8 @@ private fun ServerSwitcher(
                     },
                 )
             }
-            HorizontalDivider(color = colors.web.border)
-            DropdownMenuItem(
+            CodegMenuSeparator()
+            CodegMenuItem(
                 text = { Text(stringResource(R.string.home_manage_servers)) },
                 leadingIcon = { Icon(Icons.Rounded.Dns, contentDescription = null) },
                 onClick = {

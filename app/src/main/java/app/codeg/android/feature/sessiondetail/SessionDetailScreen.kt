@@ -42,16 +42,15 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -70,6 +69,8 @@ import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.codeg.android.R
 import app.codeg.android.core.designsystem.component.AgentAvatar
+import app.codeg.android.core.designsystem.component.CodegButton
+import app.codeg.android.core.designsystem.component.CodegButtonVariant
 import app.codeg.android.core.designsystem.component.CodegIconButton
 import app.codeg.android.core.designsystem.component.CodegTopBar
 import app.codeg.android.core.designsystem.component.EmptyState
@@ -108,6 +109,7 @@ fun SessionDetailScreen(
         viewModel.resumeStream()
         onPauseOrDispose { viewModel.pauseStream() }
     }
+    // TODO(T52): CodegToaster for session notices.
     val colors = CodegTheme.colors
     var draft by remember { mutableStateOf("") }
     var showInsert by remember { mutableStateOf(false) }
@@ -428,7 +430,7 @@ private fun NoticeBanner(
             modifier = Modifier.weight(1f),
         )
         if (actionLabel != null) {
-            TextButton(onClick = onAction) { Text(actionLabel, color = colors.textPrimary) }
+            CodegButton(variant = CodegButtonVariant.Ghost, onClick = onAction) { Text(actionLabel, color = colors.textPrimary) }
         }
         IconButton(onClick = onDismiss) {
             Icon(Icons.Rounded.Close, contentDescription = stringResource(R.string.common_dismiss), tint = colors.textSecondary)

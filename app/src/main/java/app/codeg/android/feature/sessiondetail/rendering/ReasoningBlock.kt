@@ -42,6 +42,7 @@ import app.codeg.android.core.designsystem.theme.LocalCodegColors
  */
 @Composable
 fun ReasoningBlock(text: String, modifier: Modifier = Modifier, initiallyExpanded: Boolean = false) {
+    // TODO(T53): CodegCollapsible for reasoning expansion.
     val colors = CodegTheme.colors
     var expanded by remember(text) { mutableStateOf(initiallyExpanded) }
     val chevron by animateFloatAsState(if (expanded) 90f else 0f, label = "reasoning-chevron")

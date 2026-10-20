@@ -67,6 +67,7 @@ fun ComposeBar(
     canSendOverride: Boolean = false,
     attachments: (@Composable ColumnScope.() -> Unit)? = null,
 ) {
+    // TODO(T53): CodegInputGroup for composer attachments and actions.
     val colors = CodegTheme.colors
     val web = colors.web
     val canSend = (text.isNotBlank() || canSendOverride) && !isInFlight

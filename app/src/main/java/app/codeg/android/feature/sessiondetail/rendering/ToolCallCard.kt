@@ -78,6 +78,7 @@ private val ErrorRed: Color @Composable @ReadOnlyComposable get() = CodegTheme.c
  */
 @Composable
 fun ToolCallCard(vm: ToolCallVM, modifier: Modifier = Modifier, nested: Boolean = false) {
+    // TODO(T53): CodegCollapsible for tool call expansion.
     val colors = CodegTheme.colors
     val autoExpand = vm.state == ToolCallState.RUNNING ||
         vm.state == ToolCallState.ERROR ||

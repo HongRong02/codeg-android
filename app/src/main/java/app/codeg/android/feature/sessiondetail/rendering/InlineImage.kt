@@ -25,6 +25,7 @@ import app.codeg.android.core.model.ImageData
 /** Decodes a base64 [ImageData] and renders it (max height 320dp), with an optional caption. */
 @Composable
 fun InlineImage(image: ImageData, caption: String?, modifier: Modifier = Modifier) {
+    // TODO(T53): CodegImagePreviewDialog for inline image preview.
     val colors = CodegTheme.colors
     val bitmap = remember(image.data) {
         runCatching {

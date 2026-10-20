@@ -24,7 +24,6 @@ import androidx.compose.material.icons.rounded.ArrowUpward
 import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material.icons.rounded.ContentCopy
 import androidx.compose.material.icons.rounded.WarningAmber
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -50,6 +49,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.codeg.android.R
 import app.codeg.android.core.common.RelativeTime
+import app.codeg.android.core.designsystem.component.CodegSeparator
 import app.codeg.android.core.designsystem.markdown.MarkdownContent
 import app.codeg.android.core.designsystem.markdown.SingleBlockView
 import app.codeg.android.core.designsystem.theme.CodegTheme
@@ -291,12 +291,12 @@ fun ContextCompactionDivider(before: Int?, after: Int?, running: Boolean, modifi
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(10.dp),
     ) {
-        HorizontalDivider(Modifier.weight(1f), color = colors.hairline)
+        CodegSeparator(Modifier.weight(1f))
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(5.dp)) {
             Icon(Icons.Rounded.Archive, contentDescription = null, tint = colors.textTertiary, modifier = Modifier.size(13.dp))
             Text(label, fontSize = 11.sp, color = colors.textTertiary)
         }
-        HorizontalDivider(Modifier.weight(1f), color = colors.hairline)
+        CodegSeparator(Modifier.weight(1f))
     }
 }
 

@@ -1,8 +1,5 @@
 package app.codeg.android.feature.sessiondetail
 
-import androidx.compose.ui.window.DialogProperties
-import androidx.compose.foundation.layout.imePadding
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,36 +8,21 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectable
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.MoreVert
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.RadioButton
-import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.material3.rememberModalBottomSheetState
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -48,10 +30,21 @@ import androidx.compose.ui.unit.sp
 import app.codeg.android.R
 import app.codeg.android.core.common.RelativeTime
 import app.codeg.android.core.designsystem.component.AgentAvatar
+import app.codeg.android.core.designsystem.component.CodegButton
+import app.codeg.android.core.designsystem.component.CodegButtonVariant
+import app.codeg.android.core.designsystem.component.CodegConfirmDialog
+import app.codeg.android.core.designsystem.component.CodegDialog
+import app.codeg.android.core.designsystem.component.CodegDropdownMenu
 import app.codeg.android.core.designsystem.component.CodegIconButton
+import app.codeg.android.core.designsystem.component.CodegMenuItem
+import app.codeg.android.core.designsystem.component.CodegMenuItemVariant
+import app.codeg.android.core.designsystem.component.CodegMenuSeparator
+import app.codeg.android.core.designsystem.component.CodegRadioGroup
+import app.codeg.android.core.designsystem.component.CodegSeparator
+import app.codeg.android.core.designsystem.component.CodegSheet
+import app.codeg.android.core.designsystem.component.CodegTextField
 import app.codeg.android.core.designsystem.component.statusColor
 import app.codeg.android.core.designsystem.component.statusLabel
-import app.codeg.android.core.designsystem.theme.CodegShapes
 import app.codeg.android.core.designsystem.theme.CodegTheme
 import app.codeg.android.core.model.ConversationStatus
 
@@ -80,96 +73,86 @@ fun SessionActionsMenu(
         CodegIconButton(onClick = { menu = true }) {
             Icon(Icons.Rounded.MoreVert, contentDescription = stringResource(R.string.sessionactions_session_actions), tint = colors.textPrimary)
         }
-        DropdownMenu(expanded = menu, onDismissRequest = { menu = false }) {
-            DropdownMenuItem(text = { Text(stringResource(R.string.sessionactions_rename)) }, onClick = { menu = false; showRename = true })
-            DropdownMenuItem(text = { Text(if (summary.isPinned) stringResource(R.string.sessionactions_unpin) else stringResource(R.string.sessionactions_pin)) }, onClick = { menu = false; viewModel.togglePin() })
-            DropdownMenuItem(text = { Text(stringResource(R.string.sessionactions_session_details)) }, onClick = { menu = false; showDetails = true })
-            DropdownMenuItem(text = { Text(stringResource(R.string.sessionactions_change_status)) }, onClick = { menu = false; showStatus = true })
+        CodegDropdownMenu(expanded = menu, onDismissRequest = { menu = false }) {
+            CodegMenuItem(text = { Text(stringResource(R.string.sessionactions_rename)) }, onClick = { menu = false; showRename = true })
+            CodegMenuItem(text = { Text(if (summary.isPinned) stringResource(R.string.sessionactions_unpin) else stringResource(R.string.sessionactions_pin)) }, onClick = { menu = false; viewModel.togglePin() })
+            CodegMenuItem(text = { Text(stringResource(R.string.sessionactions_session_details)) }, onClick = { menu = false; showDetails = true })
+            CodegMenuItem(text = { Text(stringResource(R.string.sessionactions_change_status)) }, onClick = { menu = false; showStatus = true })
             if (connectionActions.forkSupported) {
-                DropdownMenuItem(text = { Text(stringResource(R.string.session_fork_action)) },
+                CodegMenuItem(text = { Text(stringResource(R.string.session_fork_action)) },
                     enabled = !ui.isInFlight && !ui.loading && !connectionActions.busy,
                     onClick = { menu = false; viewModel.forkSession() })
             }
             if (connectionActions.disconnectSupported) {
-                DropdownMenuItem(text = { Text(stringResource(R.string.session_fork_disconnect)) },
+                CodegMenuItem(text = { Text(stringResource(R.string.session_fork_disconnect)) },
                     enabled = !ui.isInFlight && !ui.loading && !connectionActions.busy,
                     onClick = { menu = false; viewModel.disconnectSession() })
             }
-            HorizontalDivider(color = colors.web.border)
-            DropdownMenuItem(text = { Text(stringResource(R.string.common_delete), color = colors.danger) }, onClick = { menu = false; showDelete = true })
+            CodegMenuSeparator()
+            CodegMenuItem(variant = CodegMenuItemVariant.Destructive, text = { Text(stringResource(R.string.common_delete)) }, onClick = { menu = false; showDelete = true })
         }
     }
 
     if (showRename) {
         var name by remember { mutableStateOf(summary.trimmedTitle ?: "") }
-        AlertDialog(
-            onDismissRequest = { showRename = false },
-            modifier = Modifier.imePadding(),
-            properties = DialogProperties(decorFitsSystemWindows = false),
-            containerColor = colors.bgElevated,
-            title = { Text(stringResource(R.string.sessionactions_rename_session), color = colors.textPrimary) },
-            text = {
-                OutlinedTextField(value = name, onValueChange = { name = it }, singleLine = true, modifier = Modifier.fillMaxWidth())
-            },
-            confirmButton = {
-                TextButton(enabled = name.trim().isNotEmpty(), onClick = { viewModel.rename(name); showRename = false }) {
-                    Text(stringResource(R.string.sessionactions_rename), color = if (name.trim().isNotEmpty()) colors.accent else colors.web.mutedForeground)
+        CodegDialog(
+            title = stringResource(R.string.sessionactions_rename_session),
+            onDismiss = { showRename = false },
+            footer = {
+                CodegButton(variant = CodegButtonVariant.Ghost, onClick = { showRename = false }) {
+                    Text(stringResource(R.string.common_cancel))
+                }
+                CodegButton(enabled = name.trim().isNotEmpty(), onClick = { viewModel.rename(name); showRename = false }) {
+                    Text(stringResource(R.string.sessionactions_rename))
                 }
             },
-            dismissButton = { TextButton(onClick = { showRename = false }) { Text(stringResource(R.string.common_cancel), color = colors.textSecondary) } },
-        )
+        ) {
+            CodegTextField(value = name, onValueChange = { name = it }, label = stringResource(R.string.sessionactions_rename))
+        }
     }
 
     if (showStatus) {
-        AlertDialog(
-            onDismissRequest = { showStatus = false },
-            containerColor = colors.bgElevated,
-            title = { Text(stringResource(R.string.sessionactions_change_status), color = colors.textPrimary) },
-            text = {
-                Column {
-                    for (status in ConversationStatus.selectable) {
-                        Row(
-                            Modifier.fillMaxWidth().clip(CodegShapes.extraSmall)
-                                .selectable(selected = summary.status == status, role = Role.RadioButton) { viewModel.setStatus(status); showStatus = false }
-                                .padding(vertical = 4.dp, horizontal = 4.dp),
-                            verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp),
-                        ) {
-                            RadioButton(
-                                selected = summary.status == status,
-                                onClick = null,
-                                colors = RadioButtonDefaults.colors(selectedColor = colors.accent, unselectedColor = colors.web.mutedForeground),
-                            )
-                            Box(Modifier.size(9.dp).clip(RoundedCornerShape(50)).background(statusColor(status)))
-                            Text(statusLabel(status), color = colors.textPrimary, modifier = Modifier.weight(1f))
-                        }
-                    }
+        CodegDialog(
+            title = stringResource(R.string.sessionactions_change_status),
+            onDismiss = { showStatus = false },
+            footer = {
+                CodegButton(variant = CodegButtonVariant.Ghost, onClick = { showStatus = false }) {
+                    Text(stringResource(R.string.common_cancel))
                 }
             },
-            confirmButton = {},
-            dismissButton = { TextButton(onClick = { showStatus = false }) { Text(stringResource(R.string.common_cancel), color = colors.textSecondary) } },
-        )
+        ) {
+            val statuses = ConversationStatus.selectable
+            CodegRadioGroup(
+                options = statuses.map { statusLabel(it) },
+                value = statusLabel(summary.status),
+                onSelect = { label ->
+                    statuses.firstOrNull { statusLabel(it) == label }?.let { viewModel.setStatus(it) }
+                    showStatus = false
+                },
+            )
+        }
     }
 
     if (showDelete) {
-        AlertDialog(
-            onDismissRequest = { showDelete = false },
-            containerColor = colors.bgElevated,
-            title = { Text(stringResource(R.string.sessionactions_delete_session_confirm), color = colors.textPrimary) },
-            text = { Text(stringResource(R.string.sessionactions_delete_session_message), color = colors.textSecondary) },
-            confirmButton = { TextButton(onClick = { showDelete = false; viewModel.deleteConversation(onDeleted) }) { Text(stringResource(R.string.common_delete), color = colors.danger) } },
-            dismissButton = { TextButton(onClick = { showDelete = false }) { Text(stringResource(R.string.common_cancel), color = colors.textSecondary) } },
+        CodegConfirmDialog(
+            title = stringResource(R.string.sessionactions_delete_session_confirm),
+            message = stringResource(R.string.sessionactions_delete_session_message),
+            target = summary.trimmedTitle ?: stringResource(R.string.sessionactions_untitled),
+            confirmLabel = stringResource(R.string.common_delete),
+            destructive = true,
+            onConfirm = { showDelete = false; viewModel.deleteConversation(onDeleted) },
+            onDismiss = { showDelete = false },
         )
     }
 
     if (showDetails) {
-        val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-        ModalBottomSheet(onDismissRequest = { showDetails = false }, sheetState = sheetState, containerColor = colors.bgElevated) {
-            Column(Modifier.fillMaxWidth().verticalScroll(rememberScrollState()).padding(horizontal = 16.dp).padding(bottom = 32.dp), verticalArrangement = Arrangement.spacedBy(14.dp)) {
+        CodegSheet(title = stringResource(R.string.sessionactions_session_details), onDismiss = { showDetails = false }) {
+            Column(Modifier.fillMaxWidth().padding(horizontal = 16.dp).padding(bottom = 32.dp), verticalArrangement = Arrangement.spacedBy(14.dp)) {
                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                     AgentAvatar(ui.agent, size = 40.dp)
                     Text(summary.trimmedTitle ?: stringResource(R.string.sessionactions_untitled), fontSize = 16.sp, fontWeight = FontWeight.SemiBold, color = colors.textPrimary, modifier = Modifier.weight(1f))
                 }
-                HorizontalDivider(color = colors.web.border)
+                CodegSeparator()
                 DetailRow(stringResource(R.string.sessionactions_detail_status), statusLabel(summary.status), statusColor(summary.status))
                 ui.folderName?.let { DetailRow(stringResource(R.string.sessionactions_detail_folder), it) }
                 DetailRow(stringResource(R.string.sessionactions_detail_messages), summary.messageCount.toString())
