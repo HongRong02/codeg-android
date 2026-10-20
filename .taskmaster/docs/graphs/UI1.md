@@ -33,10 +33,10 @@
 │        冲突域：component/{TextFields,Feedback,Dialogs,Controls,Badges,Buttons,ListRows}.kt
 │
 ├─ L4 页面接入：图标 / Toast / T53 组件 / 例外清理　[并行 ×4｜⟂ 按 feature 目录]　门禁：T60 🔗 ✔（sit run 39423213750）
-│  ├─ T55 会话　🔄　← 硬：T47、T51、T52、T53、T60　冲突域：同 T47
-│  ├─ T56 项目　🔄　← 硬：T48、T51、T52、T53、T60　冲突域：同 T48
-│  ├─ T57 设置　🔄　← 硬：T49、T51、T52、T53、T60　冲突域：同 T49
-│  └─ T58 其余 + 挂 CodegToasterHost　🔄　← 硬：T50、T51、T52、T53、T60　冲突域：同 T50（MainShell 路由表不动）
+│  ├─ T55 会话　🔗　← 硬：T47、T51、T52、T53、T60　冲突域：同 T47
+│  ├─ T56 项目　🔗　← 硬：T48、T51、T52、T53、T60　冲突域：同 T48
+│  ├─ T57 设置　🔗　← 硬：T49、T51、T52、T53、T60　冲突域：同 T49
+│  └─ T58 其余 + 挂 CodegToasterHost　🔗　← 硬：T50、T51、T52、T53、T60　冲突域：同 T50（MainShell 路由表不动）
 │
 │  关键路径：L2 组 A（T47–T50）→ T60 → T55–T58
 │
@@ -66,17 +66,25 @@
 | T54 | 🔗 | 77981623-a22f-4ca7-99d2-5f8961749644 | 69 | task/T54-ds-topbar-states | 同上 |
 | T59 | 🔗 | dd63bb97-f84a-44ec-adc6-ac120bdcac5d | 70 | task/T59-ds-gallery | 到货编译缺 `@OptIn(ExperimentalMaterial3Api)`，协调方在原分支修复 |
 | T60 | 🔗 | a6f5dc95-75fd-42bd-88f5-5e7599115b8e | 71 | task/T60-ds-gaps | 同上 |
-| T55 | 🔄 | 4c2690d7-16c0-4867-ad35-9b1b16e7bbc1 | 73 | task/T55-ui2-sessions | 测试文档模式 |
-| T56 | 🔄 | e4ec5ff0-204a-4e3e-9b7f-f3557f1c7f3f | 74 | task/T56-ui2-projects | 同上 |
-| T57 | 🔄 | dd4875ba-3aa7-4367-b2f1-a14ddad43363 | 75 | task/T57-ui2-settings | 同上 |
-| T58 | 🔄 | 0d341a39-49d1-4307-97a9-4f19b56fc4b2 | 76 | task/T58-ui2-misc | 同上 |
+| T55 | 🔗 | 4c2690d7-16c0-4867-ad35-9b1b16e7bbc1 | 73 | task/T55-ui2-sessions | 测试文档模式 |
+| T56 | 🔗 | e4ec5ff0-204a-4e3e-9b7f-f3557f1c7f3f | 74 | task/T56-ui2-projects | 同上 |
+| T57 | 🔗 | dd4875ba-3aa7-4367-b2f1-a14ddad43363 | 75 | task/T57-ui2-settings | 同上 |
+| T58 | 🔗 | 0d341a39-49d1-4307-97a9-4f19b56fc4b2 | 76 | task/T58-ui2-misc | 同上 |
 
 ## 修复记录
 
 | bug 单 | 区域 | 轮次 | 来源 | 状态 |
 |---|---|---|---|---|
+| B03-devgallery | devgallery | 1（阻塞，提前修） | Gallery 嵌套滚动崩溃 | ✅ 复测通过 |
+| B04-designsystem | designsystem | 1 | 列表行背景、卡片内边距、确认框按钮、菜单贴边、项目头像、标签选中态 | ✅ 复测通过 |
+| B01-app | app + core/update | 1 | 首次配置缺 Toast 宿主、debug 版提示升级 | ✅ 复测通过 |
+| B09-build | build | 1（协调方修） | debug 版签名不固定，无法覆盖安装 | ✅ 复测通过 |
+| B15-designsystem | designsystem | 2 | 圆角按 radix-maia 修正、标签页溢出滚动 | ✅ 抽查通过（Gallery 全量明暗待测） |
+| B10-misc | main + automations | 2 | 底栏恢复、自动化空状态图标 | ⚠️ 部分：从子页面返回仍未恢复；空状态图标待测 |
 
 ## 复盘
+- 需求文档的圆角数值写成了 shadcn 默认主题（new-york），而 codeg 用的是 radix-maia，导致 T45/T46 等按小圆角实现，第 2 轮统一修正（B15）。`ui-alignment.md` 已改为"以 tsx 实际 class 为准"，并附圆角对照表。
+- 测试计划合并（T61）把 418 条用例压到 197 条，可行；但真机执行仍然很慢，复杂流程（Git 冲突、Forge、频道等）需要预置数据，本轮尚未覆盖。
 - 到货编译拦下的两次失败都是小问题（漏 import、漏 @OptIn），由协调方在原分支修好，各花 1 轮 CI。可以在 CONVENTIONS 的编译风险清单里加上 `@OptIn` 这一条。
 - L1：T43–T46 用的是旧的 CI 模式，11 次 verify，平均 4–5 分钟一次。
 - L2：T47–T50 报告了 DS 缺口（TextField 无 enabled/IME、无不确定进度、ConfirmDialog 无 busy、Select 只支持字符串），在 L3 增加 T60。教训：L1 组件的需求应当先扫描各页面的真实用法（参数清单）再定签名。
