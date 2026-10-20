@@ -72,7 +72,7 @@ fun CodegCommandList(
         val row = rowIds.indexOf(activeId)
         if (activeId != null && row >= 0) listState.animateScrollToItem(row)
     }
-    Column(modifier.fillMaxWidth().clip(CodegShapes.extraSmall).background(web.popover)
+    Column(modifier.fillMaxWidth().clip(CodegShapes.medium).background(web.popover)
         .onPreviewKeyEvent { event ->
             if (event.type != KeyEventType.KeyDown) false
             else when (event.key) {

@@ -70,7 +70,7 @@ fun EmptyState(
             if (actionLabel != null && onAction != null) {
                 Button(
                     onClick = onAction,
-                    shape = CodegShapes.extraSmall,
+                    shape = CodegShapes.extraLarge,
                     colors = ButtonDefaults.buttonColors(containerColor = colors.primary, contentColor = colors.primaryForeground),
                 ) { Text(actionLabel, fontSize = 14.sp, fontWeight = FontWeight.Medium) }
             }
@@ -121,7 +121,7 @@ fun InlineError(
             if (showRetry) {
                 TextButton(
                     onClick = onRetry,
-                    shape = CodegShapes.extraSmall,
+                    shape = CodegShapes.extraLarge,
                     colors = ButtonDefaults.textButtonColors(contentColor = colors.destructive),
                 ) { Text(retryLabel, fontSize = 14.sp) }
             }
