@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="imp_title">导入会话</string>
+    <string name="imp_close">关闭</string>
+    <string name="imp_working">正在扫描或导入服务端机器上的会话…</string>
+    <string name="imp_scan">重新扫描</string>
+    <string name="imp_select_all">全选</string>
+    <string name="imp_empty">服务端机器上未找到本地会话。</string>
+    <string name="imp_no_folder">%1$d 条会话没有项目路径，无法导入。</string>
+    <string name="imp_new">未导入</string>
+    <string name="imp_imported">已导入</string>
+    <string name="imp_deleted">已在 codeg 中删除</string>
+    <string name="imp_unavailable">不可用</string>
+    <string name="imp_selected">导入选中项（%1$d）</string>
+    <string name="imp_all">全部导入</string>
+    <string name="imp_confirm_all">导入扫描结果中全部 %1$d 条新会话？</string>
+    <string name="imp_cancel">取消</string>
+    <string name="imp_result">已导入：%1$d · 已更新：%2$d · 已跳过：%3$d · 失败：%4$d · 未找到：%5$d</string>
+</resources>

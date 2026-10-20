@@ -149,6 +149,186 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 175 | `private fun sortItems(items: List<DirectoryItem>): List<DirectoryItem>` |
 | 178 | `private fun formatBytes(bytes: Long): String` |
 
+## feature/projects/GitChangeVisuals.kt
+
+| Line | Declaration |
+|---|---|
+| 23 | `@Composable internal fun GitChangeBadge(change: GitChange, modifier: Modifier = Modifier)` |
+| 24 |   `val colors` |
+| 25 |   `val tint` |
+
+## feature/projects/GitCredentialSheet.kt
+
+| Line | Declaration |
+|---|---|
+| 68 | `@Composable fun GitCredentialSheet( viewModel: ProjectDetailViewModel, prompt: GitCredentialPrompt, )` |
+| 72 |   `val context` |
+| 73 |   `val colors` |
+| 74 |   `val scope` |
+| 75 |   `val uriHandler` |
+| 77 |   `var token by remember` |
+| 78 |   `var username by remember` |
+| 79 |   `var password by remember` |
+| 80 |   `var saveCredentials by remember` |
+| 81 |   `var submitting by remember` |
+| 82 |   `var error by remember` |
+| 84 |   `val hostLabel` |
+| 85 |   `val serverUrl` |
+| 86 |   `val invalidTokenMsg` |
+| 88 |   `val canSubmit` |
+| 94 |   `fun submit()` |
+| 188 | `@Composable private fun Banner(message: String, tint: Color, textColor: Color)` |
+
+## feature/projects/GitStatusStrip.kt
+
+| Line | Declaration |
+|---|---|
+| 40 | `@Composable internal fun GitStatusStrip( busy: Boolean, busyTitle: String?, banner: GitBanner?, onDismissBanner: () -> Unit, modifier: Modifier = Modifier, )` |
+| 47 |   `val colors` |
+
+## feature/projects/ProjectDetailScreen.kt
+
+| Line | Declaration |
+|---|---|
+| 55 | `private enum class ProjectTab(val labelRes: Int)` |
+| 63 | `@Composable fun ProjectDetailScreen( onBack: () -> Unit, viewModel: ProjectDetailViewModel = hiltViewModel(), )` |
+| 67 |   `val ui by viewModel.ui.collectAsStateWithLifecycle()` |
+| 68 |   `val colors` |
+| 69 |   `var tab by remember` |
+| 70 |   `var showBranchPicker by remember` |
+| 71 |   `var showCommit by remember` |
+| 75 |   `val commitClient` |
+| 76 |   `val commitFolder` |
+| 155 | `@Composable private fun Header(name: String, path: String, color: Color, branch: String?, running: Int, sessions: Int, onBranchClick: () -> Unit = {})` |
+| 156 |   `val colors` |
+| 180 | `@Composable private fun SegmentedTabs(selected: ProjectTab, onSelect: (ProjectTab) -> Unit)` |
+| 181 |   `val entries` |
+
+## feature/projects/ProjectDetailViewModel.kt
+
+| Line | Declaration |
+|---|---|
+| 38 | `class ProjectDetailViewModel @Inject constructor( private val repository: ServerRepository, savedStateHandle: SavedStateHandle, @ApplicationContext private val appContext: Context, ) : ViewModel()` |
+| 39 |   `private val repository: ServerRepository` |
+| 44 |   `private val folderId: Int` |
+| 46 |   `private val _ui` |
+| 47 |   `val ui: StateFlow<ProjectDetailState>` |
+| 51 |   `fun load()` |
+| 83 |   `suspend fun loadBranches(): GitBranchList` |
+| 90 |   `fun checkout(branch: String, onResult: (String?) -> Unit)` |
+| 100 |   `fun createBranch(name: String, onResult: (String?) -> Unit)` |
+| 119 |   `private val client: CodegClient? get()` |
+| 120 |   `private val repoPath: String? get()` |
+| 122 |   `private var credentialDeferred: CompletableDeferred<GitCredentialOutcome?>?` |
+| 123 |   `private var promptSeq` |
+| 130 |   `suspend fun gitCommit(message: String, files: List<String>)` |
+| 138 |   `fun push()` |
+| 142 |   `fun pull()` |
+| 146 |   `fun fetch()` |
+| 152 |   `fun discard(file: String, displayName: String)` |
+| 158 |   `fun stage(file: String, displayName: String)` |
+| 164 |   `fun deleteUntracked(file: String, displayName: String)` |
+| 170 |   `fun dismissBanner()` |
+| 174 |   `fun submitCredentials(outcome: GitCredentialOutcome)` |
+| 176 |   `fun cancelCredentials()` |
+| 179 |   `fun cancelCredentialsIfShowing(id: Long)` |
+| 183 |   `private fun resolveCredentials(outcome: GitCredentialOutcome?)` |
+| 190 |   `suspend fun validateGithubToken(serverUrl: String, token: String): GitHubTokenValidation?` |
+| 194 |   `suspend fun saveGithubAccount(serverUrl: String, host: String?, validation: GitHubTokenValidation, token: String)` |
+| 215 |   `private fun setBanner(kind: GitBannerKind, message: String)` |
+| 218 |   `private fun didMutate()` |
+| 220 |   `private fun quantity(@PluralsRes id: Int, count: Int): String` |
+| 224 |   `private fun performGit(@StringRes title: Int, body: suspend (CodegClient, String) -> GitBanner?)` |
+| 254 |   `private suspend fun <T> withCredentialRetry(operation: suspend (GitCredentials?) -> T): T` |
+| 275 |   `private suspend fun requestCredentials(github: Boolean, host: String?, retry: Boolean): GitCredentialOutcome?` |
+| 284 |   `private suspend fun resolveRemoteHost(): String?` |
+| 292 |   `private suspend fun saveGenericAccount(host: String?, credentials: GitCredentials)` |
+| 309 |   `private fun pushBanner(result: GitPushResult): GitBanner` |
+| 315 |   `private fun pullBanner(result: GitPullResult): GitBanner` |
+| 326 |   `private fun extractHost(url: String): String?` |
+| 343 | `data class ProjectDetailState( val loading: Boolean = false, val folder: FolderDetail? = null, val client: CodegClient? = null, val branch: String? = null, val runningCount: Int = 0, val sessionCount: Int = 0, val error: String? = null, val gitBusy: Boolean = false, val gitBusyTitle: String? = null, val gitBanner: GitBanner? = null, val reloadToken: Int = 0, val credentialPrompt: GitCredentialPrompt? = null, )` |
+| 344 |   `val loading: Boolean` |
+| 345 |   `val folder: FolderDetail?` |
+| 346 |   `val client: CodegClient?` |
+| 347 |   `val branch: String?` |
+| 348 |   `val runningCount: Int` |
+| 349 |   `val sessionCount: Int` |
+| 350 |   `val error: String?` |
+| 351 |   `val gitBusy: Boolean` |
+| 352 |   `val gitBusyTitle: String?` |
+| 353 |   `val gitBanner: GitBanner?` |
+| 354 |   `val reloadToken: Int` |
+| 355 |   `val credentialPrompt: GitCredentialPrompt?` |
+| 359 | `enum class GitBannerKind` |
+| 362 | `data class GitBanner(val kind: GitBannerKind, val message: String)` |
+| 365 | `data class GitCredentialPrompt( val id: Long, /** GitHub host → a token field; other hosts → username + password. */ val github: Boolean, val host: String?, /** True when re-prompting after a failed retry (the sheet shows a hint). */ val isRetry: Boolean, )` |
+| 366 |   `val id: Long` |
+| 368 |   `val github: Boolean` |
+| 369 |   `val host: String?` |
+| 371 |   `val isRetry: Boolean` |
+| 379 | `data class GitCredentialOutcome( val credentials: GitCredentials, val saveAfterSuccess: Boolean, )` |
+| 380 |   `val credentials: GitCredentials` |
+| 381 |   `val saveAfterSuccess: Boolean` |
+
+## feature/projects/ProjectListScreen.kt
+
+| Line | Declaration |
+|---|---|
+| 78 | `@Composable fun ProjectListScreen( onOpenFolder: (Int) -> Unit, viewModel: ProjectsViewModel = hiltViewModel(), )` |
+| 82 |   `val ui by viewModel.ui.collectAsStateWithLifecycle()` |
+| 83 |   `val colors` |
+| 84 |   `val importViewModel: app.codeg.android.feature.projects.importsessions.ImportSessionsViewModel` |
+| 85 |   `val importUi by importViewModel.ui.collectAsStateWithLifecycle()` |
+| 86 |   `var showImport by remember` |
+| 87 |   `var menuOpen by remember` |
+| 88 |   `var showBrowser by remember` |
+| 89 |   `var showClone by remember` |
+| 90 |   `var createGroup by remember` |
+| 91 |   `var editFolder by remember` |
+| 92 |   `var renameGroup by remember` |
+| 93 |   `var deleteGroup by remember` |
+| 94 |   `var collapsed by remember` |
+| 353 | `@Composable private fun FolderRow( folder: FolderDetail, running: Int, modifier: Modifier = Modifier, onLongClick: (() -> Unit)? = null, onClick: () -> Unit, )` |
+| 360 |   `val colors` |
+| 361 |   `val tile` |
+| 419 | `@Composable private fun RunningPill(count: Int, modifier: Modifier = Modifier)` |
+| 420 |   `val colors` |
+| 441 | `@Composable fun BranchPill(branch: String, modifier: Modifier = Modifier)` |
+| 442 |   `val colors` |
+| 468 | `internal fun sortedFolders(folders: List<FolderDetail>): List<FolderDetail>` |
+
+## feature/projects/ProjectsViewModel.kt
+
+| Line | Declaration |
+|---|---|
+| 29 | `class ProjectsViewModel @Inject constructor( @ApplicationContext private val appContext: Context, private val repository: ServerRepository, ) : ViewModel()` |
+| 31 |   `private val repository: ServerRepository` |
+| 34 |   `private val _ui` |
+| 35 |   `val ui: StateFlow<ProjectsUiState>` |
+| 37 |   `private var client: CodegClient?` |
+| 38 |   `private var loadedEndpoint: String?` |
+| 51 |   `private suspend fun onProfile(profile: ServerProfile?)` |
+| 65 |   `fun refresh()` |
+| 70 |   `private suspend fun fetch(initial: Boolean)` |
+| 96 |   `private fun unsupported(e: Exception): Boolean` |
+| 100 |   `fun editGroup(action: suspend (CodegClient) -> Unit)` |
+| 120 |   `fun openFolder(path: String, onResult: (String?) -> Unit)` |
+| 130 |   `suspend fun homeDirectory(): String` |
+| 134 |   `suspend fun listDirectories(path: String): List<app.codeg.android.core.model.DirectoryEntry>` |
+| 138 |   `suspend fun clone( url: String, targetDir: String, credentials: app.codeg.android.core.model.GitCredentials?, ): String?` |
+| 155 | `data class ProjectsUiState( val groups: List<FolderGroup> = emptyList(), val groupsSupported: Boolean = false, val editing: Boolean = false, val folders: List<FolderDetail> = emptyList(), val conversations: List<ConversationSummary> = emptyList(), val loading: Boolean = false, val refreshing: Boolean = false, val hasLoaded: Boolean = false, val error: String? = null, )` |
+| 156 |   `val groups: List<FolderGroup>` |
+| 157 |   `val groupsSupported: Boolean` |
+| 158 |   `val editing: Boolean` |
+| 159 |   `val folders: List<FolderDetail>` |
+| 160 |   `val conversations: List<ConversationSummary>` |
+| 161 |   `val loading: Boolean` |
+| 162 |   `val refreshing: Boolean` |
+| 163 |   `val hasLoaded: Boolean` |
+| 164 |   `val error: String?` |
+| 166 |   `val isBusy: Boolean get()` |
+| 167 |   `fun runningCount(folderId: Int): Int` |
+
 ## feature/projects/forge/ForgeDetail.kt
 
 | Line | Declaration |
@@ -370,43 +550,6 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 37 |   `fun change(action: String, ref: String?, message: String, keepIndex: Boolean, onChanged: () -> Unit)` |
 | 55 |   `private fun run(block: suspend () -> Unit)` |
 
-## feature/projects/GitChangeVisuals.kt
-
-| Line | Declaration |
-|---|---|
-| 23 | `@Composable internal fun GitChangeBadge(change: GitChange, modifier: Modifier = Modifier)` |
-| 24 |   `val colors` |
-| 25 |   `val tint` |
-
-## feature/projects/GitCredentialSheet.kt
-
-| Line | Declaration |
-|---|---|
-| 68 | `@Composable fun GitCredentialSheet( viewModel: ProjectDetailViewModel, prompt: GitCredentialPrompt, )` |
-| 72 |   `val context` |
-| 73 |   `val colors` |
-| 74 |   `val scope` |
-| 75 |   `val uriHandler` |
-| 77 |   `var token by remember` |
-| 78 |   `var username by remember` |
-| 79 |   `var password by remember` |
-| 80 |   `var saveCredentials by remember` |
-| 81 |   `var submitting by remember` |
-| 82 |   `var error by remember` |
-| 84 |   `val hostLabel` |
-| 85 |   `val serverUrl` |
-| 86 |   `val invalidTokenMsg` |
-| 88 |   `val canSubmit` |
-| 94 |   `fun submit()` |
-| 188 | `@Composable private fun Banner(message: String, tint: Color, textColor: Color)` |
-
-## feature/projects/GitStatusStrip.kt
-
-| Line | Declaration |
-|---|---|
-| 40 | `@Composable internal fun GitStatusStrip( busy: Boolean, busyTitle: String?, banner: GitBanner?, onDismissBanner: () -> Unit, modifier: Modifier = Modifier, )` |
-| 47 |   `val colors` |
-
 ## feature/projects/groups/FolderLayout.kt
 
 | Line | Declaration |
@@ -429,142 +572,31 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 41 | `@Composable fun FolderEditDialog(folder: FolderDetail, groups: List<FolderGroup>, onDismiss: () -> Unit, onAlias: (String) -> Unit, onColor: (String) -> Unit, onGroup: (Int?) -> Unit)` |
 | 43 |   `var page by remember` |
 
-## feature/projects/ProjectDetailScreen.kt
+## feature/projects/importsessions/ImportSessionsSheet.kt
 
 | Line | Declaration |
 |---|---|
-| 55 | `private enum class ProjectTab(val labelRes: Int)` |
-| 63 | `@Composable fun ProjectDetailScreen( onBack: () -> Unit, viewModel: ProjectDetailViewModel = hiltViewModel(), )` |
-| 67 |   `val ui by viewModel.ui.collectAsStateWithLifecycle()` |
-| 68 |   `val colors` |
-| 69 |   `var tab by remember` |
-| 70 |   `var showBranchPicker by remember` |
-| 71 |   `var showCommit by remember` |
-| 75 |   `val commitClient` |
-| 76 |   `val commitFolder` |
-| 155 | `@Composable private fun Header(name: String, path: String, color: Color, branch: String?, running: Int, sessions: Int, onBranchClick: () -> Unit = {})` |
-| 156 |   `val colors` |
-| 180 | `@Composable private fun SegmentedTabs(selected: ProjectTab, onSelect: (ProjectTab) -> Unit)` |
-| 181 |   `val entries` |
+| 18 | `@Composable fun ImportSessionsSheet(ui: ImportSessionsUi, viewModel: ImportSessionsViewModel, onDismiss: () -> Unit, onImported: () -> Unit)` |
+| 19 |   `var confirmAll by remember` |
+| 20 |   `val all` |
 
-## feature/projects/ProjectDetailViewModel.kt
+## feature/projects/importsessions/ImportSessionsViewModel.kt
 
 | Line | Declaration |
 |---|---|
-| 38 | `class ProjectDetailViewModel @Inject constructor( private val repository: ServerRepository, savedStateHandle: SavedStateHandle, @ApplicationContext private val appContext: Context, ) : ViewModel()` |
-| 39 |   `private val repository: ServerRepository` |
-| 44 |   `private val folderId: Int` |
-| 46 |   `private val _ui` |
-| 47 |   `val ui: StateFlow<ProjectDetailState>` |
-| 51 |   `fun load()` |
-| 83 |   `suspend fun loadBranches(): GitBranchList` |
-| 90 |   `fun checkout(branch: String, onResult: (String?) -> Unit)` |
-| 100 |   `fun createBranch(name: String, onResult: (String?) -> Unit)` |
-| 119 |   `private val client: CodegClient? get()` |
-| 120 |   `private val repoPath: String? get()` |
-| 122 |   `private var credentialDeferred: CompletableDeferred<GitCredentialOutcome?>?` |
-| 123 |   `private var promptSeq` |
-| 130 |   `suspend fun gitCommit(message: String, files: List<String>)` |
-| 138 |   `fun push()` |
-| 142 |   `fun pull()` |
-| 146 |   `fun fetch()` |
-| 152 |   `fun discard(file: String, displayName: String)` |
-| 158 |   `fun stage(file: String, displayName: String)` |
-| 164 |   `fun deleteUntracked(file: String, displayName: String)` |
-| 170 |   `fun dismissBanner()` |
-| 174 |   `fun submitCredentials(outcome: GitCredentialOutcome)` |
-| 176 |   `fun cancelCredentials()` |
-| 179 |   `fun cancelCredentialsIfShowing(id: Long)` |
-| 183 |   `private fun resolveCredentials(outcome: GitCredentialOutcome?)` |
-| 190 |   `suspend fun validateGithubToken(serverUrl: String, token: String): GitHubTokenValidation?` |
-| 194 |   `suspend fun saveGithubAccount(serverUrl: String, host: String?, validation: GitHubTokenValidation, token: String)` |
-| 215 |   `private fun setBanner(kind: GitBannerKind, message: String)` |
-| 218 |   `private fun didMutate()` |
-| 220 |   `private fun quantity(@PluralsRes id: Int, count: Int): String` |
-| 224 |   `private fun performGit(@StringRes title: Int, body: suspend (CodegClient, String) -> GitBanner?)` |
-| 254 |   `private suspend fun <T> withCredentialRetry(operation: suspend (GitCredentials?) -> T): T` |
-| 275 |   `private suspend fun requestCredentials(github: Boolean, host: String?, retry: Boolean): GitCredentialOutcome?` |
-| 284 |   `private suspend fun resolveRemoteHost(): String?` |
-| 292 |   `private suspend fun saveGenericAccount(host: String?, credentials: GitCredentials)` |
-| 309 |   `private fun pushBanner(result: GitPushResult): GitBanner` |
-| 315 |   `private fun pullBanner(result: GitPullResult): GitBanner` |
-| 326 |   `private fun extractHost(url: String): String?` |
-| 343 | `data class ProjectDetailState( val loading: Boolean = false, val folder: FolderDetail? = null, val client: CodegClient? = null, val branch: String? = null, val runningCount: Int = 0, val sessionCount: Int = 0, val error: String? = null, val gitBusy: Boolean = false, val gitBusyTitle: String? = null, val gitBanner: GitBanner? = null, val reloadToken: Int = 0, val credentialPrompt: GitCredentialPrompt? = null, )` |
-| 344 |   `val loading: Boolean` |
-| 345 |   `val folder: FolderDetail?` |
-| 346 |   `val client: CodegClient?` |
-| 347 |   `val branch: String?` |
-| 348 |   `val runningCount: Int` |
-| 349 |   `val sessionCount: Int` |
-| 350 |   `val error: String?` |
-| 351 |   `val gitBusy: Boolean` |
-| 352 |   `val gitBusyTitle: String?` |
-| 353 |   `val gitBanner: GitBanner?` |
-| 354 |   `val reloadToken: Int` |
-| 355 |   `val credentialPrompt: GitCredentialPrompt?` |
-| 359 | `enum class GitBannerKind` |
-| 362 | `data class GitBanner(val kind: GitBannerKind, val message: String)` |
-| 365 | `data class GitCredentialPrompt( val id: Long, /** GitHub host → a token field; other hosts → username + password. */ val github: Boolean, val host: String?, /** True when re-prompting after a failed retry (the sheet shows a hint). */ val isRetry: Boolean, )` |
-| 366 |   `val id: Long` |
-| 368 |   `val github: Boolean` |
-| 369 |   `val host: String?` |
-| 371 |   `val isRetry: Boolean` |
-| 379 | `data class GitCredentialOutcome( val credentials: GitCredentials, val saveAfterSuccess: Boolean, )` |
-| 380 |   `val credentials: GitCredentials` |
-| 381 |   `val saveAfterSuccess: Boolean` |
-
-## feature/projects/ProjectListScreen.kt
-
-| Line | Declaration |
-|---|---|
-| 78 | `@Composable fun ProjectListScreen( onOpenFolder: (Int) -> Unit, viewModel: ProjectsViewModel = hiltViewModel(), )` |
-| 82 |   `val ui by viewModel.ui.collectAsStateWithLifecycle()` |
-| 83 |   `val colors` |
-| 84 |   `var menuOpen by remember` |
-| 85 |   `var showBrowser by remember` |
-| 86 |   `var showClone by remember` |
-| 87 |   `var createGroup by remember` |
-| 88 |   `var editFolder by remember` |
-| 89 |   `var renameGroup by remember` |
-| 90 |   `var deleteGroup by remember` |
-| 91 |   `var collapsed by remember` |
-| 341 | `@Composable private fun FolderRow( folder: FolderDetail, running: Int, modifier: Modifier = Modifier, onLongClick: (() -> Unit)? = null, onClick: () -> Unit, )` |
-| 348 |   `val colors` |
-| 349 |   `val tile` |
-| 407 | `@Composable private fun RunningPill(count: Int, modifier: Modifier = Modifier)` |
-| 408 |   `val colors` |
-| 429 | `@Composable fun BranchPill(branch: String, modifier: Modifier = Modifier)` |
-| 430 |   `val colors` |
-| 456 | `internal fun sortedFolders(folders: List<FolderDetail>): List<FolderDetail>` |
-
-## feature/projects/ProjectsViewModel.kt
-
-| Line | Declaration |
-|---|---|
-| 29 | `class ProjectsViewModel @Inject constructor( @ApplicationContext private val appContext: Context, private val repository: ServerRepository, ) : ViewModel()` |
-| 31 |   `private val repository: ServerRepository` |
-| 34 |   `private val _ui` |
-| 35 |   `val ui: StateFlow<ProjectsUiState>` |
-| 37 |   `private var client: CodegClient?` |
-| 38 |   `private var loadedEndpoint: String?` |
-| 51 |   `private suspend fun onProfile(profile: ServerProfile?)` |
-| 65 |   `fun refresh()` |
-| 70 |   `private suspend fun fetch(initial: Boolean)` |
-| 96 |   `private fun unsupported(e: Exception): Boolean` |
-| 100 |   `fun editGroup(action: suspend (CodegClient) -> Unit)` |
-| 120 |   `fun openFolder(path: String, onResult: (String?) -> Unit)` |
-| 130 |   `suspend fun homeDirectory(): String` |
-| 134 |   `suspend fun listDirectories(path: String): List<app.codeg.android.core.model.DirectoryEntry>` |
-| 138 |   `suspend fun clone( url: String, targetDir: String, credentials: app.codeg.android.core.model.GitCredentials?, ): String?` |
-| 155 | `data class ProjectsUiState( val groups: List<FolderGroup> = emptyList(), val groupsSupported: Boolean = false, val editing: Boolean = false, val folders: List<FolderDetail> = emptyList(), val conversations: List<ConversationSummary> = emptyList(), val loading: Boolean = false, val refreshing: Boolean = false, val hasLoaded: Boolean = false, val error: String? = null, )` |
-| 156 |   `val groups: List<FolderGroup>` |
-| 157 |   `val groupsSupported: Boolean` |
-| 158 |   `val editing: Boolean` |
-| 159 |   `val folders: List<FolderDetail>` |
-| 160 |   `val conversations: List<ConversationSummary>` |
-| 161 |   `val loading: Boolean` |
-| 162 |   `val refreshing: Boolean` |
-| 163 |   `val hasLoaded: Boolean` |
-| 164 |   `val error: String?` |
-| 166 |   `val isBusy: Boolean get()` |
-| 167 |   `fun runningCount(folderId: Int): Int` |
+| 16 | `internal fun unsupportedImport(e: Exception): Boolean` |
+| 19 | `data class ImportSessionsUi( val supported: Boolean = false, val busy: Boolean = false, val scan: ImportScanResult? = null, val selected: Set<ImportSessionKey> = emptySet(), val result: ImportSessionsResult? = null, val error: String? = null, )` |
+| 20 |   `val supported: Boolean` |
+| 21 |   `val busy: Boolean` |
+| 22 |   `val scan: ImportScanResult?` |
+| 23 |   `val selected: Set<ImportSessionKey>` |
+| 24 |   `val result: ImportSessionsResult?` |
+| 25 |   `val error: String?` |
+| 29 | `class ImportSessionsViewModel @Inject constructor(private val repository: ServerRepository) : ViewModel()` |
+| 30 |   `private val state` |
+| 31 |   `val ui: StateFlow<ImportSessionsUi>` |
+| 32 |   `private var client: CodegClient?` |
+| 47 |   `private suspend fun scanWith(c: CodegClient)` |
+| 58 |   `fun scan()` |
+| 64 |   `fun toggle(keys: List<ImportSessionKey>)` |
+| 69 |   `fun import(all: Boolean = false, onImported: () -> Unit)` |
