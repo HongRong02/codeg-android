@@ -57,7 +57,7 @@
 | T45 | 🔗 | 6f0f25d1-977b-4a80-b07a-b4bb2f43e366 | 60 | task/T45-ds-buttons-forms | 同上 |
 | T46 | 🔗 | 668b57c0-60ab-47bb-a295-f53033ba149f | 61 | task/T46-ds-tabs-badges-rows | 同上；`CodegFilterChip` 新增重载，与 Buttons.kt 旧版共存 |
 | T47 | 🔗 | 18abffee-714c-4350-8acd-275088e228a5 | 62 | task/T47-ui-sessions | 测试文档模式 |
-| T48 | 🔗 | 881aa9a4-28bb-48ef-afeb-20b7dd40efb0 | 63 | task/T48-ui-projects | 同上 |
+| T48 | 🔗 | 881aa9a4-28bb-48ef-afeb-20b7dd40efb0 | 63 | task/T48-ui-projects | 到货编译漏 `Column` import，协调方在原分支修复（3aec76d） |
 | T49 | 🔗 | 7d1c94ed-a2b6-47a7-a9cc-53583f36a0a2 | 64 | task/T49-ui-settings | 同上 |
 | T50 | 🔗 | 645929a2-439e-4d19-9f48-112779cd18f2 | 65 | task/T50-ui-misc | 同上 |
 | T51 | 🔗 | bb215266-1dbe-4a0e-920c-02b7d85b0371 | 66 | task/T51-ds-icons | 同上 |
