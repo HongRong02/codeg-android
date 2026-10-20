@@ -8,4 +8,10 @@
     <string name="ds_controls_required">Required</string>
     <string name="ds_controls_first">First</string>
     <string name="ds_controls_second">Second</string>
+    <string name="ds_controls_default">Default</string>
+    <string name="ds_controls_secondary">Secondary</string>
+    <string name="ds_controls_outline">Outline</string>
+    <string name="ds_controls_ghost">Ghost</string>
+    <string name="ds_controls_destructive">Destructive</string>
+    <string name="ds_controls_link">Link</string>
 </resources>

@@ -142,7 +142,14 @@ internal fun T45Gallery() {
     Column(Modifier.background(CodegTheme.colors.web.background).verticalScroll(rememberScrollState()).padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)) {
         CodegButtonVariant.entries.forEach { variant ->
-            CodegButton({}, variant = variant) { Text(variant.name) }
+            CodegButton({}, variant = variant) { Text(stringResource(when (variant) {
+                CodegButtonVariant.Default -> R.string.ds_controls_default
+                CodegButtonVariant.Secondary -> R.string.ds_controls_secondary
+                CodegButtonVariant.Outline -> R.string.ds_controls_outline
+                CodegButtonVariant.Ghost -> R.string.ds_controls_ghost
+                CodegButtonVariant.Destructive -> R.string.ds_controls_destructive
+                CodegButtonVariant.Link -> R.string.ds_controls_link
+            })) }
         }
         CodegButtonSize.entries.forEach { size ->
             CodegButton({}, size = size) { if (size == CodegButtonSize.Icon) Icon(Icons.Rounded.Check, example, Modifier.size(16.dp)) else Text(example) }

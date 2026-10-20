@@ -8,4 +8,10 @@
     <string name="ds_controls_required">必填</string>
     <string name="ds_controls_first">第一项</string>
     <string name="ds_controls_second">第二项</string>
+    <string name="ds_controls_default">默认</string>
+    <string name="ds_controls_secondary">次要</string>
+    <string name="ds_controls_outline">描边</string>
+    <string name="ds_controls_ghost">幽灵</string>
+    <string name="ds_controls_destructive">危险操作</string>
+    <string name="ds_controls_link">链接</string>
 </resources>
