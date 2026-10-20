@@ -284,6 +284,7 @@ fun MainShell(appViewModel: AppViewModel, servers: List<ServerProfile>) {
             composable(HomeTab.SETTINGS.route) {
                 SettingsScreen(
                     onOpenAutomations = { nav.navigate(ROUTE_AUTOMATIONS) },
+                    onOpenWorkTasks = { nav.navigate("work-tasks") },
                 )
             }
 
@@ -318,6 +319,10 @@ fun MainShell(appViewModel: AppViewModel, servers: List<ServerProfile>) {
                 arguments = listOf(navArgument("folderId") { type = NavType.IntType }),
             ) {
                 ProjectDetailScreen(onBack = { nav.popBackStack() })
+            }
+
+            composable("work-tasks") {
+                app.codeg.android.feature.worktasks.WorkTaskScreen(onBack = { nav.popBackStack() })
             }
 
             composable(ROUTE_AUTOMATIONS) {

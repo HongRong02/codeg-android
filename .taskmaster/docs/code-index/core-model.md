@@ -977,85 +977,6 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 300 |   `val defaultModel: String?` |
 | 301 |   `val error: String?` |
 
-## core/model/wire/AutomationRequests.kt
-
-| Line | Declaration |
-|---|---|
-| 6 | `data class GetAutomationBody( val id: Int, )` |
-| 7 |   `val id: Int` |
-| 11 | `data class ListRunsBody( val automationId: Int, val limit: Long = 100, )` |
-| 12 |   `val automationId: Int` |
-| 13 |   `val limit: Long` |
-| 17 | `data class SetEnabledBody( val id: Int, val enabled: Boolean, )` |
-| 18 |   `val id: Int` |
-| 19 |   `val enabled: Boolean` |
-
-## core/model/wire/BranchManageRequests.kt
-
-| Line | Declaration |
-|---|---|
-| 7 | `data class BranchManageListBody(val path: String)` |
-| 9 | `data class BranchDeleteBody(val path: String, val branchName: String, val force: Boolean)` |
-| 11 | `data class BranchRemoteDeleteBody(val path: String, val remote: String, val branch: String, val credentials: GitCredentials? = null)` |
-| 13 | `data class BranchUpdateBody(val path: String, val branch: String, val isRemote: Boolean, val credentials: GitCredentials? = null)` |
-| 15 | `data class BranchCompareBody(val path: String, val branch: String, val file: String? = null)` |
-
-## core/model/wire/FileViewerRequests.kt
-
-| Line | Declaration |
-|---|---|
-| 6 | `data class ReadFileBase64Request(val path: String, val maxBytes: Long)` |
-| 9 | `data class GitShowFileRequest(val path: String, val file: String, val refName: String, val maxBytes: Long? = null)` |
-
-## core/model/wire/GitMiscRequests.kt
-
-| Line | Declaration |
-|---|---|
-| 7 | `data class GitMiscRemoteRequest(val path: String, val name: String, val url: String? = null, val credentials: GitCredentials? = null)` |
-| 9 | `data class GitMiscWorktreeAddRequest(val path: String, val branchName: String, val worktreePath: String, val base: String? = null)` |
-| 11 | `data class GitMiscWorktreeRemoveRequest(val path: String, val branchName: String, val sourceFolderId: Int, val deleteBranch: Boolean = false, val force: Boolean = false)` |
-
-## core/model/wire/InstantSerializer.kt
-
-| Line | Declaration |
-|---|---|
-| 21 | `object Rfc3339` |
-| 22 |   `fun parse(raw: String): Instant?` |
-| 38 | `object InstantSerializer : KSerializer<Instant>` |
-| 39 |   `override val descriptor` |
-| 42 |   `override fun serialize(encoder: Encoder, value: Instant)` |
-| 46 |   `override fun deserialize(decoder: Decoder): Instant` |
-
-## core/model/wire/JsonExt.kt
-
-| Line | Declaration |
-|---|---|
-| 23 | `internal fun JsonObject.stringOrNull(key: String): String?` |
-| 24 |   `val p` |
-| 29 | `internal fun JsonObject.nonEmptyString(key: String): String?` |
-| 32 | `internal fun JsonObject.intOrNull(key: String): Int?` |
-| 35 | `internal fun JsonObject.longOrNull(key: String): Long?` |
-| 38 | `internal fun JsonObject.boolOrNull(key: String): Boolean?` |
-| 41 | `internal fun JsonObject.objectOrNull(key: String): JsonObject?` |
-| 44 | `internal fun JsonObject.arrayOrNull(key: String): JsonArray?` |
-| 47 | `internal fun JsonElement.asObjectOrNull(): JsonObject?` |
-
-## core/model/wire/MergeOpsRequests.kt
-
-| Line | Declaration |
-|---|---|
-
-## core/model/wire/SessionForkRequests.kt
-
-| Line | Declaration |
-|---|---|
-| 7 | `data class SessionForkRequest( val connectionId: String, val conversationId: Int?, val folderId: Int?, )` |
-| 8 |   `val connectionId: String` |
-| 9 |   `val conversationId: Int?` |
-| 10 |   `val folderId: Int?` |
-| 14 | `data class SessionDisconnectRequest(val connectionId: String)` |
-| 17 | `data class SessionPreflightRequest(val agentType: AgentType, val forceRefresh: Boolean = false)` |
-
 ## core/model/WireRequests.kt
 
 | Line | Declaration |
@@ -1235,3 +1156,115 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 430 |   `val sandboxMode: String?` |
 | 431 |   `val permissionsAllow: List<String>?` |
 | 432 |   `val permissionsDeny: List<String>?` |
+
+## core/model/WorkTask.kt
+
+| Line | Declaration |
+|---|---|
+| 8 | `data class WorkTask( val id: Int, val title: String, val status: String, val agentType: String? = null, val updatedAt: String, val resultSummary: String? = null, val lastError: String? = null, val failureReason: String? = null, val workBranch: String? = null, )` |
+| 9 |   `val id: Int` |
+| 10 |   `val title: String` |
+| 11 |   `val status: String` |
+| 12 |   `val agentType: String?` |
+| 13 |   `val updatedAt: String` |
+| 14 |   `val resultSummary: String?` |
+| 15 |   `val lastError: String?` |
+| 16 |   `val failureReason: String?` |
+| 17 |   `val workBranch: String?` |
+| 21 | `data class WorkTaskEvent( val id: Int, val taskId: Int, val kind: String, val actor: String, val payload: JsonElement? = null, val createdAt: String, )` |
+| 22 |   `val id: Int` |
+| 23 |   `val taskId: Int` |
+| 24 |   `val kind: String` |
+| 25 |   `val actor: String` |
+| 26 |   `val payload: JsonElement?` |
+| 27 |   `val createdAt: String` |
+| 31 | `data class WorkTaskChangedFile(val file: String, val additions: Int, val deletions: Int)` |
+| 33 | `fun Throwable.isWorkTasksUnsupported(): Boolean` |
+
+## core/model/wire/AutomationRequests.kt
+
+| Line | Declaration |
+|---|---|
+| 6 | `data class GetAutomationBody( val id: Int, )` |
+| 7 |   `val id: Int` |
+| 11 | `data class ListRunsBody( val automationId: Int, val limit: Long = 100, )` |
+| 12 |   `val automationId: Int` |
+| 13 |   `val limit: Long` |
+| 17 | `data class SetEnabledBody( val id: Int, val enabled: Boolean, )` |
+| 18 |   `val id: Int` |
+| 19 |   `val enabled: Boolean` |
+
+## core/model/wire/BranchManageRequests.kt
+
+| Line | Declaration |
+|---|---|
+| 7 | `data class BranchManageListBody(val path: String)` |
+| 9 | `data class BranchDeleteBody(val path: String, val branchName: String, val force: Boolean)` |
+| 11 | `data class BranchRemoteDeleteBody(val path: String, val remote: String, val branch: String, val credentials: GitCredentials? = null)` |
+| 13 | `data class BranchUpdateBody(val path: String, val branch: String, val isRemote: Boolean, val credentials: GitCredentials? = null)` |
+| 15 | `data class BranchCompareBody(val path: String, val branch: String, val file: String? = null)` |
+
+## core/model/wire/FileViewerRequests.kt
+
+| Line | Declaration |
+|---|---|
+| 6 | `data class ReadFileBase64Request(val path: String, val maxBytes: Long)` |
+| 9 | `data class GitShowFileRequest(val path: String, val file: String, val refName: String, val maxBytes: Long? = null)` |
+
+## core/model/wire/GitMiscRequests.kt
+
+| Line | Declaration |
+|---|---|
+| 7 | `data class GitMiscRemoteRequest(val path: String, val name: String, val url: String? = null, val credentials: GitCredentials? = null)` |
+| 9 | `data class GitMiscWorktreeAddRequest(val path: String, val branchName: String, val worktreePath: String, val base: String? = null)` |
+| 11 | `data class GitMiscWorktreeRemoveRequest(val path: String, val branchName: String, val sourceFolderId: Int, val deleteBranch: Boolean = false, val force: Boolean = false)` |
+
+## core/model/wire/InstantSerializer.kt
+
+| Line | Declaration |
+|---|---|
+| 21 | `object Rfc3339` |
+| 22 |   `fun parse(raw: String): Instant?` |
+| 38 | `object InstantSerializer : KSerializer<Instant>` |
+| 39 |   `override val descriptor` |
+| 42 |   `override fun serialize(encoder: Encoder, value: Instant)` |
+| 46 |   `override fun deserialize(decoder: Decoder): Instant` |
+
+## core/model/wire/JsonExt.kt
+
+| Line | Declaration |
+|---|---|
+| 23 | `internal fun JsonObject.stringOrNull(key: String): String?` |
+| 24 |   `val p` |
+| 29 | `internal fun JsonObject.nonEmptyString(key: String): String?` |
+| 32 | `internal fun JsonObject.intOrNull(key: String): Int?` |
+| 35 | `internal fun JsonObject.longOrNull(key: String): Long?` |
+| 38 | `internal fun JsonObject.boolOrNull(key: String): Boolean?` |
+| 41 | `internal fun JsonObject.objectOrNull(key: String): JsonObject?` |
+| 44 | `internal fun JsonObject.arrayOrNull(key: String): JsonArray?` |
+| 47 | `internal fun JsonElement.asObjectOrNull(): JsonObject?` |
+
+## core/model/wire/MergeOpsRequests.kt
+
+| Line | Declaration |
+|---|---|
+
+## core/model/wire/SessionForkRequests.kt
+
+| Line | Declaration |
+|---|---|
+| 7 | `data class SessionForkRequest( val connectionId: String, val conversationId: Int?, val folderId: Int?, )` |
+| 8 |   `val connectionId: String` |
+| 9 |   `val conversationId: Int?` |
+| 10 |   `val folderId: Int?` |
+| 14 | `data class SessionDisconnectRequest(val connectionId: String)` |
+| 17 | `data class SessionPreflightRequest(val agentType: AgentType, val forceRefresh: Boolean = false)` |
+
+## core/model/wire/WorkTaskRequests.kt
+
+| Line | Declaration |
+|---|---|
+| 6 | `data class WorkTaskListBody(val folderId: Int? = null)` |
+| 8 | `data class WorkTaskIdBody(val id: Int)` |
+| 10 | `data class WorkTaskEventsBody(val taskId: Int, val limit: Long = 500)` |
+| 12 | `data class WorkTaskDiffBody(val id: Int, val file: String? = null)` |

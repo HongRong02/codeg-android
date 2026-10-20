@@ -181,14 +181,20 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 1060 |   `suspend fun automationGet(id: Int): Automation` |
 | 1063 |   `suspend fun automationRuns(automationId: Int, limit: Long = 100): List<AutomationRun>` |
 | 1066 |   `suspend fun automationSetEnabled(id: Int, enabled: Boolean): Automation` |
-| 1077 |   `private suspend fun send(path: String, bodyJson: String): String` |
-| 1111 |   `private inline fun <reified T> encode(body: T): String` |
-| 1114 |   `private fun <T> decode(text: String, deserializer: DeserializationStrategy<T>): T` |
-| 1120 |   `companion object` |
-| 1122 |     `fun normalizeBaseUrl(raw: String): String` |
-| 1130 |     `fun decodeConnectionId(text: String): String` |
-| 1146 |     `fun decodeAgentList(text: String): List<AcpAgentInfo>` |
-| 1163 |     `fun isJsonNull(text: String): Boolean` |
+| 1073 |   `suspend fun workTaskList(): List<app.codeg.android.core.model.WorkTask>` |
+| 1076 |   `suspend fun workTaskAttentionCount(): Long` |
+| 1079 |   `suspend fun workTaskGet(id: Int): app.codeg.android.core.model.WorkTask` |
+| 1082 |   `suspend fun workTaskEvents(id: Int): List<app.codeg.android.core.model.WorkTaskEvent>` |
+| 1085 |   `suspend fun workTaskChangedFiles(id: Int): List<app.codeg.android.core.model.WorkTaskChangedFile>` |
+| 1088 |   `suspend fun workTaskDiff(id: Int, file: String? = null): String` |
+| 1099 |   `private suspend fun send(path: String, bodyJson: String): String` |
+| 1133 |   `private inline fun <reified T> encode(body: T): String` |
+| 1136 |   `private fun <T> decode(text: String, deserializer: DeserializationStrategy<T>): T` |
+| 1142 |   `companion object` |
+| 1144 |     `fun normalizeBaseUrl(raw: String): String` |
+| 1152 |     `fun decodeConnectionId(text: String): String` |
+| 1168 |     `fun decodeAgentList(text: String): List<AcpAgentInfo>` |
+| 1185 |     `fun isJsonNull(text: String): Boolean` |
 
 ## core/network/CodegClientFactory.kt
 
