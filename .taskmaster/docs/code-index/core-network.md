@@ -242,14 +242,32 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 1279 |   `suspend fun setFolderGroup(folderId: Int, groupId: Int?)` |
 | 1283 |   `suspend fun updateFolderAlias(folderId: Int, alias: String?)` |
 | 1287 |   `suspend fun updateFolderColor(folderId: Int, color: String)` |
-| 1299 |   `private suspend fun send(path: String, bodyJson: String): String` |
-| 1333 |   `private inline fun <reified T> encode(body: T): String` |
-| 1336 |   `private fun <T> decode(text: String, deserializer: DeserializationStrategy<T>): T` |
-| 1342 |   `companion object` |
-| 1344 |     `fun normalizeBaseUrl(raw: String): String` |
-| 1352 |     `fun decodeConnectionId(text: String): String` |
-| 1368 |     `fun decodeAgentList(text: String): List<AcpAgentInfo>` |
-| 1385 |     `fun isJsonNull(text: String): Boolean` |
+| 1295 |   `suspend fun assistantList(): List<app.codeg.android.core.model.Assistant>` |
+| 1298 |   `suspend fun assistantCreate(draft: app.codeg.android.core.model.wire.AssistantDraft): app.codeg.android.core.model.Assistant` |
+| 1301 |   `suspend fun assistantUpdate(id: Int, patch: app.codeg.android.core.model.wire.AssistantDraft): app.codeg.android.core.model.Assistant` |
+| 1304 |   `suspend fun assistantDelete(id: Int)` |
+| 1308 |   `suspend fun assistantReorder(ids: List<Int>): List<app.codeg.android.core.model.Assistant>` |
+| 1314 |   `suspend fun mcpListMarketplaces(): List<app.codeg.android.core.model.McpMarketProvider>` |
+| 1317 |   `suspend fun mcpSearchMarketplace(body: app.codeg.android.core.model.wire.McpMarketSearchBody): List<app.codeg.android.core.model.McpMarketItem>` |
+| 1320 |   `suspend fun mcpMarketplaceDetail(body: app.codeg.android.core.model.wire.McpMarketDetailBody): app.codeg.android.core.model.McpMarketDetail` |
+| 1323 |   `suspend fun mcpInstallMarketplace(body: app.codeg.android.core.model.wire.McpMarketInstallBody)` |
+| 1332 |   `suspend fun customSkillsList(): List<app.codeg.android.core.model.CustomSkill>` |
+| 1335 |   `suspend fun customSkillsStatuses(): List<ExpertInstallStatus>` |
+| 1338 |   `suspend fun customSkillRead(id: String): String` |
+| 1341 |   `suspend fun customSkillCreate(id: String, content: String): app.codeg.android.core.model.CustomSkill` |
+| 1344 |   `suspend fun customSkillSave(id: String, content: String): app.codeg.android.core.model.CustomSkill` |
+| 1347 |   `suspend fun customSkillDuplicate(sourceId: String, newId: String): app.codeg.android.core.model.CustomSkill` |
+| 1350 |   `suspend fun customSkillsDelete(ids: List<String>): List<app.codeg.android.core.model.CustomSkillResult>` |
+| 1353 |   `suspend fun customSkillsImport(agent: AgentType, ids: List<String>): List<app.codeg.android.core.model.CustomSkillResult>` |
+| 1356 |   `suspend fun customSkillsApplyLinks(ops: List<app.codeg.android.core.model.wire.CustomSkillLinkOp>): List<app.codeg.android.core.model.CustomLinkResult>` |
+| 1367 |   `private suspend fun send(path: String, bodyJson: String): String` |
+| 1401 |   `private inline fun <reified T> encode(body: T): String` |
+| 1404 |   `private fun <T> decode(text: String, deserializer: DeserializationStrategy<T>): T` |
+| 1410 |   `companion object` |
+| 1412 |     `fun normalizeBaseUrl(raw: String): String` |
+| 1420 |     `fun decodeConnectionId(text: String): String` |
+| 1436 |     `fun decodeAgentList(text: String): List<AcpAgentInfo>` |
+| 1453 |     `fun isJsonNull(text: String): Boolean` |
 
 ## core/network/CodegClientFactory.kt
 

@@ -63,17 +63,17 @@ Source root: `app/src/main/java/app/codeg/android/`
 
 | Line | Declaration |
 |---|---|
-| 43 | `private val SuccessGreen` |
-| 52 | `@Composable fun CodeBlock( code: String, modifier: Modifier = Modifier, language: String? = null, collapseAfter: Int = 20, )` |
-| 58 |   `val colors` |
-| 59 |   `val lines` |
-| 60 |   `val collapsible` |
-| 61 |   `var expanded by remember(code)` |
-| 62 |   `val shown` |
-| 118 | `@Composable fun CopyButton(text: String, modifier: Modifier = Modifier)` |
-| 119 |   `val clipboard` |
-| 120 |   `val colors` |
-| 121 |   `var copied by remember` |
+| 44 | `private val SuccessGreen: Color @Composable @ReadOnlyComposable get()` |
+| 53 | `@Composable fun CodeBlock( code: String, modifier: Modifier = Modifier, language: String? = null, collapseAfter: Int = 20, )` |
+| 59 |   `val colors` |
+| 60 |   `val lines` |
+| 61 |   `val collapsible` |
+| 62 |   `var expanded by remember(code)` |
+| 63 |   `val shown` |
+| 119 | `@Composable fun CopyButton(text: String, modifier: Modifier = Modifier)` |
+| 120 |   `val clipboard` |
+| 121 |   `val colors` |
+| 122 |   `var copied by remember` |
 
 ## core/designsystem/component/FileViewer.kt
 
@@ -141,25 +141,25 @@ Source root: `app/src/main/java/app/codeg/android/`
 
 | Line | Declaration |
 |---|---|
-| 34 | `private val AddedFg` |
-| 35 | `private val DeletedFg` |
-| 36 | `private val AddedBg` |
-| 37 | `private val DeletedBg` |
-| 41 | `@Composable fun DiffView(files: List<DiffFile>, modifier: Modifier = Modifier, collapseAfter: Int = 80)` |
-| 48 | `@Composable private fun DiffFileView(file: DiffFile, collapseAfter: Int)` |
-| 49 |   `val colors` |
-| 50 |   `val allRows` |
-| 51 |   `val collapsible` |
-| 52 |   `var expanded by remember(file)` |
-| 53 |   `val rows` |
-| 104 | `@Composable private fun DiffRowView(row: DiffRow)` |
-| 105 |   `val colors` |
-| 106 |   `val (fg, bg, sign)` |
-| 136 | `@Composable private fun Gutter(line: Int?)` |
-| 147 | `@Composable private fun ModeBadge(mode: DiffFile.Mode)` |
-| 148 |   `val (label, color)` |
-| 166 | `private fun shortPath(path: String): String` |
-| 167 |   `val parts` |
+| 35 | `private val AddedFg: Color @Composable @ReadOnlyComposable get()` |
+| 36 | `private val DeletedFg: Color @Composable @ReadOnlyComposable get()` |
+| 37 | `private val AddedBg: Color @Composable @ReadOnlyComposable get()` |
+| 38 | `private val DeletedBg: Color @Composable @ReadOnlyComposable get()` |
+| 42 | `@Composable fun DiffView(files: List<DiffFile>, modifier: Modifier = Modifier, collapseAfter: Int = 80)` |
+| 49 | `@Composable private fun DiffFileView(file: DiffFile, collapseAfter: Int)` |
+| 50 |   `val colors` |
+| 51 |   `val allRows` |
+| 52 |   `val collapsible` |
+| 53 |   `var expanded by remember(file)` |
+| 54 |   `val rows` |
+| 105 | `@Composable private fun DiffRowView(row: DiffRow)` |
+| 106 |   `val colors` |
+| 107 |   `val (fg, bg, sign)` |
+| 137 | `@Composable private fun Gutter(line: Int?)` |
+| 148 | `@Composable private fun ModeBadge(mode: DiffFile.Mode)` |
+| 149 |   `val (label, color)` |
+| 167 | `private fun shortPath(path: String): String` |
+| 168 |   `val parts` |
 
 ## core/designsystem/diff/UnifiedDiff.kt
 
@@ -307,7 +307,7 @@ Source root: `app/src/main/java/app/codeg/android/`
 
 | Line | Declaration |
 |---|---|
-| 13 | `data class CodegColors( val isDark: Boolean, val bg: Color, val bgElevated: Color, val surfaceStroke: Color, val hairline: Color, val codeSurface: Color, val rail: Color, val textPrimary: Color, val textSecondary: Color, val textTertiary: Color, val danger: Color, val accent: Color, val onAccent: Color, val accentDim: Color, val web: WebTokens, )` |
+| 13 | `data class CodegColors( val isDark: Boolean, val bg: Color, val bgElevated: Color, val surfaceStroke: Color, val hairline: Color, val codeSurface: Color, val rail: Color, val textPrimary: Color, val textSecondary: Color, val textTertiary: Color, val danger: Color, val accent: Color, val onAccent: Color, val accentDim: Color, val web: WebTokens, val success: Color = if (isDark) Color(0xFF4ADE80) else Color(0xFF16A34A), val diffAdded: Color = success, val diffDeleted: Color = if (isDark) Color(0xFFF87171) else Color(0xFFDC2626), val diffAddedBg: Color = Color(0xFF22C55E).copy(alpha = 0.10f), val diffDeletedBg: Color = Color(0xFFEF4444).copy(alpha = 0.10f), )` |
 | 14 |   `val isDark: Boolean` |
 | 15 |   `val bg: Color` |
 | 16 |   `val bgElevated: Color` |
@@ -323,9 +323,14 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 26 |   `val onAccent: Color` |
 | 27 |   `val accentDim: Color` |
 | 28 |   `val web: WebTokens` |
-| 35 | `fun Color.withOpacity(fraction: Float): Color` |
-| 43 | `fun codegColors(isDark: Boolean, preset: WebThemePreset): CodegColors` |
-| 44 |   `val w` |
+| 32 |   `val success: Color` |
+| 33 |   `val diffAdded: Color` |
+| 34 |   `val diffDeleted: Color` |
+| 35 |   `val diffAddedBg: Color` |
+| 36 |   `val diffDeletedBg: Color` |
+| 43 | `fun Color.withOpacity(fraction: Float): Color` |
+| 51 | `fun codegColors(isDark: Boolean, preset: WebThemePreset): CodegColors` |
+| 52 |   `val w` |
 
 ## core/designsystem/theme/ColorHex.kt
 

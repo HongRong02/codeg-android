@@ -580,6 +580,78 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 122 |   `val webhooks: List<WebhookConfig>` |
 | 123 |   `val error: String?` |
 
+## feature/settings/customskills/CustomSkillPolicy.kt
+
+| Line | Declaration |
+|---|---|
+| 6 | `fun canEnableCustomSkill(state: ExpertLinkState?): Boolean` |
+| 9 | `fun importableCustomSkills(skills: List<AgentSkillItem>, libraryIds: Set<String>): List<AgentSkillItem>` |
+
+## feature/settings/customskills/CustomSkillsScreen.kt
+
+| Line | Declaration |
+|---|---|
+| 36 | `@Composable fun CustomSkillsEntry(onClosed: () -> Unit, viewModel: CustomSkillsViewModel = hiltViewModel())` |
+| 37 |   `val ui by viewModel.ui.collectAsStateWithLifecycle()` |
+| 38 |   `var open by remember` |
+| 53 | `private enum class EditorMode` |
+| 54 | `private data class EditorTarget(val mode: EditorMode, val id: String = "")` |
+| 57 | `@Composable private fun CustomSkillsPage(ui: CustomSkillsUi, viewModel: CustomSkillsViewModel, onDismiss: () -> Unit)` |
+| 58 |   `var editor by remember` |
+| 59 |   `var deleting by remember` |
+| 60 |   `var importing by remember` |
+| 121 | `private fun linkStateLabel(state: ExpertLinkState?): Int` |
+| 130 | `@Composable private fun CustomSkillsEditor(target: EditorTarget, ui: CustomSkillsUi, viewModel: CustomSkillsViewModel, onDismiss: () -> Unit)` |
+| 131 |   `val scope` |
+| 132 |   `var id by remember(target)` |
+| 133 |   `var content by remember(target)` |
+| 134 |   `var loading by remember(target)` |
+| 135 |   `var loaded by remember(target)` |
+| 136 |   `var error by remember(target)` |
+| 137 |   `var retry by remember` |
+| 147 |   `val title` |
+| 179 | `@Composable private fun CustomSkillsImport(ui: CustomSkillsUi, viewModel: CustomSkillsViewModel, onDismiss: () -> Unit)` |
+| 180 |   `val scope` |
+| 181 |   `var agent by remember` |
+| 182 |   `var candidates by remember` |
+| 183 |   `var selected by remember` |
+| 184 |   `var loading by remember` |
+| 185 |   `var error by remember` |
+| 186 |   `var retry by remember` |
+| 228 | `@Composable private fun CustomSkillsError(error: String?)` |
+| 234 | `@Composable private fun CustomSkillsFrame(title: String, onDismiss: () -> Unit, content: @Composable ColumnScope.() -> Unit)` |
+
+## feature/settings/customskills/CustomSkillsViewModel.kt
+
+| Line | Declaration |
+|---|---|
+| 20 | `data class CustomSkillsUi( val supported: Boolean = false, val loading: Boolean = true, val busy: Boolean = false, val skills: List<CustomSkill> = emptyList(), val agents: List<AgentType> = emptyList(), val statuses: List<ExpertInstallStatus> = emptyList(), val error: String? = null, )` |
+| 21 |   `val supported: Boolean` |
+| 22 |   `val loading: Boolean` |
+| 23 |   `val busy: Boolean` |
+| 24 |   `val skills: List<CustomSkill>` |
+| 25 |   `val agents: List<AgentType>` |
+| 26 |   `val statuses: List<ExpertInstallStatus>` |
+| 27 |   `val error: String?` |
+| 31 | `class CustomSkillsViewModel @Inject constructor( private val repository: ServerRepository, @ApplicationContext private val context: Context, ) : ViewModel()` |
+| 32 |   `private val repository: ServerRepository` |
+| 35 |   `private val state` |
+| 36 |   `val ui` |
+| 37 |   `private var client: CodegClient?` |
+| 39 |   `private var refreshing` |
+| 43 |   `fun refresh()` |
+| 61 |   `private suspend fun reload(c: CodegClient)` |
+| 70 |   `private fun report(e: Exception)` |
+| 79 |   `private fun currentClient(): CodegClient` |
+| 81 |   `suspend fun read(id: String): String` |
+| 84 |   `private suspend fun mutate(action: suspend (CodegClient) -> Unit): Boolean` |
+| 98 |   `suspend fun save(id: String, content: String, create: Boolean): Boolean` |
+| 102 |   `suspend fun duplicate(sourceId: String, newId: String): Boolean` |
+| 104 |   `fun delete(id: String)` |
+| 115 |   `fun toggle(id: String, agent: AgentType, enable: Boolean)` |
+| 134 |   `suspend fun importCandidates(agent: AgentType): List<AgentSkillItem>` |
+| 140 |   `suspend fun importFromAgent(agent: AgentType, ids: List<String>): Boolean` |
+
 ## feature/settings/ExpertsScreen.kt
 
 | Line | Declaration |
@@ -695,6 +767,56 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 51 |   `val colors` |
 | 52 |   `var selected by remember` |
 | 98 | `private tailrec fun Context.findActivity(): Activity?` |
+
+## feature/settings/mcpmarket/McpMarketParameters.kt
+
+| Line | Declaration |
+|---|---|
+| 6 | `class MarketParameterException(val field: String) : IllegalArgumentException()` |
+| 8 | `fun parseMarketParameters(fields: List<McpMarketParameter>, draft: Map<String, String>): JsonObject` |
+
+## feature/settings/mcpmarket/McpMarketSheet.kt
+
+| Line | Declaration |
+|---|---|
+| 23 | `@Composable fun McpMarketSheet(viewModel: McpMarketViewModel, onDismiss: () -> Unit, onInstalled: () -> Unit)` |
+| 24 |   `val ui by viewModel.ui.collectAsState()` |
+| 25 |   `val colors` |
+| 26 |   `var confirm by remember` |
+| 27 |   `val close` |
+| 101 | `@Composable private fun MarketSelect(label: String, choices: List<Pair<String, String>>, enabled: Boolean, onSelect: (String) -> Unit)` |
+| 102 |   `var expanded by remember` |
+
+## feature/settings/mcpmarket/McpMarketViewModel.kt
+
+| Line | Declaration |
+|---|---|
+| 22 | `class McpMarketViewModel @Inject constructor( private val repository: ServerRepository, @ApplicationContext private val context: Context, ) : ViewModel()` |
+| 23 |   `private val repository: ServerRepository` |
+| 26 |   `private val _ui` |
+| 27 |   `val ui` |
+| 28 |   `private var client: CodegClient?` |
+| 29 |   `private var searchJob: Job?` |
+| 30 |   `private var detailJob: Job?` |
+| 34 |   `fun load()` |
+| 48 |   `fun query(value: String)` |
+| 49 |   `fun provider(id: String)` |
+| 54 |   `fun search(more: Boolean = false)` |
+| 68 |   `fun detail(item: McpMarketItem)` |
+| 79 |   `fun back()` |
+| 80 |   `fun option(option: McpMarketOption)` |
+| 81 |   `fun field(key: String, value: String)` |
+| 82 |   `fun app(app: String)` |
+| 83 |   `fun install(onInstalled: () -> Unit)` |
+| 101 |   `private fun failure(e: Exception)` |
+| 106 |   `private fun defaults(option: McpMarketOption?): Map<String, String>` |
+| 113 | `data class McpMarketUi( val available: Boolean = false, val loading: Boolean = false, val installing: Boolean = false, val providers: List<McpMarketProvider> = emptyList(), val provider: String? = null, val query: String = "", val items: List<McpMarketItem> = emptyList(), val limit: Int = 30, val canLoadMore: Boolean = false, val detail: McpMarketDetail? = null, val option: McpMarketOption? = null, val draft: Map<String, String> = emptyMap(), val apps: Set<String> = AgentType.entries.map { it.wire }.toSet(), val error: String? = null, )` |
+| 114 |   `val available: Boolean` |
+| 115 |   `val providers: List<McpMarketProvider>` |
+| 116 |   `val query: String` |
+| 117 |   `val canLoadMore: Boolean` |
+| 118 |   `val draft: Map<String, String>` |
+| 119 |   `val error: String?` |
 
 ## feature/settings/McpScreen.kt
 
@@ -840,10 +962,9 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 281 | `@Composable private fun AboutScreen(viewModel: SettingsViewModel)` |
 | 282 |   `val colors` |
 | 283 |   `val about by viewModel.about.collectAsStateWithLifecycle()` |
-| 284 |   `val context` |
-| 285 |   `val appVersion` |
-| 301 | `@Composable private fun ComingSoon(@StringRes title: Int)` |
-| 302 |   `val colors` |
+| 284 |   `val appVersion` |
+| 299 | `@Composable private fun ComingSoon(@StringRes title: Int)` |
+| 300 |   `val colors` |
 
 ## feature/settings/SettingsViewModel.kt
 
@@ -873,29 +994,29 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 92 |   `val colors` |
 | 93 |   `var editor by remember` |
 | 94 |   `var pendingDelete by remember` |
-| 163 | `@Composable private fun AgentFilterBar(agents: List<AgentType>, selected: AgentType?, onSelect: (AgentType) -> Unit)` |
-| 164 |   `val colors` |
-| 194 | `@Composable private fun SkillsArea( ui: SkillsUiState, onAdd: () -> Unit, onOpen: (AgentSkillItem) -> Unit, onDelete: (AgentSkillItem) -> Unit, onRetry: () -> Unit, onDismissError: () -> Unit, )` |
-| 202 |   `val colors` |
-| 203 |   `val result` |
-| 245 | `@Composable private fun SkillRow(skill: AgentSkillItem, onClick: () -> Unit, onDelete: () -> Unit)` |
-| 246 |   `val colors` |
-| 247 |   `val isDir` |
-| 273 | `@Composable private fun RefreshErrorBanner(message: String, onRetry: () -> Unit, onDismiss: () -> Unit)` |
-| 274 |   `val colors` |
-| 287 | `@Composable private fun SkillEditorDialog( target: SkillEditTarget, agent: AgentType, loadContent: suspend (AgentSkillItem) -> String, onSave: suspend (id: String, scope: String, content: String, layout: String?) -> Unit, onDismiss: () -> Unit, )` |
-| 294 |   `val colors` |
-| 295 |   `val scope` |
-| 296 |   `val existing` |
-| 297 |   `val isReadOnly` |
-| 298 |   `val skillScope` |
-| 299 |   `val layout` |
-| 301 |   `var skillId by remember` |
-| 302 |   `var content by remember` |
-| 303 |   `var loadingContent by remember` |
-| 304 |   `var saving by remember` |
-| 305 |   `var error by remember` |
-| 316 |   `val canSave` |
+| 166 | `@Composable private fun AgentFilterBar(agents: List<AgentType>, selected: AgentType?, onSelect: (AgentType) -> Unit)` |
+| 167 |   `val colors` |
+| 197 | `@Composable private fun SkillsArea( ui: SkillsUiState, onAdd: () -> Unit, onOpen: (AgentSkillItem) -> Unit, onDelete: (AgentSkillItem) -> Unit, onRetry: () -> Unit, onDismissError: () -> Unit, )` |
+| 205 |   `val colors` |
+| 206 |   `val result` |
+| 248 | `@Composable private fun SkillRow(skill: AgentSkillItem, onClick: () -> Unit, onDelete: () -> Unit)` |
+| 249 |   `val colors` |
+| 250 |   `val isDir` |
+| 276 | `@Composable private fun RefreshErrorBanner(message: String, onRetry: () -> Unit, onDismiss: () -> Unit)` |
+| 277 |   `val colors` |
+| 290 | `@Composable private fun SkillEditorDialog( target: SkillEditTarget, agent: AgentType, loadContent: suspend (AgentSkillItem) -> String, onSave: suspend (id: String, scope: String, content: String, layout: String?) -> Unit, onDismiss: () -> Unit, )` |
+| 297 |   `val colors` |
+| 298 |   `val scope` |
+| 299 |   `val existing` |
+| 300 |   `val isReadOnly` |
+| 301 |   `val skillScope` |
+| 302 |   `val layout` |
+| 304 |   `var skillId by remember` |
+| 305 |   `var content by remember` |
+| 306 |   `var loadingContent by remember` |
+| 307 |   `var saving by remember` |
+| 308 |   `var error by remember` |
+| 319 |   `val canSave` |
 
 ## feature/settings/SkillsViewModel.kt
 
@@ -992,53 +1113,3 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 91 |   `val testResult: GitDetectResult?` |
 | 92 |   `val saving: Boolean` |
 | 93 |   `val error: String?` |
-
-## feature/settings/mcpmarket/McpMarketParameters.kt
-
-| Line | Declaration |
-|---|---|
-| 6 | `class MarketParameterException(val field: String) : IllegalArgumentException()` |
-| 8 | `fun parseMarketParameters(fields: List<McpMarketParameter>, draft: Map<String, String>): JsonObject` |
-
-## feature/settings/mcpmarket/McpMarketSheet.kt
-
-| Line | Declaration |
-|---|---|
-| 23 | `@Composable fun McpMarketSheet(viewModel: McpMarketViewModel, onDismiss: () -> Unit, onInstalled: () -> Unit)` |
-| 24 |   `val ui by viewModel.ui.collectAsState()` |
-| 25 |   `val colors` |
-| 26 |   `var confirm by remember` |
-| 27 |   `val close` |
-| 101 | `@Composable private fun MarketSelect(label: String, choices: List<Pair<String, String>>, enabled: Boolean, onSelect: (String) -> Unit)` |
-| 102 |   `var expanded by remember` |
-
-## feature/settings/mcpmarket/McpMarketViewModel.kt
-
-| Line | Declaration |
-|---|---|
-| 22 | `class McpMarketViewModel @Inject constructor( private val repository: ServerRepository, @ApplicationContext private val context: Context, ) : ViewModel()` |
-| 23 |   `private val repository: ServerRepository` |
-| 26 |   `private val _ui` |
-| 27 |   `val ui` |
-| 28 |   `private var client: CodegClient?` |
-| 29 |   `private var searchJob: Job?` |
-| 30 |   `private var detailJob: Job?` |
-| 34 |   `fun load()` |
-| 48 |   `fun query(value: String)` |
-| 49 |   `fun provider(id: String)` |
-| 54 |   `fun search(more: Boolean = false)` |
-| 68 |   `fun detail(item: McpMarketItem)` |
-| 79 |   `fun back()` |
-| 80 |   `fun option(option: McpMarketOption)` |
-| 81 |   `fun field(key: String, value: String)` |
-| 82 |   `fun app(app: String)` |
-| 83 |   `fun install(onInstalled: () -> Unit)` |
-| 101 |   `private fun failure(e: Exception)` |
-| 106 |   `private fun defaults(option: McpMarketOption?): Map<String, String>` |
-| 113 | `data class McpMarketUi( val available: Boolean = false, val loading: Boolean = false, val installing: Boolean = false, val providers: List<McpMarketProvider> = emptyList(), val provider: String? = null, val query: String = "", val items: List<McpMarketItem> = emptyList(), val limit: Int = 30, val canLoadMore: Boolean = false, val detail: McpMarketDetail? = null, val option: McpMarketOption? = null, val draft: Map<String, String> = emptyMap(), val apps: Set<String> = AgentType.entries.map { it.wire }.toSet(), val error: String? = null, )` |
-| 114 |   `val available: Boolean` |
-| 115 |   `val providers: List<McpMarketProvider>` |
-| 116 |   `val query: String` |
-| 117 |   `val canLoadMore: Boolean` |
-| 118 |   `val draft: Map<String, String>` |
-| 119 |   `val error: String?` |
