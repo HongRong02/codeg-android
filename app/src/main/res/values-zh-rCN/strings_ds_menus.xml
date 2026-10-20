@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ds_menus_actions">操作</string>
+    <string name="ds_menus_open">打开</string>
+    <string name="ds_menus_delete">删除</string>
+    <string name="ds_menus_disabled">不可用</string>
+    <string name="ds_menus_checked">显示详情</string>
+    <string name="ds_menus_unchecked">显示隐藏文件</string>
+    <string name="ds_menus_more">更多操作</string>
+    <string name="ds_menus_context">长按显示操作</string>
+    <string name="ds_menus_popover">弹出层详情</string>
+    <string name="ds_menus_tooltip">帮助信息</string>
+    <string name="ds_menus_shortcut">Ctrl+O</string>
+</resources>
