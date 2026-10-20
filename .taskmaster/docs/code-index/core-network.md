@@ -194,19 +194,24 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 1106 |   `suspend fun workTaskEvents(id: Int): List<app.codeg.android.core.model.WorkTaskEvent>` |
 | 1109 |   `suspend fun workTaskChangedFiles(id: Int): List<app.codeg.android.core.model.WorkTaskChangedFile>` |
 | 1112 |   `suspend fun workTaskDiff(id: Int, file: String? = null): String` |
-| 1119 |   `suspend fun recentServerLogs(minLevel: String? = null): List<app.codeg.android.core.model.ServerLogRecord>` |
-| 1123 |   `suspend fun serverLogFiles(): List<app.codeg.android.core.model.ServerLogFile>` |
-| 1126 |   `suspend fun readServerLog(name: String): String` |
-| 1129 |   `suspend fun serverConversationStats(): app.codeg.android.core.model.ServerConversationStats` |
-| 1132 |   `suspend fun serverTokenReport(filter: app.codeg.android.core.model.wire.ServerTokenFilter): app.codeg.android.core.model.ServerTokenReport` |
-| 1144 |   `private suspend fun send(path: String, bodyJson: String): String` |
-| 1178 |   `private inline fun <reified T> encode(body: T): String` |
-| 1181 |   `private fun <T> decode(text: String, deserializer: DeserializationStrategy<T>): T` |
-| 1187 |   `companion object` |
-| 1189 |     `fun normalizeBaseUrl(raw: String): String` |
-| 1197 |     `fun decodeConnectionId(text: String): String` |
-| 1213 |     `fun decodeAgentList(text: String): List<AcpAgentInfo>` |
-| 1230 |     `fun isJsonNull(text: String): Boolean` |
+| 1115 |   `suspend fun workTaskSave(body: app.codeg.android.core.model.wire.WorkTaskSaveBody): app.codeg.android.core.model.WorkTask` |
+| 1118 |   `suspend fun workTaskStartAll()` |
+| 1120 |   `suspend fun workTaskReorder(body: app.codeg.android.core.model.wire.WorkTaskReorderBody)` |
+| 1124 |   `suspend fun workTaskAction(action: String, body: app.codeg.android.core.model.wire.WorkTaskActionBody)` |
+| 1130 |   `suspend fun workTaskTemplates(): List<app.codeg.android.core.model.WorkTaskTemplate>` |
+| 1137 |   `suspend fun recentServerLogs(minLevel: String? = null): List<app.codeg.android.core.model.ServerLogRecord>` |
+| 1141 |   `suspend fun serverLogFiles(): List<app.codeg.android.core.model.ServerLogFile>` |
+| 1144 |   `suspend fun readServerLog(name: String): String` |
+| 1147 |   `suspend fun serverConversationStats(): app.codeg.android.core.model.ServerConversationStats` |
+| 1150 |   `suspend fun serverTokenReport(filter: app.codeg.android.core.model.wire.ServerTokenFilter): app.codeg.android.core.model.ServerTokenReport` |
+| 1162 |   `private suspend fun send(path: String, bodyJson: String): String` |
+| 1196 |   `private inline fun <reified T> encode(body: T): String` |
+| 1199 |   `private fun <T> decode(text: String, deserializer: DeserializationStrategy<T>): T` |
+| 1205 |   `companion object` |
+| 1207 |     `fun normalizeBaseUrl(raw: String): String` |
+| 1215 |     `fun decodeConnectionId(text: String): String` |
+| 1231 |     `fun decodeAgentList(text: String): List<AcpAgentInfo>` |
+| 1248 |     `fun isJsonNull(text: String): Boolean` |
 
 ## core/network/CodegClientFactory.kt
 

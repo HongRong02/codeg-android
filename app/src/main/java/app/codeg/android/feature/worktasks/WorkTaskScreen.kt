@@ -26,7 +26,11 @@ import app.codeg.android.core.designsystem.theme.CodegTheme
 @Composable
 fun WorkTaskScreen(onBack: () -> Unit, viewModel: WorkTaskViewModel = hiltViewModel()) {
     val ui by viewModel.ui.collectAsStateWithLifecycle()
+    var column by remember { mutableIntStateOf(0) }
+    var showCanceled by remember { mutableStateOf(false) }
+    val visible = boardTasks(ui.tasks, showCanceled)
     val selected = ui.selected
+    if (ui.editorOpen) WorkTaskEditor(ui, viewModel)
     val back = { if (selected != null) viewModel.select(null) else onBack() }
     BackHandler(enabled = selected != null) { viewModel.select(null) }
     Scaffold(
@@ -48,7 +52,35 @@ fun WorkTaskScreen(onBack: () -> Unit, viewModel: WorkTaskViewModel = hiltViewMo
         },
     ) { padding ->
         LazyColumn(Modifier.fillMaxSize().padding(padding).padding(horizontal = 16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            if (ui.busy) item { LinearProgressIndicator(Modifier.fillMaxWidth()) }
+            if (ui.error != null && selected != null) item { Text(ui.error!!, color = CodegTheme.colors.danger) }
             if (selected == null) {
+                if (ui.supported) {
+                    item {
+                        Row {
+                            if ("create" !in ui.hiddenActions) TextButton(enabled = !ui.busy, onClick = { viewModel.edit() }) { Text(stringResource(R.string.wtb_create)) }
+                            if ("start_all" !in ui.hiddenActions) TextButton(enabled = !ui.busy && ui.tasks.any { it.status == "todo" }, onClick = viewModel::startAll) { Text(stringResource(R.string.wtb_start_all)) }
+                        }
+                        Row(verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) {
+                            Checkbox(showCanceled, { showCanceled = it })
+                            Text(stringResource(R.string.wtb_show_canceled))
+                        }
+                        TabRow(selectedTabIndex = column, containerColor = CodegTheme.colors.bg, contentColor = CodegTheme.colors.accent) {
+                            listOf(R.string.wtb_todo, R.string.wtb_progress, R.string.wtb_attention, R.string.wtb_done).forEachIndexed { index, label ->
+                                val count = visible.count { it.boardColumn() == index }
+                                Tab(selected = column == index, onClick = { column = index }, text = {
+                                    Column(horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally) {
+                                        Text(stringResource(label), style = MaterialTheme.typography.labelSmall)
+                                        Row {
+                                            Text(count.toString())
+                                            if (index == 2 && count > 0) Text(" •", color = CodegTheme.colors.danger)
+                                        }
+                                    }
+                                })
+                            }
+                        }
+                    }
+                }
                 item { Text(stringResource(R.string.work_tasks_attention, ui.attention), color = CodegTheme.colors.textSecondary) }
                 when {
                     ui.loading -> item { LoadingView(stringResource(R.string.work_tasks_loading)) }
@@ -60,20 +92,28 @@ fun WorkTaskScreen(onBack: () -> Unit, viewModel: WorkTaskViewModel = hiltViewMo
                     ui.tasks.isEmpty() -> item {
                         EmptyState(Icons.Rounded.Schedule, stringResource(R.string.work_tasks_empty), stringResource(R.string.work_tasks_empty_hint))
                     }
-                    else -> ui.tasks.groupBy { it.status }.toSortedMap().forEach { (status, tasks) ->
-                        item { Text(status, style = MaterialTheme.typography.titleSmall, color = CodegTheme.colors.textSecondary) }
-                        items(tasks.sortedByDescending { it.updatedAt }, key = { it.id }) { task ->
-                            Column(Modifier.fillMaxWidth().clickable { viewModel.select(task) }.padding(vertical = 12.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                    else -> {
+                        val tasks = visible.filter { it.boardColumn() == column }
+                        if (tasks.isEmpty()) item { Text(stringResource(R.string.work_tasks_empty)) }
+                        items(tasks, key = { it.id }) { task ->
+                            Column(Modifier.fillMaxWidth().clickable(enabled = !ui.busy) { viewModel.select(task) }.padding(vertical = 12.dp)) {
                                 Text(task.title, color = CodegTheme.colors.textPrimary, style = MaterialTheme.typography.titleMedium)
                                 Text(stringResource(R.string.work_tasks_agent, task.agentType ?: stringResource(R.string.work_tasks_unknown_agent)), color = CodegTheme.colors.textSecondary)
                                 Text(task.status, color = CodegTheme.colors.textSecondary)
-                                Text(stringResource(R.string.work_tasks_updated, task.updatedAt), color = CodegTheme.colors.textTertiary)
+                                WorkTaskActions(task, ui, viewModel, compact = true)
+                                if ("reorder" !in ui.hiddenActions && task.status in setOf("todo", "queued")) Row {
+                                    val project = tasks.filter { it.folderId == task.folderId }
+                                    val index = project.indexOf(task)
+                                    TextButton(enabled = !ui.busy && index > 0, onClick = { viewModel.move(task, -1) }) { Text(stringResource(R.string.wtb_up)) }
+                                    TextButton(enabled = !ui.busy && index < project.lastIndex, onClick = { viewModel.move(task, 1) }) { Text(stringResource(R.string.wtb_down)) }
+                                }
                             }
                             HorizontalDivider(color = CodegTheme.colors.hairline)
                         }
                     }
                 }
             } else {
+                if (ui.supported) item { WorkTaskActions(selected, ui, viewModel) }
                 item {
                     Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
                         Text(selected.status, color = CodegTheme.colors.accent)
