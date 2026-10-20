@@ -1,5 +1,7 @@
 package app.codeg.android.core.designsystem.component
 
+import app.codeg.android.core.designsystem.icon.*
+
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
@@ -16,8 +18,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Folder
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -27,6 +27,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.scale
@@ -193,7 +194,7 @@ fun FolderBadge(
         contentAlignment = Alignment.Center,
     ) {
         Icon(
-            imageVector = Icons.Rounded.Folder,
+            imageVector = Lucide.Folder,
             contentDescription = null,
             tint = color,
             modifier = Modifier.size(size * 0.45f),
@@ -274,16 +275,29 @@ fun CodegBadge(
             .padding(horizontal = 8.dp, vertical = 2.dp))
 }
 
-/** Compact badge-style overload; the legacy label-first icon/enabled API remains available. */
+/** Badge-style filter; disabled chips cannot toggle. */
 @Composable
 fun CodegFilterChip(
     selected: Boolean,
     label: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
+    icon: ImageVector? = null,
+    enabled: Boolean = true,
 ) {
-    CodegBadge(label, if (selected) CodegBadgeVariant.Secondary else CodegBadgeVariant.Outline,
-        modifier.clip(CodegShapes.extraSmall).toggleable(selected, role = Role.Checkbox, onValueChange = { onClick() }))
+    val web = CodegTheme.colors.web
+    val foreground = if (selected) web.secondaryForeground else web.foreground
+    Row(modifier.alpha(if (enabled) 1f else .5f).clip(CodegShapes.extraSmall)
+        .background(if (selected) web.secondary else web.input.withOpacity(.3f))
+        .border(1.dp, if (selected) Color.Transparent else web.border, CodegShapes.extraSmall)
+        .toggleable(selected, enabled = enabled, role = Role.Checkbox, onValueChange = { onClick() })
+        .padding(horizontal = 8.dp, vertical = 2.dp),
+        verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+        icon?.let { Icon(it, null, Modifier.size(12.dp), tint = foreground) }
+        Text(label, color = foreground, fontSize = 12.sp, lineHeight = 16.sp,
+            fontWeight = FontWeight.Medium, maxLines = 1,
+            overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis)
+    }
 }
 
 @Composable
@@ -293,7 +307,7 @@ internal fun T46BadgesGallery() {
         CodegBadgeVariant.entries.forEach { CodegBadge(stringResource(R.string.ds_rows_sample), it) }
         var selected by remember { mutableStateOf(false) }
         CodegFilterChip(selected, stringResource(R.string.ds_rows_all), { selected = !selected })
-        CodegFilterChip(true, stringResource(R.string.ds_rows_recent), {})
+        CodegFilterChip(true, stringResource(R.string.ds_rows_recent), {}, icon = Lucide.Check, enabled = false)
     }
 }
 

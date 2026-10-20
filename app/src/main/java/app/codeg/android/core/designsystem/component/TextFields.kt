@@ -1,5 +1,7 @@
 package app.codeg.android.core.designsystem.component
 
+import app.codeg.android.core.designsystem.icon.*
+
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Arrangement
@@ -10,11 +12,9 @@ import androidx.compose.ui.res.stringResource
 import app.codeg.android.R
 import app.codeg.android.core.designsystem.theme.CodegShapes
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.draw.alpha
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Visibility
-import androidx.compose.material.icons.rounded.VisibilityOff
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalTextStyle
@@ -53,19 +53,33 @@ fun CodegTextField(
     singleLine: Boolean = true,
     isError: Boolean = false,
     supportingText: String? = null,
+    enabled: Boolean = true,
+    readOnly: Boolean = false,
+    keyboardOptions: KeyboardOptions? = null,
+    keyboardActions: KeyboardActions = KeyboardActions.Default,
+    leading: (@Composable () -> Unit)? = null,
+    trailing: (@Composable () -> Unit)? = null,
+    minLines: Int = 1,
+    maxLines: Int = if (singleLine) 1 else Int.MAX_VALUE,
 ) {
-    val colors = CodegTheme.colors
     OutlinedTextField(
         value = value,
         onValueChange = onValueChange,
         label = { Text(label) },
         placeholder = placeholder?.let { { Text(it) } },
         singleLine = singleLine,
+        enabled = enabled,
+        readOnly = readOnly,
+        minLines = minLines,
+        maxLines = maxLines,
+        keyboardActions = keyboardActions,
+        leadingIcon = leading,
+        trailingIcon = trailing,
         isError = isError,
         supportingText = supportingText?.let { { Text(it) } },
         textStyle = if (mono) LocalTextStyle.current.copy(fontFamily = FontFamily.Monospace) else LocalTextStyle.current,
-        keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
-        modifier = modifier.fillMaxWidth().heightIn(min = if (singleLine) 36.dp else 64.dp),
+        keyboardOptions = keyboardOptions ?: KeyboardOptions(keyboardType = keyboardType),
+        modifier = modifier.alpha(if (enabled) 1f else .5f).fillMaxWidth().heightIn(min = if (singleLine) 36.dp else 64.dp),
         shape = if (singleLine) PillShape else CodegShapes.small,
         colors = fieldColors(),
     )
@@ -91,7 +105,7 @@ fun SecretField(
         trailingIcon = {
             IconButton(onClick = { visible = !visible }) {
                 Icon(
-                    imageVector = if (visible) Icons.Rounded.VisibilityOff else Icons.Rounded.Visibility,
+                    imageVector = if (visible) Lucide.EyeOff else Lucide.Eye,
                     contentDescription = stringResource(if (visible) R.string.ds_controls_hide else R.string.ds_controls_show),
                     tint = CodegTheme.colors.textTertiary,
                 )
@@ -120,6 +134,11 @@ private fun fieldColors(): TextFieldColors {
         focusedTextColor = colors.textPrimary,
         unfocusedTextColor = colors.textPrimary,
         errorBorderColor = colors.danger,
+        disabledContainerColor = web.input.withOpacity(.30f),
+        disabledBorderColor = web.input,
+        disabledTextColor = web.foreground,
+        disabledLabelColor = web.mutedForeground,
+        disabledPlaceholderColor = web.mutedForeground,
     )
 }
 

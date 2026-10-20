@@ -83,17 +83,21 @@ fun CodegConfirmDialog(
     destructive: Boolean = false,
     onConfirm: () -> Unit,
     onDismiss: () -> Unit,
+    confirmEnabled: Boolean = true,
+    busy: Boolean = false,
+    content: (@Composable ColumnScope.() -> Unit)? = null,
 ) {
     val web = CodegTheme.colors.web
-    CodegDialog(title, message, onDismiss, footer = {
-        TextButton(onClick = onDismiss, colors = ButtonDefaults.textButtonColors(contentColor = web.foreground)) {
+    CodegDialog(title, message, { if (!busy) onDismiss() }, footer = {
+        TextButton(onClick = onDismiss, enabled = !busy, colors = ButtonDefaults.textButtonColors(contentColor = web.foreground)) {
             Text(stringResource(R.string.ds_dialogs_cancel))
         }
-        Button(onClick = onConfirm, colors = ButtonDefaults.buttonColors(
-            containerColor = if (destructive) web.destructive else web.primary,
-            contentColor = if (destructive) web.background else web.primaryForeground,
-        )) { Text(confirmLabel) }
-    }) { Text(target, color = web.foreground, fontWeight = FontWeight.SemiBold) }
+        CodegButton(onClick = onConfirm, enabled = confirmEnabled && !busy, loading = busy,
+            variant = if (destructive) CodegButtonVariant.Destructive else CodegButtonVariant.Default) { Text(confirmLabel) }
+    }) {
+        Text(target, color = web.foreground, fontWeight = FontWeight.SemiBold)
+        content?.invoke(this)
+    }
 }
 
 /** Interactive entry point for the second-stage component preview page. */
@@ -107,6 +111,7 @@ internal fun T44Gallery() {
         T44CardsGallery()
         listOf("dialog" to R.string.ds_dialogs_dialog, "confirm" to R.string.ds_dialogs_confirm,
             "destructive" to R.string.ds_dialogs_destructive, "sheet" to R.string.ds_dialogs_sheet,
+            "busy" to R.string.ds_dialogs_confirm, "disabled" to R.string.ds_dialogs_confirm,
             "full" to R.string.ds_dialogs_full).forEach { (key, label) ->
             TextButton(onClick = { panel = key }) { Text(stringResource(label)) }
         }
@@ -118,6 +123,9 @@ internal fun T44Gallery() {
         }) { Text(stringResource(R.string.ds_dialogs_message)) }
         "confirm", "destructive" -> CodegConfirmDialog(title, description,
             stringResource(R.string.ds_dialogs_target), confirm, panel == "destructive", dismiss, dismiss)
+        "busy", "disabled" -> CodegConfirmDialog(title, description,
+            stringResource(R.string.ds_dialogs_target), confirm, onConfirm = dismiss, onDismiss = dismiss,
+            confirmEnabled = false, busy = panel == "busy", content = { CodegTextField("", {}, title) })
         "sheet" -> CodegSheet(title, description, dismiss, footer = {
             TextButton(onClick = dismiss) { Text(confirm) }
         }) { T44SheetSampleContent() }
