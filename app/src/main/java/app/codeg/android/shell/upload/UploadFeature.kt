@@ -142,6 +142,7 @@ class UploadFeature : ShellFeature {
 
     private fun openPhotos() = launch {
         val type = when {
+            mimeTypes.contentEquals(arrayOf("*/*")) -> ActivityResultContracts.PickVisualMedia.ImageAndVideo
             mimeTypes.size == 1 && mimeTypes[0] != "image/*" && mimeTypes[0] != "video/*" ->
                 ActivityResultContracts.PickVisualMedia.SingleMimeType(mimeTypes[0])
             mimeTypes.all { it.startsWith("image/") } -> ActivityResultContracts.PickVisualMedia.ImageOnly
