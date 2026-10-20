@@ -67,12 +67,22 @@ android {
                 keyPassword = "codeg-dev"
             }
         }
+        // Debug builds always use the public dev key, so successive CI debug APKs
+        // install over each other (keeping test server profiles) instead of each
+        // runner's throwaway debug keystore forcing an uninstall.
+        create("dev") {
+            storeFile = rootProject.file("keystore/dev.p12")
+            storePassword = "codeg-dev"
+            keyAlias = "codeg-dev"
+            keyPassword = "codeg-dev"
+        }
     }
 
     buildTypes {
         debug {
             applicationIdSuffix = ".debug"
             isDebuggable = true
+            signingConfig = signingConfigs.getByName("dev")
         }
         release {
             // Scaffold milestone keeps shrinking off so the first builds are simple
