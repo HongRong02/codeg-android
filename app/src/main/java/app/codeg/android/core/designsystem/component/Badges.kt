@@ -288,7 +288,8 @@ fun CodegFilterChip(
 
 @Composable
 internal fun T46BadgesGallery() {
-    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+    Column(Modifier.background(CodegTheme.colors.web.background).padding(8.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)) {
         CodegBadgeVariant.entries.forEach { CodegBadge(stringResource(R.string.ds_rows_sample), it) }
         var selected by remember { mutableStateOf(false) }
         CodegFilterChip(selected, stringResource(R.string.ds_rows_all), { selected = !selected })

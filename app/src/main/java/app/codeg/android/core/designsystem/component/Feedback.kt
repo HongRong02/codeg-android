@@ -62,7 +62,8 @@ fun CodegProgress(progress: Float, modifier: Modifier = Modifier) {
 
 @Composable
 internal fun T46FeedbackGallery() {
-    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+    Column(Modifier.background(CodegTheme.colors.web.background).padding(8.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp)) {
         CodegSeparator()
         Row(Modifier.height(24.dp)) { CodegSeparator(vertical = true) }
         CodegSkeleton(Modifier.fillMaxWidth().height(24.dp))

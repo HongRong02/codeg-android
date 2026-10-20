@@ -51,8 +51,8 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 263 |   `val foreground` |
 | 279 | `@Composable fun CodegFilterChip( selected: Boolean, label: String, onClick: () -> Unit, modifier: Modifier = Modifier, )` |
 | 290 | `@Composable internal fun T46BadgesGallery()` |
-| 301 | `@Composable private fun BadgesLightPreview()` |
-| 305 | `@Composable private fun BadgesDarkPreview()` |
+| 302 | `@Composable private fun BadgesLightPreview()` |
+| 306 | `@Composable private fun BadgesDarkPreview()` |
 
 ## core/designsystem/component/Buttons.kt
 
@@ -98,8 +98,8 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 54 |   `val value` |
 | 55 |   `val web` |
 | 64 | `@Composable internal fun T46FeedbackGallery()` |
-| 77 | `@Composable private fun FeedbackLightPreview()` |
-| 81 | `@Composable private fun FeedbackDarkPreview()` |
+| 78 | `@Composable private fun FeedbackLightPreview()` |
+| 82 | `@Composable private fun FeedbackDarkPreview()` |
 
 ## core/designsystem/component/FileViewer.kt
 
