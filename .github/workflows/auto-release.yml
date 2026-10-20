@@ -1,0 +1,84 @@
+name: Auto Release
+
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - 'docs/**'
+      - '.taskmaster/**'
+      - '**/*.md'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: auto-release
+  cancel-in-progress: false
+
+jobs:
+  android:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Check out source
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          fetch-depth: 0
+      - name: Set up Java
+        uses: actions/setup-java@c1e323688fd81a25caa38c78aa6df2d33d3e20d9 # v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@0b6dd653ba04f4f93bf581ec31e66cbd7dcb644d # v4
+      - name: Determine build version
+        id: version
+        run: |
+          code=$(git rev-list --count HEAD)
+          echo "code=$code" >> "$GITHUB_OUTPUT"
+          echo "name=1.1.$code" >> "$GITHUB_OUTPUT"
+      - name: Build signed APK with public dev key
+        env:
+          VERSION_CODE: ${{ steps.version.outputs.code }}
+          VERSION_NAME: ${{ steps.version.outputs.name }}
+        run: ./gradlew :app:assembleRelease -PcodegVersionCode="$VERSION_CODE" -PcodegVersionName="$VERSION_NAME" --no-daemon
+      - name: Verify, package, and publish
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION_CODE: ${{ steps.version.outputs.code }}
+          VERSION_NAME: ${{ steps.version.outputs.name }}
+        shell: bash
+        run: |
+          source_apk=app/build/outputs/apk/release/app-release.apk
+          apksigner=$(find "$ANDROID_HOME/build-tools" -type f -name apksigner | sort -V | tail -n 1)
+          "$apksigner" verify --verbose --print-certs "$source_apk" | tee "$RUNNER_TEMP/signature.txt"
+          grep -Fqx 'Verified using v2 scheme (APK Signature Scheme v2): true' "$RUNNER_TEMP/signature.txt"
+          tag="build-$VERSION_CODE"
+          previous=$(git tag --merged HEAD --list 'build-*' | grep -E '^build-[0-9]+$' | sort -V | grep -vx "$tag" | tail -n 1 || true)
+          if [[ -n "$previous" ]]; then
+            git log --format='- %s' "$previous..HEAD" > "$RUNNER_TEMP/notes.md"
+          else
+            git log --format='- %s' HEAD > "$RUNNER_TEMP/notes.md"
+          fi
+          mkdir -p "$RUNNER_TEMP/release"
+          cd "$RUNNER_TEMP/release"
+          apk="codeg-android-$VERSION_NAME.apk"
+          cp "$GITHUB_WORKSPACE/$source_apk" "$apk"
+          sha256sum "$apk" > "$apk.sha256"
+          if gh release view "$tag" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release upload "$tag" "$apk" "$apk.sha256" --repo "$GITHUB_REPOSITORY" --clobber
+            gh release edit "$tag" --repo "$GITHUB_REPOSITORY" --title "Codeg Android $VERSION_NAME" --notes-file "$RUNNER_TEMP/notes.md" --latest
+          else
+            gh release create "$tag" "$apk" "$apk.sha256" --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" --title "Codeg Android $VERSION_NAME" --notes-file "$RUNNER_TEMP/notes.md" --latest
+          fi
+      - name: Keep the ten newest build releases
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          gh api --paginate "repos/$GITHUB_REPOSITORY/releases?per_page=100" --jq '.[] | select(.draft == false and .prerelease == false) | .tag_name' > "$RUNNER_TEMP/releases.txt"
+          grep -E '^build-[0-9]+$' "$RUNNER_TEMP/releases.txt" | sort -Vr | tail -n +11 > "$RUNNER_TEMP/obsolete.txt" || true
+          while IFS= read -r tag; do
+            gh release delete "$tag" --repo "$GITHUB_REPOSITORY" --cleanup-tag --yes
+          done < "$RUNNER_TEMP/obsolete.txt"

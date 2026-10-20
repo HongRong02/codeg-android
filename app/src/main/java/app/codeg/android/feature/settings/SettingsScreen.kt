@@ -281,13 +281,11 @@ private fun AppearanceSettings(viewModel: SettingsViewModel) {
 private fun AboutScreen(viewModel: SettingsViewModel) {
     val colors = CodegTheme.colors
     val about by viewModel.about.collectAsStateWithLifecycle()
-    val context = LocalContext.current
-    val appVersion = remember {
-        runCatching { context.packageManager.getPackageInfo(context.packageName, 0).versionName }.getOrNull() ?: "—"
-    }
+    val appVersion = "${app.codeg.android.BuildConfig.VERSION_NAME} (${app.codeg.android.BuildConfig.VERSION_CODE})"
     Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(24.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(10.dp)) {
         Text(stringResource(R.string.app_name), style = MaterialTheme.typography.headlineSmall, color = colors.textPrimary)
         Text(stringResource(R.string.settings_version, appVersion), fontSize = 13.sp, color = colors.textSecondary)
+        app.codeg.android.core.update.UpdateAbout()
         about.serverName?.let { Text(stringResource(R.string.settings_server, it), fontSize = 13.sp, color = colors.textSecondary) }
         about.serverVersion?.let { Text(stringResource(R.string.settings_codeg_version, it), fontSize = 13.sp, color = colors.textSecondary) }
         Text(

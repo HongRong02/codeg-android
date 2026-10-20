@@ -14,6 +14,7 @@ Paths are relative to `app/src/main/java/app/codeg/android/`.
 | core/model | [core-model.md](core-model.md) | 44 |
 | core/network | [core-network.md](core-network.md) | 7 |
 | core/security | [core-security.md](core-security.md) | 2 |
+| core/update | [core-update.md](core-update.md) | 4 |
 | di | [di.md](di.md) | 3 |
 | feature/activity | [feature-activity.md](feature-activity.md) | 2 |
 | feature/automations | [feature-automations.md](feature-automations.md) | 3 |
