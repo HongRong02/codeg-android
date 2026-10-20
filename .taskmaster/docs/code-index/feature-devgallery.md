@@ -11,4 +11,4 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 28 |   `var group by rememberSaveable` |
 | 29 |   `var sample by rememberSaveable` |
 | 30 |   `val back` |
-| 102 | `@Composable private fun GallerySample(name: String)` |
+| 105 | `@Composable private fun GallerySample(name: String)` |
