@@ -31,8 +31,7 @@
     "responseLanguage": "Chinese",
     "enableCodebaseAnalysis": true,
     "enableProxy": false,
-    "anonymousTelemetry": true,
-    "userId": "1234567890"
+    "anonymousTelemetry": true
   },
   "claudeCode": {},
   "codexCli": {},
