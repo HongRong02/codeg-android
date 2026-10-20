@@ -26,6 +26,6 @@
 - 数值（圆角、内边距、字号、行高、边框、阴影、选中/hover/disabled 透明度）直接读对应 `WEB/components/ui/*.tsx` 的 Tailwind class 换算：1 单位 = 4dp，`text-sm` = 14sp，`rounded-md/lg/xl` 用 `CodegShapes` 对应级别；颜色只用 `CodegTheme.colors.web.*` token。
 - 补充第一阶段（T51–T54）：同上规则，只新建/改自己列出的 designsystem 文件，与 T47–T50 并行。
 - 第二阶段（T47–T50）：只改自己负责的 feature 目录，把上表中 **T43–T46** 各行右列的 M3 原件全部替换为左列组件，并按对应网页端页面调整布局（间距、分区、标题、空状态）。T51–T54 与之并行开发，第二阶段**不要**替换图标、不要接 Toast；需要 T52/T53 组件的位置留 `// TODO(T52)`/`// TODO(T53): <组件名>` 注释。不新增设计系统组件；缺什么先回报。
-- 第三阶段（T55–T58，T51–T54 合入 sit 后派发，目录划分同 T47–T50）：按 `icon-map.md` 把 Material 图标换成 `Lucide.*`，把 Snackbar/临时提示换成 `CodegToaster`（T50 范围挂 `CodegToasterHost`），处理第二阶段留下的 `TODO(T5x)`。
+- 第三阶段：L3 先做 T59（debug 组件预览页 + DS 内部图标换 lucide）和 T60（补齐 L2 报告的 DS 接口缺口）；L4 再做 T55–T58（目录划分同 T47–T50）：按 `icon-map.md` 把 Material 图标换成 `Lucide.*`，把临时反馈换成 `CodegToaster`（T58 挂 `CodegToasterHost`），处理 `TODO(T52/T53)`，并用 T60 的新参数清理第二阶段的例外。层级和依赖见 `graphs/UI1.md`。
 - 测试方式：T47 起全部为测试文档模式（见 CONVENTIONS），统一在 `sit` 上编译测试。
 - 不改业务逻辑、不改接口调用、不改字符串含义（可新增字符串）。

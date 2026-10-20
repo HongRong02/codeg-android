@@ -24,17 +24,21 @@
 │     ├─ T53 杂项组件　　 🔄　← 硬：无　⇠ 软：T51（同上）　冲突域：component/{Collapsible,Avatar,InputGroup,ImagePreview,Command,FolderBadge}.kt
 │     └─ T54 顶栏/状态视图 🔄　← 硬：无　⇠ 软：T51（同上）　冲突域：component/TopBar.kt、StateViews.kt（签名不变）
 │
-├─ L3 图标/Toast 接入 + 组件预览　[并行 ×5]　门禁：所需硬依赖 🔗（就绪即派）
-│  ├─ 组 C 页面接入（与 L2 组 A 同一目录 → 必须等对应的 A 合入）　⟂ 组内互不依赖
-│  │  ├─ T55 会话：图标/Toast/TODO　⏳　← 硬：T47、T51、T52、T53　冲突域：同 T47
-│  │  ├─ T56 项目：图标/Toast/TODO　⏳　← 硬：T48、T51、T52、T53　冲突域：同 T48
-│  │  ├─ T57 设置：图标/Toast/TODO　⏳　← 硬：T49、T51、T52、T53　冲突域：同 T49
-│  │  └─ T58 其余：图标/Toast/TODO + 挂 CodegToasterHost　⏳　← 硬：T50、T51、T52、T53　冲突域：同 T50（MainShell 路由表除外）
-│  ├─ 组 D 设计系统收尾
-│  │  └─ T59 组件预览页（debug 版可见，挂载全部 TxxGallery）＋ 把 L2 组 B 的 TODO(T51) 换成 Lucide　⏳
-│  │        ← 硬：T43–T46、T51–T54（不依赖组 A → T51–T54 都 🔗 后即可提前派发）
-│  │        冲突域：feature/devgallery/**（新建）、designsystem/component/**（只改 TODO(T51) 处）；共享追加点：MainShell 路由表 +1
-│  └─ 关键路径：T47–T50（页面量最大）→ T55–T58
+├─ L3 设计系统收尾　[并行 ×2｜⟂]　门禁：L2 全部 🔗（T60 需要看到 T47–T50 的真实调用点）
+│  ├─ T59 组件预览页(debug) + DS 内部图标→lucide　📝　← 硬：T43–T46、T51–T54
+│  │     冲突域：feature/devgallery/**、MainActivity.kt(debug 入口)、component/{Menus,Sheets,Cards,Tabs,Toasts,Collapsible,Avatar,
+│  │             InputGroup,ImagePreview,Command,FolderBadge,TopBar,StateViews}.kt(只改图标)；共享追加点：MainShell 路由表 +1
+│  └─ T60 补齐 DS 接口缺口　📝　← 硬：T43–T54（L2 报告的缺口：TextField enabled/IME/插槽、不确定进度、Spinner、
+│        ConfirmDialog busy/content、泛型 Select、FilterChip 统一、ListRow 多行）
+│        冲突域：component/{TextFields,Feedback,Dialogs,Controls,Badges,Buttons,ListRows}.kt
+│
+├─ L4 页面接入：图标 / Toast / T53 组件 / 例外清理　[并行 ×4｜⟂ 按 feature 目录]　门禁：T60 🔗（T59 不阻塞，可同时在跑）
+│  ├─ T55 会话　📝　← 硬：T47、T51、T52、T53、T60　冲突域：同 T47
+│  ├─ T56 项目　📝　← 硬：T48、T51、T52、T53、T60　冲突域：同 T48
+│  ├─ T57 设置　📝　← 硬：T49、T51、T52、T53、T60　冲突域：同 T49
+│  └─ T58 其余 + 挂 CodegToasterHost　📝　← 硬：T50、T51、T52、T53、T60　冲突域：同 T50（MainShell 路由表不动）
+│
+│  关键路径：L2 组 A（T47–T50）→ T60 → T55–T58
 │
 ├─ SIT 集成测试（批次末尾统一测）
 │  ├─ S1 编译门禁：每层合入后 sit CI 绿（协调方）
@@ -60,7 +64,9 @@
 | T52 | 🔄 | f072fcae-f347-4364-a502-9ad5161833f4 | 67 | task/T52-ds-toasts | 同上 |
 | T53 | 🔄 | 788c0647-a1cd-414c-a4c8-51819f9c721e | 68 | task/T53-ds-misc | 同上 |
 | T54 | 🔄 | 77981623-a22f-4ca7-99d2-5f8961749644 | 69 | task/T54-ds-topbar-states | 同上 |
-| T55–T59 | ⏳ | | | | 待写任务文档 |
+| T47–T54 | 📦? | | | | 到货检查：范围全部合规；到货 CI 运行中 |
+| T59、T60 | 📝 | | | | L2 合入 sit 后派发 |
+| T55–T58 | 📝 | | | | T60 合入 sit 后派发 |
 
 ## 修复记录
 
@@ -69,4 +75,5 @@
 
 ## 复盘
 - L1：T43–T46 用的是旧的 CI 模式，11 次 verify，平均 4–5 分钟一次。
+- L2：T47–T50 报告了 DS 缺口（TextField 无 enabled/IME、无不确定进度、ConfirmDialog 无 busy、Select 只支持字符串），在 L3 增加 T60。教训：L1 组件的需求应当先扫描各页面的真实用法（参数清单）再定签名。
 - L1：T45 和 T46 都声明了 `CodegFilterChip`，是重载、编译通过。教训：冲突域应该按"符号"而不只是按文件来划分，第二阶段要统一成一个版本。
