@@ -73,7 +73,7 @@
 | P-051 当前分支的"删除"按钮 | ⚠️ | | master（当前分支）的删除按钮可点，应禁用（P2） |
 | P-047/P-053/P-055/P-059 Git 面板样式 | ✅ | | 切换分支、暂存、分支管理、合并/变基/重置、Git 管理 5 个面板，`shots/git-*.png` |
 | P-021/P-023/P-025 问题/权限/计划卡片 | 阻塞 | | 需要智能体主动发出对应事件，无法稳定触发；UI1 只替换了组件 |
-| P-019 断网发送消息 | ❌ | B20 | 停掉测试服后发送：debug 版无用户气泡、无错误提示，消息留在输入框；正式版 1.1.139 会出现用户气泡和错误卡片"unexpected end of stream…"。ComposeBar 只改了图标，原因待在 `SessionDetailScreen.kt`/`SessionDetailViewModel.kt` 的 T47/T55 改动里找 |
+| P-013 断网发送消息（原记为 P-019） | ❌ | B20-designsystem | 复查：发送失败要等约 4 秒，之前截图过早；实际流程是撤回乐观气泡、恢复草稿、弹一条 error toast（与 main 的 ViewModel 一致）。真正的问题是 toast 放进 Popup 后不避让输入法，盖在键盘上：`shots/b20-toast-ime.png`、`shots/b20v/grid.png` |
 | P-009/P-031 断网时列表刷新、连接状态 | 待测 | | 注意：`adb reverse --remove` 不会切断已建立的 WebSocket，必须停掉测试服（`systemctl --user stop codeg-t13`）才算真正断网 |
 
 ## 撤回的判断
