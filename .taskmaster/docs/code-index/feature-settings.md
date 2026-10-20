@@ -2,6 +2,26 @@
 
 Source root: `app/src/main/java/app/codeg/android/`
 
+## feature/settings/AgentConfigAntigravityView.kt
+
+| Line | Declaration |
+|---|---|
+| 10 | `@Composable fun AgentConfigAntigravityView(agent: AcpAgentInfo)` |
+
+## feature/settings/AgentConfigCommandCodeView.kt
+
+| Line | Declaration |
+|---|---|
+| 10 | `@Composable fun AgentConfigCommandCodeView(agent: AcpAgentInfo)` |
+
+## feature/settings/AgentConfigDeepSeekView.kt
+
+| Line | Declaration |
+|---|---|
+| 15 | `@Composable fun AgentConfigDeepSeekView(agent: AcpAgentInfo)` |
+| 27 | `@Composable internal fun AgentConfigPresence(label: String, value: String?)` |
+| 35 | `@Composable internal fun AgentConfigReadOnlyValue(label: String, value: String?)` |
+
 ## feature/settings/AgentConfigKimiView.kt
 
 | Line | Declaration |
@@ -50,6 +70,12 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 352 |   `val colors` |
 | 353 |   `val tint` |
 | 365 | `@Composable internal fun Caption(text: String)` |
+
+## feature/settings/AgentConfigKiroView.kt
+
+| Line | Declaration |
+|---|---|
+| 10 | `@Composable fun AgentConfigKiroView(agent: AcpAgentInfo)` |
 
 ## feature/settings/AgentConfigPiView.kt
 
@@ -113,6 +139,24 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 429 |   `val tint` |
 | 440 | `@Composable private fun piThinkingLabel(level: String): String` |
 
+## feature/settings/AgentConfigQoderView.kt
+
+| Line | Declaration |
+|---|---|
+| 10 | `@Composable fun AgentConfigQoderView(agent: AcpAgentInfo)` |
+
+## feature/settings/AgentConfigTraeView.kt
+
+| Line | Declaration |
+|---|---|
+| 10 | `@Composable fun AgentConfigTraeView(agent: AcpAgentInfo)` |
+
+## feature/settings/AgentConfigZCodeView.kt
+
+| Line | Declaration |
+|---|---|
+| 10 | `@Composable fun AgentConfigZCodeView(agent: AcpAgentInfo)` |
+
 ## feature/settings/AgentDetailScreen.kt
 
 | Line | Declaration |
@@ -121,97 +165,97 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 107 |   `val ui by viewModel.ui.collectAsStateWithLifecycle()` |
 | 108 |   `val detail` |
 | 121 |   `val selfContained` |
-| 170 | `@Composable private fun AgentHeader(state: AgentDetailState, onToggle: (Boolean) -> Unit)` |
-| 171 |   `val colors` |
-| 172 |   `val agent` |
-| 210 | `@Composable private fun VersionLine(state: AgentDetailState)` |
-| 211 |   `val colors` |
-| 212 |   `val installed` |
-| 213 |   `val latest` |
-| 214 |   `val text` |
-| 224 | `@Composable private fun SaveBar(canSave: Boolean, saving: Boolean, error: String?, onSave: () -> Unit)` |
-| 225 |   `val colors` |
-| 240 | `@Composable private fun ClaudeSection(state: AgentDetailState, vm: AgentsViewModel)` |
-| 241 |   `val d` |
-| 286 | `private fun claudeFooterRes(mode: ClaudeAuthMode): Int` |
-| 293 | `@Composable private fun CodexSection(state: AgentDetailState, vm: AgentsViewModel)` |
-| 294 |   `val colors` |
-| 295 |   `val context` |
-| 296 |   `val d` |
-| 334 | `private fun codexEffortLabelRes(e: CodexReasoningEffort): Int` |
-| 342 | `@Composable private fun GeminiSection(state: AgentDetailState, vm: AgentsViewModel)` |
-| 343 |   `val colors` |
-| 344 |   `val d` |
-| 394 | `@Composable private fun OpenClawSection(state: AgentDetailState, vm: AgentsViewModel)` |
-| 395 |   `val d` |
-| 404 | `@Composable private fun ClineSection(state: AgentDetailState, vm: AgentsViewModel)` |
-| 405 |   `val d` |
-| 420 | `@Composable private fun OpenCodeSection(state: AgentDetailState, vm: AgentsViewModel)` |
-| 421 |   `val d` |
-| 429 | `@Composable private fun HermesSection(state: AgentDetailState, vm: AgentsViewModel)` |
-| 430 |   `val d` |
-| 431 |   `val option` |
-| 445 | `private fun hermesFooterRes(kind: HermesProviderKind?): Int` |
-| 459 | `@Composable private fun CodeBuddySection(state: AgentDetailState, vm: AgentsViewModel)` |
-| 460 |   `val colors` |
-| 461 |   `val d` |
-| 462 |   `val selfHosted` |
-| 506 | `@Composable private fun ServerManagedSection()` |
-| 516 | `@Composable private fun GrokSection(state: AgentDetailState, vm: AgentsViewModel)` |
-| 517 |   `val colors` |
-| 518 |   `val d` |
-| 519 |   `val useDefault` |
-| 573 | `@Composable private fun CursorSection(state: AgentDetailState, vm: AgentsViewModel)` |
-| 574 |   `val colors` |
-| 575 |   `val d` |
-| 576 |   `val custom` |
-| 578 |   `var auth by remember` |
-| 579 |   `var authLoading by remember` |
-| 580 |   `var models by remember` |
-| 581 |   `var modelsError by remember` |
-| 582 |   `var modelsLoading by remember` |
-| 585 |   `val probeKey` |
-| 586 |   `var refreshTick by remember` |
-| 667 |   `val savedModel` |
-| 729 | `@Composable private fun CursorStatusRow(auth: CursorAuthStatus?, loading: Boolean, onRefresh: () -> Unit)` |
-| 730 |   `val colors` |
-| 731 |   `val installed` |
-| 732 |   `val signedIn` |
-| 733 |   `val tint` |
-| 738 |   `val text` |
-| 779 | `@Composable private fun RuleEditor( label: String, rules: List<String>, placeholder: String, tone: Color, onChange: (List<String>) -> Unit, )` |
-| 786 |   `val colors` |
-| 823 | `@Composable private fun ColumnScope.ProviderPicker(state: AgentDetailState, vm: AgentsViewModel)` |
-| 824 |   `val colors` |
-| 842 | `@Composable private fun ProviderSummary(p: ModelProviderInfo)` |
-| 851 | `@Composable private fun ReadonlyRow(label: String, value: String)` |
-| 852 |   `val colors` |
-| 864 | `@Composable internal fun FormSection(title: String, footer: String? = null, content: @Composable ColumnScope.() -> Unit)` |
-| 865 |   `val colors` |
-| 879 | `@Composable internal fun <T> SelectField(label: String, value: T, options: List<Pair<T, String>>, onSelect: (T) -> Unit)` |
-| 880 |   `val colors` |
-| 881 |   `var expanded by remember` |
-| 882 |   `val display` |
-| 903 | `@Composable private fun HermesProviderField(value: String, onSelect: (String) -> Unit)` |
-| 904 |   `val colors` |
-| 905 |   `var expanded by remember` |
-| 906 |   `val display` |
-| 935 | `private fun kindLabelRes(kind: HermesProviderKind): Int` |
-| 942 | `@Composable private fun ToggleRow(title: String, checked: Boolean, onChange: (Boolean) -> Unit)` |
-| 943 |   `val colors` |
-| 959 | `@Composable internal fun ColumnScope.ExpandableGroup(title: String, content: @Composable ColumnScope.() -> Unit)` |
-| 960 |   `val colors` |
-| 961 |   `var open by remember` |
-| 962 |   `val rotation by animateFloatAsState(if (open) 180f else 0f, label = "chevron")` |
-| 977 | `@Composable private fun TonalAction(text: String, onClick: () -> Unit)` |
-| 978 |   `val colors` |
-| 989 | `@Composable private fun AdvancedSection(state: AgentDetailState, vm: AgentsViewModel)` |
-| 990 |   `val colors` |
-| 991 |   `var open by remember` |
-| 992 |   `val rotation by animateFloatAsState(if (open) 180f else 0f, label = "advanced")` |
-| 993 |   `val label` |
-| 998 |   `val text` |
-| 1042 | `@Composable private fun dropdownColors(colors: CodegColors)` |
+| 175 | `@Composable private fun AgentHeader(state: AgentDetailState, onToggle: (Boolean) -> Unit)` |
+| 176 |   `val colors` |
+| 177 |   `val agent` |
+| 215 | `@Composable private fun VersionLine(state: AgentDetailState)` |
+| 216 |   `val colors` |
+| 217 |   `val installed` |
+| 218 |   `val latest` |
+| 219 |   `val text` |
+| 229 | `@Composable private fun SaveBar(canSave: Boolean, saving: Boolean, error: String?, onSave: () -> Unit)` |
+| 230 |   `val colors` |
+| 245 | `@Composable private fun ClaudeSection(state: AgentDetailState, vm: AgentsViewModel)` |
+| 246 |   `val d` |
+| 291 | `private fun claudeFooterRes(mode: ClaudeAuthMode): Int` |
+| 298 | `@Composable private fun CodexSection(state: AgentDetailState, vm: AgentsViewModel)` |
+| 299 |   `val colors` |
+| 300 |   `val context` |
+| 301 |   `val d` |
+| 339 | `private fun codexEffortLabelRes(e: CodexReasoningEffort): Int` |
+| 347 | `@Composable private fun GeminiSection(state: AgentDetailState, vm: AgentsViewModel)` |
+| 348 |   `val colors` |
+| 349 |   `val d` |
+| 399 | `@Composable private fun OpenClawSection(state: AgentDetailState, vm: AgentsViewModel)` |
+| 400 |   `val d` |
+| 409 | `@Composable private fun ClineSection(state: AgentDetailState, vm: AgentsViewModel)` |
+| 410 |   `val d` |
+| 425 | `@Composable private fun OpenCodeSection(state: AgentDetailState, vm: AgentsViewModel)` |
+| 426 |   `val d` |
+| 434 | `@Composable private fun HermesSection(state: AgentDetailState, vm: AgentsViewModel)` |
+| 435 |   `val d` |
+| 436 |   `val option` |
+| 450 | `private fun hermesFooterRes(kind: HermesProviderKind?): Int` |
+| 464 | `@Composable private fun CodeBuddySection(state: AgentDetailState, vm: AgentsViewModel)` |
+| 465 |   `val colors` |
+| 466 |   `val d` |
+| 467 |   `val selfHosted` |
+| 511 | `@Composable private fun ServerManagedSection()` |
+| 521 | `@Composable private fun GrokSection(state: AgentDetailState, vm: AgentsViewModel)` |
+| 522 |   `val colors` |
+| 523 |   `val d` |
+| 524 |   `val useDefault` |
+| 578 | `@Composable private fun CursorSection(state: AgentDetailState, vm: AgentsViewModel)` |
+| 579 |   `val colors` |
+| 580 |   `val d` |
+| 581 |   `val custom` |
+| 583 |   `var auth by remember` |
+| 584 |   `var authLoading by remember` |
+| 585 |   `var models by remember` |
+| 586 |   `var modelsError by remember` |
+| 587 |   `var modelsLoading by remember` |
+| 590 |   `val probeKey` |
+| 591 |   `var refreshTick by remember` |
+| 672 |   `val savedModel` |
+| 734 | `@Composable private fun CursorStatusRow(auth: CursorAuthStatus?, loading: Boolean, onRefresh: () -> Unit)` |
+| 735 |   `val colors` |
+| 736 |   `val installed` |
+| 737 |   `val signedIn` |
+| 738 |   `val tint` |
+| 743 |   `val text` |
+| 784 | `@Composable private fun RuleEditor( label: String, rules: List<String>, placeholder: String, tone: Color, onChange: (List<String>) -> Unit, )` |
+| 791 |   `val colors` |
+| 828 | `@Composable private fun ColumnScope.ProviderPicker(state: AgentDetailState, vm: AgentsViewModel)` |
+| 829 |   `val colors` |
+| 847 | `@Composable private fun ProviderSummary(p: ModelProviderInfo)` |
+| 856 | `@Composable private fun ReadonlyRow(label: String, value: String)` |
+| 857 |   `val colors` |
+| 869 | `@Composable internal fun FormSection(title: String, footer: String? = null, content: @Composable ColumnScope.() -> Unit)` |
+| 870 |   `val colors` |
+| 884 | `@Composable internal fun <T> SelectField(label: String, value: T, options: List<Pair<T, String>>, onSelect: (T) -> Unit)` |
+| 885 |   `val colors` |
+| 886 |   `var expanded by remember` |
+| 887 |   `val display` |
+| 908 | `@Composable private fun HermesProviderField(value: String, onSelect: (String) -> Unit)` |
+| 909 |   `val colors` |
+| 910 |   `var expanded by remember` |
+| 911 |   `val display` |
+| 940 | `private fun kindLabelRes(kind: HermesProviderKind): Int` |
+| 947 | `@Composable private fun ToggleRow(title: String, checked: Boolean, onChange: (Boolean) -> Unit)` |
+| 948 |   `val colors` |
+| 964 | `@Composable internal fun ColumnScope.ExpandableGroup(title: String, content: @Composable ColumnScope.() -> Unit)` |
+| 965 |   `val colors` |
+| 966 |   `var open by remember` |
+| 967 |   `val rotation by animateFloatAsState(if (open) 180f else 0f, label = "chevron")` |
+| 982 | `@Composable private fun TonalAction(text: String, onClick: () -> Unit)` |
+| 983 |   `val colors` |
+| 994 | `@Composable private fun AdvancedSection(state: AgentDetailState, vm: AgentsViewModel)` |
+| 995 |   `val colors` |
+| 996 |   `var open by remember` |
+| 997 |   `val rotation by animateFloatAsState(if (open) 180f else 0f, label = "advanced")` |
+| 998 |   `val label` |
+| 1003 |   `val text` |
+| 1047 | `@Composable private fun dropdownColors(colors: CodegColors)` |
 
 ## feature/settings/AgentsScreen.kt
 

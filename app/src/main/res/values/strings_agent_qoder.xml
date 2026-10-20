@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="agent_qoder_title">Qoder</string>
+    <string name="agent_qoder_hint">Read-only. Token presence does not verify login. Native settings are shared with Qoder and MCP configuration.</string>
+    <string name="agent_qoder_token">Personal access token</string>
+    <string name="agent_qoder_config">Native settings document</string>
+</resources>

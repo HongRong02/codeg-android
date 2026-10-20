@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="agent_kiro_title">Kiro</string>
+    <string name="agent_kiro_hint">Read-only. Only 1 or true enables trust for all tools. Unset values ask for permission. Choose model and effort in the session.</string>
+    <string name="agent_kiro_key">API key</string>
+    <string name="agent_kiro_trust">Trust all tools (launch override)</string>
+</resources>

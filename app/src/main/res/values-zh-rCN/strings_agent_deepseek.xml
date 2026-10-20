@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="agent_deepseek_title">DeepSeek Harness</string>
+    <string name="agent_deepseek_hint">只读。未设置地址时使用适配器默认值；模型与推理强度在会话中选择。</string>
+    <string name="agent_deepseek_endpoint">API 地址</string>
+    <string name="agent_deepseek_key">API 密钥</string>
+    <string name="agent_deepseek_unset">未设置</string>
+    <string name="agent_deepseek_present">已存在（未验证）</string>
+</resources>

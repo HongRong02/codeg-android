@@ -141,8 +141,13 @@ fun AgentDetailContent(
                 AgentType.CURSOR -> CursorSection(detail, viewModel)
                 AgentType.KIMI_CODE -> AgentConfigKimiView(detail.agent, viewModel)
                 AgentType.PI -> AgentConfigPiView(detail.agent, viewModel)
-                AgentType.DEEPSEEK, AgentType.QODER, AgentType.ANTIGRAVITY, AgentType.KIRO,
-                AgentType.ZCODE, AgentType.TRAE, AgentType.COMMAND_CODE -> ServerManagedSection()
+                AgentType.DEEPSEEK -> AgentConfigDeepSeekView(detail.agent)
+                AgentType.QODER -> AgentConfigQoderView(detail.agent)
+                AgentType.ANTIGRAVITY -> AgentConfigAntigravityView(detail.agent)
+                AgentType.KIRO -> AgentConfigKiroView(detail.agent)
+                AgentType.ZCODE -> AgentConfigZCodeView(detail.agent)
+                AgentType.TRAE -> AgentConfigTraeView(detail.agent)
+                AgentType.COMMAND_CODE -> AgentConfigCommandCodeView(detail.agent)
             }
 
             if (agentType != AgentType.HERMES && !selfContained) AdvancedSection(detail, viewModel)
