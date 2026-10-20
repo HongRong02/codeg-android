@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ds_misc_expanded">Expanded</string>
+    <string name="ds_misc_collapsed">Collapsed</string>
+    <string name="ds_misc_group">Settings group</string>
+    <string name="ds_misc_details">Details</string>
+    <string name="ds_misc_instant">Instant group</string>
+    <string name="ds_misc_search">Search…</string>
+    <string name="ds_misc_no_results">No results found.</string>
+    <string name="ds_misc_no_images">No images</string>
+    <string name="ds_misc_close">Close</string>
+    <string name="ds_misc_previous">Previous image</string>
+    <string name="ds_misc_next">Next image</string>
+    <string name="ds_misc_image_index">%1$d / %2$d</string>
+    <string name="ds_misc_image">Preview image</string>
+    <string name="ds_misc_clear">Clear</string>
+</resources>
