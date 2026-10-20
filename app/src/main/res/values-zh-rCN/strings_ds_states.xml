@@ -1,0 +1,7 @@
+<resources>
+    <string name="ds_states_retry">重试</string>
+    <string name="ds_states_close">关闭</string>
+    <string name="ds_states_loading">加载中…</string>
+    <string name="ds_states_gallery_title">组件状态</string>
+    <string name="ds_states_gallery_message">此处显示状态详情和辅助说明。</string>
+</resources>

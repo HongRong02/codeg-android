@@ -1,6 +1,8 @@
 package app.codeg.android.core.designsystem.component
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.interaction.collectIsHoveredAsState
@@ -11,7 +13,7 @@ import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.ProvideTextStyle
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -21,17 +23,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.material3.LocalContentColor
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import app.codeg.android.core.designsystem.theme.CodegShapes
 import app.codeg.android.core.designsystem.theme.CodegTheme
-import app.codeg.android.core.designsystem.theme.PillShape
 import app.codeg.android.core.designsystem.theme.withOpacity
 
 /**
@@ -50,7 +53,7 @@ fun CodegTopBar(
     navigationIcon: @Composable () -> Unit = {},
     actions: @Composable RowScope.() -> Unit = {},
     scrollBehavior: TopAppBarScrollBehavior? = null,
-    showDivider: Boolean = false,
+    showDivider: Boolean = true,
     titleContent: (@Composable () -> Unit)? = null,
 ) {
     val colors = CodegTheme.colors
@@ -68,7 +71,7 @@ fun CodegTopBar(
                     if (subtitle != null) Text(
                         subtitle,
                         fontSize = 12.sp,
-                        color = colors.textSecondary,
+                        color = colors.web.mutedForeground,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                     )
@@ -81,9 +84,9 @@ fun CodegTopBar(
             colors = TopAppBarDefaults.topAppBarColors(
                 containerColor = colors.web.background,
                 scrolledContainerColor = colors.web.background,
-                navigationIconContentColor = colors.textSecondary,
-                titleContentColor = colors.textPrimary,
-                actionIconContentColor = colors.textSecondary,
+                navigationIconContentColor = colors.web.mutedForeground,
+                titleContentColor = colors.web.foreground,
+                actionIconContentColor = colors.web.mutedForeground,
             ),
         )
         if (showDivider || (scrollBehavior?.state?.overlappedFraction ?: 0f) > 0f) {
@@ -93,9 +96,9 @@ fun CodegTopBar(
 }
 
 /**
- * Ghost icon button with a [visualSize] web pill (32dp or 36dp) inside a 48dp touch target.
+ * Ghost icon button with a [visualSize] web rounded rectangle (32dp or 36dp) inside a 48dp touch target.
  * [content] should provide an icon with an accessible content description; icons default
- * to the web's 16dp size. Hover, focus and press use the theme's muted background.
+ * to the web's 16dp size. Hover, focus and press use the theme's accent background.
  */
 @Composable
 fun CodegIconButton(
@@ -111,22 +114,26 @@ fun CodegIconButton(
     val hovered by interactionSource.collectIsHoveredAsState()
     val focused by interactionSource.collectIsFocusedAsState()
     val active = enabled && (pressed || hovered || focused)
-    IconButton(
-        onClick = onClick,
-        modifier = modifier.size(48.dp),
-        enabled = enabled,
-        interactionSource = interactionSource,
+    Box(
+        modifier = modifier.size(48.dp).alpha(if (enabled) 1f else 0.5f).clickable(
+            interactionSource = interactionSource,
+            indication = null,
+            enabled = enabled,
+            role = Role.Button,
+            onClick = onClick,
+        ),
+        contentAlignment = Alignment.Center,
     ) {
         Box(
             Modifier.size(visualSize).background(
-                if (active) colors.web.muted.withOpacity(if (colors.isDark) 0.5f else 1f)
+                if (active) colors.web.accent
                 else androidx.compose.ui.graphics.Color.Transparent,
-                PillShape,
-            ),
+                CodegShapes.extraSmall,
+            ).then(if (enabled && focused) Modifier.border(3.dp, colors.web.ring.withOpacity(0.5f), CodegShapes.extraSmall) else Modifier),
             contentAlignment = Alignment.Center,
         ) {
             CompositionLocalProvider(
-                LocalContentColor provides colors.textSecondary.withOpacity(if (enabled) 1f else 0.5f),
+                LocalContentColor provides if (active) colors.web.accentForeground else colors.web.mutedForeground,
             ) {
                 Box(Modifier.size(16.dp), contentAlignment = Alignment.Center) { content() }
             }
