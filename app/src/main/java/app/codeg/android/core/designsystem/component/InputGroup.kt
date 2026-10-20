@@ -1,5 +1,8 @@
 package app.codeg.android.core.designsystem.component
 
+import app.codeg.android.core.designsystem.icon.Lucide
+import app.codeg.android.core.designsystem.icon.Search
+import app.codeg.android.core.designsystem.icon.X
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -17,9 +20,6 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.ui.graphics.SolidColor
@@ -81,12 +81,10 @@ fun CodegInputGroup(
     Column(Modifier.padding(6.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
         CodegInputGroup(text, { text = it }, placeholder = stringResource(R.string.ds_misc_search),
             leading = {
-                // TODO(T51): Lucide.Search
-                Icon(Icons.Default.Search, null, Modifier.size(16.dp))
+                Icon(Lucide.Search, null, Modifier.size(16.dp))
             }, trailing = {
-                // TODO(T51): Lucide.X
                 IconButton({ text = "" }, Modifier.size(24.dp)) {
-                    Icon(Icons.Default.Close, stringResource(R.string.ds_misc_clear), Modifier.size(14.dp))
+                    Icon(Lucide.X, stringResource(R.string.ds_misc_clear), Modifier.size(14.dp))
                 }
             })
         CodegInputGroup(text, {}, isError = true, readOnly = true)

@@ -266,6 +266,11 @@ fun MainShell(appViewModel: AppViewModel, servers: List<ServerProfile>) {
                         fadeOut(tween(300))
                 },
             ) {
+            if (app.codeg.android.BuildConfig.DEBUG) {
+                composable("devgallery") {
+                    app.codeg.android.feature.devgallery.DevGalleryScreen(onBack = { nav.popBackStack() })
+                }
+            }
             composable(HomeTab.CHATS.route) {
                 CompositionLocalProvider(LocalBarsVisible provides barsVisible) {
                     SessionListScreen(

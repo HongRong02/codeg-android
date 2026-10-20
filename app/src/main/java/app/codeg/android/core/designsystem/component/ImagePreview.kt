@@ -1,14 +1,14 @@
 package app.codeg.android.core.designsystem.component
 
+import app.codeg.android.core.designsystem.icon.Lucide
+import app.codeg.android.core.designsystem.icon.ChevronLeft
+import app.codeg.android.core.designsystem.icon.ChevronRight
+import app.codeg.android.core.designsystem.icon.X
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.gestures.detectTransformGestures
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.ChevronLeft
-import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -99,20 +99,17 @@ private fun ImagePreviewBody(images: List<CodegPreviewImage>, index: Int, onInde
                 translationY = boundedPreviewPan(offset.y, viewport.height.toFloat(), scale, fitted.second)
             }, contentScale = ContentScale.Fit)
         }
-        // TODO(T51): Lucide.X
         IconButton(onDismiss, Modifier.align(Alignment.TopEnd).padding(16.dp)) {
-            Icon(Icons.Default.Close, stringResource(R.string.ds_misc_close), tint = web.foreground)
+            Icon(Lucide.X, stringResource(R.string.ds_misc_close), tint = web.foreground)
         }
         if (images.isNotEmpty()) Row(Modifier.align(Alignment.BottomCenter).padding(16.dp),
             verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-            // TODO(T51): Lucide.ChevronLeft
             IconButton({ onIndexChange(index - 1) }, enabled = index > 0) {
-                Icon(Icons.Default.ChevronLeft, stringResource(R.string.ds_misc_previous), Modifier.rotate(arrowRotation), tint = if (index > 0) web.foreground else web.mutedForeground)
+                Icon(Lucide.ChevronLeft, stringResource(R.string.ds_misc_previous), Modifier.rotate(arrowRotation), tint = if (index > 0) web.foreground else web.mutedForeground)
             }
             Text(stringResource(R.string.ds_misc_image_index, index + 1, images.size), color = web.foreground)
-            // TODO(T51): Lucide.ChevronRight
             IconButton({ onIndexChange(index + 1) }, enabled = index < images.lastIndex) {
-                Icon(Icons.Default.ChevronRight, stringResource(R.string.ds_misc_next), Modifier.rotate(arrowRotation), tint = if (index < images.lastIndex) web.foreground else web.mutedForeground)
+                Icon(Lucide.ChevronRight, stringResource(R.string.ds_misc_next), Modifier.rotate(arrowRotation), tint = if (index < images.lastIndex) web.foreground else web.mutedForeground)
             }
         }
     }

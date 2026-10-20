@@ -1,5 +1,17 @@
 package app.codeg.android.core.designsystem.component
 
+import app.codeg.android.core.designsystem.icon.LoaderCircle
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.ui.draw.rotate
+import app.codeg.android.core.designsystem.icon.Lucide
+import app.codeg.android.core.designsystem.icon.CircleCheck
+import app.codeg.android.core.designsystem.icon.CircleX
+import app.codeg.android.core.designsystem.icon.Info
+import app.codeg.android.core.designsystem.icon.TriangleAlert
 import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
@@ -11,11 +23,6 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CheckCircle
-import androidx.compose.material.icons.filled.Info
-import androidx.compose.material.icons.filled.Warning
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -193,14 +200,18 @@ private fun ToastCard(entry: ToastEntry, dismiss: () -> Unit) {
         Row(Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
             // Sonner without richColors uses the normal foreground for all icons.
             if (entry.type == ToastType.Loading) {
-                // TODO(T51): Lucide.LoaderCircle
-                CircularProgressIndicator(Modifier.size(18.dp), color = web.popoverForeground, strokeWidth = 2.dp)
+                val rotation by rememberInfiniteTransition(label = "loadingIcon").animateFloat(
+                    initialValue = 0f, targetValue = 360f,
+                    animationSpec = infiniteRepeatable(tween(1000, easing = LinearEasing), RepeatMode.Restart),
+                    label = "loadingRotation",
+                )
+                Icon(Lucide.LoaderCircle, null, Modifier.size(18.dp).rotate(rotation), tint = web.popoverForeground)
             } else {
                 val icon = when (entry.type) {
-                    ToastType.Success -> Icons.Default.CheckCircle // TODO(T51): Lucide.CircleCheck
-                    ToastType.Error -> Icons.Default.Warning // TODO(T51): Lucide.CircleX
-                    ToastType.Warning -> Icons.Default.Warning // TODO(T51): Lucide.TriangleAlert
-                    ToastType.Info, ToastType.Loading -> Icons.Default.Info // TODO(T51): Lucide.Info
+                    ToastType.Success -> Lucide.CircleCheck
+                    ToastType.Error -> Lucide.CircleX
+                    ToastType.Warning -> Lucide.TriangleAlert
+                    ToastType.Info, ToastType.Loading -> Lucide.Info
                 }
                 val label = stringResource(when (entry.type) {
                     ToastType.Success -> R.string.ds_toasts_success

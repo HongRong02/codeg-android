@@ -1,5 +1,7 @@
 package app.codeg.android.core.designsystem.component
 
+import app.codeg.android.core.designsystem.icon.Lucide
+import app.codeg.android.core.designsystem.icon.Search
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -8,8 +10,6 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
@@ -90,8 +90,7 @@ fun CodegCommandList(
         }) {
         Row(Modifier.fillMaxWidth().padding(horizontal = 12.dp).height(40.dp),
             verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            // TODO(T51): Lucide.Search
-            Icon(Icons.Default.Search, null, Modifier.size(16.dp), tint = web.popoverForeground.withOpacity(.5f))
+            Icon(Lucide.Search, null, Modifier.size(16.dp), tint = web.popoverForeground.withOpacity(.5f))
             BasicTextField(query, onQueryChange, Modifier.weight(1f), singleLine = true,
                 textStyle = TextStyle(color = web.popoverForeground, fontSize = 14.sp),
                 cursorBrush = SolidColor(web.popoverForeground), decorationBox = { inner ->

@@ -1,12 +1,12 @@
 package app.codeg.android.core.designsystem.component
 
+import app.codeg.android.core.designsystem.icon.Lucide
+import app.codeg.android.core.designsystem.icon.X
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -79,7 +79,7 @@ fun CodegFullScreenSheet(
             Column(Modifier.safeDrawingPadding().imePadding()) {
                 Row(Modifier.fillMaxWidth().padding(8.dp), verticalAlignment = Alignment.CenterVertically) {
                     IconButton(onClick = onDismiss) {
-                        Icon(Icons.Default.Close, contentDescription = stringResource(R.string.ds_dialogs_close))
+                        Icon(Lucide.X, contentDescription = stringResource(R.string.ds_dialogs_close))
                     }
                     Box(Modifier.weight(1f).padding(horizontal = 8.dp)) { T44PanelHeading(title, null) }
                     actions()
