@@ -134,7 +134,7 @@ class DownloadFeature : ShellFeature {
                                         .find(cd)?.groupValues?.get(1)?.trim()?.trim('"')?.let(Uri::decode)
                                         ?: URLUtil.guessFileName(target, cd, type) else name.ifBlank { URLUtil.guessFileName(target, null, type) }
                                     val file = create(host, filename, type)
-                                    try { response.body.byteStream().use { it.copyTo(file.output) }; file.finish() }
+                                    try { checkNotNull(response.body) { "Empty download response" }.byteStream().use { it.copyTo(file.output) }; file.finish() }
                                     catch (e: Exception) { file.abort(); throw e }
                                     return@withContext
                                 }
