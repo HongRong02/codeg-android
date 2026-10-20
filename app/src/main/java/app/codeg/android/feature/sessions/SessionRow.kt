@@ -7,13 +7,13 @@ import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Folder
 import androidx.compose.material.icons.rounded.PushPin
@@ -37,19 +37,12 @@ import app.codeg.android.core.common.RelativeTime
 import app.codeg.android.core.designsystem.component.AgentAvatar
 import app.codeg.android.core.designsystem.component.LivePulse
 import app.codeg.android.core.designsystem.component.statusColor
+import app.codeg.android.core.designsystem.theme.PillShape
 import app.codeg.android.core.designsystem.theme.CodegTheme
 import app.codeg.android.core.model.ConversationSummary
 import androidx.compose.ui.res.stringResource
 
-/**
- * One conversation row in the Chats / Activity / Search lists: a single
- * borderless line. The agent's brand avatar (with a status-tinted dot) anchors
- * the left, the title fills the middle, and the trailing edge shows a live pulse
- * while running or a compact relative time otherwise. Long-press opens a Pin/
- * Unpin menu (the Compose analogue of the iOS row context menu).
- *
- * Faithful port of the iOS `SessionRow`.
- */
+/** Web sidebar row with a 48dp touch target and a long-press Pin/Unpin menu. */
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun SessionRow(
@@ -63,13 +56,14 @@ fun SessionRow(
     val colors = CodegTheme.colors
     var menuOpen by remember { mutableStateOf(false) }
 
-    Box {
+    Box(modifier) {
         Row(
-            modifier = modifier
+            modifier = Modifier
                 .fillMaxWidth()
-                .clip(RoundedCornerShape(14.dp))
+                .heightIn(min = 48.dp)
+                .clip(PillShape)
                 .then(
-                    if (selected) Modifier.background(colors.accent.copy(alpha = 0.18f)) else Modifier,
+                    if (selected) Modifier.background(colors.web.sidebarAccent) else Modifier,
                 )
                 .combinedClickable(
                     onClick = onClick,
@@ -81,7 +75,7 @@ fun SessionRow(
                 )
                 .padding(horizontal = 8.dp, vertical = 8.dp),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(11.dp),
+            horizontalArrangement = Arrangement.spacedBy(10.dp),
         ) {
             Box {
                 AgentAvatar(conversation.agentType, size = 26.dp)
@@ -114,13 +108,13 @@ fun SessionRow(
                     Icon(
                         Icons.Rounded.Folder,
                         contentDescription = null,
-                        tint = colors.textTertiary,
+                        tint = colors.web.mutedForeground,
                         modifier = Modifier.size(11.dp),
                     )
                     Text(
                         text = folderName,
                         style = MaterialTheme.typography.labelSmall,
-                        color = colors.textTertiary,
+                        color = colors.web.mutedForeground,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                     )
@@ -133,7 +127,7 @@ fun SessionRow(
                 Text(
                     text = RelativeTime.compact(conversation.updatedAt),
                     style = MaterialTheme.typography.labelSmall,
-                    color = colors.textTertiary,
+                    color = colors.web.mutedForeground,
                 )
             }
         }

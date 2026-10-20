@@ -6,10 +6,10 @@ Source root: `app/src/main/java/app/codeg/android/`
 
 | Line | Declaration |
 |---|---|
-| 43 | `@Composable fun CollapsibleSectionHeader( icon: ImageVector, tint: Color, label: String, count: Int, collapsed: Boolean, onToggle: () -> Unit, modifier: Modifier = Modifier, collapsible: Boolean = true, )` |
-| 53 |   `val colors` |
-| 54 |   `val rotation by animateFloatAsState( targetValue = if (collapsed) 0f else 180f, label = "section-chevron", )` |
-| 58 |   `val toggleLabel` |
+| 34 | `@Composable fun CollapsibleSectionHeader( icon: ImageVector, tint: Color, label: String, count: Int, collapsed: Boolean, onToggle: () -> Unit, modifier: Modifier = Modifier, collapsible: Boolean = true, )` |
+| 44 |   `val colors` |
+| 45 |   `val rotation by animateFloatAsState( targetValue = if (collapsed) 0f else 180f, label = "section-chevron", )` |
+| 49 |   `val toggleLabel` |
 
 ## feature/sessions/SessionListScreen.kt
 
@@ -21,16 +21,16 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 96 |   `var collapsed by rememberSaveable` |
 | 97 |   `val colors` |
 | 98 |   `val selectedName` |
-| 205 | `@Composable private fun SessionList( sections: List<SessionSection>, collapsed: Set<String>, onToggleSection: (String) -> Unit, onOpenConversation: (Int) -> Unit, onTogglePin: (ConversationSummary) -> Unit, refreshError: String?, onRetry: () -> Unit, onDismissError: () -> Unit, )` |
-| 270 | `private data class SectionStyle(val icon: ImageVector, val tint: Color, val label: String)` |
-| 273 | `@Composable private fun sectionStyle(kind: SectionKind): SectionStyle` |
-| 274 |   `val colors` |
-| 301 | `@Composable private fun RefreshErrorBanner( message: String, onRetry: () -> Unit, onDismiss: () -> Unit, modifier: Modifier = Modifier, )` |
-| 307 |   `val colors` |
-| 308 |   `val shape` |
-| 351 | `@Composable private fun ServerSwitcher( name: String, servers: List<ServerProfile>, selectedId: String?, onSelect: (String) -> Unit, onManageServers: () -> Unit, )` |
-| 358 |   `var open by remember` |
-| 359 |   `val colors` |
+| 201 | `@Composable private fun SessionList( sections: List<SessionSection>, collapsed: Set<String>, onToggleSection: (String) -> Unit, onOpenConversation: (Int) -> Unit, onTogglePin: (ConversationSummary) -> Unit, refreshError: String?, onRetry: () -> Unit, onDismissError: () -> Unit, )` |
+| 266 | `private data class SectionStyle(val icon: ImageVector, val tint: Color, val label: String)` |
+| 269 | `@Composable private fun sectionStyle(kind: SectionKind): SectionStyle` |
+| 270 |   `val colors` |
+| 297 | `@Composable private fun RefreshErrorBanner( message: String, onRetry: () -> Unit, onDismiss: () -> Unit, modifier: Modifier = Modifier, )` |
+| 303 |   `val colors` |
+| 304 |   `val shape` |
+| 347 | `@Composable private fun ServerSwitcher( name: String, servers: List<ServerProfile>, selectedId: String?, onSelect: (String) -> Unit, onManageServers: () -> Unit, )` |
+| 354 |   `var open by remember` |
+| 355 |   `val colors` |
 
 ## feature/sessions/SessionListViewModel.kt
 
@@ -74,9 +74,9 @@ Source root: `app/src/main/java/app/codeg/android/`
 
 | Line | Declaration |
 |---|---|
-| 55 | `@Composable fun SessionRow( conversation: ConversationSummary, onClick: () -> Unit, modifier: Modifier = Modifier, folderName: String? = null, selected: Boolean = false, onTogglePin: (() -> Unit)? = null, )` |
-| 63 |   `val colors` |
-| 64 |   `var menuOpen by remember` |
+| 48 | `@Composable fun SessionRow( conversation: ConversationSummary, onClick: () -> Unit, modifier: Modifier = Modifier, folderName: String? = null, selected: Boolean = false, onTogglePin: (() -> Unit)? = null, )` |
+| 56 |   `val colors` |
+| 57 |   `var menuOpen by remember` |
 
 ## feature/sessions/SessionSections.kt
 
