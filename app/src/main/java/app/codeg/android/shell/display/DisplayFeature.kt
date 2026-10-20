@@ -57,6 +57,20 @@ class DisplayFeature : ShellFeature {
         }
         applyBackground(host, initialColor(host), webView)
         webView.addJavascriptInterface(DisplayBridge(host, webView), "CodegShellDisplay")
+        webView.addOnLayoutChangeListener { _, _, top, _, bottom, _, oldTop, _, oldBottom ->
+            val height = bottom - top
+            val oldHeight = oldBottom - oldTop
+            if (height != oldHeight && oldHeight > 0 && host.webView === webView &&
+                sameOrigin(webView.url, host.currentServerUrl)
+            ) {
+                // Layout callbacks occur after imePadding changes the actual AndroidView.
+                // Growing (including IME dismissal) cancels any pending focus scroll.
+                webView.evaluateJavascript(
+                    "window.__codegShellDisplayIme && window.__codegShellDisplayIme(${height < oldHeight});",
+                    null,
+                )
+            }
+        }
     }
 
     override fun onPageStarted(host: ShellHost, view: WebView, url: String, favicon: Bitmap?) {
@@ -72,6 +86,7 @@ class DisplayFeature : ShellFeature {
         val token = UUID.randomUUID().toString()
         documentToken = token
         view.evaluateJavascript(themeObserver(JSONObject.quote(token)), null)
+        view.evaluateJavascript(imeFocusObserver, null)
     }
 
     private inner class DisplayBridge(private val host: ShellHost, private val view: WebView) {
