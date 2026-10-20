@@ -37,7 +37,10 @@ fun CodegSheet(
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
-        shape = RoundedCornerShape(topStart = CodegShapes.small.topStart, topEnd = CodegShapes.small.topEnd),
+        shape = CodegShapes.small.copy(
+            bottomStart = androidx.compose.foundation.shape.CornerSize(0.dp),
+            bottomEnd = androidx.compose.foundation.shape.CornerSize(0.dp),
+        ),
         containerColor = web.background,
         contentColor = web.foreground,
         scrimColor = Color.Black.withOpacity(0.5f),
