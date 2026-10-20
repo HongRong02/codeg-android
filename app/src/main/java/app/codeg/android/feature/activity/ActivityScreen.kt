@@ -9,16 +9,18 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Bedtime
 import androidx.compose.material.icons.rounded.GraphicEq
 import androidx.compose.material.icons.rounded.History
+import androidx.compose.material.icons.rounded.Refresh
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -35,7 +37,10 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.codeg.android.R
+import app.codeg.android.core.designsystem.component.CodegIconButton
+import app.codeg.android.core.designsystem.component.CodegTopBar
 import app.codeg.android.core.designsystem.component.EmptyState
+import app.codeg.android.core.designsystem.component.InlineError
 import app.codeg.android.core.designsystem.component.LoadingView
 import app.codeg.android.core.designsystem.theme.CodegTheme
 import app.codeg.android.feature.sessions.CollapsibleSectionHeader
@@ -63,23 +68,67 @@ fun ActivityScreen(
         containerColor = Color.Transparent,
         contentWindowInsets = WindowInsets(0, 0, 0, 0),
         topBar = {
-            TopAppBar(
-                title = { Text(stringResource(R.string.tab_activity)) },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent, titleContentColor = colors.textPrimary),
+            CodegTopBar(
+                title = stringResource(R.string.tab_activity),
+                showDivider = true,
+                actions = {
+                    CodegIconButton(
+                        onClick = viewModel::refresh,
+                        visualSize = 32.dp,
+                    ) {
+                        Icon(
+                            Icons.Rounded.Refresh,
+                            contentDescription = stringResource(R.string.activity_refresh),
+                            tint = colors.textSecondary,
+                        )
+                    }
+                },
             )
         },
     ) { padding ->
         Box(Modifier.padding(padding).fillMaxSize()) {
             when {
                 ui.loading && !ui.hasLoaded ->
-                    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { LoadingView(stringResource(R.string.common_loading)) }
-
-                ui.hasLoaded && ui.isEmptyFeed ->
                     Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                        EmptyState(Icons.Rounded.Bedtime, stringResource(R.string.activity_empty_title), stringResource(R.string.activity_empty_message))
+                        LoadingView(stringResource(R.string.common_loading))
                     }
 
-                else -> PullToRefreshBox(isRefreshing = ui.refreshing, onRefresh = viewModel::refresh, modifier = Modifier.fillMaxSize()) {
+                !ui.hasLoaded && ui.error != null ->
+                    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        InlineError(
+                            icon = Icons.Rounded.GraphicEq,
+                            title = stringResource(R.string.activity_load_failed),
+                            message = ui.error!!,
+                            onRetry = viewModel::refresh,
+                            retryLabel = stringResource(R.string.common_retry),
+                        )
+                    }
+
+                ui.hasLoaded && ui.isEmptyFeed ->
+                    PullToRefreshBox(
+                        isRefreshing = ui.refreshing,
+                        onRefresh = viewModel::refresh,
+                        modifier = Modifier.fillMaxSize(),
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .verticalScroll(rememberScrollState()),
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            EmptyState(
+                                icon = Icons.Rounded.Bedtime,
+                                title = stringResource(R.string.activity_empty_title),
+                                message = stringResource(R.string.activity_empty_message),
+                            )
+                        }
+                    }
+
+                else -> PullToRefreshBox(
+                    isRefreshing = ui.refreshing,
+                    onRefresh = viewModel::refresh,
+                    modifier = Modifier.fillMaxSize(),
+                ) {
                     val toggle: (String) -> Unit = { id ->
                         collapsed = if (id in collapsed) collapsed - id else collapsed + id
                     }
@@ -95,6 +144,7 @@ fun ActivityScreen(
                                     count = section.count,
                                     collapsed = isCollapsed,
                                     onToggle = { toggle(section.id) },
+                                    collapsible = section.count > 0,
                                     modifier = Modifier.animateItem(),
                                 )
                             }
@@ -150,7 +200,7 @@ private fun UpdatedFooter(timestamp: Instant) {
     Text(
         text = stringResource(R.string.activity_updated, relative),
         style = MaterialTheme.typography.labelSmall,
-        color = CodegTheme.colors.textTertiary,
+        color = CodegTheme.colors.textSecondary,
         textAlign = TextAlign.Center,
         modifier = Modifier.fillMaxWidth().padding(top = 16.dp, bottom = 8.dp),
     )
