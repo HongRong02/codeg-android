@@ -10,13 +10,19 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 15 | `fun boardTasks(tasks: List<WorkTask>, showCanceled: Boolean): List<WorkTask>` |
 | 19 | `fun WorkTask.availableActions(): List<String>` |
 | 44 | `fun taskConfig(original: JsonObject, description: String, agent: String?): JsonObject` |
+| 58 | `fun reorderedTaskIds(tasks: List<WorkTask>, task: WorkTask, delta: Int): List<Int>?` |
+| 59 |   `val project` |
+| 60 |   `val column` |
+| 61 |   `val index` |
+| 63 |   `val neighbor` |
+| 66 |   `var next` |
 
 ## feature/worktasks/WorkTaskControls.kt
 
 | Line | Declaration |
 |---|---|
 | 18 | `fun actionLabel(action: String): Int` |
-| 36 | `@Composable fun WorkTaskActions(task: WorkTask, ui: WorkTaskUi, viewModel: WorkTaskViewModel)` |
+| 36 | `@Composable fun WorkTaskActions(task: WorkTask, ui: WorkTaskUi, viewModel: WorkTaskViewModel, compact: Boolean = false)` |
 | 37 |   `var pending by remember(task.id)` |
 | 38 |   `var text by remember` |
 | 87 | `@Composable private fun Choice(label: String, value: String, choices: List<Pair<String, () -> Unit>>, enabled: Boolean)` |
@@ -77,8 +83,8 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 83 |   `fun dismissEditor()` |
 | 85 |   `fun edit(task: WorkTask? = null)` |
 | 109 |   `private fun mutate(action: String, block: suspend (CodegClient) -> Unit)` |
-| 129 |   `fun save(draft: WorkTaskDraft)` |
-| 137 |   `fun startAll()` |
-| 139 |   `fun action(task: WorkTask, action: String, text: String = "")` |
-| 147 |   `fun move(task: WorkTask, delta: Int)` |
-| 159 |   `fun select(task: WorkTask?)` |
+| 132 |   `fun save(draft: WorkTaskDraft)` |
+| 140 |   `fun startAll()` |
+| 142 |   `fun action(task: WorkTask, action: String, text: String = "")` |
+| 150 |   `fun move(task: WorkTask, delta: Int)` |
+| 156 |   `fun select(task: WorkTask?)` |

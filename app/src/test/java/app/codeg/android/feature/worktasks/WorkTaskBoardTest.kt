@@ -3,6 +3,7 @@ package app.codeg.android.feature.worktasks
 import app.codeg.android.core.model.WorkTask
 import org.junit.Assert.*
 import org.junit.Test
+import kotlinx.serialization.json.*
 
 class WorkTaskBoardTest {
     private fun task(status: String) = WorkTask(1, "Task", status, updatedAt = "2026-10-20T00:00:00Z")
@@ -29,4 +30,32 @@ class WorkTaskBoardTest {
         assertTrue("complete" in review.copy(filesChanged = 0).availableActions())
         assertFalse("cancel" in task("merging").availableActions())
     }
+    @Test fun editingPreservesUnknownOptionsAndAttachments() {
+        val original = buildJsonObject {
+            put("display_text", "old")
+            put("base_branch", "release")
+            put("prompt_blocks", buildJsonArray {
+                add(buildJsonObject { put("type", "text"); put("text", "old") })
+                add(buildJsonObject { put("type", "image"); put("url", "attachment") })
+            })
+        }
+        val edited = taskConfig(original, "new", null)
+        assertEquals("release", edited["base_branch"]?.jsonPrimitive?.content)
+        assertEquals(JsonNull, edited["agent_type"])
+        assertEquals("new", edited["prompt_blocks"]?.jsonArray?.first()?.jsonObject?.get("text")?.jsonPrimitive?.content)
+        assertEquals("image", edited["prompt_blocks"]?.jsonArray?.last()?.jsonObject?.get("type")?.jsonPrimitive?.content)
+        assertEquals(original["prompt_blocks"], taskConfig(original, "old", "codex")["prompt_blocks"])
+    }
+
+    @Test fun movingUsesVisibleOrderAndPreservesOtherColumns() {
+        val older = task("todo").copy(id = 1, folderId = 4)
+        val newer = older.copy(id = 2, updatedAt = "2026-10-21T00:00:00Z")
+        val newest = older.copy(id = 3, updatedAt = "2026-10-22T00:00:00Z")
+        val running = older.copy(id = 4, status = "running")
+        val archived = older.copy(id = 5, archivedAt = "now")
+        val tasks = listOf(older, running, newest, archived, newer)
+        assertEquals(listOf(2, 4, 3, 5, 1), reorderedTaskIds(tasks, newest, 1))
+        assertNull(reorderedTaskIds(tasks, newest, -1))
+    }
+
 }

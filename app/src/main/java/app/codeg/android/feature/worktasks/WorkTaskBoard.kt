@@ -54,3 +54,17 @@ fun taskConfig(original: JsonObject, description: String, agent: String?): JsonO
         }
     }
 )
+
+fun reorderedTaskIds(tasks: List<WorkTask>, task: WorkTask, delta: Int): List<Int>? {
+    val project = tasks.filter { it.folderId == task.folderId }
+    val column = boardTasks(project, true).filter { it.boardColumn() == task.boardColumn() }.toMutableList()
+    val index = column.indexOfFirst { it.id == task.id }
+    if (index < 0 || index + delta !in column.indices) return null
+    val neighbor = column[index + delta]
+    column[index + delta] = task
+    column[index] = neighbor
+    var next = 0
+    return project.map {
+        if (it.archivedAt == null && it.boardColumn() == task.boardColumn()) column[next++].id else it.id
+    }
+}

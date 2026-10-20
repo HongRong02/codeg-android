@@ -120,7 +120,10 @@ class WorkTaskViewModel @Inject constructor(private val repository: ServerReposi
                 if (selectedId != null) select(tasks.find { it.id == selectedId })
             } catch (e: Exception) {
                 if (e is CancellationException) throw e
-                if (e.isWorkTasksUnsupported()) _ui.update { it.copy(hiddenActions = it.hiddenActions + action) }
+                if (e.isWorkTasksUnsupported()) _ui.update { it.copy(
+                    hiddenActions = it.hiddenActions + action,
+                    editorOpen = if (action in setOf("create", "update")) false else it.editorOpen,
+                ) }
                 else _ui.update { it.copy(error = e.displayMessage()) }
             } finally { _ui.update { it.copy(busy = false) } }
         }
@@ -146,14 +149,8 @@ class WorkTaskViewModel @Inject constructor(private val repository: ServerReposi
 
     fun move(task: WorkTask, delta: Int) = mutate("reorder") { c ->
         // Reorder the whole project, preserving rows outside the visible column.
-        val project = _ui.value.tasks.filter { it.folderId == task.folderId }.toMutableList()
-        val column = boardTasks(project, true).filter { it.boardColumn() == task.boardColumn() }
-        val neighbor = column.getOrNull(column.indexOfFirst { it.id == task.id } + delta) ?: return@mutate
-        val a = project.indexOfFirst { it.id == task.id }
-        val b = project.indexOfFirst { it.id == neighbor.id }
-        project[a] = neighbor
-        project[b] = task
-        c.workTaskReorder(WorkTaskReorderBody(task.folderId, project.map { it.id }))
+        val ids = reorderedTaskIds(_ui.value.tasks, task, delta) ?: return@mutate
+        c.workTaskReorder(WorkTaskReorderBody(task.folderId, ids))
     }
 
     fun select(task: WorkTask?) {

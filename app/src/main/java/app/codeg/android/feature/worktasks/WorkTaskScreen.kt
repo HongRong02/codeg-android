@@ -100,6 +100,7 @@ fun WorkTaskScreen(onBack: () -> Unit, viewModel: WorkTaskViewModel = hiltViewMo
                                 Text(task.title, color = CodegTheme.colors.textPrimary, style = MaterialTheme.typography.titleMedium)
                                 Text(stringResource(R.string.work_tasks_agent, task.agentType ?: stringResource(R.string.work_tasks_unknown_agent)), color = CodegTheme.colors.textSecondary)
                                 Text(task.status, color = CodegTheme.colors.textSecondary)
+                                WorkTaskActions(task, ui, viewModel, compact = true)
                                 if ("reorder" !in ui.hiddenActions && task.status in setOf("todo", "queued")) Row {
                                     val project = tasks.filter { it.folderId == task.folderId }
                                     val index = project.indexOf(task)

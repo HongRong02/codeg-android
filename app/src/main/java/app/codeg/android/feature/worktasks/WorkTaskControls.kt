@@ -33,14 +33,14 @@ fun actionLabel(action: String): Int = when (action) {
 }
 
 @Composable
-fun WorkTaskActions(task: WorkTask, ui: WorkTaskUi, viewModel: WorkTaskViewModel) {
+fun WorkTaskActions(task: WorkTask, ui: WorkTaskUi, viewModel: WorkTaskViewModel, compact: Boolean = false) {
     var pending by remember(task.id) { mutableStateOf<String?>(null) }
     var text by remember { mutableStateOf("") }
     Column {
-        if (task.status in setOf("todo", "failed") && "update" !in ui.hiddenActions) {
+        if (!compact && task.status in setOf("todo", "failed") && "update" !in ui.hiddenActions) {
             TextButton(enabled = !ui.busy, onClick = { viewModel.edit(task) }) { Text(stringResource(R.string.wtb_edit)) }
         }
-        task.availableActions().filter { it !in ui.hiddenActions }.chunked(2).forEach { row ->
+        task.availableActions().filter { it !in ui.hiddenActions && (!compact || it in setOf("start", "delete")) }.chunked(2).forEach { row ->
             Row {
                 row.forEach { action ->
                     val label = when {
