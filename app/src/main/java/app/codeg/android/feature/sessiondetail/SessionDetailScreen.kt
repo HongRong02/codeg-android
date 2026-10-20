@@ -147,8 +147,8 @@ fun SessionDetailScreen(
     // On reattach the live turn (rebuilt from the snapshot) owns the in-flight reply, so
     // hide the partial copy the server persists into `turns` to avoid a doubled reply.
     val hideReattachDup = ui.liveFromReattach && ui.live != null
-    val persistedNodes = remember(ui.turns, ui.pendingUserTurns, ui.agent, hideReattachDup) {
-        TranscriptTimeline.buildPersisted(ui.turns, ui.pendingUserTurns, ui.agent, hideReattachDup)
+    val persistedNodes = remember(ui.turns, ui.pendingUserTurns, ui.agent, hideReattachDup, ui.interruptedTurnIds) {
+        TranscriptTimeline.buildPersisted(ui.turns, ui.pendingUserTurns, ui.agent, hideReattachDup, ui.interruptedTurnIds)
     }
     val nodes = remember(persistedNodes, ui.live, ui.agent) {
         TranscriptTimeline.withLive(persistedNodes, ui.live, ui.agent)

@@ -1,0 +1,3 @@
+<resources>
+    <string name="interrupted_turn">回合被中断（与服务端的连接已断开）</string>
+</resources>

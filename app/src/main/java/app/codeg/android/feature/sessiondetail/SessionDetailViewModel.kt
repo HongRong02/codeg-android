@@ -836,6 +836,7 @@ class SessionDetailViewModel @Inject constructor(
         val builder = liveBuilder ?: return
         builder.isStreaming = false
         builder.stopReason = stopReason
+        _ui.update { it.copy(interruptedTurnIds = it.interruptedTurnIds - builder.id) }
         emitLiveNow()
         // Return the composer to Send and clear the status line immediately — the turn is done.
         // The transcript keeps showing the finished live reply until `reconcileAfterTurn` swaps
@@ -975,8 +976,9 @@ class SessionDetailViewModel @Inject constructor(
                 if (liveBuilder !== builder) return@launch
                 val detail = runCatching { c.conversationDetail(id) }.getOrNull() ?: return@repeat
                 val last = detail.turns.lastOrNull()
-                val advanced = detail.turns.size > turnBaseline &&
-                    last?.role == TurnRole.ASSISTANT && last.blocks.isNotEmpty()
+                val advanced = hasReconciledReply(
+                    detail.turns, turnBaseline, _ui.value.liveFromReattach,
+                )
                 if (advanced) {
                     if (liveBuilder !== builder) return@launch
                     // This turn ended without a `turn_complete` of its own (a dead
@@ -988,6 +990,13 @@ class SessionDetailViewModel @Inject constructor(
                     _ui.update {
                         it.copy(
                             turns = detail.turns,
+                            interruptedTurnIds = if (builder != null &&
+                                isInterruptedTurn(builder.stopReason, last?.completedAt != null)
+                            ) {
+                                it.interruptedTurnIds + last!!.id
+                            } else {
+                                it.interruptedTurnIds - last!!.id
+                            },
                             sessionStats = detail.sessionStats ?: it.sessionStats,
                             summary = detail.summary,
                             pendingUserTurns = emptyList(),
@@ -1010,11 +1019,11 @@ class SessionDetailViewModel @Inject constructor(
                 }
             }
             // Couldn't confirm — fold the streamed reply in locally so nothing is lost.
-            if (liveBuilder === builder) promoteUnreconciled()
+            if (liveBuilder === builder) promoteUnreconciled(markInterrupted = builder != null && isInterruptedTurn(builder.stopReason, false))
         }
     }
 
-    private fun promoteUnreconciled() {
+    private fun promoteUnreconciled(markInterrupted: Boolean = false) {
         val builder = liveBuilder
         _ui.update { state ->
             // On a reattach-owned reply, the tail of `turns` is the server's partial copy
@@ -1034,6 +1043,7 @@ class SessionDetailViewModel @Inject constructor(
             }
             state.copy(
                 turns = folded,
+                interruptedTurnIds = if (markInterrupted && builder != null) state.interruptedTurnIds + builder.id else state.interruptedTurnIds,
                 pendingUserTurns = emptyList(),
                 live = null,
                 liveFromReattach = false,
@@ -1697,6 +1707,7 @@ data class SessionDetailUiState(
     val availableFolders: List<FolderDetail> = emptyList(),
     val availableAgents: List<AgentType> = emptyList(),
     val turns: List<MessageTurn> = emptyList(),
+    val interruptedTurnIds: Set<String> = emptySet(),
     val pendingUserTurns: List<MessageTurn> = emptyList(),
     val live: LiveTurnState? = null,
     /** The live turn was rebuilt from a reattach snapshot (owns the in-flight reply). */
@@ -1798,3 +1809,18 @@ data class SessionConnectionActions(
 
 internal fun suppressAuthNotice(error: Throwable, streamNotice: StreamNotice?): Boolean =
     error is ApiError.Unauthorized && streamNotice?.openServers == true
+
+/** Completion events and persisted completion timestamps both prove a normal ending. */
+internal fun isInterruptedTurn(stopReason: String?, transcriptCompleted: Boolean): Boolean =
+    stopReason == null && !transcriptCompleted
+
+/** Reattached replies may finish in place without increasing transcript length. */
+internal fun hasReconciledReply(
+    turns: List<MessageTurn>,
+    baseline: Int,
+    liveFromReattach: Boolean,
+): Boolean {
+    val last = turns.lastOrNull() ?: return false
+    return last.role == TurnRole.ASSISTANT && last.blocks.isNotEmpty() &&
+        (turns.size > baseline || (liveFromReattach && last.completedAt != null))
+}
