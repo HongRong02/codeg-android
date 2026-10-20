@@ -28,6 +28,7 @@ import java.io.File
 
 @Composable
 fun UpdateBanner(viewModel: UpdateViewModel = hiltViewModel()) {
+    if (!supportsInAppUpdates) return
     val state by viewModel.ui.collectAsStateWithLifecycle()
     val context = LocalContext.current
     var showNotes by remember { mutableStateOf(false) }

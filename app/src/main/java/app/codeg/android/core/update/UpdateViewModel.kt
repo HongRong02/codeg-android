@@ -36,7 +36,7 @@ internal val supportsInAppUpdates: Boolean
     get() = !BuildConfig.DEBUG && BuildConfig.APPLICATION_ID == "app.codeg.android.mine"
 
 val UpdateUi.showBanner: Boolean
-    get() = supportsInAppUpdates && ((update != null && dismissed != update.versionCode) || downloading || message == R.string.update_download_failed)
+    get() = (update != null && dismissed != update.versionCode) || downloading || message == R.string.update_download_failed
 
 /** Process-wide state shared by the banner and About screen, including dismissals. */
 @Singleton
