@@ -17,7 +17,9 @@
 | P-013 会话详情顶部菜单 | ⚠️ | B06 | `shots/p013-menu-light.png`：popover 样式、分隔线、destructive 删除项 ✅；菜单右边缘紧贴屏幕，无边距 |
 | P-013 删除会话确认（只取消） | ⚠️ | B05 | `shots/p013-delete-confirm-light.png`：显示目标会话名 ✅，取消后会话保留 ✅；"取消"与"删除"未垂直对齐，取消按钮应为 outline 样式（网页端 alert-dialog） |
 | P-014/P-027 会话详情明色视觉 | ✅ | | `shots/p013-detail-light.png`：工具卡片、错误输出、消息操作与网页端一致；禁用的发送按钮为大号灰色圆形（网页端为小号图标按钮，待对照） |
-| P-140/P-142 Gallery 入口 / T43 | ❌ | B03 | debug 启动参数能打开预览页 ✅；点开 T43Gallery 崩溃（嵌套垂直滚动）。B03 已派修复（会话 79） |
+| P-140/P-142 Gallery 入口 / T43 | ❌→✅ | B03 | 首轮：点开 T43Gallery 崩溃（嵌套垂直滚动）。B03 修复后（sit `e721536`）复测：全部 21 个 Gallery（含 T60 复用的 3 个）逐个打开、截图、返回，0 次崩溃，截图 `shots/gal-*-light.png` |
+| P-142 T43 菜单（明色视觉） | ✅ | | `shots/gal-T43Gallery-light.png`：标签、快捷键、子菜单箭头、复选项、禁用、destructive 均正确 |
+| P-146 T45 按钮（明色视觉） | ✅ | | `shots/gal-T45Gallery-light.png`：6 种样式、4 种尺寸、加载、禁用正确 |
 
 ## 待归档的 bug（测试结束后按区域写成 bug 单）
 - B01 区域 app/main：首次配置流程缺少 Toast 宿主（`A/app/CodegApp.kt` 的 `OnboardingRoot`，或把宿主上移到 `CodegApp` 根部）。来源：T58。
@@ -31,5 +33,6 @@
 - 文件夹页：未分组的项目显示在 "Mobile" 分组卡片内（1.1.139 同样如此）。
 
 ## 测试环境备注
+- 每次 CI 构建的 debug APK 签名不同（各 runner 临时生成调试密钥），无法覆盖安装，只能卸载重装并重新添加测试服。已开 `fix/B09-build`：debug 版改用公开 dev 密钥签名。
 - vivo 的安全键盘（令牌输入框）弹出时 `screencap` 得到 0 字节图片，截图前先点空白处收起键盘。
 - 添加服务器页面按返回键会直接关闭整个页面、丢弃已填内容（是否需要确认待对照网页端）。
