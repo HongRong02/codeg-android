@@ -1066,6 +1066,17 @@ class CodegClient(
     suspend fun automationSetEnabled(id: Int, enabled: Boolean): Automation =
         decode(send("automation_set_enabled", encode(SetEnabledBody(id, enabled))), Automation.serializer())
 
+    suspend fun automationCreate(draft: app.codeg.android.core.model.wire.AutomationDraft): Automation =
+        decode(send("automation_create", encode(app.codeg.android.core.model.wire.CreateAutomationBody(draft))), Automation.serializer())
+    suspend fun automationUpdate(id: Int, draft: app.codeg.android.core.model.wire.AutomationDraft): Automation =
+        decode(send("automation_update", encode(app.codeg.android.core.model.wire.UpdateAutomationBody(id, draft))), Automation.serializer())
+    suspend fun automationDelete(id: Int) { send("automation_delete", encode(GetAutomationBody(id))) }
+    suspend fun automationMarkSeen() { send("automation_mark_seen", encode(EmptyBody)) }
+    suspend fun automationComputeNextRun(cron: String, timezone: String): String =
+        send("automation_compute_next_run", encode(app.codeg.android.core.model.wire.ComputeAutomationBody(cron, timezone)))
+    suspend fun automationRunNow(id: Int) { send("automation_run_now", encode(app.codeg.android.core.model.wire.RunAutomationBody(id))) }
+    suspend fun automationCancelRun(id: Int) { send("automation_cancel_run", encode(app.codeg.android.core.model.wire.CancelAutomationBody(id))) }
+
     // endregion
 
     // region git-stash

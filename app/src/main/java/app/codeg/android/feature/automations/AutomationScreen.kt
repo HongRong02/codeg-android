@@ -40,6 +40,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.AlertDialog
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -80,7 +84,22 @@ fun AutomationScreen(
     val ui by viewModel.ui.collectAsStateWithLifecycle()
     val colors = CodegTheme.colors
 
+    var deleteTarget by remember { mutableStateOf<Automation?>(null) }
+    var cancelTarget by remember { mutableStateOf<AutomationRun?>(null) }
     val selected = ui.selectedAutomation
+    if (ui.editorOpen) AutomationEditorSheet(ui, viewModel)
+    deleteTarget?.let { target ->
+        AlertDialog(onDismissRequest = { deleteTarget = null },
+            text = { Text(stringResource(R.string.aw_delete_confirm, target.name)) },
+            confirmButton = { TextButton(enabled = !ui.busy, onClick = { viewModel.delete(target); deleteTarget = null }) { Text(stringResource(R.string.aw_confirm)) } },
+            dismissButton = { TextButton(onClick = { deleteTarget = null }) { Text(stringResource(R.string.aw_cancel)) } })
+    }
+    cancelTarget?.let { target ->
+        AlertDialog(onDismissRequest = { cancelTarget = null },
+            text = { Text(stringResource(R.string.aw_cancel_confirm, target.id, selected?.name.orEmpty())) },
+            confirmButton = { TextButton(enabled = !ui.busy, onClick = { viewModel.cancelRun(target.id); cancelTarget = null }) { Text(stringResource(R.string.aw_confirm)) } },
+            dismissButton = { TextButton(onClick = { cancelTarget = null }) { Text(stringResource(R.string.aw_cancel)) } })
+    }
     BackHandler(enabled = selected != null) {
         viewModel.selectAutomation(null)
     }
@@ -106,6 +125,9 @@ fun AutomationScreen(
                     }
                 },
                 actions = {
+                    if (selected == null && ui.writesSupported) {
+                        TextButton(enabled = !ui.busy && !ui.loading, onClick = { viewModel.openEditor(null) }) { Text(stringResource(R.string.aw_create)) }
+                    }
                     CodegIconButton(onClick = { viewModel.load() }) {
                         Icon(
                             Icons.Rounded.Refresh,
@@ -134,6 +156,18 @@ fun AutomationScreen(
                         detailLoading = ui.detailLoading,
                         onToggleEnabled = { viewModel.toggleEnabled(selected) },
                         onRefreshRuns = { viewModel.loadRuns(selected.id) },
+                        actions = {
+                            ui.error?.let { Text(it, color = colors.danger) }
+                            if (ui.writesSupported) {
+                                Row {
+                                    TextButton(enabled = !ui.busy, onClick = { viewModel.openEditor(selected) }) { Text(stringResource(R.string.aw_edit)) }
+                                    TextButton(enabled = !ui.busy, onClick = { viewModel.runNow(selected.id) }) { Text(stringResource(R.string.aw_run)) }
+                                    TextButton(enabled = !ui.busy, onClick = { deleteTarget = selected }) { Text(stringResource(R.string.aw_delete)) }
+                                }
+                            }
+                        },
+                        onCancelRun = { cancelTarget = it },
+                        canCancel = ui.writesSupported && !ui.busy,
                     )
                 }
                 else -> {
@@ -300,6 +334,9 @@ private fun AutomationDetailView(
     detailLoading: Boolean,
     onToggleEnabled: () -> Unit,
     onRefreshRuns: () -> Unit,
+    actions: @Composable () -> Unit,
+    onCancelRun: (AutomationRun) -> Unit,
+    canCancel: Boolean,
 ) {
     val colors = CodegTheme.colors
 
@@ -310,6 +347,7 @@ private fun AutomationDetailView(
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
+        actions()
         // Top card: Status & Switch
         Row(
             modifier = Modifier
@@ -476,6 +514,9 @@ private fun AutomationDetailView(
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     runs.forEachIndexed { index, run ->
                         RunHistoryItem(run = run)
+                        if (canCancel && run.status == AutomationRunStatus.RUNNING) {
+                            TextButton(onClick = { onCancelRun(run) }) { Text(stringResource(R.string.aw_cancel_run)) }
+                        }
                         if (index < runs.lastIndex) {
                             HorizontalDivider(color = colors.hairline)
                         }

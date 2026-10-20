@@ -1,0 +1,20 @@
+<resources>
+    <string name="aw_create">New</string>
+    <string name="aw_edit">Edit</string>
+    <string name="aw_delete">Delete</string>
+    <string name="aw_run">Run now</string>
+    <string name="aw_cancel_run">Cancel run</string>
+    <string name="aw_cancel">Cancel</string>
+    <string name="aw_confirm">Confirm</string>
+    <string name="aw_delete_confirm">Delete automation “%1$s”?</string>
+    <string name="aw_cancel_confirm">Cancel run #%1$d for “%2$s”?</string>
+    <string name="aw_name">Name</string>
+    <string name="aw_project">Project</string>
+    <string name="aw_agent">Agent</string>
+    <string name="aw_prompt">Prompt</string>
+    <string name="aw_scheduled">Scheduled (off: manual)</string>
+    <string name="aw_cron">Cron schedule</string>
+    <string name="aw_timezone">Timezone</string>
+    <string name="aw_next">Next run: %1$s</string>
+    <string name="aw_save">Save</string>
+</resources>
