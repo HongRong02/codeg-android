@@ -251,153 +251,155 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 117 |   `private val _streamStatus` |
 | 118 |   `val streamStatus: StateFlow<String?>` |
 | 119 |   `private var streamDisconnected` |
-| 120 |   `private var streamAuthFailed` |
-| 121 |   `private val connectivity` |
-| 122 |   `private val networkCallback` |
-| 123 |     `override fun onAvailable(network: Network)` |
-| 127 |   `private var networkCallbackRegistered` |
-| 128 |   `private var stream: EventStream?` |
-| 129 |   `private var consumerJob: Job?` |
-| 130 |   `private var sendJob: Job?` |
-| 131 |   `private var streamGeneration` |
-| 132 |   `private var reconnectJob: Job?` |
-| 135 |   `private var reconcileJob: Job?` |
-| 139 |   `private var pendingPlanFollowUp: ParkedPlanNotes?` |
-| 144 |   `private var optionsConnect: OptionsConnect?` |
-| 146 |   `private val subscriptionId` |
-| 148 |   `private var streamReconnects` |
-| 151 |   `private var pendingReattachSeed` |
-| 152 |   `private var liveBuilder: LiveTurnBuilder?` |
-| 153 |   `private var liveFlushScheduled` |
-| 154 |   `private var turnBaseline` |
-| 156 |   `private val _ui` |
-| 157 |   `val ui: StateFlow<SessionDetailUiState>` |
-| 167 |   `fun load()` |
-| 246 |   `fun send(text: String)` |
-| 255 |   `private fun send(text: String, withAttachments: Boolean)` |
-| 302 |   `private suspend fun runSend( text: String, userTurn: MessageTurn, attachments: List<Attachment>, createdConversation: Boolean, )` |
-| 342 |   `private suspend fun attemptSend( c: CodegClient, text: String, attachments: List<Attachment>, clientMessageId: String, freshConnection: Boolean, )` |
-| 367 |   `private suspend fun connectFresh(c: CodegClient): String` |
-| 377 |   `private suspend fun connectWithPreferences( c: CodegClient, connectAgent: AgentType = agent, connectFolder: FolderDetail? = folder, ): String` |
-| 392 |   `private suspend fun ensureConversationCreated(firstPrompt: String)` |
-| 401 |   `private suspend fun resolveConnection(c: CodegClient): String` |
-| 416 |   `private suspend fun openStream(conn: String, seedOnAttach: Boolean = false)` |
-| 430 |   `private suspend fun connectStream(conn: String, awaitAttach: Boolean, seedOnAttach: Boolean = false)` |
-| 516 |   `fun cancel()` |
-| 535 |   `private fun reattachIfLive()` |
-| 576 |   `private fun applyEvent(event: AcpEvent, seq: Long)` |
-| 653 |   `private fun clearInteractivePrompts()` |
-| 670 |   `private fun runningStatus(): String` |
-| 679 |   `private fun adoptLinkedConversation(id: Int)` |
-| 695 |   `fun respondPermission(optionId: String)` |
-| 705 |   `fun answerQuestion(answer: app.codeg.android.core.model.QuestionAnswer)` |
-| 715 |   `fun dismissQuestion()` |
-| 728 |   `fun answerPlanApproval(decision: PlanApprovalDecision, feedback: String?)` |
-| 765 |   `private fun seedLiveFromSnapshot(snap: app.codeg.android.core.model.LiveSessionSnapshot): Boolean` |
-| 786 |   `private fun abortIdleReattach()` |
-| 797 |   `private fun reconcileAfterMissedLive()` |
-| 809 |   `private fun restorePending(snap: app.codeg.android.core.model.LiveSessionSnapshot)` |
-| 829 |   `private fun finalizeTurn(stopReason: String)` |
-| 857 |   `private fun failLive(message: String)` |
-| 868 |   `private fun handleStreamEnded(gen: Int, reason: String?)` |
-| 889 |   `fun recoverStream()` |
-| 900 |   `fun dismissStreamStatus()` |
-| 904 |   `fun pauseStream()` |
-| 910 |   `private fun stopForStreamAuth()` |
-| 916 |   `private fun reconnectStream(immediate: Boolean = false)` |
-| 946 |   `private fun reconcileAfterTurn()` |
-| 999 |   `private fun promoteUnreconciled()` |
-| 1029 |   `private fun discardOptimistic( userTurn: MessageTurn, text: String, attachments: List<Attachment>, createdConversation: Boolean, createdConversationId: Int?, notice: String, )` |
-| 1079 |   `fun consumeRestoredDraft()` |
-| 1083 |   `fun dismissNotice()` |
-| 1089 |   `private fun scheduleLiveEmit()` |
-| 1099 |   `private fun emitLiveNow()` |
-| 1104 |   `private fun closeStream()` |
-| 1115 |   `override fun onCleared()` |
-| 1127 |   `val canManage: Boolean get()` |
-| 1128 |   `val isPinned: Boolean get()` |
-| 1130 |   `fun rename(title: String)` |
-| 1144 |   `fun togglePin()` |
-| 1159 |   `fun setStatus(status: ConversationStatus)` |
-| 1172 |   `fun deleteConversation(onDeleted: () -> Unit)` |
-| 1187 |   `val agentForInsert: AgentType get()` |
-| 1189 |   `suspend fun loadQuickMessages(): List<QuickMessage>` |
-| 1193 |   `suspend fun loadExpertsForInsert(): List<ExpertListItem>` |
-| 1201 |   `suspend fun loadSlashCommands(): List<AvailableCommandInfo>` |
-| 1209 |   `suspend fun knownExpertIds(): Set<String>` |
-| 1217 |   `fun addAttachments(uris: List<Uri>, resolver: ContentResolver)` |
-| 1236 |   `fun removeAttachment(id: String)` |
-| 1246 |   `fun selectAgent(newAgent: AgentType)` |
-| 1255 |   `fun selectFolder(newFolder: FolderDetail)` |
-| 1272 |   `suspend fun loadBranches(): GitBranchList?` |
-| 1291 |   `suspend fun switchBranch(branch: String, isRemote: Boolean): BranchSwitchOutcome` |
-| 1325 |   `private suspend fun checkoutInRoot(c: CodegClient, active: FolderDetail, root: FolderDetail, branch: String): BranchSwitchOutcome` |
-| 1348 |   `private suspend fun recoverFromWorktreeCheckout(c: CodegClient, branch: String, root: FolderDetail, error: Exception): BranchSwitchOutcome?` |
-| 1358 |   `private suspend fun openWorktreeSession(c: CodegClient, path: String, root: FolderDetail): BranchSwitchOutcome?` |
-| 1366 |   `private fun worktreePathFromError(message: String): String?` |
-| 1374 |   `suspend fun createBranch(name: String, from: String?): Boolean` |
-| 1398 |   `suspend fun loadAgentOptions(): AgentOptionsData` |
-| 1432 |   `private suspend fun optionsConnection(forAgent: AgentType, forFolder: FolderDetail?): String?` |
-| 1488 |   `suspend fun applyMode(modeId: String): String?` |
-| 1509 |   `suspend fun applyConfig(configId: String, valueId: String): String?` |
-| 1532 |   `private fun dropStaleOptionsConnection(conn: String)` |
-| 1540 |   `private suspend fun reconcileSelection(conn: String, key: String, desired: String): String` |
-| 1559 | `private class StreamAttachFailed(val reason: String?) : Exception("stream attach failed: ${reason ?: "closed"}")` |
-| 1563 | `private class OptionsConnect(val agent: AgentType, val folderId: Int?, val deferred: Deferred<String>)` |
-| 1567 | `data class AgentOptionsData( val modes: SessionModeState? = null, val configOptions: List<SessionConfigOption> = emptyList(), val initialModeId: String? = null, val initialConfig: Map<String, String> = emptyMap(), )` |
-| 1568 |   `val modes: SessionModeState?` |
-| 1569 |   `val configOptions: List<SessionConfigOption>` |
-| 1570 |   `val initialModeId: String?` |
-| 1571 |   `val initialConfig: Map<String, String>` |
-| 1575 | `private fun SessionSnapshot.selectionFor(key: String): String?` |
-| 1580 | `private fun List<SessionConfigOption>.currentValues(): Map<String, String>` |
-| 1585 | `private fun SessionConfigKind.allSelectValues(): List<String>` |
-| 1589 | `sealed interface BranchSwitchOutcome` |
-| 1591 |   `data object Noop : BranchSwitchOutcome` |
-| 1593 |   `data object SwitchedInPlace : BranchSwitchOutcome` |
-| 1595 |   `data class OpenSession(val folderId: Int) : BranchSwitchOutcome` |
-| 1597 |   `data object Failed : BranchSwitchOutcome` |
-| 1600 | `data class SessionDetailUiState( val isNew: Boolean, val loading: Boolean = false, val summary: ConversationSummary? = null, val folderName: String? = null, val folderPath: String? = null, val selectedFolderId: Int? = null, val currentBranch: String? = null, val isDraftEditable: Boolean = false, val availableFolders: List<FolderDetail> = emptyList(), val availableAgents: List<AgentType> = emptyList(), val turns: List<MessageTurn> = emptyList(), val pendingUserTurns: List<MessageTurn> = emptyList(), val live: LiveTurnState? = null, /** The live turn was rebuilt from a reattach snapshot (owns the in-flight reply). */ val liveFromReattach: Boolean = false, val sessionStats: SessionStats? = null, val agent: AgentType = AgentType.CLAUDE_CODE, val isInFlight: Boolean = false, val sendStatus: String? = null, val notice: String? = null, /** Set when a failed send returns the user's typed text to the composer (consumed once). */ val restoreDraft: String? = null, val error: String? = null, val pendingPermission: PendingPermissionUi? = null, val pendingQuestion: PendingQuestionUi? = null, val pendingPlanApproval: PendingPlanApprovalUi? = null, val attachments: List<Attachment> = emptyList(), )` |
-| 1601 |   `val isNew: Boolean` |
-| 1602 |   `val loading: Boolean` |
-| 1603 |   `val summary: ConversationSummary?` |
-| 1604 |   `val folderName: String?` |
-| 1605 |   `val folderPath: String?` |
-| 1606 |   `val selectedFolderId: Int?` |
-| 1607 |   `val currentBranch: String?` |
-| 1608 |   `val isDraftEditable: Boolean` |
-| 1609 |   `val availableFolders: List<FolderDetail>` |
-| 1610 |   `val availableAgents: List<AgentType>` |
-| 1611 |   `val turns: List<MessageTurn>` |
-| 1612 |   `val pendingUserTurns: List<MessageTurn>` |
-| 1613 |   `val live: LiveTurnState?` |
-| 1615 |   `val liveFromReattach: Boolean` |
-| 1616 |   `val sessionStats: SessionStats?` |
-| 1617 |   `val agent: AgentType` |
-| 1618 |   `val isInFlight: Boolean` |
-| 1619 |   `val sendStatus: String?` |
-| 1620 |   `val notice: String?` |
-| 1622 |   `val restoreDraft: String?` |
-| 1623 |   `val error: String?` |
-| 1624 |   `val pendingPermission: PendingPermissionUi?` |
-| 1625 |   `val pendingQuestion: PendingQuestionUi?` |
-| 1626 |   `val pendingPlanApproval: PendingPlanApprovalUi?` |
-| 1627 |   `val attachments: List<Attachment>` |
-| 1631 | `internal enum class PlanFollowUp` |
-| 1642 | `internal data class ParkedPlanNotes(val turnId: String, val notes: String)` |
-| 1644 |   `fun notesFor(turnId: String): String?` |
-| 1663 | `internal fun planFollowUpAction( sameTurn: Boolean, inFlight: Boolean, stopReason: String?, errorMessage: String?, ): PlanFollowUp` |
-| 1676 | `data class PendingPermissionUi( val requestId: String, val parsed: app.codeg.android.feature.sessiondetail.interactive.ParsedPermission, val options: List<app.codeg.android.core.model.PermissionOption>, )` |
-| 1677 |   `val requestId: String` |
-| 1678 |   `val parsed: app.codeg.android.feature.sessiondetail.interactive.ParsedPermission` |
-| 1679 |   `val options: List<app.codeg.android.core.model.PermissionOption>` |
-| 1683 | `data class PendingQuestionUi( val questionId: String, val questions: List<app.codeg.android.core.model.QuestionSpec>, )` |
-| 1684 |   `val questionId: String` |
-| 1685 |   `val questions: List<app.codeg.android.core.model.QuestionSpec>` |
-| 1694 | `data class PendingPlanApprovalUi( val approvalId: String, /** Grok's `toolCallId` for the `exit_plan_mode` call. Not used for the answer (which * keys on [approvalId]) — kept so the card can correlate with the in-stream call. */ val toolCallId: String, /** The plan, read from Grok's `plan.md`. May be empty — the card then shows an * empty-state notice rather than hiding, since the turn is blocked either way. */ val planMarkdown: String, )` |
-| 1695 |   `val approvalId: String` |
-| 1698 |   `val toolCallId: String` |
-| 1701 |   `val planMarkdown: String` |
+| 120 |   `private var streamPaused` |
+| 121 |   `private var streamAuthFailed` |
+| 122 |   `private val connectivity` |
+| 123 |   `private val networkCallback` |
+| 124 |     `override fun onAvailable(network: Network)` |
+| 128 |   `private var networkCallbackRegistered` |
+| 129 |   `private var stream: EventStream?` |
+| 130 |   `private var consumerJob: Job?` |
+| 131 |   `private var sendJob: Job?` |
+| 132 |   `private var streamGeneration` |
+| 133 |   `private var reconnectJob: Job?` |
+| 136 |   `private var reconcileJob: Job?` |
+| 140 |   `private var pendingPlanFollowUp: ParkedPlanNotes?` |
+| 145 |   `private var optionsConnect: OptionsConnect?` |
+| 147 |   `private val subscriptionId` |
+| 149 |   `private var streamReconnects` |
+| 152 |   `private var pendingReattachSeed` |
+| 153 |   `private var liveBuilder: LiveTurnBuilder?` |
+| 154 |   `private var liveFlushScheduled` |
+| 155 |   `private var turnBaseline` |
+| 157 |   `private val _ui` |
+| 158 |   `val ui: StateFlow<SessionDetailUiState>` |
+| 168 |   `fun load()` |
+| 247 |   `fun send(text: String)` |
+| 256 |   `private fun send(text: String, withAttachments: Boolean)` |
+| 303 |   `private suspend fun runSend( text: String, userTurn: MessageTurn, attachments: List<Attachment>, createdConversation: Boolean, )` |
+| 343 |   `private suspend fun attemptSend( c: CodegClient, text: String, attachments: List<Attachment>, clientMessageId: String, freshConnection: Boolean, )` |
+| 368 |   `private suspend fun connectFresh(c: CodegClient): String` |
+| 378 |   `private suspend fun connectWithPreferences( c: CodegClient, connectAgent: AgentType = agent, connectFolder: FolderDetail? = folder, ): String` |
+| 393 |   `private suspend fun ensureConversationCreated(firstPrompt: String)` |
+| 402 |   `private suspend fun resolveConnection(c: CodegClient): String` |
+| 417 |   `private suspend fun openStream(conn: String, seedOnAttach: Boolean = false)` |
+| 431 |   `private suspend fun connectStream(conn: String, awaitAttach: Boolean, seedOnAttach: Boolean = false)` |
+| 517 |   `fun cancel()` |
+| 536 |   `private fun reattachIfLive()` |
+| 577 |   `private fun applyEvent(event: AcpEvent, seq: Long)` |
+| 654 |   `private fun clearInteractivePrompts()` |
+| 671 |   `private fun runningStatus(): String` |
+| 680 |   `private fun adoptLinkedConversation(id: Int)` |
+| 696 |   `fun respondPermission(optionId: String)` |
+| 706 |   `fun answerQuestion(answer: app.codeg.android.core.model.QuestionAnswer)` |
+| 716 |   `fun dismissQuestion()` |
+| 729 |   `fun answerPlanApproval(decision: PlanApprovalDecision, feedback: String?)` |
+| 766 |   `private fun seedLiveFromSnapshot(snap: app.codeg.android.core.model.LiveSessionSnapshot): Boolean` |
+| 787 |   `private fun abortIdleReattach()` |
+| 798 |   `private fun reconcileAfterMissedLive()` |
+| 810 |   `private fun restorePending(snap: app.codeg.android.core.model.LiveSessionSnapshot)` |
+| 830 |   `private fun finalizeTurn(stopReason: String)` |
+| 858 |   `private fun failLive(message: String)` |
+| 869 |   `private fun handleStreamEnded(gen: Int, reason: String?)` |
+| 890 |   `fun recoverStream()` |
+| 901 |   `fun dismissStreamStatus()` |
+| 905 |   `fun resumeStream()` |
+| 912 |   `fun pauseStream()` |
+| 916 |   `private fun stopForStreamAuth()` |
+| 922 |   `private fun reconnectStream(immediate: Boolean = false)` |
+| 952 |   `private fun reconcileAfterTurn()` |
+| 1005 |   `private fun promoteUnreconciled()` |
+| 1035 |   `private fun discardOptimistic( userTurn: MessageTurn, text: String, attachments: List<Attachment>, createdConversation: Boolean, createdConversationId: Int?, notice: String, )` |
+| 1085 |   `fun consumeRestoredDraft()` |
+| 1089 |   `fun dismissNotice()` |
+| 1095 |   `private fun scheduleLiveEmit()` |
+| 1105 |   `private fun emitLiveNow()` |
+| 1110 |   `private fun closeStream()` |
+| 1121 |   `override fun onCleared()` |
+| 1133 |   `val canManage: Boolean get()` |
+| 1134 |   `val isPinned: Boolean get()` |
+| 1136 |   `fun rename(title: String)` |
+| 1150 |   `fun togglePin()` |
+| 1165 |   `fun setStatus(status: ConversationStatus)` |
+| 1178 |   `fun deleteConversation(onDeleted: () -> Unit)` |
+| 1193 |   `val agentForInsert: AgentType get()` |
+| 1195 |   `suspend fun loadQuickMessages(): List<QuickMessage>` |
+| 1199 |   `suspend fun loadExpertsForInsert(): List<ExpertListItem>` |
+| 1207 |   `suspend fun loadSlashCommands(): List<AvailableCommandInfo>` |
+| 1215 |   `suspend fun knownExpertIds(): Set<String>` |
+| 1223 |   `fun addAttachments(uris: List<Uri>, resolver: ContentResolver)` |
+| 1242 |   `fun removeAttachment(id: String)` |
+| 1252 |   `fun selectAgent(newAgent: AgentType)` |
+| 1261 |   `fun selectFolder(newFolder: FolderDetail)` |
+| 1278 |   `suspend fun loadBranches(): GitBranchList?` |
+| 1297 |   `suspend fun switchBranch(branch: String, isRemote: Boolean): BranchSwitchOutcome` |
+| 1331 |   `private suspend fun checkoutInRoot(c: CodegClient, active: FolderDetail, root: FolderDetail, branch: String): BranchSwitchOutcome` |
+| 1354 |   `private suspend fun recoverFromWorktreeCheckout(c: CodegClient, branch: String, root: FolderDetail, error: Exception): BranchSwitchOutcome?` |
+| 1364 |   `private suspend fun openWorktreeSession(c: CodegClient, path: String, root: FolderDetail): BranchSwitchOutcome?` |
+| 1372 |   `private fun worktreePathFromError(message: String): String?` |
+| 1380 |   `suspend fun createBranch(name: String, from: String?): Boolean` |
+| 1404 |   `suspend fun loadAgentOptions(): AgentOptionsData` |
+| 1438 |   `private suspend fun optionsConnection(forAgent: AgentType, forFolder: FolderDetail?): String?` |
+| 1494 |   `suspend fun applyMode(modeId: String): String?` |
+| 1515 |   `suspend fun applyConfig(configId: String, valueId: String): String?` |
+| 1538 |   `private fun dropStaleOptionsConnection(conn: String)` |
+| 1546 |   `private suspend fun reconcileSelection(conn: String, key: String, desired: String): String` |
+| 1565 | `private class StreamAttachFailed(val reason: String?) : Exception("stream attach failed: ${reason ?: "closed"}")` |
+| 1569 | `private class OptionsConnect(val agent: AgentType, val folderId: Int?, val deferred: Deferred<String>)` |
+| 1573 | `data class AgentOptionsData( val modes: SessionModeState? = null, val configOptions: List<SessionConfigOption> = emptyList(), val initialModeId: String? = null, val initialConfig: Map<String, String> = emptyMap(), )` |
+| 1574 |   `val modes: SessionModeState?` |
+| 1575 |   `val configOptions: List<SessionConfigOption>` |
+| 1576 |   `val initialModeId: String?` |
+| 1577 |   `val initialConfig: Map<String, String>` |
+| 1581 | `private fun SessionSnapshot.selectionFor(key: String): String?` |
+| 1586 | `private fun List<SessionConfigOption>.currentValues(): Map<String, String>` |
+| 1591 | `private fun SessionConfigKind.allSelectValues(): List<String>` |
+| 1595 | `sealed interface BranchSwitchOutcome` |
+| 1597 |   `data object Noop : BranchSwitchOutcome` |
+| 1599 |   `data object SwitchedInPlace : BranchSwitchOutcome` |
+| 1601 |   `data class OpenSession(val folderId: Int) : BranchSwitchOutcome` |
+| 1603 |   `data object Failed : BranchSwitchOutcome` |
+| 1606 | `data class SessionDetailUiState( val isNew: Boolean, val loading: Boolean = false, val summary: ConversationSummary? = null, val folderName: String? = null, val folderPath: String? = null, val selectedFolderId: Int? = null, val currentBranch: String? = null, val isDraftEditable: Boolean = false, val availableFolders: List<FolderDetail> = emptyList(), val availableAgents: List<AgentType> = emptyList(), val turns: List<MessageTurn> = emptyList(), val pendingUserTurns: List<MessageTurn> = emptyList(), val live: LiveTurnState? = null, /** The live turn was rebuilt from a reattach snapshot (owns the in-flight reply). */ val liveFromReattach: Boolean = false, val sessionStats: SessionStats? = null, val agent: AgentType = AgentType.CLAUDE_CODE, val isInFlight: Boolean = false, val sendStatus: String? = null, val notice: String? = null, /** Set when a failed send returns the user's typed text to the composer (consumed once). */ val restoreDraft: String? = null, val error: String? = null, val pendingPermission: PendingPermissionUi? = null, val pendingQuestion: PendingQuestionUi? = null, val pendingPlanApproval: PendingPlanApprovalUi? = null, val attachments: List<Attachment> = emptyList(), )` |
+| 1607 |   `val isNew: Boolean` |
+| 1608 |   `val loading: Boolean` |
+| 1609 |   `val summary: ConversationSummary?` |
+| 1610 |   `val folderName: String?` |
+| 1611 |   `val folderPath: String?` |
+| 1612 |   `val selectedFolderId: Int?` |
+| 1613 |   `val currentBranch: String?` |
+| 1614 |   `val isDraftEditable: Boolean` |
+| 1615 |   `val availableFolders: List<FolderDetail>` |
+| 1616 |   `val availableAgents: List<AgentType>` |
+| 1617 |   `val turns: List<MessageTurn>` |
+| 1618 |   `val pendingUserTurns: List<MessageTurn>` |
+| 1619 |   `val live: LiveTurnState?` |
+| 1621 |   `val liveFromReattach: Boolean` |
+| 1622 |   `val sessionStats: SessionStats?` |
+| 1623 |   `val agent: AgentType` |
+| 1624 |   `val isInFlight: Boolean` |
+| 1625 |   `val sendStatus: String?` |
+| 1626 |   `val notice: String?` |
+| 1628 |   `val restoreDraft: String?` |
+| 1629 |   `val error: String?` |
+| 1630 |   `val pendingPermission: PendingPermissionUi?` |
+| 1631 |   `val pendingQuestion: PendingQuestionUi?` |
+| 1632 |   `val pendingPlanApproval: PendingPlanApprovalUi?` |
+| 1633 |   `val attachments: List<Attachment>` |
+| 1637 | `internal enum class PlanFollowUp` |
+| 1648 | `internal data class ParkedPlanNotes(val turnId: String, val notes: String)` |
+| 1650 |   `fun notesFor(turnId: String): String?` |
+| 1669 | `internal fun planFollowUpAction( sameTurn: Boolean, inFlight: Boolean, stopReason: String?, errorMessage: String?, ): PlanFollowUp` |
+| 1682 | `data class PendingPermissionUi( val requestId: String, val parsed: app.codeg.android.feature.sessiondetail.interactive.ParsedPermission, val options: List<app.codeg.android.core.model.PermissionOption>, )` |
+| 1683 |   `val requestId: String` |
+| 1684 |   `val parsed: app.codeg.android.feature.sessiondetail.interactive.ParsedPermission` |
+| 1685 |   `val options: List<app.codeg.android.core.model.PermissionOption>` |
+| 1689 | `data class PendingQuestionUi( val questionId: String, val questions: List<app.codeg.android.core.model.QuestionSpec>, )` |
+| 1690 |   `val questionId: String` |
+| 1691 |   `val questions: List<app.codeg.android.core.model.QuestionSpec>` |
+| 1700 | `data class PendingPlanApprovalUi( val approvalId: String, /** Grok's `toolCallId` for the `exit_plan_mode` call. Not used for the answer (which * keys on [approvalId]) — kept so the card can correlate with the in-stream call. */ val toolCallId: String, /** The plan, read from Grok's `plan.md`. May be empty — the card then shows an * empty-state notice rather than hiding, since the turn is blocked either way. */ val planMarkdown: String, )` |
+| 1701 |   `val approvalId: String` |
+| 1704 |   `val toolCallId: String` |
+| 1707 |   `val planMarkdown: String` |
 
 ## feature/sessiondetail/StreamReconnectPolicy.kt
 

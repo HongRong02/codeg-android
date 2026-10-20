@@ -101,7 +101,7 @@ fun SessionDetailScreen(
     val ui by viewModel.ui.collectAsStateWithLifecycle()
     val streamStatus by viewModel.streamStatus.collectAsStateWithLifecycle()
     LifecycleResumeEffect(viewModel) {
-        viewModel.recoverStream()
+        viewModel.resumeStream()
         onPauseOrDispose { viewModel.pauseStream() }
     }
     val colors = CodegTheme.colors

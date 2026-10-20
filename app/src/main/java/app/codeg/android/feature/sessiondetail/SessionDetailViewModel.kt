@@ -117,6 +117,7 @@ class SessionDetailViewModel @Inject constructor(
     private val _streamStatus = MutableStateFlow<String?>(null)
     val streamStatus: StateFlow<String?> = _streamStatus.asStateFlow()
     private var streamDisconnected = false
+    private var streamPaused = false
     private var streamAuthFailed = false
     private val connectivity = appContext.getSystemService(ConnectivityManager::class.java)
     private val networkCallback = object : ConnectivityManager.NetworkCallback() {
@@ -901,10 +902,15 @@ class SessionDetailViewModel @Inject constructor(
         _streamStatus.value = null
     }
 
+    fun resumeStream() {
+        // A snapshot received in the background must not erase the resume check.
+        if (streamPaused && _ui.value.isInFlight && !streamAuthFailed) streamDisconnected = true
+        streamPaused = false
+        recoverStream()
+    }
+
     fun pauseStream() {
-        // Keep the socket alive in the background; resume replaces it and replays
-        // even if Android has not delivered a close for a stale background socket.
-        if (_ui.value.isInFlight && !streamAuthFailed) streamDisconnected = true
+        streamPaused = _ui.value.isInFlight
     }
 
     private fun stopForStreamAuth() {
