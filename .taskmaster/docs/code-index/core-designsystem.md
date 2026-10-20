@@ -112,12 +112,12 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 139 |   `var value by remember` |
 | 140 |   `var text by remember` |
 | 141 |   `var checked by remember` |
-| 172 | `@Composable private fun T45Preview()` |
-| 177 | `@Composable private fun SelectPreview()` |
-| 187 | `@Composable private fun ComboboxPreview()` |
-| 197 | `@Composable private fun RadioGroupPreview()` |
-| 207 | `@Composable private fun CheckboxPreview()` |
-| 217 | `@Composable private fun SwitchPreview()` |
+| 179 | `@Composable private fun T45Preview()` |
+| 184 | `@Composable private fun SelectPreview()` |
+| 194 | `@Composable private fun ComboboxPreview()` |
+| 204 | `@Composable private fun RadioGroupPreview()` |
+| 214 | `@Composable private fun CheckboxPreview()` |
+| 224 | `@Composable private fun SwitchPreview()` |
 
 ## core/designsystem/component/FileViewer.kt
 
