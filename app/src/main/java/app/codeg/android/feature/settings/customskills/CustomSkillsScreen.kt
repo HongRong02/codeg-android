@@ -229,6 +229,7 @@ private fun CustomSkillsError(error: String?) {
     error?.let { Text(it, color = CodegTheme.colors.danger, modifier = Modifier.padding(12.dp)) }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun CustomSkillsFrame(title: String, onDismiss: () -> Unit, content: @Composable ColumnScope.() -> Unit) {
     Dialog(onDismissRequest = onDismiss, properties = DialogProperties(usePlatformDefaultWidth = false, decorFitsSystemWindows = false)) {

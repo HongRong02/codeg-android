@@ -964,7 +964,7 @@ Source root: `app/src/main/java/app/codeg/android/`
 | 185 |   `var error by remember` |
 | 186 |   `var retry by remember` |
 | 228 | `@Composable private fun CustomSkillsError(error: String?)` |
-| 233 | `@Composable private fun CustomSkillsFrame(title: String, onDismiss: () -> Unit, content: @Composable ColumnScope.() -> Unit)` |
+| 234 | `@Composable private fun CustomSkillsFrame(title: String, onDismiss: () -> Unit, content: @Composable ColumnScope.() -> Unit)` |
 
 ## feature/settings/customskills/CustomSkillsViewModel.kt
 
