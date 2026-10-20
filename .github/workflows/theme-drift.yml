@@ -1,0 +1,99 @@
+name: Theme drift check
+
+on:
+  schedule:
+    # Run weekly on Mondays at 03:00 UTC
+    - cron: "0 3 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: theme-drift
+  cancel-in-progress: false
+
+jobs:
+  check-theme:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out codeg-android
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+
+      - name: Sparse checkout official codeg globals.css
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          repository: spacering-net/codeg
+          ref: main
+          sparse-checkout: |
+            src/app/globals.css
+          sparse-checkout-cone-mode: false
+          path: official-codeg
+
+      - name: Generate WebThemes.kt from official globals.css
+        run: |
+          python3 scripts/gen_web_themes.py official-codeg/src/app/globals.css --out /tmp/WebThemes.kt
+
+      - name: Compare with current WebThemes.kt
+        id: diff
+        run: |
+          target="app/src/main/java/app/codeg/android/core/designsystem/theme/WebThemes.kt"
+          if diff -u "$target" /tmp/WebThemes.kt > /tmp/theme_drift.diff; then
+            echo "drift=false" >> "$GITHUB_OUTPUT"
+            echo "WebThemes.kt is up to date with official web palette."
+          else
+            echo "drift=true" >> "$GITHUB_OUTPUT"
+            echo "WebThemes.kt has drifted from official web palette."
+            cat /tmp/theme_drift.diff
+          fi
+
+      - name: Report or update theme drift issue
+        if: steps.diff.outputs.drift == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          OFFICIAL_REPO: spacering-net/codeg
+          THEMES_PATH: app/src/main/java/app/codeg/android/core/designsystem/theme/WebThemes.kt
+        run: |
+          official_sha=$(git -C official-codeg rev-parse --short HEAD)
+          title="Theme drift: WebThemes.kt differs from official web palette"
+
+          {
+            echo "The web palette in \`$OFFICIAL_REPO\` (\`src/app/globals.css\` at \`$official_sha\`) has changed and no longer matches \`$THEMES_PATH\`."
+            echo ""
+            echo "### Diff"
+            echo '```diff'
+            head -n 300 /tmp/theme_drift.diff
+            echo '```'
+            echo ""
+            echo "### How to resolve"
+            echo "Run the generator script locally and commit the updated \`WebThemes.kt\`:"
+            echo ""
+            echo '```bash'
+            echo 'python scripts/gen_web_themes.py <path-to-codeg>/src/app/globals.css'
+            echo 'git commit -am "Update WebThemes.kt from official web palette"'
+            echo 'git push'
+            echo '```'
+          } > /tmp/issue_body.md
+
+          issue=$(gh issue list --state open --search "in:title \"$title\"" --json number --jq ' .[0].number ')
+          if [[ -n "$issue" ]]; then
+            gh issue edit "$issue" --title "$title" --body-file /tmp/issue_body.md
+            gh issue comment "$issue" --body "Theme drift updated for \`$OFFICIAL_REPO@$official_sha\`."
+            echo "Updated existing issue #$issue."
+          else
+            gh issue create --title "$title" --body-file /tmp/issue_body.md
+            echo "Created new theme drift issue."
+          fi
+
+      - name: Close resolved drift issues
+        if: steps.diff.outputs.drift == 'false'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          title="Theme drift: WebThemes.kt differs from official web palette"
+          for issue in $(gh issue list --state open --search "in:title \"$title\"" --json number --jq ' .[].number '); do
+            gh issue close "$issue" --comment "Resolved: WebThemes.kt is up to date with official web palette."
+            echo "Closed resolved issue #$issue."
+          done
