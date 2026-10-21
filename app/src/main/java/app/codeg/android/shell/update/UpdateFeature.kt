@@ -63,7 +63,7 @@ class UpdateFeature : ShellFeature {
 
     override fun onWebViewCreated(host: ShellHost, webView: WebView) {
         bridgeKey = null
-        webView.addJavascriptInterface(Bridge(host, webView), "CodegShellUpdateNative")
+        webView.addJavascriptInterface(Bridge(host, webView), "CodegShellUpdate")
     }
 
     override fun onPageStarted(host: ShellHost, view: WebView, url: String, favicon: Bitmap?) {
@@ -72,6 +72,7 @@ class UpdateFeature : ShellFeature {
 
     override fun onPageFinished(host: ShellHost, view: WebView, url: String) {
         if (!sameOrigin(url, host.currentServerUrl) || !sameOrigin(view.url, host.currentServerUrl)) return
+        if (bridgeKey != null) return
         val key = UUID.randomUUID().toString()
         bridgeKey = key
         // A per-document secret prevents cross-origin child frames from using the raw interface.
@@ -79,9 +80,10 @@ class UpdateFeature : ShellFeature {
             (() => {
                 if (location.origin !== new URL(${JSONObject.quote(host.currentServerUrl)}).origin) return;
                 const key = ${JSONObject.quote(key)};
+                const bridge = window.CodegShellUpdate;
                 window.CodegShellUpdate = Object.freeze({
-                    check: () => CodegShellUpdateNative.check(key),
-                    versionName: () => CodegShellUpdateNative.versionName(key)
+                    check: () => bridge.check(key),
+                    versionName: () => bridge.versionName(key)
                 });
             })();
         """.trimIndent(), null)
