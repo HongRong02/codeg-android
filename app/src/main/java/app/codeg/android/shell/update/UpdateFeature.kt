@@ -1,5 +1,12 @@
 package app.codeg.android.shell.update
 
+import android.webkit.JavascriptInterface
+import android.webkit.WebView
+import android.widget.Toast
+import android.graphics.Bitmap
+import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
+import org.json.JSONObject
+import java.util.UUID
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -46,32 +53,97 @@ class UpdateFeature : ShellFeature {
     private fun preferences(host: ShellHost) =
         host.activity.getSharedPreferences("shell_update", Context.MODE_PRIVATE)
 
+    @Volatile private var bridgeKey: String? = null
+
+    private fun sameOrigin(left: String?, right: String?): Boolean {
+        val a = left?.toHttpUrlOrNull() ?: return false
+        val b = right?.toHttpUrlOrNull() ?: return false
+        return a.scheme == b.scheme && a.host == b.host && a.port == b.port
+    }
+
+    override fun onWebViewCreated(host: ShellHost, webView: WebView) {
+        bridgeKey = null
+        webView.addJavascriptInterface(Bridge(host, webView), "CodegShellUpdateNative")
+    }
+
+    override fun onPageStarted(host: ShellHost, view: WebView, url: String, favicon: Bitmap?) {
+        bridgeKey = null
+    }
+
+    override fun onPageFinished(host: ShellHost, view: WebView, url: String) {
+        if (!sameOrigin(url, host.currentServerUrl) || !sameOrigin(view.url, host.currentServerUrl)) return
+        val key = UUID.randomUUID().toString()
+        bridgeKey = key
+        // A per-document secret prevents cross-origin child frames from using the raw interface.
+        view.evaluateJavascript("""
+            (() => {
+                if (location.origin !== new URL(${JSONObject.quote(host.currentServerUrl)}).origin) return;
+                const key = ${JSONObject.quote(key)};
+                window.CodegShellUpdate = Object.freeze({
+                    check: () => CodegShellUpdateNative.check(key),
+                    versionName: () => CodegShellUpdateNative.versionName(key)
+                });
+            })();
+        """.trimIndent(), null)
+    }
+
+    private inner class Bridge(private val host: ShellHost, private val view: WebView) {
+        @JavascriptInterface fun check(key: String) {
+            host.scope.launch(Dispatchers.Main.immediate) {
+                if (key != bridgeKey || host.webView !== view || !sameOrigin(view.url, host.currentServerUrl)) return@launch
+                checkForUpdate(host, manual = true)
+            }
+        }
+
+        @JavascriptInterface fun versionName(key: String): String {
+            val result = java.util.concurrent.FutureTask {
+                if (key == bridgeKey && host.webView === view && sameOrigin(view.url, host.currentServerUrl)) BuildConfig.VERSION_NAME else ""
+            }
+            view.post(result)
+            return try { result.get(2, java.util.concurrent.TimeUnit.SECONDS) } catch (_: Exception) { "" }
+        }
+    }
+
     override fun onResume(host: ShellHost) {
-        if (BuildConfig.DEBUG) return
         if (awaitingPermission) {
             awaitingPermission = false
             if (host.activity.packageManager.canRequestPackageInstalls()) install(host)
             else error = R.string.shell_update_install_failed
         }
-        if (checking || downloading || update != null) return
+        if (!BuildConfig.DEBUG) checkForUpdate(host, manual = false)
+    }
+
+    private fun checkForUpdate(host: ShellHost, manual: Boolean) {
+        if (checking || downloading || (!manual && update != null)) return
         val prefs = preferences(host)
         val now = System.currentTimeMillis()
         val previous = prefs.getLong("last_check", 0L)
-        if (previous != 0L && now >= previous && now - previous < SIX_HOURS) return
+        if (!manual && previous != 0L && now >= previous && now - previous < SIX_HOURS) return
         checking = true
         prefs.edit().putLong("last_check", now).apply()
+        val server = host.currentServerUrl
         host.scope.launch {
             try {
                 // Close the anonymous client after each check; no server credentials are used.
-                val available = UpdateChecker().use { it.check(BuildConfig.VERSION_CODE) }
+                val available = UpdateChecker().use { it.check(BuildConfig.VERSION_CODE, server, manual) }
+                if (server != host.currentServerUrl) return@launch
                 if (available != null) {
                     val dismissedAt = prefs.getLong("dismissed_at", 0L)
                     val dismissed = prefs.getInt("dismissed_version", -1) == available.versionCode
                     val time = System.currentTimeMillis()
-                    if (!dismissed || time < dismissedAt || time - dismissedAt >= 4 * SIX_HOURS) {
+                    if (manual || !dismissed || time < dismissedAt || time - dismissedAt >= 4 * SIX_HOURS) {
+                        file = null
+                        error = null
                         update = available
                     }
+                } else if (manual) {
+                    Toast.makeText(host.activity, host.activity.getString(R.string.shell_update_current, BuildConfig.VERSION_NAME), Toast.LENGTH_LONG).show()
                 }
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                if (manual && server == host.currentServerUrl) Toast.makeText(host.activity,
+                    host.activity.getString(R.string.shell_update_check_failed, e.localizedMessage ?: e.javaClass.simpleName), Toast.LENGTH_LONG).show()
             } finally {
                 checking = false
             }
@@ -143,6 +215,7 @@ class UpdateFeature : ShellFeature {
             title = { Text(stringResource(R.string.shell_update_available, available.versionName)) },
             text = {
                 Column(Modifier.heightIn(max = 400.dp).verticalScroll(rememberScrollState())) {
+                    if (BuildConfig.DEBUG) Text(stringResource(R.string.shell_update_debug))
                     Text(available.notes.ifBlank { stringResource(R.string.shell_update_no_notes) })
                     if (downloading) {
                         Text(stringResource(R.string.shell_update_downloading))

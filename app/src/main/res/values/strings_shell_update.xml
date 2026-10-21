@@ -7,4 +7,7 @@
     <string name="shell_update_later">Later</string>
     <string name="shell_update_download_failed">Download or verification failed. Tap Download and install to retry.</string>
     <string name="shell_update_install_failed">Unable to install. Allow installation from this app in Settings, then tap Download and install to retry.</string>
+    <string name="shell_update_current">Already up to date (%1$s)</string>
+    <string name="shell_update_check_failed">Update check failed: %1$s</string>
+    <string name="shell_update_debug">This is a debug build. The update installs the release build as a separate app.</string>
 </resources>

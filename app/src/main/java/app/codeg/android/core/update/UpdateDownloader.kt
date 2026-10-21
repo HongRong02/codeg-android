@@ -44,15 +44,13 @@ class UpdateDownloader @Inject constructor(@ApplicationContext private val conte
                     }
                 }
             }
-            update.sha256Url?.let { url ->
-                val expected = client.newCall(Request.Builder().url(url).build()).execute().use { response ->
+            val expected = update.sha256 ?: update.sha256Url?.let { url ->
+                client.newCall(Request.Builder().url(url).build()).execute().use { response ->
                     check(response.isSuccessful)
                     checkNotNull(response.body).string().trim().split(Regex("\\s+"))[0]
                 }
-                check(expected.matches(Regex("[a-fA-F0-9]{64}")))
-                val actual = digest.digest().joinToString("") { "%02x".format(it) }
-                check(actual.equals(expected, ignoreCase = true))
             }
+            if (expected != null) check(UpdateChecksum.matches(digest.digest(), expected)) { "SHA-256 mismatch" }
             check(partial.renameTo(target))
             target
         } catch (e: Exception) {
@@ -61,4 +59,10 @@ class UpdateDownloader @Inject constructor(@ApplicationContext private val conte
             throw e
         }
     }
+}
+
+internal object UpdateChecksum {
+    fun matches(digest: ByteArray, expected: String): Boolean =
+        expected.matches(Regex("[a-fA-F0-9]{64}")) &&
+            digest.joinToString("") { "%02x".format(it) }.equals(expected, ignoreCase = true)
 }
