@@ -28,6 +28,7 @@
 - 推送与 CI：`git push -u origin HEAD:task/<任务号>-<短名>` → `gh workflow run verify.yml --ref task/<任务号>-<短名>` → `gh run list --workflow verify.yml --branch task/<任务号>-<短名> -L 1` 取 run id → `gh run watch <id> --exit-status`。失败就 `gh run view <id> --log-failed`，修好再跑，**直到通过**。
 - 如果推送被拒（权限审批），在报告里写明，由协调方代推，你不用反复重试。
 - 不要操作 adb 或手机，真机测试由协调方统一做。
+- **不要在本机（WSL）跑 Gradle 构建或测试**（`./gradlew` 任何任务都不行），编译验证只走 GitHub CI（verify.yml）。本机和其他任务共用内存，Gradle 守护进程曾和并行编译一起把 WSL 内存耗尽。
 - 提交信息用英文祈使句，正文写改了什么、为什么；**不加 `Co-Authored-By` 或任何 AI/工具署名**。
 
 ## 测试用例
